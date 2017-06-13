@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 22, 2017 at 12:56 PM
+-- Generation Time: Jun 13, 2017 at 11:49 AM
 -- Server version: 5.5.47
 -- PHP Version: 5.6.30
 
@@ -23,6 +23,21 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `corporation_masters`
+--
+
+CREATE TABLE `corporation_masters` (
+  `corp_id` int(11) NOT NULL,
+  `corp_name` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Active, 0-Inactive',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1-Deleted',
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `demo_device`
 --
 
@@ -33,13 +48,6 @@ CREATE TABLE `demo_device` (
   `ac` varchar(50) NOT NULL,
   `vkey` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `demo_device`
---
-
-INSERT INTO `demo_device` (`device_name`, `sn`, `vc`, `ac`, `vkey`) VALUES
-('Dikonia', 'C800V000926', '359A43B970CDE5E', 'A2G7008DDB83E4B2D657AX8G', 'A240F09E14E8C869D270D4AE2E435F70');
 
 -- --------------------------------------------------------
 
@@ -68,6 +76,22 @@ CREATE TABLE `demo_log` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `feature_masters`
+--
+
+CREATE TABLE `feature_masters` (
+  `feature_id` int(11) NOT NULL,
+  `feature` varchar(255) NOT NULL,
+  `module_id` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Active, 0-Inactive',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1-Deleted',
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -76,6 +100,76 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `module_masters`
+--
+
+CREATE TABLE `module_masters` (
+  `module_id` int(11) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `corp_id` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Active, 0-Inactive',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1-Deleted',
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rights_dave`
+--
+
+CREATE TABLE `rights_dave` (
+  `template_id` int(11) NOT NULL,
+  `feature_id` int(11) NOT NULL,
+  `access_delete` tinyint(1) NOT NULL DEFAULT '0',
+  `access_add` tinyint(1) NOT NULL DEFAULT '0',
+  `access_view` tinyint(1) NOT NULL DEFAULT '0',
+  `access_edit` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rights_detail`
+--
+
+CREATE TABLE `rights_detail` (
+  `module_id` int(11) NOT NULL,
+  `template_id` int(11) NOT NULL,
+  `feature_id` int(11) NOT NULL,
+  `access_type` varchar(255) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rights_mstr`
+--
+
+CREATE TABLE `rights_mstr` (
+  `module_id` int(11) NOT NULL,
+  `template_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rights_template`
+--
+
+CREATE TABLE `rights_template` (
+  `template_id` int(11) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `corp_id` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-Active, 0-Inactive',
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -105,6 +199,12 @@ CREATE TABLE `sysusers` (
 --
 
 --
+-- Indexes for table `corporation_masters`
+--
+ALTER TABLE `corporation_masters`
+  ADD PRIMARY KEY (`corp_id`);
+
+--
 -- Indexes for table `demo_device`
 --
 ALTER TABLE `demo_device`
@@ -123,10 +223,28 @@ ALTER TABLE `demo_log`
   ADD PRIMARY KEY (`log_time`);
 
 --
+-- Indexes for table `feature_masters`
+--
+ALTER TABLE `feature_masters`
+  ADD PRIMARY KEY (`feature_id`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `module_masters`
+--
+ALTER TABLE `module_masters`
+  ADD PRIMARY KEY (`module_id`);
+
+--
+-- Indexes for table `rights_template`
+--
+ALTER TABLE `rights_template`
+  ADD PRIMARY KEY (`template_id`);
 
 --
 -- Indexes for table `sysusers`
@@ -140,15 +258,35 @@ ALTER TABLE `sysusers`
 --
 
 --
+-- AUTO_INCREMENT for table `corporation_masters`
+--
+ALTER TABLE `corporation_masters`
+  MODIFY `corp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `feature_masters`
+--
+ALTER TABLE `feature_masters`
+  MODIFY `feature_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `module_masters`
+--
+ALTER TABLE `module_masters`
+  MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `rights_template`
+--
+ALTER TABLE `rights_template`
+  MODIFY `template_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+--
 -- AUTO_INCREMENT for table `sysusers`
 --
 ALTER TABLE `sysusers`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'The ID of the user. Autonumber everytime user is added.';
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'The ID of the user. Autonumber everytime user is added.', AUTO_INCREMENT=58;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
