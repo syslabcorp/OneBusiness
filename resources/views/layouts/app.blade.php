@@ -17,6 +17,8 @@
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -50,7 +52,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="navbar-header">
                     <!-- Collapsed Hamburger -->
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
@@ -113,7 +115,40 @@
                 </div>
             </div>
         </nav>
-        @yield('content')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar" id="main-menu">
+                    <li class="dropdown"><a href="#submenu1" class="dropdown-toggle" data-toggle="collapse" data-parent="main-menu" >NETXPRESS<b class="caret"></b></a>
+                        <ul class= "collapse" id="submenu1">
+                            <li>
+                                <a href="">NEW BRANCH</a>
+                            </li>
+                            <li>
+                                <a href="">Reports</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a href="#submenu2" class="dropdown-toggle" data-toggle="collapse" data-parent="main-menu" >Reports<b class="caret"></b></a>
+                        <ul class= "collapse" id="submenu2">
+                            <li>
+                                <a href="">Reports</a>
+                            </li>
+                            <li>
+                                <a href="">Reports</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-9 col-md-10 main">
+                @yield('content')
+            </div>
+        </div>
+    </div>
+        
+        
     </div>
     <!-- Scripts -->
 

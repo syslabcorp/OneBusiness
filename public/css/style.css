@@ -1,0 +1,42 @@
+.sidebar{
+  padding: 0px;
+  margin-top: 0px;
+  min-height: 100vh !important;
+  border-right: 2px solid royalblue;
+}
+.navbar{
+  margin-bottom: 0px !important;
+}
+.sidebar li a .caret {
+    position: absolute;
+    right: 24px;
+    top: 18px;
+}
+.sidebar li{
+  padding-top: 5px;
+}
+.sidebar li a {
+  padding-left: 40px;
+}
+.sidebar li ul{
+  width: 100%;
+  padding-top: 5px;
+  padding-left:0px;
+}
+.sidebar li ul li{
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.sidebar li ul li:hover{
+  background: #eee;
+}
+.panel-body{
+  padding: 0px;
+}
+.sidebar ul{
+  list-style: none;
+}
+.sidebar li ul li a{
+  text-decoration: none;
+  padding-left:60px;
+}
