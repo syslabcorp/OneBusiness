@@ -70,13 +70,7 @@
         </style>
     </head>
     <body>
-		<div class="business-one-logo-div">
-		<!-- Branding Image -->
-			
-			<!--a class="navbar-brand" href="{{ url('/') }}">
-				{{ config('app.name', 'Laravel') }}
-			</a-->
-		</div>
+
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
@@ -88,10 +82,10 @@
                     @endif
                 </div>
             @endif
-
+           <div class="logo-div">
             <div class="content">
                 <div class="title m-b-md">
-                    <img class="welcome-logo" src="{{ URL('img/logo.png') }}" />
+                    <img class="welcome-logo" src="{{ URL('img/logo.png') }}" /></div>
                 </div>
 
                 <!--div class="links">

@@ -15,7 +15,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/bootstrap.min.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
-	
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -51,7 +52,6 @@
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
-
                     <!-- Collapsed Hamburger -->
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
                         <span class="sr-only">Toggle Navigation</span>
@@ -59,7 +59,6 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-
                     <!-- Branding Image -->
 					<a href="{{ url('/') }}">
 					<img class="business-one-logo" src="{{ URL('img/logo.png') }}" />
@@ -68,13 +67,11 @@
                         {{ config('app.name', 'Laravel') }}
                     </a-->
                 </div>
-
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         &nbsp;
                     </ul>
-
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
@@ -83,11 +80,21 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
+							<li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
+							<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    Manage Masters <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ URL('list_corporation') }}">Corporation</a></li>
+                                    <li><a href="{{ URL('list_module') }}">Module</a></li>
+                                    <li><a href="{{ URL('list_feature') }}">Features</a></li>
+                                </ul>
+                            </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     {{ Auth::user()->Full_Name }} <span class="caret"></span>
                                 </a>
-
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <a href="{{ route('logout') }}"
@@ -95,7 +102,6 @@
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
-
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
@@ -110,5 +116,10 @@
         @yield('content')
     </div>
     <!-- Scripts -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 </body>
 </html>

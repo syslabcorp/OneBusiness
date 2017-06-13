@@ -38,3 +38,21 @@ Route::get('/finger_varification/{user_id}', 'LoginController@finger_varificatio
 Route::get('/get_logout', 'HomeController@get_logout');
 Route::any('/forgot_pass', 'LoginController@forgot_pass');
 Route::any('/change_pass/{user_id?}', 'LoginController@change_pass');
+
+Route::any('/add_corporation/{corp_id?}', 'AccessLevelController@add_corporation');
+Route::get('/list_corporation', 'AccessLevelController@list_corporation');
+Route::get('/delete_corporation/{corp_id}', 'AccessLevelController@destroycorporation');
+
+Route::any('/add_module/{module_id?}', 'AccessLevelController@add_module');
+Route::get('/list_module', 'AccessLevelController@list_module');
+Route::get('/delete_module/{module_id}', 'AccessLevelController@destroymodule');
+
+Route::any('/add_feature/{feature_id?}', 'AccessLevelController@add_feature');
+Route::get('/list_feature', 'AccessLevelController@list_feature');
+Route::get('/delete_feature/{feature_id}', 'AccessLevelController@destroyfeature');
+
+Route::any('/add_template/{template_id?}', 'AccessLevelController@add_template');
+Route::any('/template_module', 'AccessLevelController@template_module');
+Route::get('/list_template', 'AccessLevelController@list_template');
+Route::get('/delete_template/{template_id}', 'AccessLevelController@destroytemplate');
+
