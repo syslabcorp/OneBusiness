@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Module</div>
+                <div class="panel-heading">{{isset($detail_edit_module->module_id) ? "Edit " : "Add " }} Module</div>
                 <div class="panel-body">
                     <form class="form-horizontal form" role="form" method="POST" action="" id ="moduleform">
                         {{ csrf_field() }}
@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">
-                                    Create
+                                    {{isset($detail_edit_module->module_id) ? "Save " : "Create " }} 
                                 </button>
                             </div>
                         </div>

@@ -19,7 +19,7 @@
 									<span></span>
 								</label-->
 								<label class="mt-radio">
-									<input type="radio" name="logintype" id="optionsRadios5" value="otp_auth" checked> OTP
+									<input type="radio" name="logintype" id="optionsRadios5" value="otp_auth"> OTP
 									<span></span>
 								</label>
 								@if($finger_count)
@@ -37,7 +37,7 @@
 						</div>
 						<div class="form-group">
                             <div class="col-md-8 col-md-offset-4 submit-button">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                
                             </div>
                         </div>
 				   </form>
@@ -46,7 +46,7 @@
         </div>
     </div>
 </div>
-@if($finger_count)
+
 <script>
 	$(function(){
 		$("input[name='logintype']").click(function(){
@@ -56,8 +56,10 @@
 		});
 		var username= $("input[name='username']").val();
 		var type = $("input[name='logintype']:checked").val();
-		check_for_btn(username, type);
+		if(type !== undefined){
+			check_for_btn(username, type); 
+		}	
 	});
 </script>
-@endif
+
 @endsection

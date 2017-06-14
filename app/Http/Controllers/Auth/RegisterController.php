@@ -66,7 +66,7 @@ class RegisterController extends Controller
             'Full_Name' => $data['Full_Name'],
             'Username' => $data['Username'],
             'email' => $data['email'],
-            'mobile_no' => $data['mobile_no'],
+            'mobile_no' => str_replace("-", "", $data['mobile_no']),
             'otp_auth' => (isset($data['otp_auth']) ? $data['otp_auth'] : 0),
             'bio_auth' => (isset($data['bio_auth']) ? $data['bio_auth'] : 0),
             //'password' => bcrypt($data['password']),

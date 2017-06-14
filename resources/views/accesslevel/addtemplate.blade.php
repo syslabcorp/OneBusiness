@@ -11,7 +11,7 @@
         @endif
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Template</div>
+                <div class="panel-heading">{{isset($detail_edit_template->template_id) ? "Edit " : "Add " }} Template</div>
                 <div class="panel-body">
                     <form class="form-horizontal form" role="form" method="POST" action="" id ="templateform">
                         {{ csrf_field() }}
@@ -41,7 +41,7 @@
                         <div class="form-group">
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">
-                                    Create
+                                    {{isset($detail_edit_template->template_id) ? "Save " : "Create " }}
                                 </button>
                             </div>
                         </div>

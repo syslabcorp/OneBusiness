@@ -86,8 +86,8 @@
                                     Manage Masters <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ URL('list_corporation') }}">Corporation</a></li>
-                                    <li><a href="{{ URL('list_module') }}">Module</a></li>
+                                    <li><a href="{{ URL('list_corporation') }}">Corporations</a></li>
+                                    <li><a href="{{ URL('list_module') }}">Modules</a></li>
                                     <li><a href="{{ URL('list_feature') }}">Features</a></li>
                                 </ul>
                             </li>

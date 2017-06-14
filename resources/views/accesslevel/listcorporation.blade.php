@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<h3 class="text-center">Manage Corporation</h3>
 <div class="container">
     <div class="row">
         @if(Session::has('alert-class'))
@@ -10,7 +11,7 @@
         @endif
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">List Corporations<a href="{{ URL('add_corporation') }}" class="pull-right">Add Corporation</a></div>
+                <div class="panel-heading">List of Corporations<a href="{{ URL('add_corporation') }}" class="pull-right">Add Corporation</a></div>
                 <div class="panel-body">
                    <table id="list_corp" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
@@ -25,8 +26,8 @@
                                 <tr>
                                     <td>{{ ++$key }}</td>
                                     <td>{{ $det->corp_name }}</td>
-                                    <td><a class="btn btn-primary btn-md" data-title="Edit" href="{{ URL::to('add_corporation/' . $det->corp_id) }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                    <a class="btn btn-danger btn-md sweet-4" data-title="Delete" href="#" rel="{{ URL::to('delete_corporation/' . $det->corp_id) }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_corporation/' . $det->corp_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Corporation"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_corporation/' . $det->corp_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 </tr>  
                             @endforeach
                         </tbody>
@@ -60,6 +61,7 @@ $(document).ready(function() {
             }
         });
     });
+    $('[data-toggle="tooltip"]').tooltip();
 });
 </script>
 @endsection
