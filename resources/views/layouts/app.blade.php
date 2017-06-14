@@ -12,12 +12,11 @@
     <title>Web Login System</title>
 
     <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-	<link href="{{ URL('/biomertic-login/assets/css/bootstrap.min.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -117,38 +116,27 @@
         </nav>
     <div class="container-fluid">
         <div class="row">
+            @if(\Auth::user())
             <div class="col-sm-3 col-md-2 sidebar">
                 <ul class="nav nav-sidebar" id="main-menu">
-                    <li class="dropdown"><a href="#submenu1" class="dropdown-toggle" data-toggle="collapse" data-parent="main-menu" >NETXPRESS<b class="caret"></b></a>
+                    {{-- <li class="dropdown"><a href="#submenu1" class="dropdown-toggle" data-toggle="collapse" data-parent="main-menu" >NETXPRESS<b class="caret"></b></a>
                         <ul class= "collapse" id="submenu1">
                             <li>
-                                <a href="">NEW BRANCH</a>
-                            </li>
-                            <li>
-                                <a href="">Reports</a>
+                                <a href="{{ route('branchs.index') }}">{{ __('Branchs') }}</a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="dropdown"><a href="#submenu2" class="dropdown-toggle" data-toggle="collapse" data-parent="main-menu" >Reports<b class="caret"></b></a>
-                        <ul class= "collapse" id="submenu2">
-                            <li>
-                                <a href="">Reports</a>
-                            </li>
-                            <li>
-                                <a href="">Reports</a>
-                            </li>
-                        </ul>
+                    </li> --}}
+                    <li>
+                        <a href="{{ route('branchs.index') }}">{{ __('BRANCHS') }}</a>
                     </li>
                 </ul>
             </div>
-
+            @endif
             <div class="col-sm-9 col-md-10 main">
                 @yield('content')
             </div>
         </div>
     </div>
-        
-        
     </div>
     <!-- Scripts -->
 
@@ -156,5 +144,6 @@
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

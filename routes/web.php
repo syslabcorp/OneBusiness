@@ -29,7 +29,9 @@ Route::any('/ajax_action', 'LoginController@ajax_action');
 
 Route::get('posts/{post}/edit', 'PostController@edit');
 Route::get('test', 'LoginController@test');
-Route::resource('branchs', 'BranchsController');
+
+Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
+
 Route::get('/process_register/{?}', 'LoginController@process_register');
 Route::get('/display_message/{?}', 'LoginController@display_message');
 
