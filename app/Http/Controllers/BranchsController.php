@@ -48,6 +48,8 @@ class BranchsController extends Controller
 
         Branch::create($params);
 
+        \Session::flash('success', "Branch has been created!");
+
         return redirect(route('branchs.index'));
     }
 
@@ -56,14 +58,35 @@ class BranchsController extends Controller
         //
     }
 
-    public function edit(Post $post)
+    public function edit(Branch $branch)
     {
-        return $post;
+        return view('branchs.edit', [
+            'branch' => $branch
+        ]);
     }
 
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Branch $branch)
     {
-        //
+        $this->validate($request,[
+            'branch_name' => 'required',
+            'operator' => 'required',
+            'street' => 'required',
+            'province' => 'required',
+            'city' => 'required',
+            'units' => 'required|numeric'
+        ]);
+
+        $params = $request->all();
+        $params['description'] = $params['operator'];
+        $params['city_id'] = $params['city'];
+        $params['max_units'] = $params['units'];
+        $params['active'] = empty($params['active']) ? "0" : "1";
+
+        \Session::flash('success', "Branch #{$branch->id} has been updated!");
+
+        $branch->update($params);
+
+        return redirect(route('branchs.index'));
     }
 
     public function destroy(Post $post)

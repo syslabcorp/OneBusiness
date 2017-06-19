@@ -68,10 +68,10 @@
                             @endif
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('units') ? 'has-error' : '' }}" value="{{ old('units') }}">
+                    <div class="form-group {{ $errors->has('units') ? 'has-error' : '' }}">
                         <label class="col-sm-2 control-label">No. Of Units</label>
                         <div class="col-sm-10">
-                            <input type="number" name="units" class="form-control" placeholder="No. Of Units">
+                            <input type="number" name="units" class="form-control" placeholder="No. Of Units" value="{{ old('units') }}">
                             @if($errors->has('units'))
                             <span class="help-block">{{ $errors->first('units') }}</span>
                             @endif

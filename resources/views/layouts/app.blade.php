@@ -114,6 +114,15 @@
                 </div>
             </div>
         </nav>
+    @if(\Session::get('error'))
+    <div class="alert alert-danger auto-close">
+        {{ \Session::get('error') }}
+    </div>
+    @elseif(\Session::get('success'))
+        <div class="alert alert-success auto-close">
+            {{ \Session::get('success') }}
+        </div>
+    @endif
     <div class="container-fluid">
         <div class="row">
             @if(\Auth::user())

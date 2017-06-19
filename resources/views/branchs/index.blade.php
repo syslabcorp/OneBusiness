@@ -44,7 +44,14 @@
                                     <td>{{ $branch->street }}</td>
                                     <td>{{ $branch->max_units }}</td>
                                     <td>
-                                        <a href="#">Rates template and scheduling</a>
+                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs"
+                                            title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <a href="#" style="margin-right: 10px;" class="btn btn-success btn-xs"
+                                            title="Rates template and scheduling">
+                                            <i class="fa fa-star"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 @php $index++; @endphp
