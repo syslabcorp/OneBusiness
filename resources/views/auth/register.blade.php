@@ -76,9 +76,9 @@
                             <label for="password" class="col-md-4 control-label">Mobile No</label>
 
                             <div class="col-md-6">
-                                <input id="phone_no" type="text" class="form-control" name="mobile_no" required>
+                                <input id="phone_no" type="text" class="form-control" name="mobile_no" required placeholder="+63-0000-000-000" >
 
-                                @if ($errors->has('mobile_no'))
+                                @if ($errors->has('mobile_no')) 
                                     <span class="help-block">
                                         <strong>{{ $errors->first('mobile_no') }}</strong>
                                     </span>
@@ -114,4 +114,10 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('js/jquery.mask.min.js') }}"></script>
+<script>
+$(function(){
+	$('#phone_no').mask('+63-0000-000-000', {clearIfNotMatch: true});
+});
+</script>
 @endsection
