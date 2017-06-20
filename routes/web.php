@@ -55,4 +55,7 @@ Route::any('/add_template/{template_id?}', 'AccessLevelController@add_template')
 Route::any('/template_module', 'AccessLevelController@template_module');
 Route::get('/list_template', 'AccessLevelController@list_template');
 Route::get('/delete_template/{template_id}', 'AccessLevelController@destroytemplate');
+Route::get('/active_users', 'HomeController@login_logs');
+Route::get('/logout', 'HomeController@logout');
+
 

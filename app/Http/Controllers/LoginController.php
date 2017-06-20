@@ -64,12 +64,17 @@ class LoginController extends Controller
 				if(md5($password) == $user->password){
 					$id = $user->UserID;
 					$phone = $user->mobile_no;
+					$username = $user->Username;
 					break;
 				}
 			}
 
 			if ($id) {
 				if($formData['logintype'] == "pswd_auth"){
+					if(!$this->check_active_users($username)){
+						$data = array('user_name' => $username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'pass');
+						DB::table('demo_log')->insert($data);
+					}
 					Auth::loginUsingId($id);
 					return redirect()->intended('home');
 				}else{			
@@ -111,6 +116,10 @@ class LoginController extends Controller
 				}else if($formData['is_forgot']){
 					return redirect()->intended('change_pass/'.base64_encode($formData['user_id']));
 				}
+				if(!$this->check_active_users($username)){
+					$datalog = array('user_name' => $users->Username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
+					DB::table('demo_log')->insert($datalog);
+				}
 				Auth::loginUsingId($formData['user_id']);
 				return redirect()->intended('home');
 			}else{
@@ -123,6 +132,11 @@ class LoginController extends Controller
 		return view('login.username');
     }
 	
+	function check_active_users($username){
+		$count = DB::table('demo_log')->where('user_name', $username)->count();
+		return $count;
+	}
+
 	public function resend_otp(){
 		if (Request::isMethod('post')) {
 			$formData = Request::all();

@@ -159,4 +159,17 @@ class HomeController extends Controller
 		}
 		return $arr;
 	}
+
+	public function login_logs(){
+		$data['logs_data'] = DB::table('demo_log')->whereDate('log_time', DB::raw('CURDATE()'))->get();
+		$data['logtype'] =array('bio'=>'Biometric','pass'=>'Password','otp'=>'OTP');
+		return view('login.login_logs',$data);
+	}
+
+	public function logout() {
+		$request = Auth::user()->Username;
+		$deleteloguser = DB::table('demo_log')->where('user_name', '=', $request)->delete();
+	    Auth::logout();
+	    return redirect('/'); 
+	}
 }

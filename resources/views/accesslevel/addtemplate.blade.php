@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+<h3 class="text-center">Manage Templates</h3>
 <div class="container">
     <div class="row">
 		@if(Session::has('alert-class'))
