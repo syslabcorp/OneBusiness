@@ -187,6 +187,8 @@
 			} else {
 				return "Error insert log data!";
 			}
+		}else{
+			mysql_query("UPDATE demo_log SET data = '".date('Y-m-d H:i:s', strtotime($time))." (PC Time) | ".$sn." (SN)"."', login_type='bio' WHERE user_name = '".$user_name."'");
 		}
 	}
 

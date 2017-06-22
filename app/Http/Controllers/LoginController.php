@@ -74,6 +74,9 @@ class LoginController extends Controller
 					if(!$this->check_active_users($username)){
 						$data = array('user_name' => $username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'pass');
 						DB::table('demo_log')->insert($data);
+					}else{
+						$data = array('data' =>date('Y-m-d H:i:s'),"login_type" => 'pass');
+						DB::table('demo_log')->where('user_name', $username)->update($data);
 					}
 					Auth::loginUsingId($id);
 					return redirect()->intended('home');
@@ -116,9 +119,13 @@ class LoginController extends Controller
 				}else if($formData['is_forgot']){
 					return redirect()->intended('change_pass/'.base64_encode($formData['user_id']));
 				}
+				$username = $users->Username;
 				if(!$this->check_active_users($username)){
 					$datalog = array('user_name' => $users->Username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
 					DB::table('demo_log')->insert($datalog);
+				}else{
+					$data = array('data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
+					DB::table('demo_log')->where('user_name', $username)->update($data);
 				}
 				Auth::loginUsingId($formData['user_id']);
 				return redirect()->intended('home');
