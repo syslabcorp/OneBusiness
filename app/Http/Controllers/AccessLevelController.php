@@ -291,6 +291,16 @@ class AccessLevelController extends Controller
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_template');  
     }
+	
+	public function template_exist(){
+		$formData = Request::all(); 
+		$is_exist = DB::table('rights_template')->where('template_id', '!=', $formData['unique_temp_id'])->where('description', $formData['temp_name'])->count();
+		if($is_exist){
+			echo "false";
+		}else{
+			echo "true";
+		}
+	}
 }
 
 

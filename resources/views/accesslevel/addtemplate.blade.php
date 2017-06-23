@@ -15,6 +15,7 @@
                 <div class="panel-body">
                     <form class="form-horizontal form" role="form" method="POST" action="" id ="templateform">
                         {{ csrf_field() }}
+						<input type="hidden" id="unique_temp_id" value="{{ isset($detail_edit_template->template_id) ? $detail_edit_template->template_id : 0 }}" />
                         <div class="form-group{{ $errors->has('temp_name') ? ' has-error' : '' }}">
                             <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
                             <div class="col-md-6">
@@ -59,7 +60,29 @@ $(function(){
             get_template_module("<?php echo $detail_edit_template->corp_id; ?>", "<?php echo $detail_edit_template->template_id; ?>");
         <?php }
     ?>
-    $("#templateform").validate();   
+    $("#templateform").validate({
+		rules: {
+			temp_name: {
+				required: true,
+				remote: {
+					url: ajax_url+"/template_exist",
+					type: "GET",
+					data: {
+						temp_name: function() {
+							return $( "#temp_name" ).val();
+						},unique_temp_id: function() {
+							return $( "#unique_temp_id" ).val();
+						}
+					}
+				}
+			}
+		},
+		messages:{
+			temp_name:{
+				remote: "Template name already exist."
+			}
+		}
+	});   
     $("#template-module").on('click','.checkboxclick',function(){
     
         var objectID=$(this).attr('rel');

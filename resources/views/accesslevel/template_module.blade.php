@@ -46,11 +46,11 @@
 					<div class="col-md-8">
 						<div class="mt-checkbox-inline">
 							<label class="mt-checkbox">
-								<input type="checkbox" value="C"name ="access_{{$mid}}_{{$fid}}_c" <?php echo in_array('C', $access) ? "checked" :'' ?> > Add
+								<input type="checkbox" value="D"name ="access_{{$mid}}_{{$fid}}_d" <?php echo in_array('D', $access) ? "checked" :'' ?> > Delete
 								<span></span>
 							</label>
 							<label class="mt-checkbox">
-								<input type="checkbox" value="U"name ="access_{{$mid}}_{{$fid}}_u" <?php echo in_array('U', $access) ? "checked" :'' ?> > Edit
+								<input type="checkbox" value="C"name ="access_{{$mid}}_{{$fid}}_c" <?php echo in_array('C', $access) ? "checked" :'' ?> > Add
 								<span></span>
 							</label>
 							<label class="mt-checkbox">
@@ -58,7 +58,7 @@
 								<span></span>
 							</label>
 							<label class="mt-checkbox">
-								<input type="checkbox" value="D"name ="access_{{$mid}}_{{$fid}}_d" <?php echo in_array('D', $access) ? "checked" :'' ?> > Delete
+								<input type="checkbox" value="U"name ="access_{{$mid}}_{{$fid}}_u" <?php echo in_array('U', $access) ? "checked" :'' ?> > Edit
 								<span></span>
 							</label>
 						</div>
