@@ -13,3 +13,4 @@ img.business-one-logo {
   margin: 5px 0;
 }
 .navbar-nav > li > a{ padding-top:24px;  padding-bottom:24px; }
+label.error {color: #ff0000;font-size: 12px;font-weight: normal;}
