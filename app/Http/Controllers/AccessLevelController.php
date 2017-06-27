@@ -206,15 +206,15 @@ class AccessLevelController extends Controller
                 // Insert into  rights_mstr
                 if(!empty($features)){
                     foreach ($features as $feature) {
-                        $access_c = isset($formData['access_'.$module.'_'.$feature.'_c']) ? $formData['access_'.$module.'_'.$feature.'_c'] : '';
-                        $access_u = isset($formData['access_'.$module.'_'.$feature.'_u']) ? $formData['access_'.$module.'_'.$feature.'_u'] : '';
-                        $access_r = isset($formData['access_'.$module.'_'.$feature.'_r']) ? $formData['access_'.$module.'_'.$feature.'_r'] : '';
+                        $access_a = isset($formData['access_'.$module.'_'.$feature.'_a']) ? $formData['access_'.$module.'_'.$feature.'_a'] : '';
+                        $access_e = isset($formData['access_'.$module.'_'.$feature.'_e']) ? $formData['access_'.$module.'_'.$feature.'_e'] : '';
+                        $access_v = isset($formData['access_'.$module.'_'.$feature.'_v']) ? $formData['access_'.$module.'_'.$feature.'_v'] : '';
                         $access_d = isset($formData['access_'.$module.'_'.$feature.'_d']) ? $formData['access_'.$module.'_'.$feature.'_d'] : '';
                         
-                        if($access_c == "" && $access_u == "" && $access_r == "" && $access_d == ""){
+                        if($access_a == "" && $access_e == "" && $access_v == "" && $access_d == ""){
                             $access_type = 0;
                         }else{
-                            $access_type = $access_c.$access_u.$access_r.$access_d;
+                            $access_type = $access_d.$access_a.$access_v.$access_e;
                         }
                         $datafeature = array(
                             'module_id'   => $module,
@@ -223,17 +223,17 @@ class AccessLevelController extends Controller
                             'access_type' => $access_type,
                         );
                         DB::table('rights_detail')->insertGetId($datafeature);
-                        $access_c = isset($formData['access_'.$module.'_'.$feature.'_c']) ? '1' : '0';
-                        $access_u = isset($formData['access_'.$module.'_'.$feature.'_u']) ? '1' : '0';
-                        $access_r = isset($formData['access_'.$module.'_'.$feature.'_r']) ? '1':  '0';
+                        $access_a = isset($formData['access_'.$module.'_'.$feature.'_a']) ? '1' : '0';
+                        $access_e = isset($formData['access_'.$module.'_'.$feature.'_e']) ? '1' : '0';
+                        $access_v = isset($formData['access_'.$module.'_'.$feature.'_v']) ? '1':  '0';
                         $access_d = isset($formData['access_'.$module.'_'.$feature.'_d']) ? '1':  '0';
                         $datadave = array(
                             'template_id'    => $tid,
                             'feature_id'     => $feature,
                             'access_delete'  => $access_d,
-                            'access_add'     => $access_c,
-                            'access_view'    => $access_r,
-                            'access_edit'    => $access_u,
+                            'access_add'     => $access_a,
+                            'access_view'    => $access_v,
+                            'access_edit'    => $access_e,
                         ); 
                         DB::table('rights_dave')->insertGetId($datadave);
                     }

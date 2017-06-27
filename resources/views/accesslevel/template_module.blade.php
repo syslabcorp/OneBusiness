@@ -50,15 +50,15 @@
 								<span></span>
 							</label>
 							<label class="mt-checkbox">
-								<input type="checkbox" value="C"name ="access_{{$mid}}_{{$fid}}_c" <?php echo in_array('C', $access) ? "checked" :'' ?> > Add
+								<input type="checkbox" value="A"name ="access_{{$mid}}_{{$fid}}_a" <?php echo in_array('A', $access) ? "checked" :'' ?> > Add
 								<span></span>
 							</label>
 							<label class="mt-checkbox">
-								<input type="checkbox" value="R"name ="access_{{$mid}}_{{$fid}}_r" <?php echo in_array('R', $access) ? "checked" :'' ?> > View
+								<input type="checkbox" value="V"name ="access_{{$mid}}_{{$fid}}_v" <?php echo in_array('V', $access) ? "checked" :'' ?> > View
 								<span></span>
 							</label>
 							<label class="mt-checkbox">
-								<input type="checkbox" value="U"name ="access_{{$mid}}_{{$fid}}_u" <?php echo in_array('U', $access) ? "checked" :'' ?> > Edit
+								<input type="checkbox" value="E"name ="access_{{$mid}}_{{$fid}}_e" <?php echo in_array('E', $access) ? "checked" :'' ?> > Edit
 								<span></span>
 							</label>
 						</div>
