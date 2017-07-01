@@ -7,6 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Custom Login</div>
                 <div class="panel-body">
+					@if(!isset($btn))
                     <form class="form-horizontal" role="form" method="POST" action="{{ URL::to('/logintype') }}">
                         {{ csrf_field() }}
 						<input type="hidden" name="email" value="{{ $email }}" />
@@ -41,6 +42,13 @@
                             </div>
                         </div>
 				   </form>
+				   @else
+					   <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4 submit-button">
+								<?php echo $btn; ?>
+                            </div>
+                        </div>
+				   @endif
                 </div>
             </div>
         </div>

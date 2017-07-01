@@ -26,12 +26,21 @@ class LoginController extends Controller
 			if(count($users)){
 				$data['email'] = $users->email;
 				$data['username'] = $users->Username;
-				if($users->otp_auth == 1 && $users->bio_auth == 1){
-					$data['finger_count'] = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
+				
+				$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
+				if($users->bio_auth == 1 && $finger_exist && $users->otp_auth != 1){
+					$base_url = URL::to('/biomertic-login');
+					$url_verification = base64_encode($base_url."/verification.php?user_id=".$users->UserID);
+					$data['btn'] = "<a href='finspot:FingerspotVer;$url_verification' class='btn btn-success'>Login</a>";
 					return view('login.login_type', $data);
 				}else{
-					$data['logintype'] = ($users->otp_auth == 1) ? 'otp_auth' : 'pswd_auth';
-					return view('login.password', $data);					
+					if($users->otp_auth == 1 && $users->bio_auth == 1){
+						$data['finger_count'] = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
+						return view('login.login_type', $data);
+					}else{
+						$data['logintype'] = ($users->otp_auth == 1) ? 'otp_auth' : 'pswd_auth';
+						return view('login.password', $data);					
+					}
 				}
 			}else{
 				Request::session()->flash('flash_message', 'Username does not exist.');
