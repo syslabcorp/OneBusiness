@@ -2,9 +2,12 @@
 
 @section('content')
 <h3 class="text-center">Manage Corporations</h3>
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+		<div class="col-md-2">
+			<div id="treeview_json"></div>
+		</div>
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">{{isset($detail_edit->corp_id) ? "Edit " : "Add " }}Corporation</div>
                 <div class="panel-body">

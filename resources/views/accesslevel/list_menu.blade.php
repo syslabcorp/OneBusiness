@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="text-center">Manage Corporations</h3>
+<h3 class="text-center">Manage Menus</h3>
 <div class="row">
     @if(Session::has('alert-class'))
         <div class="alert alert-success col-md-8 col-md-offset-2"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
@@ -10,29 +10,33 @@
     @endif
 </div>
 <div class="container-fluid">
-    <div class="row">
-		<div class="col-md-2">
+    <div class="row">    
+        <div class="col-md-2">
 			<div id="treeview_json"></div>
 		</div>
         <div class="col-md-8">
             <div class="panel panel-default">
-                <div class="panel-heading">List of Corporations<a href="{{ URL('add_corporation') }}" class="pull-right">Add Corporation</a></div>
+                <div class="panel-heading"><?php echo ($parentcrumb == "0") ? "List of Menus" : $parentcrumb; ?><a href="{{ URL('add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a></div>
                 <div class="panel-body">
-                   <table id="list_corp" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                   <table id="list_menu" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>SNo.</th>
                                 <th>Title</th>
-                                <th>Action</th>
+                                <th>Url</th>
+                                <th>Sub Menu</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($detail as $key=>$det)
                                 <tr>
                                     <td>{{ ++$key }}</td>
-                                    <td>{{ $det->corp_name }}</td>
-                                    <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_corporation/' . $det->corp_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Corporation"><span class="glyphicon glyphicon-pencil"></span></a>
-                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_corporation/' . $det->corp_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <td>{{ $det->title }}</td>
+                                    <td>{{ $det->url }}</td>
+                                    <td><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
+                                    <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 </tr>  
                             @endforeach
                         </tbody>
@@ -41,15 +45,17 @@
             </div>
         </div>
     </div>
+
 </div>
 <script>
+
 $(document).ready(function() {
-    $('#list_corp').DataTable();
+    $('#list_menu').DataTable();
     $('.sweet-4').click(function(){
         var delete_url = $(this).attr("rel");
         swal({
             title: "Are you sure?",
-            text:  "You will not be able to recover this Corporation Data!",
+            text:  "You will not be able to recover this Menu Data!",
             type:  "warning",
             showCancelButton: true,
             confirmButtonClass: 'btn-danger',
@@ -66,9 +72,10 @@ $(document).ready(function() {
             }
         });
     });
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip(); 
 });
 </script>
+
 @endsection
 
 
