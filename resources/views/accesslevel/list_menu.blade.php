@@ -24,7 +24,7 @@
                                 <th>SNo.</th>
                                 <th>Title</th>
                                 <th>Url</th>
-                                <th>Sub Menu</th>
+                                <th class="text-center">Sub Menu</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -34,7 +34,7 @@
                                     <td>{{ ++$key }}</td>
                                     <td>{{ $det->title }}</td>
                                     <td>{{ $det->url }}</td>
-                                    <td><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
+                                    <td class="text-center"><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="glyphicon glyphicon-pencil"></span></a>
                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 </tr>  
