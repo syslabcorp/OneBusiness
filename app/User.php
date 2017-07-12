@@ -10,7 +10,7 @@ class User extends Authenticatable
     use Notifiable;
 	protected $table = 'sysusers';
 	protected $primaryKey = 'UserID';
-	
+	private $permissions;
     /**
      * The attributes that are mass assignable.
      *
@@ -35,5 +35,27 @@ class User extends Authenticatable
     public function branchs()
     {
         return $this->hasMany(\App\Branch::class);
+    }
+
+    public function checkAccess($feature, $action)
+    {
+        if($this->permissions == null)
+        {
+            $this->permissions = \DB::table('sysuser_template')
+                ->leftJoin("rights_detail", "sysuser_template.template_id", "=", "rights_detail.template_id")
+                ->leftJoin("feature_masters", "rights_detail.feature_id", "=", "feature_masters.feature_id")
+                ->where('sysuser_template.UserID', '=', \Auth::user()->UserID)
+                ->get();
+        }
+
+        foreach($this->permissions as $permission)
+        {
+            if($feature == $permission->feature && preg_match("/$action/", $permission->access_type))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

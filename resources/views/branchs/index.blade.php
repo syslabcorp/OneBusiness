@@ -62,7 +62,7 @@
                 </table>
               @else
                 <div class="error">
-                    {{ __('Not found any data to display') }}
+                    {{ __('No data to display') }}
                 </div>
               @endif
             </div>
@@ -70,7 +70,9 @@
                 <a href="/home" class="btn btn-default">
                     <i class="fa fa-reply"></i> Back
                 </a>
-                <a href="{{ route('branchs.create') }}" class="btn btn-success">New Branch</a>
+                @if(\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+                    <a href="{{ route('branchs.create') }}" class="btn btn-success">New Branch</a>
+                @endif
             </div>
           </div>
         </div>

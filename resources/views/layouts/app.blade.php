@@ -9,7 +9,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--title>{{ config('app.name', 'Laravel') }}</title-->
-    <title>Web Login System</title>
+    @if(\View::hasSection('head'))
+        @yield('head')
+    @else
+        <title>Web Login System</title>
+    @endif
 
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
@@ -25,24 +29,6 @@
 	<script src="{{ URL('/biomertic-login/assets/js/respond.min.js') }}"></script>
 	<![endif]-->
 
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="{{ URL('/biomertic-login/assets/js/jquery.min.js') }}"></script>
-	<script src="{{ URL('/biomertic-login/assets/js/jquery.timer.js') }}"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="{{ URL('/biomertic-login/assets/js/bootstrap.min.js') }}"></script>
-	<script src="{{ URL('/biomertic-login/assets/js/ajaxmask.js') }}"></script>
-
-	<script src="{{ URL('/biomertic-login/assets/js/custom.js') }}"></script>
-
-    <!-- Scripts -->
-    <script>
-        window.Laravel = {!! json_encode([
-            'csrfToken' => csrf_token(),
-        ]) !!};
-		var ajax_url = "{{ URL('/') }}";
-		var biometric_url = "{{ URL('/biomertic-login') }}";
-    </script>
-	<script src="{{ asset('js/login.js') }}"></script>
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
@@ -147,12 +133,29 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="{{ URL('/biomertic-login/assets/js/jquery.timer.js') }}"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="{{ URL('/biomertic-login/assets/js/bootstrap.min.js') }}"></script>
+	<script src="{{ URL('/biomertic-login/assets/js/ajaxmask.js') }}"></script>
+
+	<script src="{{ URL('/biomertic-login/assets/js/custom.js') }}"></script>
+
     <!-- Scripts -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken' => csrf_token(),
+        ]) !!};
+		var ajax_url = "{{ URL('/') }}";
+		var biometric_url = "{{ URL('/biomertic-login') }}";
+    </script>
+	<script src="{{ asset('js/login.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
+    
 </body>
 </html>

@@ -63,45 +63,11 @@
 /******/ 	__webpack_require__.p = "./";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function($) {$(document).ready(function () {
-    $('#select-province').on('change', function (event) {
-        var parent = $(this);
-        $('#select-city option').each(function (index, element) {
-            if (parent.val() != '' && $(element).attr('data-province') != parent.val()) {
-                $(element).css('display', 'none');
-            } else {
-                $(element).css('display', 'block');
-            }
-        });
-    });
-
-    $('#select-city option').each(function (index, element) {
-        if ($('#select-province').val() != '' && $(element).attr('data-province') != $('#select-province').val()) {
-            $(element).css('display', 'none');
-        } else {
-            $(element).css('display', 'block');
-        }
-    });
-
-    $('.alert.auto-close').delay(6000).slideUp();
-});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10361,11 +10327,663 @@ return jQuery;
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function($) {window.$ = window.jQuery = __webpack_require__(0);
+toastr = __webpack_require__(3);
+
+$(document).ready(function () {
+    $('#select-province').on('change', function (event) {
+        var parent = $(this);
+        $('#select-city option').each(function (index, element) {
+            if (parent.val() != '' && $(element).attr('data-province') != parent.val()) {
+                $(element).css('display', 'none');
+            } else {
+                $(element).css('display', 'block');
+            }
+        });
+    });
+
+    $('#select-city option').each(function (index, element) {
+        if ($('#select-province').val() != '' && $(element).attr('data-province') != $('#select-province').val()) {
+            $(element).css('display', 'none');
+        } else {
+            $(element).css('display', 'block');
+        }
+    });
+
+    $('#branch-select, .branch-select').on('change', function (event) {
+        $('#station-select, .station-select').val('');
+        var parent = $(this);
+        $('#station-select option, .station-select option').each(function (index, element) {
+            if (parent.val() != '' && $(element).attr('data-branch') != parent.val()) {
+                $(element).css('display', 'none');
+            } else {
+                $(element).css('display', 'block');
+            }
+        });
+    });
+
+    $('#station-select option, .station-select option').each(function (index, element) {
+        $(element).css('display', 'none');
+    });
+
+    $('.alert.auto-close').delay(6000).slideUp();
+    if ($('a[href="' + window.location.hash + '"]').length) {
+        $('a[href="' + window.location.hash + '"]')[0].click();
+    }
+
+    $('.list-macs tbody tr').click(function (event) {
+        $('.list-macs tbody tr').removeClass('active');
+        $(this).addClass('active');
+    });
+
+    $('.list-macs td.ip-address').click(function (event) {
+        $(this).toggleClass('active');
+    });
+
+    $('#assign-ip').click(function (event) {
+        if ($('.list-macs td.ip-address.active').length != 0) {
+            $('#assign-modal').modal('show');
+        } else {
+            toastr.error("You must select at least one IP Address field");
+        }
+    });
+
+    $('#assign-modal .btn').click(function (event) {
+        var ipAddress = $('#assign-modal input.form-control').val();
+        if (ipAddress.match("[^0-9\.]") || ipAddress.split(".").length != 4) {
+            toastr.error("IP Address format is invalid");
+        } else {
+            var partIps = ipAddress.split(".");
+            $('.list-macs td.ip-address.active .form-control').each(function (index, element) {
+                $(element).attr("value", partIps.join(".")).change();
+                $(element).parent('td').removeClass('active');
+                partIps[3]++;
+                for (var i = 0; i < 4; i++) {
+                    if (partIps[i] > 255) {
+                        if (i != 0) {
+                            partIps[i] = 1;
+                            partIps[i - 1]++;
+                        } else {
+                            partIps[0] = 1;
+                        }
+                    }
+                }
+            });
+            $('#assign-modal').modal('hide');
+        }
+    });
+
+    $('#assign-ip-range').click(function (event) {
+        $('#assign-range-modal').modal('show');
+    });
+
+    $('#assign-range-modal .btn').click(function (event) {
+        var ipAddress = $('#assign-range-modal input[name="ip_address"]').val();
+        var inputRange = $('#assign-range-modal input[name="range"]').val();
+        inputRange = inputRange.trim();
+        if (inputRange == "" || ipAddress == "") {
+            toastr.error("Field Range and Start Ip Address can't be blank");
+            return;
+        }
+
+        if (ipAddress.match("[^0-9\.]") || ipAddress.split(".").length != 4) {
+            return toastr.error("IP Address format is invalid");
+        }
+
+        inputRange = inputRange.replace(/\s/g, "");
+
+        if (inputRange.match("[^0-9\,\-]")) {
+            return toastr.error("Input Range format is invalid");
+        }
+
+        inputRange = inputRange.split(",");
+        var fields = [];
+
+        for (var i = 0; i < inputRange.length; i++) {
+            if (inputRange[i].match(/\-/)) {
+                var numbers = inputRange[i].split("-");
+                for (var number = numbers[0]; number <= numbers[1]; number++) {
+                    if (fields.indexOf(number * 1) == -1) {
+                        fields.push(number * 1);
+                    }
+                }
+            } else {
+                if (fields.indexOf(inputRange[i] * 1) == -1) {
+                    fields.push(inputRange[i] * 1);
+                }
+            }
+        }
+
+        var partIps = ipAddress.split(".");
+        for (var index = 0; index < fields.length; index++) {
+            var element = $('.list-macs td.ip-address:eq(' + (fields[index] - 1) + ') .form-control');
+            if (element.length != 0) {
+                element.attr("value", partIps.join(".")).change();
+                element.parent('td').removeClass('active');
+                partIps[3]++;
+                for (var i = 0; i < 4; i++) {
+                    if (partIps[i] > 255) {
+                        if (i != 0) {
+                            partIps[i] = 1;
+                            partIps[i - 1]++;
+                        } else {
+                            partIps[0] = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        $('#assign-range-modal').modal('hide');
+    });
+
+    $('#transfer-mac').click(function (event) {
+        if ($('.list-macs tbody tr.active').length != 0) {
+            $('#transfer-modal input[name="mac_id"]').val($('.list-macs tbody tr.active').attr('data-id'));
+            $('#transfer-modal').modal('show');
+        } else {
+            toastr.error("You must select station");
+        }
+    });
+
+    $('.list-macs input[type="checkbox"], .list-macs input[type="text"]').change(function (event) {
+        $(this).parents('tr').find('input[type="hidden"]').val(1);
+    });
+
+    $('#swap-station').click(function (event) {
+        if ($('.list-macs tbody tr.active').length != 0) {
+            $('#swap-station-modal input[name="mac_id"]').val($('.list-macs tbody tr.active').attr('data-id'));
+            $('#branch-select').val('');
+            $('#station-select, .station-select').val('');
+            $('#station-select option, .station-select option').each(function (index, element) {
+                $(element).css('display', 'none');
+            });
+            $('#swap-station-modal').modal('show');
+        } else {
+            toastr.error("You must select station");
+        }
+    });
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(0);
-module.exports = __webpack_require__(1);
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+ * Toastr
+ * Copyright 2012-2015
+ * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
+ * All Rights Reserved.
+ * Use, reproduction, distribution, and modification of this code is subject to the terms and
+ * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
+ *
+ * ARIA Support: Greta Krafsig
+ *
+ * Project: https://github.com/CodeSeven/toastr
+ */
+/* global define */
+; (function (define) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_RESULT__ = function ($) {
+        return (function () {
+            var $container;
+            var listener;
+            var toastId = 0;
+            var toastType = {
+                error: 'error',
+                info: 'info',
+                success: 'success',
+                warning: 'warning'
+            };
+
+            var toastr = {
+                clear: clear,
+                remove: remove,
+                error: error,
+                getContainer: getContainer,
+                info: info,
+                options: {},
+                subscribe: subscribe,
+                success: success,
+                version: '2.1.2',
+                warning: warning
+            };
+
+            var previousToast;
+
+            return toastr;
+
+            ////////////////
+
+            function error(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.error,
+                    iconClass: getOptions().iconClasses.error,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function getContainer(options, create) {
+                if (!options) { options = getOptions(); }
+                $container = $('#' + options.containerId);
+                if ($container.length) {
+                    return $container;
+                }
+                if (create) {
+                    $container = createContainer(options);
+                }
+                return $container;
+            }
+
+            function info(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.info,
+                    iconClass: getOptions().iconClasses.info,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function subscribe(callback) {
+                listener = callback;
+            }
+
+            function success(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.success,
+                    iconClass: getOptions().iconClasses.success,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function warning(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.warning,
+                    iconClass: getOptions().iconClasses.warning,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function clear($toastElement, clearOptions) {
+                var options = getOptions();
+                if (!$container) { getContainer(options); }
+                if (!clearToast($toastElement, options, clearOptions)) {
+                    clearContainer(options);
+                }
+            }
+
+            function remove($toastElement) {
+                var options = getOptions();
+                if (!$container) { getContainer(options); }
+                if ($toastElement && $(':focus', $toastElement).length === 0) {
+                    removeToast($toastElement);
+                    return;
+                }
+                if ($container.children().length) {
+                    $container.remove();
+                }
+            }
+
+            // internal functions
+
+            function clearContainer (options) {
+                var toastsToClear = $container.children();
+                for (var i = toastsToClear.length - 1; i >= 0; i--) {
+                    clearToast($(toastsToClear[i]), options);
+                }
+            }
+
+            function clearToast ($toastElement, options, clearOptions) {
+                var force = clearOptions && clearOptions.force ? clearOptions.force : false;
+                if ($toastElement && (force || $(':focus', $toastElement).length === 0)) {
+                    $toastElement[options.hideMethod]({
+                        duration: options.hideDuration,
+                        easing: options.hideEasing,
+                        complete: function () { removeToast($toastElement); }
+                    });
+                    return true;
+                }
+                return false;
+            }
+
+            function createContainer(options) {
+                $container = $('<div/>')
+                    .attr('id', options.containerId)
+                    .addClass(options.positionClass)
+                    .attr('aria-live', 'polite')
+                    .attr('role', 'alert');
+
+                $container.appendTo($(options.target));
+                return $container;
+            }
+
+            function getDefaults() {
+                return {
+                    tapToDismiss: true,
+                    toastClass: 'toast',
+                    containerId: 'toast-container',
+                    debug: false,
+
+                    showMethod: 'fadeIn', //fadeIn, slideDown, and show are built into jQuery
+                    showDuration: 300,
+                    showEasing: 'swing', //swing and linear are built into jQuery
+                    onShown: undefined,
+                    hideMethod: 'fadeOut',
+                    hideDuration: 1000,
+                    hideEasing: 'swing',
+                    onHidden: undefined,
+                    closeMethod: false,
+                    closeDuration: false,
+                    closeEasing: false,
+
+                    extendedTimeOut: 1000,
+                    iconClasses: {
+                        error: 'toast-error',
+                        info: 'toast-info',
+                        success: 'toast-success',
+                        warning: 'toast-warning'
+                    },
+                    iconClass: 'toast-info',
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // Set timeOut and extendedTimeOut to 0 to make it sticky
+                    titleClass: 'toast-title',
+                    messageClass: 'toast-message',
+                    escapeHtml: false,
+                    target: 'body',
+                    closeHtml: '<button type="button">&times;</button>',
+                    newestOnTop: true,
+                    preventDuplicates: false,
+                    progressBar: false
+                };
+            }
+
+            function publish(args) {
+                if (!listener) { return; }
+                listener(args);
+            }
+
+            function notify(map) {
+                var options = getOptions();
+                var iconClass = map.iconClass || options.iconClass;
+
+                if (typeof (map.optionsOverride) !== 'undefined') {
+                    options = $.extend(options, map.optionsOverride);
+                    iconClass = map.optionsOverride.iconClass || iconClass;
+                }
+
+                if (shouldExit(options, map)) { return; }
+
+                toastId++;
+
+                $container = getContainer(options, true);
+
+                var intervalId = null;
+                var $toastElement = $('<div/>');
+                var $titleElement = $('<div/>');
+                var $messageElement = $('<div/>');
+                var $progressElement = $('<div/>');
+                var $closeElement = $(options.closeHtml);
+                var progressBar = {
+                    intervalId: null,
+                    hideEta: null,
+                    maxHideTime: null
+                };
+                var response = {
+                    toastId: toastId,
+                    state: 'visible',
+                    startTime: new Date(),
+                    options: options,
+                    map: map
+                };
+
+                personalizeToast();
+
+                displayToast();
+
+                handleEvents();
+
+                publish(response);
+
+                if (options.debug && console) {
+                    console.log(response);
+                }
+
+                return $toastElement;
+
+                function escapeHtml(source) {
+                    if (source == null)
+                        source = "";
+
+                    return new String(source)
+                        .replace(/&/g, '&amp;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                }
+
+                function personalizeToast() {
+                    setIcon();
+                    setTitle();
+                    setMessage();
+                    setCloseButton();
+                    setProgressBar();
+                    setSequence();
+                }
+
+                function handleEvents() {
+                    $toastElement.hover(stickAround, delayedHideToast);
+                    if (!options.onclick && options.tapToDismiss) {
+                        $toastElement.click(hideToast);
+                    }
+
+                    if (options.closeButton && $closeElement) {
+                        $closeElement.click(function (event) {
+                            if (event.stopPropagation) {
+                                event.stopPropagation();
+                            } else if (event.cancelBubble !== undefined && event.cancelBubble !== true) {
+                                event.cancelBubble = true;
+                            }
+                            hideToast(true);
+                        });
+                    }
+
+                    if (options.onclick) {
+                        $toastElement.click(function (event) {
+                            options.onclick(event);
+                            hideToast();
+                        });
+                    }
+                }
+
+                function displayToast() {
+                    $toastElement.hide();
+
+                    $toastElement[options.showMethod](
+                        {duration: options.showDuration, easing: options.showEasing, complete: options.onShown}
+                    );
+
+                    if (options.timeOut > 0) {
+                        intervalId = setTimeout(hideToast, options.timeOut);
+                        progressBar.maxHideTime = parseFloat(options.timeOut);
+                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+                        if (options.progressBar) {
+                            progressBar.intervalId = setInterval(updateProgress, 10);
+                        }
+                    }
+                }
+
+                function setIcon() {
+                    if (map.iconClass) {
+                        $toastElement.addClass(options.toastClass).addClass(iconClass);
+                    }
+                }
+
+                function setSequence() {
+                    if (options.newestOnTop) {
+                        $container.prepend($toastElement);
+                    } else {
+                        $container.append($toastElement);
+                    }
+                }
+
+                function setTitle() {
+                    if (map.title) {
+                        $titleElement.append(!options.escapeHtml ? map.title : escapeHtml(map.title)).addClass(options.titleClass);
+                        $toastElement.append($titleElement);
+                    }
+                }
+
+                function setMessage() {
+                    if (map.message) {
+                        $messageElement.append(!options.escapeHtml ? map.message : escapeHtml(map.message)).addClass(options.messageClass);
+                        $toastElement.append($messageElement);
+                    }
+                }
+
+                function setCloseButton() {
+                    if (options.closeButton) {
+                        $closeElement.addClass('toast-close-button').attr('role', 'button');
+                        $toastElement.prepend($closeElement);
+                    }
+                }
+
+                function setProgressBar() {
+                    if (options.progressBar) {
+                        $progressElement.addClass('toast-progress');
+                        $toastElement.prepend($progressElement);
+                    }
+                }
+
+                function shouldExit(options, map) {
+                    if (options.preventDuplicates) {
+                        if (map.message === previousToast) {
+                            return true;
+                        } else {
+                            previousToast = map.message;
+                        }
+                    }
+                    return false;
+                }
+
+                function hideToast(override) {
+                    var method = override && options.closeMethod !== false ? options.closeMethod : options.hideMethod;
+                    var duration = override && options.closeDuration !== false ?
+                        options.closeDuration : options.hideDuration;
+                    var easing = override && options.closeEasing !== false ? options.closeEasing : options.hideEasing;
+                    if ($(':focus', $toastElement).length && !override) {
+                        return;
+                    }
+                    clearTimeout(progressBar.intervalId);
+                    return $toastElement[method]({
+                        duration: duration,
+                        easing: easing,
+                        complete: function () {
+                            removeToast($toastElement);
+                            if (options.onHidden && response.state !== 'hidden') {
+                                options.onHidden();
+                            }
+                            response.state = 'hidden';
+                            response.endTime = new Date();
+                            publish(response);
+                        }
+                    });
+                }
+
+                function delayedHideToast() {
+                    if (options.timeOut > 0 || options.extendedTimeOut > 0) {
+                        intervalId = setTimeout(hideToast, options.extendedTimeOut);
+                        progressBar.maxHideTime = parseFloat(options.extendedTimeOut);
+                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+                    }
+                }
+
+                function stickAround() {
+                    clearTimeout(intervalId);
+                    progressBar.hideEta = 0;
+                    $toastElement.stop(true, true)[options.showMethod](
+                        {duration: options.showDuration, easing: options.showEasing}
+                    );
+                }
+
+                function updateProgress() {
+                    var percentage = ((progressBar.hideEta - (new Date().getTime())) / progressBar.maxHideTime) * 100;
+                    $progressElement.width(percentage + '%');
+                }
+            }
+
+            function getOptions() {
+                return $.extend({}, getDefaults(), toastr.options);
+            }
+
+            function removeToast($toastElement) {
+                if (!$container) { $container = getContainer(); }
+                if ($toastElement.is(':visible')) {
+                    return;
+                }
+                $toastElement.remove();
+                $toastElement = null;
+                if ($container.children().length === 0) {
+                    $container.remove();
+                    previousToast = undefined;
+                }
+            }
+
+        })();
+    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+}(__webpack_require__(4)));
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = function() {
+	throw new Error("define cannot be used indirect");
+};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(1);
+module.exports = __webpack_require__(2);
 
 
 /***/ })

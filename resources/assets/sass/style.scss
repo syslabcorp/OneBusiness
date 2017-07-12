@@ -139,6 +139,46 @@ body
   }
 }
 
+.table.list-macs
+{
+  tbody
+  {
+    tr
+    {
+      border: 1px solid transparent;
+      td
+      {
+        vertical-align: middle;
+        border: none;
+      }
+    }
+    tr.active
+    {
+      border: 1px solid #4CAF50;
+      td
+      {
+        border-top: 1px solid #4CAF50;
+        border-bottom: 1px solid #4CAF50;
+      }
+    }
+  }
+  .ip-address.active
+  {
+    .form-control
+    {
+      border-color: #FF5722;
+    }
+  }
+}
+
+.modal
+{
+  label
+  {
+    font-weight: normal;
+  }
+}
+
 .alert
 {
   font-weight: 500;
@@ -146,4 +186,9 @@ body
   font-size: 13px;
   border-radius: 0px;
   border: none;
+}
+.control-label
+{
+  font-weight: 500;
+  font-size: 13px;
 }

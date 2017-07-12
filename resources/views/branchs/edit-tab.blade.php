@@ -76,9 +76,11 @@
         </div>
     </div>
     <hr>
+    @if(\Auth::user()->checkAccess("Branch Details", "E"))
     <div class="form-group text-right">
         <div class="col-md-12">
             <button type="submit" class="btn btn-success">Update</button>
         </div>
     </div>
+    @endif
 </form>

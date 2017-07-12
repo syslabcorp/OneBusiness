@@ -1,16 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -31,7 +20,12 @@ Route::get('posts/{post}/edit', 'PostController@edit');
 Route::get('test', 'LoginController@test');
 
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
-
+Route::put('branchs/{branch}/misc', 'BranchsController@updateMisc')->middleware('auth')->name('branchs.misc');
+Route::resource('branchs.footers', 'FootersController', ['middleware' => 'auth']);
+Route::put('branchs/{branch}/footers/{footer}/copy', 'FootersController@copy')->middleware('auth')->name('branchs.footers.copy');
+Route::put('branchs/{branch}/macs/transfer', 'MacsController@transfer')->middleware('auth')->name('branchs.footers.transfer');
+Route::put('branchs/{branch}/macs/swap', 'MacsController@swap')->middleware('auth')->name('branchs.footers.swap');
+Route::resource('branchs.macs', 'MacsController', ['middleware' => 'auth']);
 Route::get('/process_register/{?}', 'LoginController@process_register');
 Route::get('/display_message/{?}', 'LoginController@display_message');
 
