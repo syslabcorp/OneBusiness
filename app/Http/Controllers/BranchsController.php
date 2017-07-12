@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class BranchsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
@@ -16,7 +16,14 @@ class BranchsController extends Controller
             return redirect("/home"); 
         }
 
-        $branchs = Branch::orderBy('updated_at', 'DESC')->get();
+        $branchs = Branch::orderBy('updated_at', 'DESC');
+
+        if($request->get('status') == "active") {
+            $branchs = $branchs->where('active', '=', 1);
+        }elseif($request->get('status') == "inactive") {
+            $branchs = $branchs->where('active', '!=', 1);
+        }
+        $branchs = $branchs->get();
 
         $result = [];
         foreach($branchs as $branch)
@@ -29,7 +36,8 @@ class BranchsController extends Controller
             $result[$branch->city->province->id]['count'] += 1;
         }
         return view('branchs.index', [
-            'branchs' => $result
+            'branchs' => $result,
+            'status' => $request->get('status')
         ]);
     }
 
@@ -56,14 +64,17 @@ class BranchsController extends Controller
             'branch_name' => 'required',
             'operator' => 'required',
             'street' => 'required',
-            'province' => 'required',
-            'city' => 'required',
+            'Prov_ID' => 'required',
+            'City_ID' => 'required',
             'units' => 'required|numeric'
         ]);
         $params = $request->all();
-        $params['description'] = $params['operator'];
-        $params['city_id'] = $params['city'];
-        $params['max_units'] = $params['units'];
+        $params['Street'] = $params['street'];
+        $params['Active'] = isset($params['active']) ? 1 : 0;
+        $params['Branch'] = $params['branch_name'];
+        $params['Description'] = $params['operator'];
+        $params['City_ID'] = $params['City_ID'];
+        $params['MaxUnits'] = $params['units'];
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
@@ -81,7 +92,7 @@ class BranchsController extends Controller
 
         return view('branchs.edit', [
             'branch' => $branch,
-            'branchs' => Branch::orderBy('branch_name', 'ASC')->get()
+            'branchs' => Branch::orderBy('Branch', 'ASC')->get()
         ]);
     }
 
@@ -104,10 +115,12 @@ class BranchsController extends Controller
         ]);
 
         $params = $request->all();
-        $params['description'] = $params['operator'];
-        $params['city_id'] = $params['city'];
-        $params['max_units'] = $params['units'];
-        $params['active'] = empty($params['active']) ? "0" : "1";
+        $params['Street'] = $params['street'];
+        $params['Active'] = isset($params['active']) ? 1 : 0;
+        $params['Branch'] = $params['branch_name'];
+        $params['Description'] = $params['operator'];
+        $params['City_ID'] = $params['city'];
+        $params['MaxUnits'] = $params['units'];
 
         $branch->macs()->delete();
         for($i = 0; $i < $params['units']; $i++)
@@ -115,11 +128,11 @@ class BranchsController extends Controller
             $branch->macs()->create(['pc_no' => $i + 1]);
         }
 
-        \Session::flash('success', "Branch {$branch->branch_name} has been updated!");
+        \Session::flash('success', "Branch {$branch->Branch} has been updated!");
 
         $branch->update($params);
 
-        return redirect(route('branchs.index'));
+        return redirect(route('branchs.edit', [$branch, '#branch-details']));
     }
 
     public function updateMisc(Request $request, Branch $branch)
@@ -134,14 +147,14 @@ class BranchsController extends Controller
             'receiving_mobile_number' => 'max:11'
         ]);
 
-        $params = $request->only('stub_hdr', 'stub_msg', 'mac_address', 'cashier_ip',
-            'roll_over', 'txfr_roll_over', 'pos_ptr_port', 'susp_ping_timeout', 'max_eload_amt',
+        $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
+            'RollOver', 'TxfrRollOver', 'PostPtrPort', 'susp_ping_timeout', 'max_eload_amt',
             'lc_uid', 'lc_pwd', 'is_enable_printing');
 
         $params['to_mobile_num'] = $request->get('receiving_mobile_number');
 
         $branch->update($params);
-        \Session::flash('success', "Branch {$branch->branch_name} has been updated!");
+        \Session::flash('success', "Branch {$branch->Branch} has been updated!");
         return redirect(route('branchs.edit', [$branch]));
     }
 }

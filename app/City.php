@@ -10,6 +10,6 @@ class City extends Model
 
     public function province()
     {
-        return $this->belongsTo(\App\Province::class);
+        return $this->belongsTo(\App\Province::class, "Prov_ID", "Prov_ID");
     }
 }

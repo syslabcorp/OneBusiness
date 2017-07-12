@@ -7,6 +7,13 @@
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Branch Lists</h3>
+              <form class="col-xs-3 pull-right" method="GET">
+                <select name="status" class="form-control" id="filter-branchs">
+                    <option value="">All</option>
+                    <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
+                    <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
+                </select>
+              </form>
             </div>
             <div class="box-body">
               @if(count($branchs))
@@ -28,21 +35,21 @@
                                 @foreach($city as $branch)
                                 <tr class="text-center">
                                     @if($index == 0)
-                                    <td rowspan="{{ $province['count'] }}">{{ $branch->city->province->name }}</td>
+                                    <td rowspan="{{ $province['count'] }}">{{ $branch->city->province->Province }}</td>
                                     @endif
                                     @if($loop->index == 0)
-                                        <td rowspan="{{ count($city) }}">{{ $branch->city->name }}</td>
+                                        <td rowspan="{{ count($city) }}">{{ $branch->city->City }}</td>
                                     @endif
                                     <td class="text-center">
                                         <div class="control-checkbox">
-                                            <input type="checkbox" {{ $branch->active == 1 ? 'checked' : ''}}>
+                                            <input type="checkbox" {{ $branch->Active == 1 ? 'checked' : ''}}>
                                             <label>&nbsp;</label>
                                         </div>
                                     </td>
-                                    <td>{{ $branch->branch_name }}</td>
-                                    <td>{{ $branch->description }}</td>
-                                    <td>{{ $branch->street }}</td>
-                                    <td>{{ $branch->max_units }}</td>
+                                    <td>{{ $branch->Branch }}</td>
+                                    <td>{{ $branch->Description }}</td>
+                                    <td>{{ $branch->Street }}</td>
+                                    <td>{{ $branch->MaxUnits }}</td>
                                     <td>
                                         <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs"
                                             title="Edit">

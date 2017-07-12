@@ -50,23 +50,23 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>
                     <input type="hidden" name="mac[{{ $mac->id }}][is_modify]">
-                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->id }}][pc_no]" value="{{ $mac->pc_no }}">
+                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->id }}][PC_No]" value="{{ $mac->PC_No }}">
                 </td>
                 <td>
                     <div class="control-checkbox">
-                        <input type="checkbox" id="net-{{ $loop->index }}" name="mac[{{ $mac->id }}][stn_type]" value="1"
-                            {{ $mac->stn_type ? "checked" : "" }}>
+                        <input type="checkbox" id="net-{{ $loop->index }}" name="mac[{{ $mac->id }}][StnType]" value="1"
+                            {{ $mac->StnType ? "checked" : "" }}>
                         <label for="net-{{ $loop->index }}">&nbsp;</label>
                     </div>
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->id }}][mac_address]" value="{{ !empty(old("mac.{$mac->id}.mac_address")) ? old("mac.{$mac->id}.mac_address") : $mac->mac_address }}">
-                    @if($errors->has("mac.{$mac->id}.mac_address"))
-                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->id}.mac_address/", "Mac Address",$errors->first("mac.{$mac->id}.mac_address")) }}</i>
+                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->id }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->id}.Mac_Address")) ? old("mac.{$mac->id}.Mac_Address") : $mac->Mac_Address }}">
+                    @if($errors->has("mac.{$mac->id}.Mac_Address"))
+                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->id}.Mac_Address/", "Mac Address",$errors->first("mac.{$mac->id}.Mac_Address")) }}</i>
                     @endif
                 </td>
                 <td class="ip-address">
-                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->id }}][ip_address]" value="{{ $mac->ip_address }}">
+                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->id }}][IP_Addr]" value="{{ $mac->IP_Addr }}">
                 </td>
                 <td>
                     @if($mac->user)
@@ -74,8 +74,8 @@
                     @endif
                 </td>
                 <td>
-                    @if($mac->last_changed_at)
-                        {{ $mac->last_changed_at->format('m/d/Y H:i') }}
+                    @if($mac->LastChgMACDate)
+                        {{ $mac->LastChgMACDate->format('m/d/Y H:i') }}
                     @endif
                 </td>
             </tr>
@@ -101,7 +101,7 @@
                 <select name="branch" class="form-control" id="branch-select">
                     <option value="">Select Branch</option>
                     @foreach($branchs as $selectBranch)
-                        <option value="{{ $selectBranch->id }}">{{ $selectBranch->branch_name }}</option>
+                        <option value="{{ $selectBranch->id }}">{{ $selectBranch->Branch }}</option>
                     @endforeach
                 </select>
             </div>
@@ -110,7 +110,7 @@
                 <select name="target_id" class="form-control" id="station-select">
                     <option value="">Select Station</option>
                     @foreach(\App\Mac::all() as $mac)
-                        <option value="{{ $mac->id }}" data-branch="{{ $mac->branch_id }}">{{ $mac->pc_no }}</option>
+                        <option value="{{ $mac->id }}" data-branch="{{ $mac->Branch }}">{{ $mac->PC_No }}</option>
                     @endforeach
                 </select>
             </div>
@@ -140,7 +140,7 @@
                 <select name="branch_id" class="form-control branch-select">
                     <option value="">Select Branch</option>
                     @foreach($branchs as $selectBranch)
-                        <option value="{{ $selectBranch->id }}">{{ $selectBranch->branch_name }}</option>
+                        <option value="{{ $selectBranch->id }}">{{ $selectBranch->Branch }}</option>
                     @endforeach
                 </select>
             </div>
@@ -149,13 +149,13 @@
                 <select name="target_id" class="form-control station-select">
                     <option value="">Select Station</option>
                     @foreach(\App\Mac::all() as $mac)
-                        <option value="{{ $mac->id }}" data-branch="{{ $mac->branch_id }}">{{ $mac->pc_no }}</option>
+                        <option value="{{ $mac->id }}" data-branch="{{ $mac->Branch }}">{{ $mac->PC_No }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group">
                 <label>New MAC Address</label>
-                <input type="text" name="mac_address" placeholder="00-00-00-00-00-00" class="form-control">
+                <input type="text" name="Mac_Address" placeholder="00-00-00-00-00-00" class="form-control">
             </div>
             <div class="form-group">
                 <button class="btn btn-success">Transfer</button>
@@ -200,7 +200,7 @@
         </div>
         <div class="form-group">
             <label for="">Start IP Address</label>
-            <input type="text" class="form-control" name="ip_address">
+            <input type="text" class="form-control" name="IP_Addr">
         </div>
         <div class="form-group">
             <button class="btn btn-success">Apply</button>

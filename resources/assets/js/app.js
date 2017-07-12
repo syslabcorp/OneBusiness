@@ -118,7 +118,7 @@ $(document).ready(function()
     });
 
     $('#assign-range-modal .btn').click(function(event){
-        var ipAddress = $('#assign-range-modal input[name="ip_address"]').val();
+        var ipAddress = $('#assign-range-modal input[name="IP_Addr"]').val();
         var inputRange = $('#assign-range-modal input[name="range"]').val();
         inputRange = inputRange.trim();
         if( inputRange == "" || ipAddress == "") {
@@ -224,6 +224,10 @@ $(document).ready(function()
         {
             toastr.error("You must select station");
         }
+    });
+
+    $('#filter-branchs').change(function(event) {
+        $(this).parents('form').submit();
     });
 
 

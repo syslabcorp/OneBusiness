@@ -6,11 +6,11 @@
             <h3>STUB SETTINGS</h3>
             <div class="form-group">
                 <label class="control-label">Stub Header:</label>
-                <input type="text" class="form-control"  name="stub_hdr" value="{{ $branch->stub_hdr }}">
+                <input type="text" class="form-control"  name="StubHdr" value="{{ $branch->StubHdr }}">
             </div>
             <div class="form-group">
                 <label class="control-label">Stub Message:</label>
-                <textarea name="stub_msg" cols="30" rows="5" class="form-control">{{ $branch->stub_msg }}</textarea>
+                <textarea name="StubMsg" cols="30" rows="5" class="form-control">{{ $branch->StubMsg }}</textarea>
             </div>
             <div class="form-group">
                 <div class="control-checkbox">
@@ -67,7 +67,7 @@
             <h3>OTHERS</h3>
             <div class="form-group">
                 <label class=" control-label">Bus Center MAC Address:</label>
-                <input type="text" class="form-control" placeholder="00-00-00-00-00"   name="mac_address" value="{{ $branch->mac_address }}">
+                <input type="text" class="form-control" placeholder="00-00-00-00-00"   name="MAC_Address" value="{{ $branch->MAC_Address }}">
             </div>
             <div class="form-group">
                 <label class=" control-label">Cashier IP Address:</label>
@@ -79,7 +79,7 @@
                         <label class=" control-label">Cancel Station Allowance: (mins)</label>
                     </div>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control"  name="roll_over" value="{{ $branch->roll_over }}">
+                        <input type="number" class="form-control"  name="RollOver" value="{{ $branch->RollOver }}">
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                         <label class=" control-label">Block Cancel-Transfer Duration: (mins)</label>
                     </div>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control"  name="txfr_roll_over" value="{{ $branch->txfr_roll_over }}">
+                        <input type="number" class="form-control"  name="TxfrRollOver" value="{{ $branch->TxfrRollOver }}">
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                         <label class=" control-label">POS Printer Port:</label>
                     </div>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control"  name="pos_ptr_port" value="{{ $branch->pos_ptr_port }}">
+                        <input type="number" class="form-control"  name="PostPtrPort" value="{{ $branch->PostPtrPort }}">
                     </div>
                 </div>
             </div>

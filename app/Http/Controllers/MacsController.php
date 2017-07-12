@@ -19,7 +19,7 @@ class MacsController extends Controller
         }
 
         $this->validate($request, [
-            'mac.*.mac_address' => 'required_with:is_modify|unique:t_rates,mac_address,*|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
+            'mac.*.Mac_Address' => 'required_with:is_modify|unique:t_rates,Mac_Address,*|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
         ]);
         $macs = $request->get('mac');
 
@@ -30,9 +30,9 @@ class MacsController extends Controller
                 try
                 {
                     $mac = Mac::find($key);
-                    $macParams['stn_type'] = isset($macParams['stn_type']) ? $macParams['stn_type'] : 0;
-                    $macParams['last_changed_by'] = \Auth::user()->UserID;
-                    $macParams['last_changed_at'] = date('Y-m-d H:i:s');
+                    $macParams['StnType'] = isset($macParams['StnType']) ? $macParams['StnType'] : 0;
+                    $macParams['LastChgMAC'] = \Auth::user()->UserID;
+                    $macParams['LastChgMACDate'] = date('Y-m-d H:i:s');
                     $mac->update($macParams);
                 }catch(Exception $e)
                 {
@@ -56,14 +56,14 @@ class MacsController extends Controller
         $mac = Mac::find($request->get('mac_id'));
         if(!empty($request->get('target_id')))
         {
-            $temp = $mac->mac_address;
+            $temp = $mac->Mac_Address;
             $targetMac = Mac::find($request->get('target_id'));
-            $mac->update(['mac_address' => $targetMac->mac_address]);
-            $targetMac->update(['mac_address' => $temp]);
-            \Session::flash('success', "Station {$mac->pc_no} has been swap to station {$targetMac->pc_no}.");
+            $mac->update(['Mac_Address' => $targetMac->Mac_Address]);
+            $targetMac->update(['Mac_Address' => $temp]);
+            \Session::flash('success', "Station {$mac->PC_No} has been swap to station {$targetMac->PC_No}.");
         }else
         {
-            \Session::flash('error', "Station {$mac->pc_no} swap failed!");
+            \Session::flash('error', "Station {$mac->PC_No} swap failed!");
         }
         
         return redirect(route('branchs.edit', [$branch, '#mac'])); 
@@ -78,7 +78,7 @@ class MacsController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'mac_address' => 'unique:t_rates|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
+            'Mac_Address' => 'unique:t_rates|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
         ]);
 
         if($validator->fails())
@@ -91,20 +91,20 @@ class MacsController extends Controller
             {
                 $targetMac  = Mac::find($request->get('target_id'));
                 $targetMac->update([
-                    'mac_address' => $mac->mac_address,
-                    'last_changed_by' => \Auth::user()->UserID,
-                    'last_changed_at' => date('Y-m-d H:i:s'),
+                    'Mac_Address' => $mac->mac_address,
+                    'LastChgMAC' => \Auth::user()->UserID,
+                    'LastChgMACDate' => date('Y-m-d H:i:s'),
                 ]);
 
                 $mac->update([
-                    'mac_address' => $request->get('mac_address'),
-                    'last_changed_by' => \Auth::user()->UserID,
-                    'last_changed_at' => date('Y-m-d H:i:s'),
+                    'mac_address' => $request->get('Mac_Address'),
+                    'LastChgMAC' => \Auth::user()->UserID,
+                    'LastChgMACDate' => date('Y-m-d H:i:s'),
                 ]);
-                \Session::flash('success', "Station {$mac->pc_no} has been transferred to Branch {$targetMac->branch->branch_name}!");
+                \Session::flash('success', "Station {$mac->PC_No} has been transferred to Branch {$targetMac->branch->Branch}!");
             }else
             {
-                \Session::flash('error', "Station {$mac->pc_no} transfer failed!");
+                \Session::flash('error', "Station {$mac->PC_No} transfer failed!");
             }
         }
 

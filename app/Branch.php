@@ -9,26 +9,26 @@ class Branch extends Model
     protected $table = "t_sysdata";
 
     protected $fillable = [
-        'branch_name', 'description', 'street', 'city_id', 'max_units', 'active',
-        'stub_hdr', 'stub_msg', 'mac_address', 'cashier_ip', 'roll_over', 'txfr_roll_over',
-        'pos_ptr_port', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
+        'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active',
+        'StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip', 'RollOver', 'TxfrRollOver',
+        'PostPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
         'is_enable_printing'
     ];
 
 
     public function city()
     {
-        return $this->belongsTo(\App\City::class);
+        return $this->belongsTo(\App\City::class, "City_ID", "City_ID");
     }
 
     // Relationships
     public function footers()
     {
-        return $this->hasMany(\App\Footer::class);
+        return $this->hasMany(\App\Footer::class, "Branch", "id");
     }
 
     public function macs()
     {
-        return $this->hasMany(\App\Mac::class);
+        return $this->hasMany(\App\Mac::class, "Branch", "id");
     }
 }

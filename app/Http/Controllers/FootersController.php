@@ -25,7 +25,8 @@ class FootersController extends Controller
         {
             $sort = $footer->sort + 1;
         }
-        $params = $request->only('content');
+        $params = [];
+        $params['Foot_Text'] = $request->get('content');
         $params['sort'] = $sort;
         $branch->footers()->create($params);
 
@@ -72,15 +73,15 @@ class FootersController extends Controller
                 $exchangeFooter->update(['sort' => $tempPosition]);
             }
 
-            \Session::flash('success', "Stub Footer #{$footer->id} has been updated!");
+            \Session::flash('success', "Stub Footer #{$footer->Foot_ID} has been updated!");
         }else
         {
-            if(!empty($request->get('content')) && $footer->update($request->only('content')))
+            if(!empty($request->get('content')) && $footer->update(['Foot_Text' => $request->get('content')]))
             {
-                \Session::flash('success', "Stub Footer #{$footer->id} has been updated!");
+                \Session::flash('success', "Stub Footer #{$footer->Foot_ID} has been updated!");
             }else
             {
-                \Session::flash('error', "Stub Footer #{$footer->id} update failed!");
+                \Session::flash('error', "Stub Footer #{$footer->Foot_ID} update failed!");
             }
         }
         
@@ -97,10 +98,10 @@ class FootersController extends Controller
 
         if($footer->delete())
         {
-            \Session::flash('success', "Stub Footer #{$footer->id} has been removed!");
+            \Session::flash('success', "Stub Footer #{$footer->Foot_ID} has been removed!");
         }else
         {
-            \Session::flash('error', "Stub Footer #{$footer->id} remove failed!");
+            \Session::flash('error', "Stub Footer #{$footer->Foot_ID} remove failed!");
         }
 
         return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 
@@ -129,13 +130,13 @@ class FootersController extends Controller
         foreach($branch->footers()->get() as $footer)
         {
             $targetBranch->footers()->create([
-                'content' => $footer->content,
+                'Foot_Text' => $footer->Foot_Text,
                 'sort' => $sort
             ]);
             $sort += 1;
         }
             
-        \Session::flash('success', "Stub Footer has been copied to {$targetBranch->branch_name}!");
+        \Session::flash('success', "Stub Footer has been copied to {$targetBranch->Branch}!");
 
         return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 
     }

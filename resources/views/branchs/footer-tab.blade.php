@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="col-xs-8">
                             <div class="form-group">
-                                <textarea name="content" cols="30" rows="3" class="form-control" placeholder="Content">{{ $footer->content }}</textarea>
+                                <textarea name="content" cols="30" rows="3" class="form-control" placeholder="Content">{{ $footer->Foot_Text }}</textarea>
                             </div>
                         </div>
                         <div class="col-xs-4">
@@ -39,7 +39,7 @@
                             <select name="target" class="form-control">
                                 <option value="">Select Branch</option>
                                 @foreach($branchs as $selectBranch)
-                                    <option value="{{ $selectBranch->id }}">{{ $selectBranch->branch_name }}</option>
+                                    <option value="{{ $selectBranch->id }}">{{ $selectBranch->Branch }}</option>
                                 @endforeach
                             </select>
                         </div>

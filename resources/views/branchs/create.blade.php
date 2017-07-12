@@ -39,28 +39,28 @@
                             @endif
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('province') ? 'has-error' : '' }}">
+                    <div class="form-group {{ $errors->has('Prov_ID') ? 'has-error' : '' }}">
                         <label class="col-sm-2 control-label">Province</label>
                         <div class="col-sm-10">
-                            <select name="province" id="select-province" class="form-control">
+                            <select name="Prov_ID" id="select-province" class="form-control">
                                 <option selected>Select Province</option>
                                 @foreach(\App\Province::all() as $province)
-                                    <option value="{{ $province->id }}" {{ old('province') == $province->id ? 'selected' : ''}}>{{ $province->name }}</option>
+                                    <option value="{{ $province->Prov_ID }}" {{ old('province') == $province->Prov_ID ? 'selected' : ''}}>{{ $province->Province }}</option>
                                 @endforeach
                             </select>
-                            @if($errors->has('province'))
-                            <span class="help-block">{{ $errors->first('province') }}</span>
+                            @if($errors->has('Prov_ID'))
+                            <span class="help-block">{{ $errors->first('Prov_ID') }}</span>
                             @endif
                         </div>
                     </div>
-                    <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
+                    <div class="form-group {{ $errors->has('City_ID') ? 'has-error' : '' }}">
                         <label class="col-sm-2 control-label">City</label>
                         <div class="col-sm-10">
-                            <select name="city" id="select-city" class="form-control">
+                            <select name="City_ID" id="select-city" class="form-control">
                                 <option selected>Select City</option>
                                 @foreach(\App\City::all() as $city)
-                                    <option data-province="{{ $city->province_id }}" value="{{ $city->id }}"
-                                        {{ old('city') == $city->id ? 'selected' : ''}}>{{ $city->name }}</option>
+                                    <option data-province="{{ $city->Prov_ID }}" value="{{ $city->City_ID }}"
+                                        {{ old('City_ID') == $city->City_ID ? 'selected' : ''}}>{{ $city->City }}</option>
                                 @endforeach
                             </select>
                             @if($errors->has('city'))
