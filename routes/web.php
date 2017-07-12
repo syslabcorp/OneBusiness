@@ -44,11 +44,16 @@ Route::get('/list_module', 'AccessLevelController@list_module');
 Route::get('/delete_module/{module_id}', 'AccessLevelController@destroymodule');
 
 Route::any('/add_feature/{feature_id?}', 'AccessLevelController@add_feature');
-Route::get('/list_feature', 'AccessLevelController@list_feature');
+Route::get('/list_feature/{module_id?}', 'AccessLevelController@list_feature');
 Route::get('/delete_feature/{feature_id}', 'AccessLevelController@destroyfeature');
 
 Route::any('/add_template/{template_id?}', 'AccessLevelController@add_template');
 Route::any('/template_module', 'AccessLevelController@template_module');
 Route::get('/list_template', 'AccessLevelController@list_template');
 Route::get('/delete_template/{template_id}', 'AccessLevelController@destroytemplate');
-
+Route::get('/active_users', 'HomeController@login_logs');
+Route::get('/logout', 'HomeController@logout');
+Route::get('/template_exist', 'AccessLevelController@template_exist');
+Route::any('/add_menu/{parent_id?}/{id?}', 'AccessLevelController@add_menu');
+Route::any('/list_menu/{parent_id?}', 'AccessLevelController@list_menu');
+Route::get('/delete_menu/{id}', 'AccessLevelController@delete_menu');

@@ -8,7 +8,7 @@ $(function(){
 
 	$("#form-username input[name='email']").change(function(){
 		var username = $(this).val();
-		check_btn(username);
+		//check_btn(username);
 	});
 });
 

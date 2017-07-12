@@ -29,6 +29,8 @@
 	<script src="{{ URL('/biomertic-login/assets/js/respond.min.js') }}"></script>
 	<![endif]-->
 
+	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
+
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
@@ -67,7 +69,9 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
+							<li><a href="{{ URL('active_users') }}">Active Users</a></li>
 							<li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
+							<li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
 							<li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     Manage Masters <span class="caret"></span>
@@ -83,16 +87,7 @@
                                     {{ Auth::user()->Full_Name }} <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-                                    </li>
+                                    <li><a href="{{ URL('logout') }}">Logout</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -156,6 +151,20 @@
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
-    
+	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
+	<script>
+		if($("#treeview_json").length){
+			$.ajax({
+				url: ajax_url+'/list_menu',
+				data: {_token:$("meta[name='csrf-token']").attr('content')},
+				type: 'post',
+				cache: false,
+				success: function(response){
+					var jsoncode = JSON.parse(response);   
+					$('#treeview_json').treeview({data: jsoncode});
+				}
+			});
+		}
+	</script>
 </body>
 </html>

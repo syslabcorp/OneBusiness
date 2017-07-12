@@ -26,12 +26,21 @@ class LoginController extends Controller
 			if(count($users)){
 				$data['email'] = $users->email;
 				$data['username'] = $users->Username;
-				if($users->otp_auth == 1 && $users->bio_auth == 1){
-					$data['finger_count'] = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
+				
+				$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
+				if($users->bio_auth == 1 && $finger_exist && $users->otp_auth != 1){
+					$base_url = URL::to('/biomertic-login');
+					$url_verification = base64_encode($base_url."/verification.php?user_id=".$users->UserID);
+					$data['btn'] = "<a href='finspot:FingerspotVer;$url_verification' class='btn btn-success'>Login</a>";
 					return view('login.login_type', $data);
 				}else{
-					$data['logintype'] = ($users->otp_auth == 1) ? 'otp_auth' : 'pswd_auth';
-					return view('login.password', $data);					
+					if($users->otp_auth == 1 && $users->bio_auth == 1){
+						$data['finger_count'] = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
+						return view('login.login_type', $data);
+					}else{
+						$data['logintype'] = ($users->otp_auth == 1) ? 'otp_auth' : 'pswd_auth';
+						return view('login.password', $data);					
+					}
 				}
 			}else{
 				Request::session()->flash('flash_message', 'Username does not exist.');
@@ -64,12 +73,20 @@ class LoginController extends Controller
 				if(md5($password) == $user->password){
 					$id = $user->UserID;
 					$phone = $user->mobile_no;
+					$username = $user->Username;
 					break;
 				}
 			}
 
 			if ($id) {
 				if($formData['logintype'] == "pswd_auth"){
+					if(!$this->check_active_users($username)){
+						$data = array('user_name' => $username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'pass');
+						DB::table('demo_log')->insert($data);
+					}else{
+						$data = array('data' =>date('Y-m-d H:i:s'),"login_type" => 'pass');
+						DB::table('demo_log')->where('user_name', $username)->update($data);
+					}
 					Auth::loginUsingId($id);
 					return redirect()->intended('home');
 				}else{			
@@ -111,6 +128,14 @@ class LoginController extends Controller
 				}else if($formData['is_forgot']){
 					return redirect()->intended('change_pass/'.base64_encode($formData['user_id']));
 				}
+				$username = $users->Username;
+				if(!$this->check_active_users($username)){
+					$datalog = array('user_name' => $users->Username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
+					DB::table('demo_log')->insert($datalog);
+				}else{
+					$data = array('data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
+					DB::table('demo_log')->where('user_name', $username)->update($data);
+				}
 				Auth::loginUsingId($formData['user_id']);
 				return redirect()->intended('home');
 			}else{
@@ -123,6 +148,11 @@ class LoginController extends Controller
 		return view('login.username');
     }
 	
+	function check_active_users($username){
+		$count = DB::table('demo_log')->where('user_name', $username)->count();
+		return $count;
+	}
+
 	public function resend_otp(){
 		if (Request::isMethod('post')) {
 			$formData = Request::all();

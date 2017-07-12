@@ -17246,6 +17246,9 @@ button.toast-close-button {
   }
 }
 
+.navbar-nav > li > a{ padding-top:24px;  padding-bottom:24px; }
+label.error {color: #ff0000;font-size: 12px;font-weight: normal;}
+
 @media all and (min-width: 241px) and (max-width: 480px) {
   #toast-container > div {
     padding: 8px 8px 8px 50px;

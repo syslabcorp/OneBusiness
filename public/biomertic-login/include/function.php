@@ -177,15 +177,19 @@
 	}
 	
 	function createLog($user_name, $time, $sn) {
-		
-		$sq1 		= "INSERT INTO demo_log SET user_name='".$user_name."', data='".date('Y-m-d H:i:s', strtotime($time))." (PC Time) | ".$sn." (SN)"."' ";
-		$result1	= mysql_query($sq1);
-		if ($result1) {
-			return 1;				
-		} else {
-			return "Error insert log data!";
+		$count_sql = mysql_query("SELECT * FROM demo_log WHERE user_name = '".$user_name."'");
+		$count = mysql_num_rows($count_sql);
+		if(!$count){
+			$sq1 = "INSERT INTO demo_log SET user_name='".$user_name."', data='".date('Y-m-d H:i:s', strtotime($time))." (PC Time) | ".$sn." (SN)"."',login_type='bio'";
+			$result1	= mysql_query($sq1);
+			if ($result1) {
+				return 1;				
+			} else {
+				return "Error insert log data!";
+			}
+		}else{
+			mysql_query("UPDATE demo_log SET data = '".date('Y-m-d H:i:s', strtotime($time))." (PC Time) | ".$sn." (SN)"."', login_type='bio' WHERE user_name = '".$user_name."'");
 		}
-		
 	}
 
 ?>

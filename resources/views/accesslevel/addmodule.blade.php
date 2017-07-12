@@ -1,9 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<h3 class="text-center">Manage Modules</h3>
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+		<div class="col-md-2">
+			<div id="treeview_json"></div>
+		</div>
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">{{isset($detail_edit_module->module_id) ? "Edit " : "Add " }} Module</div>
                 <div class="panel-body">

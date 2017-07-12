@@ -1,9 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<h3 class="text-center">Manage Features</h3>
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+		<div class="col-md-2">
+			<div id="treeview_json"></div>
+		</div>
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">{{isset($detail_edit_feature->feature_id) ? "Edit " : "Add " }}Feature</div>
                 <div class="panel-body">
