@@ -9,7 +9,7 @@
               <h3 class="box-title">Branch Lists</h3>
               <form class="col-xs-3 pull-right" method="GET">
                 <select name="status" class="form-control" id="filter-branchs">
-                    <option value="">All</option>
+                    <option value="all">All</option>
                     <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
                     <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
                 </select>

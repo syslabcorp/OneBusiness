@@ -16,11 +16,13 @@ class BranchsController extends Controller
             return redirect("/home"); 
         }
 
+        $status = !empty($request->get('status')) ? $request->get('status') : "active";
+
         $branchs = Branch::orderBy('updated_at', 'DESC');
 
-        if($request->get('status') == "active") {
+        if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
-        }elseif($request->get('status') == "inactive") {
+        }elseif($status == "inactive") {
             $branchs = $branchs->where('active', '!=', 1);
         }
         $branchs = $branchs->get();
@@ -37,7 +39,7 @@ class BranchsController extends Controller
         }
         return view('branchs.index', [
             'branchs' => $result,
-            'status' => $request->get('status')
+            'status' => $status
         ]);
     }
 
