@@ -3,7 +3,10 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-2">
+            <div id="treeview_json"></div>
+        </div>
+        <div class="col-md-10">
           <div class="box">
             <div class="box-header with-border">
               <h3 class="box-title">Create new branch</h3>

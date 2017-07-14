@@ -15,6 +15,15 @@
   font-style: normal;
 }
 
+
+.radio-check-label {line-height: 25px;padding-top: 0 !important;}
+img.business-one-logo {
+  height: 80px;
+  margin: 5px 0;
+}
+.navbar-nav > li > a{ padding-top:24px !important;  padding-bottom:24px !important; }
+label.error {color: #ff0000;font-size: 12px !important;font-weight: normal;}
+
 .fa {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
