@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
 {
+    public $timestamps = false;
     protected $table = "t_sysdata";
+    protected $primaryKey = "Branch";
 
     protected $fillable = [
-        'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active',
+        'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active', "ShortName",
         'StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip', 'RollOver', 'TxfrRollOver',
         'PostPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
         'is_enable_printing'
@@ -24,11 +26,11 @@ class Branch extends Model
     // Relationships
     public function footers()
     {
-        return $this->hasMany(\App\Footer::class, "Branch", "id");
+        return $this->hasMany(\App\Footer::class, "Branch", "Branch");
     }
 
     public function macs()
     {
-        return $this->hasMany(\App\Mac::class, "Branch", "id");
+        return $this->hasMany(\App\Mac::class, "Branch", "Branch");
     }
 }

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mac extends Model
 {
+    public $timestamps = false;
     protected $table = "t_rates";
+    protected $primaryKey = "txn_id";
 
     protected $fillable = [
         'PC_No', 'Mac_Address', 'IP_Addr', 'StnType', 'LastChgMAC',
@@ -14,8 +16,6 @@ class Mac extends Model
     ];
 
     protected $dates = [
-        'created_at',
-        'updated_at',
         'LastChgMACDate'
     ];
 
@@ -27,7 +27,7 @@ class Mac extends Model
 
     public function branch()
     {
-        return $this->belongsTo(\App\Branch::class);
+        return $this->belongsTo(\App\Branch::class, "Branch", "Branch");
     }
 
 }

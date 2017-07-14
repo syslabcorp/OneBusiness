@@ -18,7 +18,7 @@ class BranchsController extends Controller
 
         $status = !empty($request->get('status')) ? $request->get('status') : "active";
 
-        $branchs = Branch::orderBy('updated_at', 'DESC');
+        $branchs = Branch::orderBy('Branch', 'ASC');
 
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
@@ -73,7 +73,7 @@ class BranchsController extends Controller
         $params = $request->all();
         $params['Street'] = $params['street'];
         $params['Active'] = isset($params['active']) ? 1 : 0;
-        $params['Branch'] = $params['branch_name'];
+        $params['ShortName'] = $params['branch_name'];
         $params['Description'] = $params['operator'];
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
@@ -81,7 +81,7 @@ class BranchsController extends Controller
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
         {
-            $branch->macs()->create(['pc_no' => $i + 1]);
+            $branch->macs()->create(['PC_No' => $i + 1]);
         }
 
         \Session::flash('success', "New branch has been created.");
@@ -119,7 +119,7 @@ class BranchsController extends Controller
         $params = $request->all();
         $params['Street'] = $params['street'];
         $params['Active'] = isset($params['active']) ? 1 : 0;
-        $params['Branch'] = $params['branch_name'];
+        $params['ShortName'] = $params['branch_name'];
         $params['Description'] = $params['operator'];
         $params['City_ID'] = $params['city'];
         $params['MaxUnits'] = $params['units'];
@@ -127,10 +127,10 @@ class BranchsController extends Controller
         $branch->macs()->delete();
         for($i = 0; $i < $params['units']; $i++)
         {
-            $branch->macs()->create(['pc_no' => $i + 1]);
+            $branch->macs()->create(['PC_No' => $i + 1]);
         }
 
-        \Session::flash('success', "Branch {$branch->Branch} has been updated!");
+        \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
 
         $branch->update($params);
 
@@ -156,7 +156,7 @@ class BranchsController extends Controller
         $params['to_mobile_num'] = $request->get('receiving_mobile_number');
 
         $branch->update($params);
-        \Session::flash('success', "Branch {$branch->Branch} has been updated!");
+        \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
         return redirect(route('branchs.edit', [$branch]));
     }
 }
