@@ -39,7 +39,7 @@
                             <select name="target" class="form-control">
                                 <option value="">Select Branch</option>
                                 @foreach($branchs as $selectBranch)
-                                    <option value="{{ $selectBranch->id }}">{{ $selectBranch->Branch }}</option>
+                                    <option value="{{ $selectBranch->Branch }}">{{ $selectBranch->ShortName }}</option>
                                 @endforeach
                             </select>
                         </div>

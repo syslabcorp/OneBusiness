@@ -28,7 +28,7 @@ class FootersController extends Controller
         $params = [];
         $params['Foot_Text'] = $request->get('content');
         $params['sort'] = $sort;
-        $branch->footers()->create($params);
+        $status = $branch->footers()->create($params);
 
         \Session::flash('success', "Stub Footer has been created!");
 
@@ -116,7 +116,7 @@ class FootersController extends Controller
 
         $targetBranch = Branch::find($request->get('target'));
 
-        if($targetBranch->id == $branch->id)
+        if($targetBranch->Branch == $branch->Branch)
         {
             \Session::flash('error', "Can't copy to current branch");
             return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 

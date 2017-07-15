@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Footer extends Model
 {
+    public $timestamps = false;
     protected $table = "t_stubfoot";
     protected $primaryKey = "Foot_ID";
 

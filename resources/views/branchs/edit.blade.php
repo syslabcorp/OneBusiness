@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('head')
-<title>Edit Branch: {{ $branch->Branch }}</title>
+<title>Edit Branch: {{ $branch->ShortName }}</title>
 @endsection
 
 
@@ -14,7 +14,7 @@
         <div class="col-md-10">
           <div class="box">
             <div class="box-header with-border">
-              <h3 class="box-title">Edit Branch: {{ $branch->Branch }}</h3>
+              <h3 class="box-title">Edit Branch: {{ $branch->ShortName }}</h3>
             </div>
             <div class="box-body edit-branch">
                 <ul class="nav nav-tabs" role="tablist">

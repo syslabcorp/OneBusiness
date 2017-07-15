@@ -4,7 +4,7 @@
     <div class="form-group {{ $errors->has('branch_name') ? 'has-error' : '' }}">
         <label class="col-sm-2 control-label">Branch Name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="Branch Name" name="branch_name" value="{{ $branch->Branch }}">
+            <input type="text" class="form-control" placeholder="Branch Name" name="branch_name" value="{{ $branch->ShortName }}">
             @if($errors->has('branch_name'))
             <span class="help-block">{{ $errors->first('branch_name') }}</span>
             @endif

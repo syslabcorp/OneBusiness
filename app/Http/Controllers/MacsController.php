@@ -19,7 +19,7 @@ class MacsController extends Controller
         }
 
         $this->validate($request, [
-            'mac.*.Mac_Address' => 'required_with:is_modify|unique:t_rates,Mac_Address,*|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
+            'mac.*.Mac_Address' => 'required_with:is_modify|unique:t_rates,Mac_Address,*,txn_id|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
         ]);
         $macs = $request->get('mac');
 
@@ -91,17 +91,17 @@ class MacsController extends Controller
             {
                 $targetMac  = Mac::find($request->get('target_id'));
                 $targetMac->update([
-                    'Mac_Address' => $mac->mac_address,
+                    'Mac_Address' => $mac->Mac_Address,
                     'LastChgMAC' => \Auth::user()->UserID,
                     'LastChgMACDate' => date('Y-m-d H:i:s'),
                 ]);
 
                 $mac->update([
-                    'mac_address' => $request->get('Mac_Address'),
+                    'Mac_Address' => $request->get('Mac_Address'),
                     'LastChgMAC' => \Auth::user()->UserID,
                     'LastChgMACDate' => date('Y-m-d H:i:s'),
                 ]);
-                \Session::flash('success', "Station {$mac->PC_No} has been transferred to Branch {$targetMac->branch->Branch}!");
+                \Session::flash('success', "Station {$mac->PC_No} has been transferred to Branch {$targetMac->branch->ShortName}!");
             }else
             {
                 \Session::flash('error', "Station {$mac->PC_No} transfer failed!");
