@@ -124,11 +124,18 @@ class BranchsController extends Controller
         $params['City_ID'] = $params['city'];
         $params['MaxUnits'] = $params['units'];
 
-        $branch->macs()->delete();
-        for($i = 0; $i < $params['units']; $i++)
-        {
-            $branch->macs()->create(['PC_No' => $i + 1]);
+        if($branch->MaxUnits > $params['MaxUnits']) {
+            for($i = 0; $i < $branch->MaxUnits - $params['MaxUnits']; $i++)
+            {
+                $branch->macs()->orderBy("txn_id", "DESC")->first()->delete();
+            }
+        }else if($branch->MaxUnits < $params['MaxUnits']) {
+            for($i = 0; $i < $params['MaxUnits'] - $branch->MaxUnits; $i++)
+            {
+                $branch->macs()->create(['PC_No' => $branch->MaxUnits + $i]);
+            }
         }
+        
 
         \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
 
