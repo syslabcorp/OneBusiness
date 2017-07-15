@@ -30,12 +30,12 @@ class BranchsController extends Controller
         $result = [];
         foreach($branchs as $branch)
         {
-            if(!isset($result[$branch->city->province->id]['count']))
+            if(!isset($result[$branch->city->province->Prov_ID]['count']))
             {
-                $result[$branch->city->province->id]['count'] = 0;
+                $result[$branch->city->province->Prov_ID]['count'] = 0;
             }
-            $result[$branch->city->province->id]['cities'][$branch->city_id][] = $branch;
-            $result[$branch->city->province->id]['count'] += 1;
+            $result[$branch->city->province->Prov_ID]['cities'][$branch->City_ID][] = $branch;
+            $result[$branch->city->province->Prov_ID]['count'] += 1;
         }
         return view('branchs.index', [
             'branchs' => $result,
