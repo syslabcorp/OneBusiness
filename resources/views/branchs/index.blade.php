@@ -49,7 +49,7 @@
                                             <label>&nbsp;</label>
                                         </div>
                                     </td>
-                                    <td>{{ $branch->Branch }}</td>
+                                    <td>{{ $branch->ShortName }}</td>
                                     <td>{{ $branch->Description }}</td>
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
