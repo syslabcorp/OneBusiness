@@ -8,7 +8,7 @@ class Mac extends Model
 {
     public $timestamps = false;
     protected $table = "t_rates";
-    protected $primaryKey = "txn_id";
+    protected $primaryKey = "nKey";
 
     protected $fillable = [
         'PC_No', 'Mac_Address', 'IP_Addr', 'StnType', 'LastChgMAC',

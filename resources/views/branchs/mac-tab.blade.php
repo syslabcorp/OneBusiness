@@ -46,27 +46,27 @@
         </thead>
         <tbody>
             @foreach($branch->macs as $mac)
-            <tr data-id="{{ $mac->txn_id }}">
+            <tr data-id="{{ $mac->nKey }}">
                 <td>{{ $loop->index + 1 }}</td>
                 <td>
-                    <input type="hidden" name="mac[{{ $mac->txn_id }}][is_modify]">
-                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->txn_id }}][PC_No]" value="{{ $mac->PC_No }}">
+                    <input type="hidden" name="mac[{{ $mac->nKey }}][is_modify]">
+                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->nKey }}][PC_No]" value="{{ $mac->PC_No }}">
                 </td>
                 <td>
                     <div class="control-checkbox">
-                        <input type="checkbox" id="net-{{ $loop->index }}" name="mac[{{ $mac->txn_id }}][StnType]" value="1"
+                        <input type="checkbox" id="net-{{ $loop->index }}" name="mac[{{ $mac->nKey }}][StnType]" value="1"
                             {{ $mac->StnType ? "checked" : "" }}>
                         <label for="net-{{ $loop->index }}">&nbsp;</label>
                     </div>
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->txn_id }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->txn_id}.Mac_Address")) ? old("mac.{$mac->txn_id}.Mac_Address") : $mac->Mac_Address }}">
-                    @if($errors->has("mac.{$mac->txn_id}.Mac_Address"))
-                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->txn_id}.Mac_Address/", "Mac Address",$errors->first("mac.{$mac->txn_id}.Mac_Address")) }}</i>
+                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->nKey }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->nKey}.Mac_Address")) ? old("mac.{$mac->nKey}.Mac_Address") : $mac->Mac_Address }}">
+                    @if($errors->has("mac.{$mac->nKey}.Mac_Address"))
+                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.Mac_Address/", "Mac Address",$errors->first("mac.{$mac->nKey}.Mac_Address")) }}</i>
                     @endif
                 </td>
                 <td class="ip-address">
-                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->txn_id }}][IP_Addr]" value="{{ $mac->IP_Addr }}">
+                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->nKey }}][IP_Addr]" value="{{ $mac->IP_Addr }}">
                 </td>
                 <td>
                     @if($mac->user)
@@ -110,7 +110,7 @@
                 <select name="target_id" class="form-control" id="station-select">
                     <option value="">Select Station</option>
                     @foreach(\App\Mac::all() as $mac)
-                        <option value="{{ $mac->txn_id }}" data-branch="{{ $mac->Branch }}">{{ $mac->PC_No }}</option>
+                        <option value="{{ $mac->nKey }}" data-branch="{{ $mac->Branch }}">{{ $mac->PC_No }}</option>
                     @endforeach
                 </select>
             </div>
@@ -149,7 +149,7 @@
                 <select name="target_id" class="form-control station-select">
                     <option value="">Select Station</option>
                     @foreach(\App\Mac::all() as $mac)
-                        <option value="{{ $mac->txn_id }}" data-branch="{{ $mac->Branch }}">{{ $mac->PC_No }}</option>
+                        <option value="{{ $mac->nKey }}" data-branch="{{ $mac->Branch }}">{{ $mac->PC_No }}</option>
                     @endforeach
                 </select>
             </div>

@@ -127,7 +127,7 @@ class BranchsController extends Controller
         if($branch->MaxUnits > $params['MaxUnits']) {
             for($i = 0; $i < $branch->MaxUnits - $params['MaxUnits']; $i++)
             {
-                $branch->macs()->orderBy("txn_id", "DESC")->first()->delete();
+                $branch->macs()->orderBy("nKey", "DESC")->first()->delete();
             }
         }else if($branch->MaxUnits < $params['MaxUnits']) {
             for($i = 0; $i < $params['MaxUnits'] - $branch->MaxUnits; $i++)
