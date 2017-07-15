@@ -13,7 +13,7 @@ class Branch extends Model
     protected $fillable = [
         'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active', "ShortName",
         'StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip', 'RollOver', 'TxfrRollOver',
-        'PostPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
+        'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
         'is_enable_printing'
     ];
 

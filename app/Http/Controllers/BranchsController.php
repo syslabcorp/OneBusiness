@@ -157,7 +157,7 @@ class BranchsController extends Controller
         ]);
 
         $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
-            'RollOver', 'TxfrRollOver', 'PostPtrPort', 'susp_ping_timeout', 'max_eload_amt',
+            'RollOver', 'TxfrRollOver', 'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt',
             'lc_uid', 'lc_pwd', 'is_enable_printing');
 
         $params['to_mobile_num'] = $request->get('receiving_mobile_number');

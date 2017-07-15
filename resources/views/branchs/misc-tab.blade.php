@@ -99,7 +99,7 @@
                         <label class=" control-label">POS Printer Port:</label>
                     </div>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control"  name="PostPtrPort" value="{{ $branch->PostPtrPort }}">
+                        <input type="number" class="form-control"  name="PosPtrPort" value="{{ $branch->PosPtrPort }}">
                     </div>
                 </div>
             </div>
