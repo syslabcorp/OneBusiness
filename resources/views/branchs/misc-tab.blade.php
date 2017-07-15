@@ -14,7 +14,7 @@
             </div>
             <div class="form-group">
                 <div class="control-checkbox">
-                    <input type="checkbox" id="print-active" name="is_enable_printing" value="1" {{ $branch->is_enable_printing == 1 ? 'checked' : ''}}>
+                    <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
                     <label for="print-active">Enable Stub Printing</label>
                 </div>
             </div>
