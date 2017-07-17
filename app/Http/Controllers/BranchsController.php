@@ -153,7 +153,9 @@ class BranchsController extends Controller
         }
 
         $this->validate($request, [
-            'receiving_mobile_number' => 'max:11'
+            'receiving_mobile_number' => 'max:11',
+            'cashier_ip' => 'required',
+            'MAC_Address' => 'required'
         ]);
 
         $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
