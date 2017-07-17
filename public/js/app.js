@@ -10369,9 +10369,12 @@ $(document).ready(function () {
         $(element).css('display', 'none');
     });
 
+    $('.alert.auto-close').delay(6000).slideUp(0);
     if ($('a[href="' + window.location.hash + '"]').length) {
         $('a[href="' + window.location.hash + '"]')[0].click();
-    }
+    }else {
+		$('a[href="#branch-details"]')[0].click();
+	}
 
     $('.list-macs tbody tr').click(function (event) {
         $('.list-macs tbody tr').removeClass('active');
