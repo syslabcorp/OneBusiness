@@ -77,6 +77,7 @@ class BranchsController extends Controller
         $params['Description'] = $params['operator'];
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
+        $params['StubPrint'] = 0;
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
@@ -163,6 +164,7 @@ class BranchsController extends Controller
             'lc_uid', 'lc_pwd', 'StubPrint');
 
         $params['to_mobile_num'] = $request->get('receiving_mobile_number');
+        $params['StubPrint'] = empty($params['StubPrint']) ? 0 : 1;
 
         $branch->update($params);
         \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
