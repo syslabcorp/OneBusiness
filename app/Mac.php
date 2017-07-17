@@ -30,4 +30,12 @@ class Mac extends Model
         return $this->belongsTo(\App\Branch::class, "Branch", "Branch");
     }
 
+    protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        $query
+        ->where('Branch', '=', $this->Branch)
+        ->where('nKey', '=', $this->nKey);
+        return $query;
+    }
+
 }

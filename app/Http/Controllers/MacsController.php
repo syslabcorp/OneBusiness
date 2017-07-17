@@ -29,11 +29,14 @@ class MacsController extends Controller
             {
                 try
                 {
-                    $mac = Mac::find($key);
-                    $macParams['StnType'] = isset($macParams['StnType']) ? $macParams['StnType'] : 0;
-                    $macParams['LastChgMAC'] = \Auth::user()->UserID;
-                    $macParams['LastChgMACDate'] = date('Y-m-d H:i:s');
-                    $mac->update($macParams);
+                    $mac = $branch->macs()->where('nKey', '=', $key)->first();
+                    $mac->StnType = isset($macParams['StnType']) ? $macParams['StnType'] : 0;
+                    $mac->LastChgMAC = \Auth::user()->UserID;
+                    $mac->LastChgMACDate = date('Y-m-d H:i:s');
+                    $mac->Mac_Address = $macParams['Mac_Address'];
+                    $mac->IP_Addr = $macParams['IP_Addr'];
+                    $mac->PC_No = $macParams['PC_No'];
+                    $mac->save();
                 }catch(Exception $e)
                 {
                     continue;
@@ -53,13 +56,15 @@ class MacsController extends Controller
             return redirect(route('branchs.index')); 
         }
         
-        $mac = Mac::find($request->get('mac_id'));
+        $mac = $branch->macs()->where('nKey', '=', $request->get('mac_id'))->first();
         if(!empty($request->get('target_id')))
         {
             $temp = $mac->Mac_Address;
-            $targetMac = Mac::find($request->get('target_id'));
-            $mac->update(['Mac_Address' => $targetMac->Mac_Address]);
-            $targetMac->update(['Mac_Address' => $temp]);
+            $targetMac = Mac::where('nKey', '=', $request->get('target_id'))->where('Branch', '=', $request->get('branch'))->first();
+            $mac->Mac_Address = $targetMac->Mac_Address;
+            $mac->save();
+            $targetMac->Mac_Address = $temp;
+            $targetMac->save();
             \Session::flash('success', "Station {$mac->PC_No} has been swap to station {$targetMac->PC_No}.");
         }else
         {
@@ -86,21 +91,21 @@ class MacsController extends Controller
             \Session::flash('error', "Mac Address format is invalid or already been taken");
         }else
         {
-            $mac = Mac::find($request->get('mac_id'));
+            $mac = $branch->macs()->where('nKey', '=', $request->get('mac_id'))->first();
             if($mac && !empty($request->get('branch_id')))
             {
-                $targetMac  = Mac::find($request->get('target_id'));
-                $targetMac->update([
-                    'Mac_Address' => $mac->Mac_Address,
-                    'LastChgMAC' => \Auth::user()->UserID,
-                    'LastChgMACDate' => date('Y-m-d H:i:s'),
-                ]);
+                $targetMac = Mac::where('nKey', '=', $request->get('target_id'))->where('Branch', '=', $request->get('branch_id'))->first();
 
-                $mac->update([
-                    'Mac_Address' => $request->get('Mac_Address'),
-                    'LastChgMAC' => \Auth::user()->UserID,
-                    'LastChgMACDate' => date('Y-m-d H:i:s'),
-                ]);
+                $targetMac->Mac_Address = $mac->Mac_Address;
+                $targetMac->LastChgMAC = \Auth::user()->UserID;
+                $targetMac->LastChgMACDate = date('Y-m-d H:i:s');
+                $targetMac->save();
+
+                $mac->Mac_Address = $request->get('Mac_Address');
+                $mac->LastChgMAC = \Auth::user()->UserID;
+                $mac->LastChgMACDate = date('Y-m-d H:i:s');
+                $mac->save();
+
                 \Session::flash('success', "Station {$mac->PC_No} has been transferred to Branch {$targetMac->branch->ShortName}!");
             }else
             {
