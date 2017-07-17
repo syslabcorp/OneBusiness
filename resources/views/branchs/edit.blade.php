@@ -18,14 +18,14 @@
             </div>
             <div class="box-body edit-branch">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#branch-details" aria-controls="home" role="tab" data-toggle="tab">Branch Details</a></li>
+                    <li role="presentation"><a href="#branch-details" aria-controls="home" role="tab" data-toggle="tab">Branch Details</a></li>
                     <li role="presentation"><a href="#misc" aria-controls="misc" role="tab" data-toggle="tab">Miscellaneous Settings</a></li>
                     <li role="presentation"><a href="#mac" aria-controls="mac" role="tab" data-toggle="tab">MAC Addresses</a></li>
                     <li role="presentation"><a href="#stub-footer" aria-controls="stub-footer" role="tab" data-toggle="tab">Stub Footer</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="branch-details">
+                    <div role="tabpanel" class="tab-pane" id="branch-details">
                         @if(\Auth::user()->checkAccess("Branch Details", "V"))
                             @include('branchs.edit-tab')
                         @else
@@ -62,7 +62,6 @@
                         @endif
                     </div>
                 </div>
-
             </div>
             <div class="box-footer">
                 <a href="{{ route('branchs.index') }}" class="btn btn-default">
