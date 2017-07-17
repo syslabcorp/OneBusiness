@@ -10369,7 +10369,6 @@ $(document).ready(function () {
         $(element).css('display', 'none');
     });
 
-    $('.alert.auto-close').delay(6000).slideUp();
     if ($('a[href="' + window.location.hash + '"]').length) {
         $('a[href="' + window.location.hash + '"]')[0].click();
     }
