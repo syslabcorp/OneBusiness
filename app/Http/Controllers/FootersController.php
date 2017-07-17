@@ -115,6 +115,11 @@ class FootersController extends Controller
         }
 
         $targetBranch = Branch::find($request->get('target'));
+        
+        if(!$targetBranch) {
+            \Session::flash('error', "Branch can't be blank"); 
+            return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 
+        }
 
         if($targetBranch->Branch == $branch->Branch)
         {
