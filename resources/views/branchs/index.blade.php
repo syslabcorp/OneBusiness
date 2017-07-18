@@ -58,6 +58,7 @@
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
                                     <td>
+                                        @if(\Auth::user()->checkAccess("Branch Setup & Details", "E"))
                                         <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs"
                                             title="Edit">
                                             <i class="fa fa-pencil"></i>
@@ -66,6 +67,16 @@
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
+                                        @else
+                                        <a href="#" style="margin-right: 10px;" class="btn btn-info btn-xs"
+                                            title="Edit">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <a href="#" style="margin-right: 10px;" class="btn btn-success btn-xs"
+                                            title="Rates template and scheduling">
+                                            <i class="fa fa-star"></i>
+                                        </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @php $index++; @endphp

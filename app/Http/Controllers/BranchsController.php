@@ -121,6 +121,11 @@ class BranchsController extends Controller
 
     public function edit(Branch $branch)
     {
+        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home");
+        }
+
 
         return view('branchs.edit', [
             'branch' => $branch,
