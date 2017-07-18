@@ -7,16 +7,17 @@
 
 @section('content')
 <section class="content">
+    <h3 class="text-center">Edit Branch: {{ $branch->ShortName }}</h3>
     <div class="row">
         <div class="col-md-2">
             <div id="treeview_json"></div>
         </div>
         <div class="col-md-10">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Edit Branch: {{ $branch->ShortName }}</h3>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>Edit Branch: {{ $branch->ShortName }}</h4>
             </div>
-            <div class="box-body edit-branch">
+            <div class="panel-body edit-branch">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation"><a href="#branch-details" aria-controls="home" role="tab" data-toggle="tab">Branch Details</a></li>
                     <li role="presentation"><a href="#misc" aria-controls="misc" role="tab" data-toggle="tab">Miscellaneous Settings</a></li>
@@ -62,11 +63,6 @@
                         @endif
                     </div>
                 </div>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('branchs.index') }}" class="btn btn-default">
-                    <i class="fa fa-reply"></i> Back
-                </a>
             </div>
           </div>
         </div>

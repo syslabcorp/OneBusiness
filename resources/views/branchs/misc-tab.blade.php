@@ -120,13 +120,16 @@
                 </div>
             </div>
         </div>
-    </div>
-    <hr>
-    @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E"))
-    <div class="form-group text-right">
-        <div class="col-md-12">
-            <button type="submit" class="btn btn-success">Update</button>
+
+        <div class="col-md-12" style="margin-bottom: 15px;">
+            <hr>
+            <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+                <i class="fa fa-reply"></i> Back
+            </a>
+            @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E"))
+                <button type="submit" class="btn btn-success pull-right">Update</button>
+            @endif
         </div>
     </div>
-    @endif
+    
 </form>

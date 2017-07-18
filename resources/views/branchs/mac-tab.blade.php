@@ -84,6 +84,13 @@
     </table>
 </form>
 
+<div class="col-md-12" style="margin-bottom: 15px;">
+    <hr>
+    <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+        <i class="fa fa-reply"></i> Back
+    </a>
+</div>
+
 <div id="swap-station-modal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">

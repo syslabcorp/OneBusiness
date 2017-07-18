@@ -2,25 +2,30 @@
 
 @section('content')
 <section class="content">
+    <h3 class="text-center">Branch Lists</h3>
     <div class="row">
         <div class="col-md-2">
             <div id="treeview_json"></div>
         </div>
-        <div class="col-md-10">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Branch Lists</h3>
-              <form class="col-xs-3 pull-right" method="GET">
-                <select name="status" class="form-control" id="filter-branchs">
-                    <option value="all">All</option>
-                    <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
-                    <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
-                </select>
-              </form>
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-9">
+                        <h4>Branch Lists</h4>
+                    </div>
+                    <form class="col-xs-3 pull-right" method="GET">
+                        <select name="status" class="form-control" id="filter-branchs">
+                            <option value="all">All</option>
+                            <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
+                            <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
+                        </select>
+                    </form>
+                </div>
             </div>
-            <div class="box-body">
+            <div class="panel-body" style="margin: 30px 0px;">
               @if(count($branchs))
-                <table class="table table-bordered">
+                <table class="table table-striped table-bordered">
                     <tbody>
                         <tr>
                             <th >Province</th>

@@ -76,3 +76,10 @@
         @endif
     </tbody>
 </table>
+
+<div class="col-md-12" style="margin-bottom: 15px;">
+    <hr>
+    <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+        <i class="fa fa-reply"></i> Back
+    </a>
+</div>

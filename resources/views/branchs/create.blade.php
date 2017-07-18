@@ -2,17 +2,17 @@
 
 @section('content')
 <section class="content">
+    <h3 class="text-center">Create new branch</h3>
     <div class="row">
         <div class="col-md-2">
             <div id="treeview_json"></div>
         </div>
-        <div class="col-md-10">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Create new branch</h3>
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>Create new branch</h4>
             </div>
-            <div class="box-body">
-              <div class="row">
+            <div class="panel-body" style="margin-top: 30px;">
                 <form action="{{ route('branchs.store') }}" method="POST" class="col-md-12 form-horizontal" novalidate>
                     {{ csrf_field() }}
                     <div class="form-group {{ $errors->has('branch_name') ? 'has-error' : '' }}">
@@ -90,18 +90,15 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="form-group text-right">
+                    <div class="form-group">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-success">Create</button>
+                            <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+                                <i class="fa fa-reply"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-success pull-right">Create</button>
                         </div>
                     </div>
                 </form>
-              </div>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('branchs.index') }}" class="btn btn-default">
-                    <i class="fa fa-reply"></i> Back
-                </a>
             </div>
           </div>
         </div>
