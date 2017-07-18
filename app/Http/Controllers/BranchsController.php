@@ -85,6 +85,35 @@ class BranchsController extends Controller
             $branch->macs()->create(['PC_No' => $i + 1]);
         }
 
+        $services = \DB::table('services')->get();
+        foreach($services as $service){
+            \DB::table('srv_item_cfg')->insert([
+                'Serv_ID' => $service->Serv_ID,
+                'Active' => 0,
+                'Branch' => $branch->Branch
+            ]);
+        }
+
+        $invtries = \DB::table('s_invtry_hdr')->get();
+        foreach($invtries as $invtry) {
+            \DB::table('s_item_cfg')->insert([
+                'item_id' => $invtry->item_id,
+                'Active' => 0,
+                'ItemCode' => $invtry->ItemCode,
+                'Branch' => $branch->Branch
+            ]);
+        }
+
+        \DB::table('s_changes')->insert([
+            'invtry_hdr' => 1,
+            'prodline' => 1,
+            'brands' => 1,
+            'item_cfg' => 1,
+            'Branch' => $branch->Branch
+        ]);
+
+        $branch->update(['Modified' => 1]);
+
         \Session::flash('success', "New branch has been created.");
 
         return redirect(route('branchs.index'));

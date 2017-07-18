@@ -29,7 +29,7 @@
                         <tr>
                             <th >Province</th>
                             <th>City</th>
-                            <th>Acitve</th>
+                            <th>Active</th>
                             <th>Branch Name</th>
                             <th>Operator</th>
                             <th>Street</th>
