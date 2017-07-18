@@ -15,7 +15,9 @@
   font-style: normal;
 }
 
-
+.modal {
+  z-index: 999999 !important;
+}
 .radio-check-label {line-height: 25px;padding-top: 0 !important;}
 img.business-one-logo {
   height: 80px;

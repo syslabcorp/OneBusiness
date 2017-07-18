@@ -2,7 +2,6 @@
 
 @section('content')
 <section class="content">
-    <h3 class="text-center">Branch Lists</h3>
     <div class="row">
         <div class="col-md-2">
             <div id="treeview_json"></div>
