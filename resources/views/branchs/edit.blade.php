@@ -12,7 +12,7 @@
         <div class="col-md-2">
             <div id="treeview_json"></div>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-8">
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4>Edit Branch: {{ $branch->ShortName }}</h4>
