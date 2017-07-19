@@ -132,7 +132,7 @@ class FootersController extends Controller
         {
             $sort = $sortFooter->sort + 1;
         }
-        foreach($branch->footers()->get() as $footer)
+        foreach($branch->footers()->orderBy('sort', 'ASC')->get() as $footer)
         {
             $targetBranch->footers()->create([
                 'Foot_Text' => $footer->Foot_Text,

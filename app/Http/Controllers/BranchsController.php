@@ -167,9 +167,11 @@ class BranchsController extends Controller
                 $branch->macs()->orderBy("nKey", "DESC")->first()->delete();
             }
         }else if($branch->MaxUnits < $params['MaxUnits']) {
+            $last = $branch->macs()->orderBy("nKey", "DESC")->first()->nKey + 1;
+
             for($i = 0; $i < $params['MaxUnits'] - $branch->MaxUnits; $i++)
             {
-                $branch->macs()->create(['PC_No' => $branch->MaxUnits + $i]);
+                $branch->macs()->create(['PC_No' => $last + $i]);
             }
         }
         
