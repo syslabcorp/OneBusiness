@@ -50,7 +50,10 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>
                     <input type="hidden" name="mac[{{ $mac->nKey }}][is_modify]">
-                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->nKey }}][PC_No]" value="{{ $mac->PC_No }}">
+                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->nKey }}][PC_No]" value="{{ !empty(old("mac.{$mac->nKey}.PC_No")) ? old("mac.{$mac->nKey}.PC_No") : $mac->PC_No }}">
+                    @if($errors->has("mac.{$mac->nKey}.PC_No"))
+                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.PC_No/", "Alias",$errors->first("mac.{$mac->nKey}.PC_No")) }}</i>
+                    @endif
                 </td>
                 <td>
                     <div class="control-checkbox">

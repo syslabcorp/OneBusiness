@@ -25,7 +25,7 @@
                         <label class="control-label">Load Central UID:</label>
                     </div>
                     <div class="col-xs-6">
-                        <input type="text" class="form-control"  name="lc_uid" value="{{ $branch->lc_uid }}">
+                        <input type="text" class="form-control"  name="lc_uid" value="{{ $lc_uid }}">
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                         <label class=" control-label">Load Central Password:</label>
                     </div>
                     <div class="col-xs-6">
-                        <input type="text" class="form-control"  name="lc_pwd" value="{{ $branch->lc_pwd }}">
+                        <input type="password" class="form-control"  name="lc_pwd" placeholder="******">
                     </div>
                 </div>
             </div>

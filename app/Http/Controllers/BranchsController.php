@@ -126,10 +126,12 @@ class BranchsController extends Controller
             return redirect("/home");
         }
 
+        $lcUid = Branch::select(\DB::raw("AES_DECRYPT(lc_uid, '" . env("LOADCENTRAL_PWDKEY") .  "') as lc_uid"))->where("Branch", "=", $branch->Branch)->first();
 
         return view('branchs.edit', [
             'branch' => $branch,
-            'branchs' => Branch::orderBy('Branch', 'ASC')->get()
+            'branchs' => Branch::orderBy('Branch', 'ASC')->get(),
+            'lc_uid' => $lcUid->lc_uid
         ]);
     }
 
@@ -199,6 +201,13 @@ class BranchsController extends Controller
 
         $params['to_mobile_num'] = $request->get('receiving_mobile_number');
         $params['StubPrint'] = empty($params['StubPrint']) ? 0 : 1;
+        if(!empty($params['lc_pwd'])) {
+            $params['lc_pwd'] = \DB::raw("AES_ENCRYPT('{$params['lc_pwd']}', '" . env("LOADCENTRAL_PWDKEY") .  "')");
+        } else {
+            unset($params['lc_pwd']);
+        }
+
+        $params['lc_uid'] = \DB::raw("AES_ENCRYPT('{$params['lc_uid']}', '" . env("LOADCENTRAL_PWDKEY") .  "')");
 
         $branch->update($params);
         \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
