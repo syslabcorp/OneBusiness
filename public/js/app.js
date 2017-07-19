@@ -10448,8 +10448,8 @@ $(document).ready(function () {
 
         for (var i = 0; i < inputRange.length; i++) {
             if (inputRange[i].match(/\-/)) {
-                var numbers = inputRange[i].split("-");
-                for (var number = numbers[0]; number <= numbers[1]; number++) {
+				var numbers = inputRange[i].split("-");
+                for (var number = numbers[0]*1; number <= numbers[1]*1; number++) {
                     if (fields.indexOf(number * 1) == -1) {
                         fields.push(number * 1);
                     }
@@ -10460,9 +10460,10 @@ $(document).ready(function () {
                 }
             }
         }
-
+		
         var partIps = ipAddress.split(".");
         for (var index = 0; index < fields.length; index++) {
+
             var element = $('.list-macs td.ip-address:eq(' + (fields[index] - 1) + ') .form-control');
             if (element.length != 0) {
                 element.attr("value", partIps.join(".")).change();
