@@ -64,7 +64,8 @@
                     </div>
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->nKey }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->nKey}.Mac_Address")) ? old("mac.{$mac->nKey}.Mac_Address") : $mac->Mac_Address }}">
+                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->nKey }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->nKey}.Mac_Address")) ? old("mac.{$mac->nKey}.Mac_Address") : $mac->Mac_Address }}"
+                        {{ \Auth::user()->checkAccess("MAC Addresses", "E") ? "" : "readonly" }}>
                     @if($errors->has("mac.{$mac->nKey}.Mac_Address"))
                     <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.Mac_Address/", "Mac Address",$errors->first("mac.{$mac->nKey}.Mac_Address")) }}</i>
                     @endif
