@@ -45,13 +45,13 @@
                         <label class="col-sm-2 control-label">Province</label>
                         <div class="col-sm-10">
                             <select name="Prov_ID" id="select-province" class="form-control">
-                                <option selected>Select Province</option>
+                                <option selected value="">Select Province</option>
                                 @foreach(\App\Province::all() as $province)
-                                    <option value="{{ $province->Prov_ID }}" {{ old('province') == $province->Prov_ID ? 'selected' : ''}}>{{ $province->Province }}</option>
+                                    <option value="{{ $province->Prov_ID }}" {{ old('Prov_ID') == $province->Prov_ID ? 'selected' : ''}}>{{ $province->Province }}</option>
                                 @endforeach
                             </select>
                             @if($errors->has('Prov_ID'))
-                            <span class="help-block">{{ $errors->first('Prov_ID') }}</span>
+                            <span class="help-block">The Province field is required</span>
                             @endif
                         </div>
                     </div>
@@ -59,14 +59,14 @@
                         <label class="col-sm-2 control-label">City</label>
                         <div class="col-sm-10">
                             <select name="City_ID" id="select-city" class="form-control">
-                                <option selected>Select City</option>
+                                <option selected value="">Select City</option>
                                 @foreach(\App\City::all() as $city)
                                     <option data-province="{{ $city->Prov_ID }}" value="{{ $city->City_ID }}"
                                         {{ old('City_ID') == $city->City_ID ? 'selected' : ''}}>{{ $city->City }}</option>
                                 @endforeach
                             </select>
-                            @if($errors->has('city'))
-                            <span class="help-block">{{ $errors->first('city') }}</span>
+                            @if($errors->has('City_ID'))
+                            <span class="help-block">The City field is required</span>
                             @endif
                         </div>
                     </div>
