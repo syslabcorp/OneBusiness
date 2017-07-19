@@ -62,7 +62,7 @@
                                             title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="#" style="margin-right: 10px;" class="btn btn-success btn-xs {{ \Auth::user()->checkAccess("Branch Setup & Details", "E") ? "" : "disabled" }}"
+                                        <a href="#" style="margin-right: 10px;" class="btn btn-success btn-xs"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
