@@ -29,7 +29,7 @@
                         @if(\Auth::user()->checkAccess("Branch Details", "V"))
                             @include('branchs.edit-tab')
                         @else
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger no-close">
                                 You don't have permission
                             </div>
                         @endif
@@ -38,7 +38,7 @@
                         @if(\Auth::user()->checkAccess("Miscellaneous Settings", "V"))
                             @include('branchs.misc-tab')
                         @else
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger no-close">
                                 You don't have permission
                             </div>
                         @endif
@@ -47,7 +47,7 @@
                         @if(\Auth::user()->checkAccess("MAC Addresses", "V"))
                             @include('branchs.mac-tab')
                         @else
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger no-close">
                                 You don't have permission
                             </div>
                         @endif
@@ -56,7 +56,7 @@
                         @if(\Auth::user()->checkAccess("Stub Footer", "V"))
                            @include('branchs.footer-tab')
                         @else
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger no-close">
                                 You don't have permission
                             </div>
                         @endif

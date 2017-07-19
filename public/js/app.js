@@ -10369,7 +10369,7 @@ $(document).ready(function () {
         $(element).css('display', 'none');
     });
 
-    $('.alert').delay(3000).slideUp(400);
+    $('.alert:not(.no-close)').delay(3000).slideUp(400);
     if ($('a[href="' + window.location.hash + '"]').length) {
         $('a[href="' + window.location.hash + '"]')[0].click();
     }else {

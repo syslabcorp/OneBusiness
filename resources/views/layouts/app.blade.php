@@ -97,11 +97,11 @@
         </nav>
         <div class="row" style="margin-top: 15px;">
             @if(\Session::get('error'))
-            <div class="alert alert-danger auto-close col-md-8 col-md-offset-2" style="border-radius: 3px;">
+            <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
                 <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
             </div>
             @elseif(\Session::get('success'))
-                <div class="alert alert-success auto-close col-md-8 col-md-offset-2" style="border-radius: 3px;">
+                <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
                     <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
                 </div>
             @endif
