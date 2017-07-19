@@ -67,16 +67,16 @@
             <h3>OTHERS</h3>
             <div class="form-group {{ $errors->has('MAC_Address') ? 'has-error' : '' }}">
                 <label class=" control-label">Bus Center MAC Address:</label>
-                <input type="text" class="form-control" placeholder="00-00-00-00-00"   name="MAC_Address" value="{{ $branch->MAC_Address }}">
+                <input type="text" class="form-control" placeholder="00-00-00-00-00"  name="MAC_Address" value="{{ !empty(old("MAC_Address")) ? old("MAC_Address") : $branch->MAC_Address }}">
                 @if($errors->has('MAC_Address'))
-                    <span class="help-block">{{ $errors->first('MAC_Address') }}</span>
+                    <span class="help-block">{{ preg_replace("/m a c/", "Mac",$errors->first("MAC_Address")) }}</span>
                 @endif
             </div>
             <div class="form-group {{ $errors->has('cashier_ip') ? 'has-error' : '' }}">
                 <label class=" control-label">Cashier IP Address:</label>
-                <input type="text" class="form-control" name="cashier_ip" value="{{ $branch->cashier_ip }}">
+                <input type="text" class="form-control" name="cashier_ip" value="{{ !empty(old("cashier_ip")) ? old("cashier_ip") : $branch->cashier_ip }}">
                 @if($errors->has('cashier_ip'))
-                    <span class="help-block">{{ $errors->first('cashier_ip') }}</span>
+                    <span class="help-block">{{ preg_replace("/cashier ip/", "Cashier IP",$errors->first("cashier_ip")) }}</span>
                 @endif
             </div>
             <div class="form-group">

@@ -189,8 +189,8 @@ class BranchsController extends Controller
 
         $this->validate($request, [
             'receiving_mobile_number' => 'max:11',
-            'cashier_ip' => 'required',
-            'MAC_Address' => 'required'
+            'MAC_Address' => 'required|unique:t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
+            'cashier_ip' => 'required|regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/'
         ]);
 
         $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
