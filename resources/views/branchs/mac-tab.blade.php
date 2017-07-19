@@ -69,7 +69,8 @@
                     @endif
                 </td>
                 <td class="ip-address">
-                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->nKey }}][IP_Addr]" value="{{ !empty(old("mac.{$mac->nKey}.IP_Addr")) ? old("mac.{$mac->nKey}.IP_Addr") : $mac->IP_Addr }}">
+                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->nKey }}][IP_Addr]" value="{{ !empty(old("mac.{$mac->nKey}.IP_Addr")) ? old("mac.{$mac->nKey}.IP_Addr") : $mac->IP_Addr }}"
+                        {{ \Auth::user()->checkAccess("Assign IP", "E") ? "" : "readonly" }} >
                     @if($errors->has("mac.{$mac->nKey}.IP_Addr"))
                     <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.IP_Addr/", "IP Address",$errors->first("mac.{$mac->nKey}.IP_Addr")) }}</i>
                     @endif
