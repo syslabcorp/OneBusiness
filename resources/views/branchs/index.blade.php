@@ -81,7 +81,7 @@
               @endif
             </div>
             <div class="box-footer">
-                <a href="/home" class="btn btn-default">
+                <a href="/OneBusiness/home" class="btn btn-default">
                     <i class="fa fa-reply"></i> Back
                 </a>
                 @if(\Auth::user()->checkAccess("Branch Setup & Details", "A"))

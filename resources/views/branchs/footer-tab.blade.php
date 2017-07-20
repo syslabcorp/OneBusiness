@@ -13,7 +13,8 @@
                     <div class="row">
                         <div class="col-xs-8">
                             <div class="form-group">
-                                <textarea name="content" cols="30" rows="3" class="form-control" placeholder="Content">{{ $footer->Foot_Text }}</textarea>
+                                <textarea name="content" cols="30" rows="3" class="form-control" placeholder="Content"
+                                    {{ \Auth::user()->checkAccess("Stub Footer", "E") ? "" : "readonly" }}>{{ $footer->Foot_Text }}</textarea>
                             </div>
                         </div>
                         <div class="col-xs-4">
