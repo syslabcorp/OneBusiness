@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+#accordion .panel-heading .form-check{margin-top:-3px}
+.mt-checkbox-inline label.mt-checkbox {font-weight: 400;}
+.mt-checkbox-inline label{margin: 0px 10px;}
+.col-md-4.control-label{ padding-top:2px !important;}
+#template-module .panel-collapse .col-md-12 {float: left;margin-bottom: 6px;width: 100%;}
+.mt-checkbox > input {float: left;margin-right: 5px;margin-top: 3px;}
+</style>
 <h3 class="text-center">Manage Templates</h3>
 <div class="container-fluid">
     <div class="row">
@@ -33,7 +41,7 @@
                         <div class="form-group{{ $errors->has('corporation_name') ? ' has-error' : '' }}">
                             <label for="corp_nam" class="col-md-4 control-label">Corporation</label>
                             <div class="col-md-6">
-                                <select class="form-control required corporation_na" id="corporation_name" name="corporation_id">
+                                <select class="form-control required corporation_na" id="corporation_name" template-id="{{isset($detail_edit_template->template_id)? $detail_edit_template->template_id :0}}" name="corporation_id">
                                     <option value="">Choose Corporation Name</option>
                                         @foreach ($corporation as $corp) 
                                             <option {{ (isset($detail_edit_template->corp_id) && ($detail_edit_template->corp_id == $corp ->corp_id)) ? "selected" : "" }} value="{{ $corp ->corp_id }}">{{ $corp->corp_name }}</option>
@@ -42,6 +50,29 @@
                             </div>
                         </div>
                         <div id="template-module"></div>
+                        <!-- menus start -->
+                        <div class ="row">
+                            <div class="col-md-12" id="menus">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Menus</div>
+                                <div class="panel-body">   
+                                @foreach ($menus as $menu) 
+                                    <div class="col-md-4">
+                                        <div class="mt-checkbox-inline">
+                                            <label class="mt-checkbox">
+                                                <input type="checkbox" value="{{$menu->id}}"name ="menu[]"
+                                                {{ (isset($menu_ids) && in_array($menu->id, $menu_ids)) ? "checked" : "" }} 
+                                                > {{$menu->title}}
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                </div>            
+                            </div>
+                            </div>
+                        </div>
+                            <!-- menus end -->
                         <div class="form-group">
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">
@@ -104,7 +135,8 @@ $(function(){
 $(function () {
     $("#corporation_name").change(function () {
         var corp_id = $(this).val();
-        get_template_module(corp_id,0);
+        var template_id = $(this).attr('template-id');
+        get_template_module(corp_id,template_id);
     });
 });
 function get_template_module(corp_id,template_id){

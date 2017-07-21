@@ -35,6 +35,17 @@
                             @endif
                             
                         </div>
+                        <div class="form-group{{ $errors->has('icon') ? ' has-error' : '' }}">
+                            <label for="icon" class="col-md-4 control-label">Icon</label>
+                            <div class="col-md-6">
+                                <input id="icon" type="text" class="form-control" name="icon" value="{{isset($detail_edit->icon) ? $detail_edit->icon : "" }}" autofocus>
+                                @if ($errors->has('icon'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('icon') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
                         <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
                             <label for="title" class="col-md-4 control-label">Title</label>
                             <div class="col-md-6">

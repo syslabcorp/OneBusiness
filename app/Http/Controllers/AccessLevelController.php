@@ -162,7 +162,6 @@ class AccessLevelController extends Controller
         $fid_push = array_push($fid_array, $feature_id);
         DB::table('feature_masters')->whereIn('feature_id', $fid_array)->delete();
         DB::table('rights_detail')->whereIn('feature_id', $fid_array)->delete();
-        DB::table('rights_dave')->whereIn('feature_id', $fid_array)->delete();
         Request::session()->flash('flash_message', 'Feature has been Deleted.');
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_feature');  
@@ -172,19 +171,22 @@ class AccessLevelController extends Controller
     {   
         $data =array();
         $data['corporation'] = DB::table('corporation_masters')->select('corp_name', 'corp_id')->get();
+        $data['menus'] = DB::table('menus')->select('id','title')->get();
         if (Request::isMethod('post')) {
             $formData = Request::all();
 			if(!isset($formData['module_id'])){
 				Request::session()->flash('flash_message', 'Create a module and features first before you can create a template for this corporation.');
 				return redirect('add_template');
 			}
+            $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
             $template_name  = $formData["temp_name"];
             $corporation_id = $formData["corporation_id"];
             $created_at   = date("Y-m-d H:i:s");
             $datatemplate = array(
                 'description' => $template_name,
                 'corp_id'     =>$corporation_id,
-                "created_at"  => date("Y-m-d H:i:s")
+                "created_at"  => date("Y-m-d H:i:s"),
+                "template_menus" =>$menus
             );
             if ($template_id == NULL) {
                 $tid = DB::table('rights_template')->insertGetId($datatemplate);
@@ -194,7 +196,6 @@ class AccessLevelController extends Controller
                 $tid = $template_id;
                 DB::table('rights_mstr')->where('template_id', $template_id)->delete();
                 DB::table('rights_detail')->where('template_id', $template_id)->delete();
-                DB::table('rights_dave')->where('template_id', $template_id)->delete();
                 Request::session()->flash('flash_message', 'Template has been updated.');
             }
             foreach ($formData['module_id'] as $module) {
@@ -224,19 +225,6 @@ class AccessLevelController extends Controller
                             'access_type' => $access_type,
                         );
                         DB::table('rights_detail')->insertGetId($datafeature);
-                        $access_a = isset($formData['access_'.$module.'_'.$feature.'_a']) ? '1' : '0';
-                        $access_e = isset($formData['access_'.$module.'_'.$feature.'_e']) ? '1' : '0';
-                        $access_v = isset($formData['access_'.$module.'_'.$feature.'_v']) ? '1':  '0';
-                        $access_d = isset($formData['access_'.$module.'_'.$feature.'_d']) ? '1':  '0';
-                        $datadave = array(
-                            'template_id'    => $tid,
-                            'feature_id'     => $feature,
-                            'access_delete'  => $access_d,
-                            'access_add'     => $access_a,
-                            'access_view'    => $access_v,
-                            'access_edit'    => $access_e,
-                        ); 
-                        DB::table('rights_dave')->insertGetId($datadave);
                     }
                 }
             }
@@ -244,7 +232,10 @@ class AccessLevelController extends Controller
             return redirect('list_template');
         }
         if ($template_id != NULL) {
-            $data['detail_edit_template'] = DB::table('rights_template')->where('template_id', $template_id)->first();  
+            $template_menu_ids = DB::table('rights_template')->where('template_id', $template_id)->first();  
+            $menu_id_data = explode(",", $template_menu_ids->template_menus);
+            $data['menu_ids'] = $menu_id_data;
+            $data['detail_edit_template'] = $template_menu_ids;  
         }
         return view('accesslevel.addtemplate', $data);
     }
@@ -287,7 +278,6 @@ class AccessLevelController extends Controller
         DB::table('rights_template')->where('template_id', $template_id)->delete();
         DB::table('rights_mstr')->where('template_id', $template_id)->delete();
         DB::table('rights_detail')->where('template_id', $template_id)->delete();
-        DB::table('rights_dave')->where('template_id', $template_id)->delete();
         Request::session()->flash('flash_message', 'Template has been Deleted.');
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_template');  
@@ -308,7 +298,7 @@ class AccessLevelController extends Controller
         if (Request::isMethod('post')){
             $formData = Request::all();
             $created_at   = date("Y-m-d H:i:s");
-            $data = array('parent_id' => $parent_id,'title' => $formData["title"],'url' => $formData["url"],"created_at" => date("Y-m-d H:i:s"));
+            $data = array('parent_id' => $parent_id,'title' => $formData["title"],'icon' => $formData["icon"],'url' => $formData["url"],"created_at" => date("Y-m-d H:i:s"));
             if ($id == NULL) {
                 DB::table('menus')->insertGetId($data);
                 Request::session()->flash('flash_message', 'Menu has been added.');

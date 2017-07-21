@@ -1,11 +1,3 @@
-<style>
-#accordion .panel-heading .form-check{margin-top:-3px}
-.mt-checkbox-inline label.mt-checkbox {font-weight: 400;}
-.mt-checkbox-inline label{margin: 0px 10px;}
-.col-md-4.control-label{ padding-top:2px !important;}
-#template-module .panel-collapse .col-md-12 {float: left;margin-bottom: 6px;width: 100%;}
-.mt-checkbox > input {float: left;margin-right: 5px;margin-top: 3px;}
-</style>
 <div class="panel-group" id="accordion">
 @foreach ($modules as $module) 
 <?php $mid = $module->module_id; ?>	  	
