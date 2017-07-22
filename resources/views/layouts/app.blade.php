@@ -95,15 +95,18 @@
                 </div>
             </div>
         </nav>
-        @if(\Session::get('error'))
-        <div class="alert alert-danger auto-close">
-            {{ \Session::get('error') }}
-        </div>
-        @elseif(\Session::get('success'))
-            <div class="alert alert-success auto-close">
-                {{ \Session::get('success') }}
+        <div class="row" style="margin-top: 15px;">
+            @if(\Session::get('error'))
+            <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
+                <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
             </div>
-        @endif
+            @elseif(\Session::get('success'))
+                <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
+                    <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
+                </div>
+            @endif
+        </div>
+
         @yield('content')
     </div>
     </div>

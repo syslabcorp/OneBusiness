@@ -50,7 +50,11 @@
                 <td>{{ $loop->index + 1 }}</td>
                 <td>
                     <input type="hidden" name="mac[{{ $mac->nKey }}][is_modify]">
-                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->nKey }}][PC_No]" value="{{ $mac->PC_No }}">
+                    <input type="text" class="form-control" placeholder="Alias" name="mac[{{ $mac->nKey }}][PC_No]" value="{{ !empty(old("mac.{$mac->nKey}.PC_No")) ? old("mac.{$mac->nKey}.PC_No") : $mac->PC_No }}"
+                        {{ \Auth::user()->checkAccess("Assign Station Alias", "E") ? "" : "readonly" }} >
+                    @if($errors->has("mac.{$mac->nKey}.PC_No"))
+                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.PC_No/", "Alias",$errors->first("mac.{$mac->nKey}.PC_No")) }}</i>
+                    @endif
                 </td>
                 <td>
                     <div class="control-checkbox">
@@ -60,13 +64,18 @@
                     </div>
                 </td>
                 <td>
-                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->nKey }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->nKey}.Mac_Address")) ? old("mac.{$mac->nKey}.Mac_Address") : $mac->Mac_Address }}">
+                    <input type="text" class="form-control" placeholder="00-00-00-00-00" name="mac[{{ $mac->nKey }}][Mac_Address]" value="{{ !empty(old("mac.{$mac->nKey}.Mac_Address")) ? old("mac.{$mac->nKey}.Mac_Address") : $mac->Mac_Address }}"
+                        {{ \Auth::user()->checkAccess("MAC Addresses", "E") ? "" : "readonly" }}>
                     @if($errors->has("mac.{$mac->nKey}.Mac_Address"))
                     <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.Mac_Address/", "Mac Address",$errors->first("mac.{$mac->nKey}.Mac_Address")) }}</i>
                     @endif
                 </td>
                 <td class="ip-address">
-                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->nKey }}][IP_Addr]" value="{{ $mac->IP_Addr }}">
+                    <input type="text" class="form-control" placeholder="IP Address" name="mac[{{ $mac->nKey }}][IP_Addr]" value="{{ !empty(old("mac.{$mac->nKey}.IP_Addr")) ? old("mac.{$mac->nKey}.IP_Addr") : $mac->IP_Addr }}"
+                        {{ \Auth::user()->checkAccess("Assign IP", "E") ? "" : "readonly" }} >
+                    @if($errors->has("mac.{$mac->nKey}.IP_Addr"))
+                    <i style="color:#cc0000;">{{ preg_replace("/mac.{$mac->nKey}.IP_Addr/", "IP Address",$errors->first("mac.{$mac->nKey}.IP_Addr")) }}</i>
+                    @endif
                 </td>
                 <td>
                     @if($mac->user)
@@ -83,6 +92,13 @@
         </tbody>
     </table>
 </form>
+
+<div class="col-md-12" style="margin-bottom: 15px;">
+    <hr>
+    <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+        <i class="fa fa-reply"></i> Back
+    </a>
+</div>
 
 <div id="swap-station-modal" class="modal fade" role="dialog">
   <div class="modal-dialog">

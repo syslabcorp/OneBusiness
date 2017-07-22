@@ -6,26 +6,30 @@
         <div class="col-md-2">
             <div id="treeview_json"></div>
         </div>
-        <div class="col-md-10">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Branch Lists</h3>
-              <form class="col-xs-3 pull-right" method="GET">
-                <select name="status" class="form-control" id="filter-branchs">
-                    <option value="all">All</option>
-                    <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
-                    <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
-                </select>
-              </form>
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-9">
+                        <h4>Branch Lists</h4>
+                    </div>
+                    <form class="col-xs-3 pull-right" method="GET">
+                        <select name="status" class="form-control" id="filter-branchs">
+                            <option value="all">All</option>
+                            <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
+                            <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
+                        </select>
+                    </form>
+                </div>
             </div>
-            <div class="box-body">
+            <div class="panel-body" style="margin: 30px 0px;">
               @if(count($branchs))
-                <table class="table table-bordered">
+                <table class="table table-striped table-bordered">
                     <tbody>
                         <tr>
                             <th >Province</th>
                             <th>City</th>
-                            <th>Acitve</th>
+                            <th>Active</th>
                             <th>Branch Name</th>
                             <th>Operator</th>
                             <th>Street</th>
@@ -54,7 +58,7 @@
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
                                     <td>
-                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs"
+                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccess("Branch Setup & Details", "E") ? "" : "disabled" }}"
                                             title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
@@ -77,7 +81,7 @@
               @endif
             </div>
             <div class="box-footer">
-                <a href="/home" class="btn btn-default">
+                <a href="/OneBusiness/home" class="btn btn-default">
                     <i class="fa fa-reply"></i> Back
                 </a>
                 @if(\Auth::user()->checkAccess("Branch Setup & Details", "A"))

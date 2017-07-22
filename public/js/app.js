@@ -10346,7 +10346,7 @@ $(document).ready(function () {
     });
 
     $('#select-city option').each(function (index, element) {
-        if ($('#select-province').val() != '' && $(element).attr('data-province') != $('#select-province').val()) {
+        if ($('#select-province').val() == "" || $('#select-province').val() != '' && $(element).attr('data-province') != $('#select-province').val()) {
             $(element).css('display', 'none');
         } else {
             $(element).css('display', 'block');
@@ -10369,11 +10369,13 @@ $(document).ready(function () {
         $(element).css('display', 'none');
     });
 
-    $('.alert.auto-close').delay(6000).slideUp(0);
+    $('.alert:not(.no-close)').delay(3000).slideUp(400);
     if ($('a[href="' + window.location.hash + '"]').length) {
         $('a[href="' + window.location.hash + '"]')[0].click();
     }else {
-		$('a[href="#branch-details"]')[0].click();
+		if($('a[href="#branch-details"]').length) {
+			$('a[href="#branch-details"]')[0].click();
+		}
 	}
 
     $('.list-macs tbody tr').click(function (event) {
@@ -10446,8 +10448,8 @@ $(document).ready(function () {
 
         for (var i = 0; i < inputRange.length; i++) {
             if (inputRange[i].match(/\-/)) {
-                var numbers = inputRange[i].split("-");
-                for (var number = numbers[0]; number <= numbers[1]; number++) {
+				var numbers = inputRange[i].split("-");
+                for (var number = numbers[0]*1; number <= numbers[1]*1; number++) {
                     if (fields.indexOf(number * 1) == -1) {
                         fields.push(number * 1);
                     }
@@ -10458,9 +10460,10 @@ $(document).ready(function () {
                 }
             }
         }
-
+		
         var partIps = ipAddress.split(".");
         for (var index = 0; index < fields.length; index++) {
+
             var element = $('.list-macs td.ip-address:eq(' + (fields[index] - 1) + ') .form-control');
             if (element.length != 0) {
                 element.attr("value", partIps.join(".")).change();

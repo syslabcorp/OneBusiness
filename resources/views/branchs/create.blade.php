@@ -6,13 +6,12 @@
         <div class="col-md-2">
             <div id="treeview_json"></div>
         </div>
-        <div class="col-md-10">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Create new branch</h3>
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>Create new branch</h4>
             </div>
-            <div class="box-body">
-              <div class="row">
+            <div class="panel-body" style="margin-top: 30px;">
                 <form action="{{ route('branchs.store') }}" method="POST" class="col-md-12 form-horizontal" novalidate>
                     {{ csrf_field() }}
                     <div class="form-group {{ $errors->has('branch_name') ? 'has-error' : '' }}">
@@ -46,13 +45,13 @@
                         <label class="col-sm-2 control-label">Province</label>
                         <div class="col-sm-10">
                             <select name="Prov_ID" id="select-province" class="form-control">
-                                <option selected>Select Province</option>
+                                <option selected value="">Select Province</option>
                                 @foreach(\App\Province::all() as $province)
-                                    <option value="{{ $province->Prov_ID }}" {{ old('province') == $province->Prov_ID ? 'selected' : ''}}>{{ $province->Province }}</option>
+                                    <option value="{{ $province->Prov_ID }}" {{ old('Prov_ID') == $province->Prov_ID ? 'selected' : ''}}>{{ $province->Province }}</option>
                                 @endforeach
                             </select>
                             @if($errors->has('Prov_ID'))
-                            <span class="help-block">{{ $errors->first('Prov_ID') }}</span>
+                            <span class="help-block">The Province field is required</span>
                             @endif
                         </div>
                     </div>
@@ -60,14 +59,14 @@
                         <label class="col-sm-2 control-label">City</label>
                         <div class="col-sm-10">
                             <select name="City_ID" id="select-city" class="form-control">
-                                <option selected>Select City</option>
+                                <option selected value="">Select City</option>
                                 @foreach(\App\City::all() as $city)
                                     <option data-province="{{ $city->Prov_ID }}" value="{{ $city->City_ID }}"
                                         {{ old('City_ID') == $city->City_ID ? 'selected' : ''}}>{{ $city->City }}</option>
                                 @endforeach
                             </select>
-                            @if($errors->has('city'))
-                            <span class="help-block">{{ $errors->first('city') }}</span>
+                            @if($errors->has('City_ID'))
+                            <span class="help-block">The City field is required</span>
                             @endif
                         </div>
                     </div>
@@ -90,18 +89,15 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="form-group text-right">
+                    <div class="form-group">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-success">Create</button>
+                            <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+                                <i class="fa fa-reply"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-success pull-right">Create</button>
                         </div>
                     </div>
                 </form>
-              </div>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('branchs.index') }}" class="btn btn-default">
-                    <i class="fa fa-reply"></i> Back
-                </a>
             </div>
           </div>
         </div>

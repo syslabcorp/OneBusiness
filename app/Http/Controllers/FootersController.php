@@ -126,13 +126,10 @@ class FootersController extends Controller
             \Session::flash('error', "Can't copy to current branch");
             return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 
         }
-        $sortFooter = $targetBranch->footers()->orderBy('sort', 'DESC')->first();
+        $targetBranch->footers()->delete();
         $sort = 1;
-        if($sortFooter)
-        {
-            $sort = $sortFooter->sort + 1;
-        }
-        foreach($branch->footers()->get() as $footer)
+
+        foreach($branch->footers()->orderBy('sort', 'ASC')->get() as $footer)
         {
             $targetBranch->footers()->create([
                 'Foot_Text' => $footer->Foot_Text,
@@ -141,7 +138,7 @@ class FootersController extends Controller
             $sort += 1;
         }
             
-        \Session::flash('success', "Stub Footer has been copied to {$targetBranch->Branch}!");
+        \Session::flash('success', "Stub Footer has been copied to {$targetBranch->ShortName}!");
 
         return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 
     }
