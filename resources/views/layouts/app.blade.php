@@ -125,9 +125,25 @@
 				success: function(response){
 					var jsoncode = JSON.parse(response);   
 					$('#treeview_json').treeview({data: jsoncode});
+                  if(document.location.hash){ 
+                         var document_id=document.location.hash;
+                          var document_id=document_id.replace('#','');
+                          document_id=parseInt(document_id);
+                           $('#treeview_json').treeview('revealNode', [ document_id, { silent: true } ]);
+                          $('#treeview_json').treeview('selectNode', [ document_id, { silent: true } ]);
+                      }
 				}
 			});
 		}
+        $(document).on('click','.node-treeview_json',function(event) {
+			var obj=$(this).find('a');
+			var href=obj.attr('href');
+			var val=$(this).attr('data-nodeid');
+			var path = window.location.href;
+			path = path.split('#')[0];
+			history.pushState(null, null, path + '#' + val);
+			obj.attr('href',href+'#'+val);
+        });
 	</script>
 </body>
 </html>
