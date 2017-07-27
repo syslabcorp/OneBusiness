@@ -11,14 +11,15 @@
 </div>
 <div class="container-fluid">
     <div class="row">    
-        <div class="col-md-2">
+        <div class="col-md-2 col-xs-12">
 			<div id="treeview_json"></div>
 		</div>
-        <div class="col-md-8">
+        <div class="col-md-8 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo ($parentcrumb == "0") ? "List of Menus" : $parentcrumb; ?><a href="{{ URL('add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a></div>
                 <div class="panel-body">
-                   <table id="list_menu" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <div class="table-responsive">
+                   <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>SNo.</th>
@@ -34,7 +35,7 @@
                                 <tr>
                                     <td>{{ ++$key }}</td>
                                     <td>{{ $det->title }}</td>
-                                     <td>{{ $det->icon }}</td>
+									<td class="text-center"><?php echo "<span class='$det->icon'></span>"; ?></td>
                                     <td>{{ $det->url }}</td>
                                     <td class="text-center"><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -44,10 +45,10 @@
                         </tbody>
                     </table>
                 </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 <script>
 

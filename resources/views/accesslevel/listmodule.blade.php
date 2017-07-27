@@ -11,14 +11,15 @@
 </div>
 <div class="container-fluid">
     <div class="row">
-		<div class="col-md-2">
+		<div class="col-md-2 col-xs-12">
 			<div id="treeview_json"></div>
 		</div>
-        <div class="col-md-8">
+        <div class="col-md-8 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading">List of Modules<a href="{{ URL('add_module') }}" class="pull-right">Add Module</a></div>
                 <div class="panel-body">
-                   <table id="list_modul" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <div class="table-responsive">
+                   <table id="list_modul" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>SNo.</th>
@@ -41,6 +42,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
         </div>

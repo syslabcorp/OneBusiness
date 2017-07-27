@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<link href="{{ asset('css/icon_picker.css') }}" rel="stylesheet">
 <h3 class="text-center">Add Menu</h3>
 <div class="container-fluid">
     <div class="row">
@@ -38,7 +39,7 @@
                         <div class="form-group{{ $errors->has('icon') ? ' has-error' : '' }}">
                             <label for="icon" class="col-md-4 control-label">Icon</label>
                             <div class="col-md-6">
-                                <input id="icon" type="text" class="form-control" name="icon" value="{{isset($detail_edit->icon) ? $detail_edit->icon : "" }}" autofocus>
+                            <input type="text" name="icon" class="icon-picker" value="{{isset($detail_edit->icon) ? $detail_edit->icon : "" }}" placeholder="Click on icon and then search    ❱ " />
                                 @if ($errors->has('icon'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('icon') }}</strong>
@@ -83,10 +84,11 @@
         </div>
     </div>
 </div>
-
+<script src="{{ URL('/js/icon_picker.js') }}"></script>
 <script>
 $(function(){
-    $("#menuform").validate();      
+    $("#menuform").validate();   
+    $(".icon-picker").iconPicker();   
 });
 </script>
 @endsection
