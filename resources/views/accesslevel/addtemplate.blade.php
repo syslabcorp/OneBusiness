@@ -30,7 +30,7 @@
                         <div class="form-group{{ $errors->has('temp_name') ? ' has-error' : '' }}">
                             <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
                             <div class="col-md-6">
-                                <input id="temp_name" type="text" class="form-control required" name="temp_name"  value="{{isset($detail_edit_template->description) ? $detail_edit_template->description : "" }}" autofocus>
+                                <input id="temp_name" type="text" class="form-control required" name="temp_name"  value="{{isset($detail_edit_template->description) ? $detail_edit_template->description : "" }}" template-id="{{isset($detail_edit_template->template_id)? $detail_edit_template->template_id :0}}" autofocus>
                                 @if ($errors->has('temp_name'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('temp_name') }}</strong>
@@ -38,17 +38,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group{{ $errors->has('corporation_name') ? ' has-error' : '' }}">
-                            <label for="corp_nam" class="col-md-4 control-label">Corporation</label>
-                            <div class="col-md-6">
-                                <select class="form-control required corporation_na" id="corporation_name" template-id="{{isset($detail_edit_template->template_id)? $detail_edit_template->template_id :0}}" name="corporation_id">
-                                    <option value="">Choose Corporation Name</option>
-                                        @foreach ($corporation as $corp) 
-                                            <option {{ (isset($detail_edit_template->corp_id) && ($detail_edit_template->corp_id == $corp ->corp_id)) ? "selected" : "" }} value="{{ $corp ->corp_id }}">{{ $corp->corp_name }}</option>
-                                        @endforeach
-                                </select>
-                            </div>
-                        </div>
+                     
                         <div id="template-module"></div>
                         <!-- menus start -->
                         <div class ="row">
@@ -89,11 +79,7 @@
 
 <script>
 $(function(){
-    <?php 
-        if(isset($detail_edit_template->corp_id)){ ?>
-            get_template_module("<?php echo $detail_edit_template->corp_id; ?>", "<?php echo $detail_edit_template->template_id; ?>");
-        <?php }
-    ?>
+   
     $("#templateform").validate({
 		rules: {
 			temp_name: {
@@ -131,18 +117,15 @@ $(function(){
         }
     });    
 });
-
-$(function () {
-    $("#corporation_name").change(function () {
-        var corp_id = $(this).val();
-        var template_id = $(this).attr('template-id');
-        get_template_module(corp_id,template_id);
-    });
+$(window).load(function() {
+     var template_id = $("#temp_name").attr('template-id');
+     get_template_module(template_id);
 });
-function get_template_module(corp_id,template_id){
+ 
+function get_template_module(template_id){
     $.ajax({
         url: ajax_url+'/template_module',
-        data: {corp_id, template_id},
+        data: {template_id},
         type: "GET",
         success: function(res){
             $('#template-module').html(res);

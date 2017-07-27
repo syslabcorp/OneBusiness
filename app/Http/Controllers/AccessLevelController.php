@@ -170,7 +170,6 @@ class AccessLevelController extends Controller
     public function add_template($template_id = NULL)
     {   
         $data =array();
-        $data['corporation'] = DB::table('corporation_masters')->select('corp_name', 'corp_id')->get();
         $data['menus'] = DB::table('menus')->select('id','title')->get();
         if (Request::isMethod('post')) {
             $formData = Request::all();
@@ -180,11 +179,9 @@ class AccessLevelController extends Controller
 			}
             $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
             $template_name  = $formData["temp_name"];
-            $corporation_id = $formData["corporation_id"];
             $created_at   = date("Y-m-d H:i:s");
             $datatemplate = array(
                 'description' => $template_name,
-                'corp_id'     =>$corporation_id,
                 "created_at"  => date("Y-m-d H:i:s"),
                 "template_menus" =>$menus
             );
@@ -242,8 +239,7 @@ class AccessLevelController extends Controller
     public function template_module()
     { 
         $formData = Request::all(); 
-        $corp_id     = $formData['corp_id'];
-        $data['modules']=DB::table('module_masters')->where('corp_id', '=', $corp_id )->get();
+        $data['modules']=DB::table('module_masters')->get();
         foreach ($data['modules'] as $modul) {
             $mid=$modul->module_id;
             $data['features'][$mid]=DB::table('feature_masters')->where('module_id', '=', $mid)->get();
@@ -267,10 +263,7 @@ class AccessLevelController extends Controller
     }
     public function list_template()
     {   
-        $listtemplate = DB::table('rights_template')
-            ->join('corporation_masters', 'rights_template.corp_id', '=', 'corporation_masters.corp_id')
-            ->select('rights_template.*', 'corporation_masters.corp_name')
-            ->get();  
+        $listtemplate = DB::table('rights_template')->get();  
         return view('accesslevel.list_template', ['listtemp' => $listtemplate]);  
     }
     public function destroytemplate($template_id)

@@ -17,32 +17,30 @@
         <div class="col-md-8 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading">List of Templates<a href="{{ URL('add_template') }}" class="pull-right">Add Template</a></div>
-				<div class="panel-body">
-					<div class="table-responsive">
-						<table id="list_templat" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-							<thead>
-								<tr>
-									<th>SNo.</th>
-									<th>Template Description</th>
-									<th>Corporation Name</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach($listtemp as $key=>$list)
-									<tr>
-										<td>{{ ++$key }}</td>
-										<td>{{ $list->description }}</td>
-										<td>{{ $list->corp_name }}</td>
-										<td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
-										<a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template"><span class="glyphicon glyphicon-trash"></span></a></td>
-									</tr>  
-								@endforeach
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+                <div class="panel-body">
+                 <div class="table-responsive">
+                   <table id="list_templat" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>SNo.</th>
+                                <th>Template Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($listtemp as $key=>$list)
+                                <tr>
+                                    <td>{{ ++$key }}</td>
+                                    <td>{{ $list->description }}</td>
+                                    <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                </tr>  
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
