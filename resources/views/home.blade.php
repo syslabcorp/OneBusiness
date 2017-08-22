@@ -3,10 +3,21 @@
 @section('content')
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-2">
-			<div id="treeview_json"></div>
-		</div>
-		<div class="col-md-8">
+		<div id="togle-sidebar-sec" class="active">
+      
+      <!-- Sidebar -->
+       <div id="sidebar-togle-sidebar-sec">
+      <ul id="sidebar_menu" class="sidebar-nav">
+           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+      </ul>
+        <div class="sidebar-nav" id="sidebar">     
+          <div id="treeview_json"></div>
+        </div>
+      </div>
+          
+      <!-- Page content -->
+      <div id="page-content-togle-sidebar-sec">
+		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<div class="col-md-12">
@@ -32,6 +43,8 @@
 			</div>
 		</div>
 	</div>
+</div>
+</div>
 </div>
 <style>
 .modal-dialog {z-index: 9999;}

@@ -14,3 +14,13 @@ img.business-one-logo {
 }
 .navbar-nav > li > a{ padding-top:24px;  padding-bottom:24px; }
 label.error {color: #ff0000;font-size: 12px;font-weight: normal;}
+.click_module{cursor:pointer}
+.margin-0{ margin: 0 !important; }
+
+.container-fluid {padding-top: 110px;}
+nav.navbar-static-top {position: fixed;width: 100%;z-index: 99999;}
+.registermargin-top{margin-top: 110px;}
+
+/*****19-08-2017*******/
+.sweet-overlay{  z-index: 99999 !important;}
+.sweet-alert{  z-index:999999 !important;}

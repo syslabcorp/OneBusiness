@@ -117,6 +117,20 @@
 	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
 	<script>
 		if($("#treeview_json").length){
+			/* var curr_url  = window.location.href;
+			var open_menu = curr_url.split('#')[1];
+			if( typeof open_menu !== "undefined"){
+				$(".table-responsive a").each(function(){
+					if($(this).children().hasClass("glyphicon-pencil")){
+						alert($(this).attr("href"));
+					}
+				});
+			} */
+			
+			$("#menu-toggle").click(function(e) {
+					e.preventDefault();
+					$("#togle-sidebar-sec").toggleClass("active");
+			});
 			$.ajax({
 				url: ajax_url+'/list_menu',
 				data: {_token:$("meta[name='csrf-token']").attr('content')},
@@ -143,6 +157,9 @@
 			path = path.split('#')[0];
 			history.pushState(null, null, path + '#' + val);
 			obj.attr('href',href+'#'+val);
+        });
+        $(document).ready(function() {
+			$('.alertfade').fadeOut(5000); // 5 seconds x 1000 milisec = 5000 milisec
         });
 	</script>
 </body>

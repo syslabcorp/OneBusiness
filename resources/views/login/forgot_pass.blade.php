@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row">
 		@if(Session::has('alert-class'))
-			<div class="alert alert-success"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+			<div class="alert alert-success alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
 		@elseif(Session::has('flash_message'))
-			<div class="alert alert-danger"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+			<div class="alert alert-danger alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
 		@endif
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">

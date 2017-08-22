@@ -1,20 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="text-center">Manage Menus</h3>
-<div class="row">
-    @if(Session::has('alert-class'))
-        <div class="alert alert-success col-md-8 col-md-offset-2"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-    @elseif(Session::has('flash_message'))
-        <div class="alert alert-danger col-md-8 col-md-offset-2"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-    @endif
-</div>
 <div class="container-fluid">
+<div class="row">
+    
+<div id="togle-sidebar-sec" class="active">
+      
+      <!-- Sidebar -->
+       <div id="sidebar-togle-sidebar-sec">
+      <ul id="sidebar_menu" class="sidebar-nav">
+           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+      </ul>
+        <div class="sidebar-nav" id="sidebar">     
+          <div id="treeview_json"></div>
+        </div>
+      </div>
+          
+      <!-- Page content -->
+      <div id="page-content-togle-sidebar-sec">
+		@if(Session::has('alert-class'))
+			<div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+		@elseif(Session::has('flash_message'))
+			<div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+		@endif
+             <div class="col-md-12">
+			 <h3 class="text-center">Manage Menus</h3>
     <div class="row">    
-        <div class="col-md-2 col-xs-12">
-			<div id="treeview_json"></div>
-		</div>
-        <div class="col-md-8 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo ($parentcrumb == "0") ? "List of Menus" : $parentcrumb; ?><a href="{{ URL('add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a></div>
                 <div class="panel-body">
@@ -50,11 +61,15 @@
         </div>
     </div>
 </div>
+</div>
+</div>
+</div>
+</div>
 <script>
 
 $(document).ready(function() {
     $('#list_menu').DataTable();
-    $('.sweet-4').click(function(){
+    $(document).on("click", ".sweet-4", function(){
         var delete_url = $(this).attr("rel");
         swal({
             title: "Are you sure?",

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * ========================================================= */
-
+var current_node_id='';
 ;(function ($, window, document, undefined) {
 
 	/*global jQuery, console*/
@@ -33,8 +33,8 @@
 
 		levels: 2,
 
-		expandIcon: 'glyphicon glyphicon-plus',
-		collapseIcon: 'glyphicon glyphicon-minus',
+		expandIcon: 'glyphicon glyphicon-chevron-right',
+		collapseIcon: 'glyphicon glyphicon-chevron-down',
 		emptyIcon: 'glyphicon',
 		nodeIcon: '',
 		selectedIcon: '',
@@ -349,9 +349,9 @@
 	// data attribute nodeid, which is used to lookup the node in the flattened structure.
 	Tree.prototype.findNode = function (target) {
 
-		var nodeId = target.closest('li.list-group-item').attr('data-nodeid');
+		var nodeId = target.closest('li.list-group-item').attr('data-nodeid');		
 		var node = this.nodes[nodeId];
-
+		current_node_id=nodeId;
 		if (!node) {
 			console.log('Error: node does not exist');
 		}
@@ -499,6 +499,13 @@
 
 		// Build tree
 		this.buildTree(this.tree, 0);
+		if(current_node_id!=''){		
+		if($('#'+current_node_id).position().top>309){	
+			$("#sidebar").animate({ scrollTop: $('#'+current_node_id).position().top}, 1000);
+		}	
+			//$('#sidebar').scrollTop($('#'+current_node_id).position().top);
+		}	
+		
 	};
 
 	// Starting from the root node, and recursing down the
@@ -518,6 +525,7 @@
 				.addClass(node.state.selected ? 'node-selected' : '')
 				.addClass(node.searchResult ? 'search-result' : '') 
 				.attr('data-nodeid', node.nodeId)
+				.attr('id', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
 
 			// Add indent/spacer to mimic tree structure
@@ -537,7 +545,9 @@
 				}
 			}
 			else {
-				classList.push(_this.options.emptyIcon);
+					//classList.push(_this.options.emptyIcon);
+
+					
 			}
 
 			treeItem
