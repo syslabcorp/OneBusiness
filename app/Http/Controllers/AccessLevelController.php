@@ -321,7 +321,7 @@ class AccessLevelController extends Controller
 		$temp_menu = isset($formData['menu_ids']) ? $formData['menu_ids'] : array();
 		$child_menu = '<ul class="remove-append-'.$formData['id'].'">';
         foreach ($menus as $key => $menu) {
-            $child_menu .=  '<li class="appen-sub-'.$menu->id.'"><input type="checkbox" '.(in_array($menu->id, $temp_menu) ? "checked" : '').' name="menu[]" id="click-by-'.$menu->id.'" class="append-child-menu" value="'.$menu->id.'" />'.$menu->title.'</li>';
+            $child_menu .=  '<li class="appen-sub-'.$menu->id.'"><input type="checkbox" '.(in_array($menu->id, $temp_menu) ? "checked" : '').' name="menu[]" id="click-by-'.$menu->id.'" class="append-child-menu" value="'.$menu->id.'" style="margin-right: 10px;" />'.$menu->title.'</li>';
         }
 		$child_menu .= '</ul>';
 		echo $child_menu;
