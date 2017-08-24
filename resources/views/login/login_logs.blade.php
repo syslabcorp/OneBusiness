@@ -1,21 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="text-center">Active Users</h3>
 <div class="container-fluid">
     <div class="row">
-        @if(Session::has('alert-class'))
-            <div class="alert alert-success"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+      <div id="togle-sidebar-sec" class="active">
+      
+      <!-- Sidebar -->
+       <div id="sidebar-togle-sidebar-sec">
+      <ul id="sidebar_menu" class="sidebar-nav">
+           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+      </ul>
+        <div class="sidebar-nav" id="sidebar">     
+          <div id="treeview_json"></div>
+        </div>
+      </div>
+          
+      <!-- Page content -->
+      <div id="page-content-togle-sidebar-sec">
+		@if(Session::has('alert-class'))
+            <div class="alert alert-success alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
         @elseif(Session::has('flash_message'))
-            <div class="alert alert-danger"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+            <div class="alert alert-danger alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
         @endif
-		<div class="col-md-2">
-			<div id="treeview_json"></div>
-		</div>
-        <div class="col-md-8">
+        <div class="col-md-12">
+        <h3 class="text-center">Active Users</h3>
             <div class="panel panel-default">
                 <div class="panel-heading">Active Users</div>
-                <div class="panel-body">
+                <div class="panel-body table-responsive">
                    <table id="list_log" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
@@ -39,6 +50,8 @@
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 <script>
 $(document).ready(function() {

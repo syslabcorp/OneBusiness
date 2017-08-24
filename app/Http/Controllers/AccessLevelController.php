@@ -56,13 +56,7 @@ class AccessLevelController extends Controller
                 $mid_push =array_push($mid_array, $module_id);
                 $this->destroymodule($mid_array);
             }
-        $get_template_id = DB::table('rights_template')->select('template_id')->where('corp_id', $corp_id)->get();
-            foreach ($get_template_id as $temp_id) {
-                $templat_id=$temp_id->template_id;
-                $temp_array =array();
-                $temp_push =array_push($temp_array, $templat_id);
-                DB::table('rights_template')->whereIn('template_id', $temp_array)->delete();
-            }
+       
         Request::session()->flash('flash_message', 'Corporation has been Deleted.');
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_corporation');  
@@ -118,7 +112,7 @@ class AccessLevelController extends Controller
             return redirect('list_module');    
     }
 
-    public function add_feature($feature_id = NULL)
+    public function add_feature($feature_id = NULL, $module_id = NULL)
     {   
         $data =array();
         $data['module'] = DB::table('module_masters')->select('description', 'module_id')->get();
@@ -130,7 +124,7 @@ class AccessLevelController extends Controller
                 'feature' =>$formData["feature_name"],
                 "created_at" => date("Y-m-d H:i:s")
             );
-            if ($feature_id == NULL) {
+            if ($feature_id == NULL || $feature_id == 0) {
                 DB::table('feature_masters')->insertGetId($data);
                 Request::session()->flash('flash_message', 'Feature has been added.');
             }else{
@@ -138,11 +132,18 @@ class AccessLevelController extends Controller
                 Request::session()->flash('flash_message', 'Feature has been updated.');
             }
             Request::Session()->flash('alert-class', 'alert-success');
-            return redirect('list_feature');
+			if($module_id == NULL){
+				return redirect('list_feature');
+			}else{
+				return redirect('list_feature/'.$module_id);
+			}
         }
-        if ($feature_id != NULL) {
+        if ($feature_id != NULL && $feature_id != 0) {
             $data['detail_edit_feature'] = DB::table('feature_masters')->where('feature_id', $feature_id)->first();    
-        }
+        }else if($module_id != NULL){
+			$default_module['module_id'] = $module_id;
+			$data['detail_edit_feature'] = (object) $default_module;
+		}
         return view('accesslevel.addfeature', $data);
     }
 	
@@ -153,7 +154,7 @@ class AccessLevelController extends Controller
 		}else{
 			$detailfeature = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->where('module_masters.module_id', $module_id)->get();   
 		}
-        return view('accesslevel.listfeature', ['detailfeature' => $detailfeature]);  
+        return view('accesslevel.listfeature', ['detailfeature' => $detailfeature, 'module_id' => $module_id]);  
     }
 	
     public function destroyfeature($feature_id)
@@ -162,7 +163,6 @@ class AccessLevelController extends Controller
         $fid_push = array_push($fid_array, $feature_id);
         DB::table('feature_masters')->whereIn('feature_id', $fid_array)->delete();
         DB::table('rights_detail')->whereIn('feature_id', $fid_array)->delete();
-        DB::table('rights_dave')->whereIn('feature_id', $fid_array)->delete();
         Request::session()->flash('flash_message', 'Feature has been Deleted.');
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_feature');  
@@ -171,20 +171,19 @@ class AccessLevelController extends Controller
     public function add_template($template_id = NULL)
     {   
         $data =array();
-        $data['corporation'] = DB::table('corporation_masters')->select('corp_name', 'corp_id')->get();
         if (Request::isMethod('post')) {
             $formData = Request::all();
 			if(!isset($formData['module_id'])){
 				Request::session()->flash('flash_message', 'Create a module and features first before you can create a template for this corporation.');
 				return redirect('add_template');
 			}
+            $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
             $template_name  = $formData["temp_name"];
-            $corporation_id = $formData["corporation_id"];
             $created_at   = date("Y-m-d H:i:s");
             $datatemplate = array(
                 'description' => $template_name,
-                'corp_id'     =>$corporation_id,
-                "created_at"  => date("Y-m-d H:i:s")
+                "created_at"  => date("Y-m-d H:i:s"),
+                "template_menus" =>$menus
             );
             if ($template_id == NULL) {
                 $tid = DB::table('rights_template')->insertGetId($datatemplate);
@@ -194,7 +193,6 @@ class AccessLevelController extends Controller
                 $tid = $template_id;
                 DB::table('rights_mstr')->where('template_id', $template_id)->delete();
                 DB::table('rights_detail')->where('template_id', $template_id)->delete();
-                DB::table('rights_dave')->where('template_id', $template_id)->delete();
                 Request::session()->flash('flash_message', 'Template has been updated.');
             }
             foreach ($formData['module_id'] as $module) {
@@ -224,19 +222,6 @@ class AccessLevelController extends Controller
                             'access_type' => $access_type,
                         );
                         DB::table('rights_detail')->insertGetId($datafeature);
-                        $access_a = isset($formData['access_'.$module.'_'.$feature.'_a']) ? '1' : '0';
-                        $access_e = isset($formData['access_'.$module.'_'.$feature.'_e']) ? '1' : '0';
-                        $access_v = isset($formData['access_'.$module.'_'.$feature.'_v']) ? '1':  '0';
-                        $access_d = isset($formData['access_'.$module.'_'.$feature.'_d']) ? '1':  '0';
-                        $datadave = array(
-                            'template_id'    => $tid,
-                            'feature_id'     => $feature,
-                            'access_delete'  => $access_d,
-                            'access_add'     => $access_a,
-                            'access_view'    => $access_v,
-                            'access_edit'    => $access_e,
-                        ); 
-                        DB::table('rights_dave')->insertGetId($datadave);
                     }
                 }
             }
@@ -244,19 +229,24 @@ class AccessLevelController extends Controller
             return redirect('list_template');
         }
         if ($template_id != NULL) {
-            $data['detail_edit_template'] = DB::table('rights_template')->where('template_id', $template_id)->first();  
+            $template_menu_ids = DB::table('rights_template')->where('template_id', $template_id)->first();  
+            $menu_id_data = explode(",", $template_menu_ids->template_menus);
+            $data['menu_ids'] = $menu_id_data;
+            $data['detail_edit_template'] = $template_menu_ids;  
         }
         return view('accesslevel.addtemplate', $data);
     }
     public function template_module()
     { 
         $formData = Request::all(); 
-        $corp_id     = $formData['corp_id'];
-        $data['modules']=DB::table('module_masters')->where('corp_id', '=', $corp_id )->get();
-        foreach ($data['modules'] as $modul) {
+        $modules=DB::table('module_masters')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 'module_masters.corp_id')->select('module_masters.*', 'corporation_masters.corp_name')->get();
+		$data['modules'] = array();
+        foreach ($modules as $modul) {
+			$data['modules'][$modul->corp_name][] = $modul;
             $mid=$modul->module_id;
             $data['features'][$mid]=DB::table('feature_masters')->where('module_id', '=', $mid)->get();
         }
+		
         if($formData['template_id'] != 0){
             $template_module_ids = DB::table('rights_mstr')->select('module_id')->where('template_id', $formData['template_id'])->get();
             $module_ids = array();
@@ -274,12 +264,10 @@ class AccessLevelController extends Controller
         } 
         return view('accesslevel.template_module',$data);
     }
+	
     public function list_template()
     {   
-        $listtemplate = DB::table('rights_template')
-            ->join('corporation_masters', 'rights_template.corp_id', '=', 'corporation_masters.corp_id')
-            ->select('rights_template.*', 'corporation_masters.corp_name')
-            ->get();  
+        $listtemplate = DB::table('rights_template')->get();  
         return view('accesslevel.list_template', ['listtemp' => $listtemplate]);  
     }
     public function destroytemplate($template_id)
@@ -287,7 +275,6 @@ class AccessLevelController extends Controller
         DB::table('rights_template')->where('template_id', $template_id)->delete();
         DB::table('rights_mstr')->where('template_id', $template_id)->delete();
         DB::table('rights_detail')->where('template_id', $template_id)->delete();
-        DB::table('rights_dave')->where('template_id', $template_id)->delete();
         Request::session()->flash('flash_message', 'Template has been Deleted.');
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_template');  
@@ -308,7 +295,7 @@ class AccessLevelController extends Controller
         if (Request::isMethod('post')){
             $formData = Request::all();
             $created_at   = date("Y-m-d H:i:s");
-            $data = array('parent_id' => $parent_id,'title' => $formData["title"],'url' => $formData["url"],"created_at" => date("Y-m-d H:i:s"));
+            $data = array('parent_id' => $parent_id,'title' => $formData["title"],'icon' => $formData["icon"],'url' => $formData["url"],"created_at" => date("Y-m-d H:i:s"));
             if ($id == NULL) {
                 DB::table('menus')->insertGetId($data);
                 Request::session()->flash('flash_message', 'Menu has been added.');
@@ -327,39 +314,53 @@ class AccessLevelController extends Controller
         $data['parent_id'] = $parent_id;
         return view('accesslevel.add_menu',$data);
     }
+
+    public function get_child_menu(){
+        $formData = Request::all();
+        $menus = DB::table('menus')->where('parent_id', $formData['id'])->get();
+		$temp_menu = isset($formData['menu_ids']) ? $formData['menu_ids'] : array();
+		$child_menu = '<ul class="remove-append-'.$formData['id'].'">';
+        foreach ($menus as $key => $menu) {
+            $child_menu .=  '<li class="appen-sub-'.$menu->id.'"><input type="checkbox" '.(in_array($menu->id, $temp_menu) ? "checked" : '').' name="menu[]" id="click-by-'.$menu->id.'" class="append-child-menu" value="'.$menu->id.'" />'.$menu->title.'</li>';
+        }
+		$child_menu .= '</ul>';
+		echo $child_menu;
+		die;
+    }
 	
     public function list_menu($parent_id = 0)
     {   
         if (Request::isMethod('post')){
-        $menus  =  DB::table('menus')->select('id', 'parent_id', 'title', 'url')->get(); 
-        $datamenu = array();
-        $data = array();
-        foreach ($menus AS $menu){
-            $datamenu['id'] = $menu->id;
-            $datamenu['text'] = $menu->title;
-            $datamenu['parent_id'] = $menu->parent_id;
-            $datamenu['href'] = $menu->url;
-            array_push($data, $datamenu); 
-        }
-        $itemsByReference = array();
-        // Build array of item references:
-         foreach($data as $key => &$item) {
-            $itemsByReference[$item['id']] = &$item;
-         }
-          // Set items as children of the relevant parent item.
-         foreach($data as $key => &$item)  {
-            if($item['parent_id'] && isset($itemsByReference[$item['parent_id']])) {
-               $itemsByReference [$item['parent_id']]['nodes'][] = &$item;
-            }
-         } 
-         $dataaaray =array();
-         foreach ($data as $key => $value) {
-            if($value['parent_id'] == 0){
-               array_push($dataaaray, $data[$key]); 
-            }
-         }
-        echo json_encode($dataaaray);  
-        die;
+			$menus  =  DB::table('menus')->select('id', 'parent_id', 'title', 'url','icon')->get(); 
+			$datamenu = array();
+			$data = array();
+			foreach ($menus AS $menu){
+				$datamenu['id'] = $menu->id;
+				$datamenu['text'] = $menu->title;
+				$datamenu['parent_id'] = $menu->parent_id;
+				$datamenu['href'] = $menu->url;
+				$datamenu['icon'] = ($menu->icon!='')?$menu->icon:'glyphicon glyphicon-record';
+				array_push($data, $datamenu); 
+			}
+			$itemsByReference = array();
+			// Build array of item references:
+			 foreach($data as $key => &$item) {
+				$itemsByReference[$item['id']] = &$item;
+			 }
+			  // Set items as children of the relevant parent item.
+			 foreach($data as $key => &$item)  {
+				if($item['parent_id'] && isset($itemsByReference[$item['parent_id']])) {
+				   $itemsByReference [$item['parent_id']]['nodes'][] = &$item;
+				}
+			 } 
+			 $dataaaray =array();
+			 foreach ($data as $key => $value) {
+				if($value['parent_id'] == 0){
+				   array_push($dataaaray, $data[$key]); 
+				}
+			 }
+			echo json_encode($dataaaray);  
+			die;
         }
         /*Menus Tree View End */
         /*List of Menus Start */
