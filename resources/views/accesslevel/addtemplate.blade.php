@@ -32,7 +32,7 @@
                 <div class="col-md-12 col-xs-12">
                     <h3 class="text-center">Manage Templates</h3>
                     <div class="panel panel-default">
-                        <div class="panel-heading">{{isset($detail_edit_template->template_id) ? "Edit " : "Add " }} Template</div>
+						<div class="panel-heading">{{isset($detail_edit_template->template_id) ? "Edit " : "Add " }} Template</div>
                         <div class="panel-body">
                             <form class="form-horizontal form" role="form" method="POST" action="" id ="templateform">
                                 {{ csrf_field() }}
@@ -68,12 +68,13 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
 <script>
 function get_child_menus(id,menu_ids){
 	var _token = $("meta[name='csrf-token']").attr('content');
@@ -86,12 +87,13 @@ function get_child_menus(id,menu_ids){
 		}
 	});
 }
-
 $(function(){
 	var menu_ids = {};
-	<?php if(isset($menu_ids)){ ?>
-	var menu_ids = <?php echo json_encode($menu_ids); ?>;
-	<?php } ?>
+    <?php 
+        if(isset($detail_edit_template->template_id)){ ?>
+            get_template_module("<?php echo $detail_edit_template->template_id; ?>");
+        <?php }
+    ?>
 	get_child_menus(0, menu_ids);
 	$.each(menu_ids, function(k,v){
 		get_child_menus(v, menu_ids);
@@ -108,7 +110,6 @@ $(function(){
 			$(".remove-append-"+id).remove();
 		}
     });
-   
     $("#templateform").validate({
 		rules: {
 			temp_name: {
@@ -132,34 +133,20 @@ $(function(){
 			}
 		}
 	});   
-    /*$("#template-module").on('click','.checkboxclick',function(){
-    
-        var objectID=$(this).attr('rel');
+});
 
-        if($(objectID).hasClass('in'))
-        {
-            $(objectID).collapse('hide');
-        }
-        
-        else{
-            $(objectID).collapse('show');
-        }
-    });*/    
-    
-    $("#template-module").on('click','.click_module',function(){
-         var objectID=$(this).attr('rel');
-         $(objectID).collapse('toggle');
+$(function () {
+	get_template_module(0);
+    $("#corporation_name").change(function () {
+        var template_id = $(this).attr('template-id');
+        var corp_id = $(this).val();
     });
 });
-$(window).load(function() {
-     var template_id = $("#temp_name").attr('template-id');
-     get_template_module(template_id);
-});
- 
 function get_template_module(template_id){
+	var corp_id = 0;
     $.ajax({
         url: ajax_url+'/template_module',
-        data: {template_id},
+        data: {corp_id, template_id},
         type: "GET",
         success: function(res){
             $('#template-module').html(res);
