@@ -33,4 +33,13 @@ class Branch extends Model
     {
         return $this->hasMany(\App\Mac::class, "Branch", "Branch");
     }
+
+    public function rates()
+    {
+        return $this->hasMany(\App\RateTemplate::class, "Branch", "Branch");
+    }
+
+    public function schedules() {
+      return $this->hasMany(\App\RateSchedule::class, "Branch", "Branch");
+    }
 }

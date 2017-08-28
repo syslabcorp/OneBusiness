@@ -102,6 +102,10 @@ body
     line-height:20px;
 }
 
+.control-checkbox input[type=checkbox]:disabled + label:before {
+  background: #eeeeee;
+}
+
 .edit-branch
 {
   .nav-tabs
@@ -192,3 +196,32 @@ body
   font-weight: 500;
   font-size: 13px;
 }
+
+.color-picker {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d2d2d2;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+.rate-page label {
+  font-weight: 500;
+  color: #555555;
+  font-size: 13px;
+}
+.rate-page table th {
+  font-weight: 500;
+  color: #505050;
+  font-size: 14px;
+}
+.modal {
+  z-index: 999999 !important;
+}
+.radio-check-label {line-height: 25px;padding-top: 0 !important;}
+img.business-one-logo {
+  height: 80px;
+  margin: 5px 0;
+}
+.navbar-nav > li > a{ padding-top:24px !important;  padding-bottom:24px !important; }
+label.error {color: #ff0000;font-size: 12px !important;font-weight: normal;}
