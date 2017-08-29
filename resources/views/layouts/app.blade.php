@@ -19,9 +19,13 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
 >>>>>>> 85b35b0b13564cfd8f38dae646d033766f0e5a74
+=======
+    <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
+>>>>>>> 78c468cc3cb40476b0b2d362e5a8694fe2484c6e
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
@@ -138,6 +142,7 @@
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
+    <script src="{{ URL('/js/colorpicker.js') }}"></script>
 	<script>
 		if($("#treeview_json").length){
 			/* var curr_url  = window.location.href;

@@ -3,6 +3,33 @@ toastr = require('toastr');
 
 $(document).ready(function()
 {
+  $('#rate-template-name').change(function(event) {
+    window.location = $(this).find('option:selected').attr('data-href');
+  });
+
+  $('.color-picker').ColorPicker({
+    onChange: function(hsb, hex, rgb) {
+      $('.color-picker').css("background", "#" + hex);
+      $('input[name="Color"]').val("#" + hex);
+    }
+  });
+
+  $('#assign-rate-template input[value="all"]').change(function(event) {
+    if(event.target.checked) {
+      $('#assign-rate-template input[name="days[]"]').each(function(index, element) {
+        if($(element).attr('value') != 'all') {
+          $(element).prop("checked", true);
+        }
+      });
+    } else {
+      $('#assign-rate-template input[name="days[]"]').each(function(index, element) {
+        if($(element).attr('value') != 'all') {
+          $(element).prop("checked", false);
+        }
+      });
+    }
+  });
+
     $('#select-province').on('change', function(event)
     {
         var parent = $(this);
@@ -20,8 +47,7 @@ $(document).ready(function()
 
     $('#select-city option').each(function(index, element)
     {
-        if($('#select-province').val() != '' && $(element).attr('data-province') != $('#select-province').val())
-        {
+        if ($('#select-province').val() == "" || $('#select-province').val() != '' && $(element).attr('data-province') != $('#select-province').val()) {
             $(element).css('display', 'none');
         }else
         {
@@ -50,11 +76,17 @@ $(document).ready(function()
         $(element).css('display', 'none');
     });
 
-    $('.alert.auto-close').delay(6000).slideUp();
-    if($('a[href="' + window.location.hash + '"]').length)
-    {
+    $('.alert:not(.no-close)').delay(3000).slideUp(400);
+    if ($('a[href="' + window.location.hash + '"]').length) {
         $('a[href="' + window.location.hash + '"]')[0].click();
+    }else {
+    if($('a[href="#branch-details"]').length) {
+      $('a[href="#branch-details"]')[0].click();
+        }
+        if($('a[href="#template"]').length) {
+      $('a[href="#template"]')[0].click();
     }
+  }
 
     $('.list-macs tbody tr').click(function(event)
     {
@@ -248,4 +280,14 @@ $(document).ready(function()
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     }
+
+    // Rate Template
+    $("#change_minimum").click(function(event) {
+      if(event.target.checked) {
+        $("input[name='MinimumTime']").prop("disabled", false);
+      }else {
+        $("input[name='MinimumTime']").val("").change();
+        $("input[name='MinimumTime']").prop("disabled", true);
+      }
+    })
 });
