@@ -1,6 +1,6 @@
 <div class="col-md-4">
   <h4>View Rates Schedule By:</h4>
-  <form method="GET">
+  <form method="GET" action="{{ route('branchs.rates.index', [$branch, '#schedule'])}}">
     <div class="form-group">
       <label for="">Year</label>
       <select name="year" class="form-control">
