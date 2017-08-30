@@ -1,1 +1,188 @@
 .treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}
+
+.row{
+    margin-left:0px;
+    margin-right:0px;
+}
+
+#togle-sidebar-sec {
+    padding-left: 70px;
+    transition: all .4s ease 0s;
+    height: 100%    margin-top: -21px;
+}
+
+#sidebar-togle-sidebar-sec {
+    margin-left: -300px;
+    left: 70px;
+    width:300px;
+    background: #fff;
+    position: fixed;
+    height: 100%;
+    z-index: 10000;
+    transition: all .4s ease 0s;    margin-top: -21px;
+}
+
+.sidebar-nav {
+    display: block;
+    float: left;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0; /*background: #f8f8f8;*/
+}
+.sidebar-nav .sidebar-brand{background: #f8f8f8; border: 1px solid #ddd; border-bottom: 0px;}
+#page-content-togle-sidebar-sec {
+    padding-left: 0;
+    margin-left: 0;
+    width: 100%;
+    height: auto;
+}
+#togle-sidebar-sec.active {
+    padding-left: 300px;
+}
+#togle-sidebar-sec.active #sidebar-togle-sidebar-sec {
+    left: 300px;    margin-top: -21px;
+}
+
+#page-content-togle-sidebar-sec {
+  width: 100%;
+}
+
+.sidebar_name {
+    padding-top: 25px;
+    color: #fff;
+    opacity: .7;
+}
+
+.sidebar-nav li {
+  line-height: 40px;
+  text-indent: 20px;
+}
+
+.sidebar-nav li.node-selected {
+  line-height: 40px;
+  text-indent: 20px; background: #2e6da4 !important;
+}
+#treeview_json li a{padding-left: 26px;}
+
+.sidebar-nav > .sidebar-brand {
+  height: 65px;
+  line-height: 60px;
+  font-size: 18px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+  color: #000;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+  color: #000;
+  background: none;
+}
+
+#main_icon
+{
+    float:right;
+   padding-right: 22px;
+   padding-top:20px;
+}
+.sub_icon
+{
+    float:right;
+   padding-right: 65px;
+   padding-top:10px;
+}
+.content-header {
+  height: 65px;
+  line-height: 65px;
+}
+
+.content-header h1 {
+  margin: 0;
+  margin-left: 20px;
+  line-height: 65px;
+  display: inline-block;
+}
+.treeview span.icon:first-child {
+
+  width: auto !important;  
+}
+
+.treeview   li  ul li span.icon{
+  width: 12px !important;
+}
+.treeview span.icon{width: auto !important;}
+#sidebar a{white-space:pre;}
+
+@media (max-width:767px) {
+    #togle-sidebar-sec {
+		padding-left: 70px;
+		transition: all .4s ease 0s;
+	}
+	#sidebar-togle-sidebar-sec {
+		left: 70px;
+	}
+	#togle-sidebar-sec.active {
+		padding-left: 150px;
+	}
+	#togle-sidebar-sec.active #sidebar-togle-sidebar-sec {
+		left: 150px;
+		width: 150px;
+		transition: all .4s ease 0s;
+	}
+
+#sidebar-togle-sidebar-sec{ margin-left: 0px !important; position:relative; }
+#togle-sidebar-sec.active{padding-left: 0px;}
+#togle-sidebar-sec.active #sidebar-togle-sidebar-sec {
+  left: 0;
+  transition: all 0.4s ease 0s;
+  width: 100%;
+}
+.sidebar-brand{display: none;}
+}
+#togle-sidebar-sec h3 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  position: relative;
+  top: -21px;
+}
+#sidebar  ul{
+  height:550px;
+}
+#togle-sidebar-sec #sidebar-togle-sidebar-sec{border-right: 1px solid #ddd;}
+#sidebar .treeview ul{/*overflow: auto;*/  margin-right:0px; padding-bottom: 20px; margin-bottom: 0px;}
+#sidebar  #treeview_json li a{padding-left: 3px;}
+#sidebar .treeview span.icon {
+  margin:0 6px;
+ display: inline;
+
+}
+
+#sidebar .list-group-item{padding-left:0px; border-right:0px;}
+#sidebar.sidebar-nav {
+  overflow: auto;
+}
+
+#sidebar .tree-sub-menu-li{padding:3px !important; background:#dcdcdc;}
+#sidebar .glyphicon {
+  display: inline-block;
+  font-family: "Glyphicons Halflings";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  position: relative;
+  top: 1px;
+}
+#sidebar .icon.expand-icon.glyphicon.glyphicon-chevron-right {
+  margin-left: -3px;
+  margin-right: 2px;
+}
+#sidebar  .icon.expand-icon.glyphicon.glyphicon-chevron-down{
+  margin-left: -3px;
+  margin-right: 2px;
+}
+/*#sidebar .icon.node-icon.glyphicon.glyphicon-align-center{
+  margin-left: -3px;
+  margin-right: 10px;
+}*/

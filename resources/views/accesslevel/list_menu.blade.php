@@ -1,28 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="text-center">Manage Menus</h3>
-<div class="row">
-    @if(Session::has('alert-class'))
-        <div class="alert alert-success col-md-8 col-md-offset-2"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-    @elseif(Session::has('flash_message'))
-        <div class="alert alert-danger col-md-8 col-md-offset-2"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-    @endif
-</div>
 <div class="container-fluid">
+<div class="row">
+    
+<div id="togle-sidebar-sec" class="active">
+      
+      <!-- Sidebar -->
+       <div id="sidebar-togle-sidebar-sec">
+      <ul id="sidebar_menu" class="sidebar-nav">
+           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+      </ul>
+        <div class="sidebar-nav" id="sidebar">     
+          <div id="treeview_json"></div>
+        </div>
+      </div>
+          
+      <!-- Page content -->
+      <div id="page-content-togle-sidebar-sec">
+		@if(Session::has('alert-class'))
+			<div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+		@elseif(Session::has('flash_message'))
+			<div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+		@endif
+             <div class="col-md-12">
+			 <h3 class="text-center">Manage Menus</h3>
     <div class="row">    
-        <div class="col-md-2">
-			<div id="treeview_json"></div>
-		</div>
-        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo ($parentcrumb == "0") ? "List of Menus" : $parentcrumb; ?><a href="{{ URL('add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a></div>
                 <div class="panel-body">
-                   <table id="list_menu" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <div class="table-responsive">
+                   <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>SNo.</th>
                                 <th>Title</th>
+                                <th>Icon</th>
                                 <th>Url</th>
                                 <th class="text-center">Sub Menu</th>
                                 <th>Actions</th>
@@ -33,6 +46,7 @@
                                 <tr>
                                     <td>{{ ++$key }}</td>
                                     <td>{{ $det->title }}</td>
+									<td class="text-center"><?php echo "<span class='$det->icon'></span>"; ?></td>
                                     <td>{{ $det->url }}</td>
                                     <td class="text-center"><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -42,16 +56,20 @@
                         </tbody>
                     </table>
                 </div>
+                </div>
             </div>
         </div>
     </div>
-
+</div>
+</div>
+</div>
+</div>
 </div>
 <script>
 
 $(document).ready(function() {
     $('#list_menu').DataTable();
-    $('.sweet-4').click(function(){
+    $(document).on("click", ".sweet-4", function(){
         var delete_url = $(this).attr("rel");
         swal({
             title: "Are you sure?",

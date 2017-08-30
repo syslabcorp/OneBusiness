@@ -18,7 +18,14 @@
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
+>>>>>>> 85b35b0b13564cfd8f38dae646d033766f0e5a74
+=======
     <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
+>>>>>>> 78c468cc3cb40476b0b2d362e5a8694fe2484c6e
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
@@ -138,6 +145,20 @@
     <script src="{{ URL('/js/colorpicker.js') }}"></script>
 	<script>
 		if($("#treeview_json").length){
+			/* var curr_url  = window.location.href;
+			var open_menu = curr_url.split('#')[1];
+			if( typeof open_menu !== "undefined"){
+				$(".table-responsive a").each(function(){
+					if($(this).children().hasClass("glyphicon-pencil")){
+						alert($(this).attr("href"));
+					}
+				});
+			} */
+			
+			$("#menu-toggle").click(function(e) {
+					e.preventDefault();
+					$("#togle-sidebar-sec").toggleClass("active");
+			});
 			$.ajax({
 				url: ajax_url+'/list_menu',
 				data: {_token:$("meta[name='csrf-token']").attr('content')},
@@ -146,9 +167,28 @@
 				success: function(response){
 					var jsoncode = JSON.parse(response);   
 					$('#treeview_json').treeview({data: jsoncode});
+                  if(document.location.hash){ 
+                         var document_id=document.location.hash;
+                          var document_id=document_id.replace('#','');
+                          document_id=parseInt(document_id);
+                           $('#treeview_json').treeview('revealNode', [ document_id, { silent: true } ]);
+                          $('#treeview_json').treeview('selectNode', [ document_id, { silent: true } ]);
+                      }
 				}
 			});
 		}
+        $(document).on('click','.node-treeview_json',function(event) {
+			var obj=$(this).find('a');
+			var href=obj.attr('href');
+			var val=$(this).attr('data-nodeid');
+			var path = window.location.href;
+			path = path.split('#')[0];
+			history.pushState(null, null, path + '#' + val);
+			obj.attr('href',href+'#'+val);
+        });
+        $(document).ready(function() {
+			$('.alertfade').fadeOut(5000); // 5 seconds x 1000 milisec = 5000 milisec
+        });
 	</script>
 </body>
 </html>
