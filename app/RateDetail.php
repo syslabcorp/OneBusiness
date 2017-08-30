@@ -9,6 +9,7 @@ class RateDetail extends Model
     public $timestamps = false;
     protected $table = "t_rates_detail";
     protected $primaryKey = "nKey";
+    protected $connection = 'mysql2';
 
     protected $fillable = [
         'template_id', 'MinAmt1', 'MinAmt1', 'MinAmt2', 'MinAmt3', 'Net_1', "Net_2",

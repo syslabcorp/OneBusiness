@@ -9,6 +9,7 @@ class RateTemplate extends Model
   public $timestamps = false;
   protected $table = "t_rates_hdr";
   protected $primaryKey = "template_id";
+  protected $connection = 'mysql2';
 
   protected $fillable = [
     'template_name', 'charge_mode', 'ZoneStart1', 'ZoneStart2', 'ZoneStart3', 'DiscStubPrint', "DiscStubMsg",
