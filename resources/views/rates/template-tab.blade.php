@@ -7,9 +7,9 @@
   <label for="">Template name:</label>
   <select id="rate-template-name" class="form-control" style="width: 300px;display:inline-block;">
     @foreach($branch->rates()->get() as $template)
-    <option value="{{ $template->template_id }}" {{ $rate->template_id == $template->template_id ? "selected" : "" }}
-      data-href="{{ route('branchs.rates.index', [$branch, 'template_id' => $template->template_id]) }}"
-      >{{ $template->template_name }}</option>
+    <option value="{{ $template->tmplate_id }}" {{ $rate->tmplate_id == $template->tmplate_id ? "selected" : "" }}
+      data-href="{{ route('branchs.rates.index', [$branch, 'tmplate_id' => $template->tmplate_id]) }}"
+      >{{ $template->tmplate_name }}</option>
     @endforeach
   </select>
   @if($rate)
@@ -108,7 +108,7 @@
       <i class="fa fa-plus"></i> New
     </a>
     @if($rate)
-    <a class="btn btn-sm btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'template_id' => $rate->template_id]) }}">
+    <a class="btn btn-sm btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'tmplate_id' => $rate->tmplate_id]) }}">
       <i class="fa fa-pencil"></i> Edit
     </a>
     @endif

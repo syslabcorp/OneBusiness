@@ -3,13 +3,13 @@
   <input type="hidden" name="Modified" value="1">
   {{ csrf_field() }}
 <div class="col-md-12 text-center">
-  <div class="form-group {{ $errors->has('template_name') ? 'has-error' : '' }}"
+  <div class="form-group {{ $errors->has('tmplate_name') ? 'has-error' : '' }}"
       style="display:inline-block;">
     <label for="">Template name:</label>
-    <input type="text" class="form-control" name="template_name" style="width: 300px;display:inline-block;"
-      value="{{ $rate->template_name }}">
-    @if($errors->has('template_name'))
-      <span class="help-block">{{ $errors->first('template_name') }}</span>
+    <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;"
+      value="{{ $rate->tmplate_name }}">
+    @if($errors->has('tmplate_name'))
+      <span class="help-block">Template Name can't blank.</span>
     @endif
   </div>
   <div class="form-group" style="display:inline-block;vertical-align: top;">

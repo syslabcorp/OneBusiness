@@ -12,7 +12,7 @@ class RateSchedule extends Model
   protected $connection = 'mysql2';
 
   protected $fillable = [
-    'rate_date', 'template_id', 'Branch'
+    'rate_date', 'tmplate_id', 'Branch'
   ];
 
   protected $dates = [
@@ -21,6 +21,6 @@ class RateSchedule extends Model
 
   #Relationships
   public function template() {
-    return $this->belongsTo(\App\RateTemplate::class, 'template_id', 'template_id');
+    return $this->belongsTo(\App\RateTemplate::class, 'tmplate_id', 'tmplate_id');
   }
 }

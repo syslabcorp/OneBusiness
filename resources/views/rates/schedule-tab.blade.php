@@ -58,7 +58,7 @@
           @endif
         </td>
         <td>{{ $schedule->rate_date->format('d') }}</td>
-        <td>{{ $schedule->template->template_name }}</td>
+        <td>{{ $schedule->template->tmplate_name }}</td>
       </tr>
       @endforeach
       @if(!count($schedules))
@@ -137,10 +137,10 @@
           </div>
           <div class="form-group">
             <label for="" style="font-weight: 500;">Select Template:</label>
-            <select name="template_id" class="form-control">
+            <select name="tmplate_id" class="form-control">
               <option value="">Select Name</option>
               @foreach($branch->rates()->get() as $template)
-                <option value="{{ $template->template_id }}">{{ $template->template_name }}</option>
+                <option value="{{ $template->tmplate_id }}">{{ $template->tmplate_name }}</option>
               @endforeach
             </select>
           </div>

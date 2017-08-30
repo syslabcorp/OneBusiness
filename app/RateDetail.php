@@ -12,7 +12,7 @@ class RateDetail extends Model
     protected $connection = 'mysql2';
 
     protected $fillable = [
-        'template_id', 'MinAmt1', 'MinAmt1', 'MinAmt2', 'MinAmt3', 'Net_1', "Net_2",
+        'tmplate_id', 'MinAmt1', 'MinAmt1', 'MinAmt2', 'MinAmt3', 'Net_1', "Net_2",
         'Net_3', 'Z1min_5', 'Z1min_10', 'Z1min_15', 'Z1min_20', 'Z1min_25',
         'Z1min_30', 'Z1min_35', 'Z1min_40', 'Z1min_45', 'Z1min_50', 'Z1min_55',
         'Z1min_60', 'Z2min_5', 'Z2min_10', 'Z2min_15', 'Z2min_20', 'Z2min_25',
