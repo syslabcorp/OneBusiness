@@ -31,7 +31,7 @@
                                     <table id="list_templat" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>SNo.</th>
+                                                <th>Temp. ID</th>
                                                 <th>Template Description</th>
                                                 <th>Action</th>
                                             </tr>
@@ -39,7 +39,7 @@
                                         <tbody>
                                             @foreach($listtemp as $key=>$list)
                                                 <tr>
-                                                    <td>{{ ++$key }}</td>
+                                                    <td>{{ $list->template_id }}</td>
                                                     <td>{{ $list->description }}</td>
                                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
                                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template"><span class="glyphicon glyphicon-trash"></span></a></td>
