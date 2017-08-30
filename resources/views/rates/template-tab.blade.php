@@ -205,7 +205,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($rate->details()->get() as $detail)
+            @foreach($rate->details()->orderBy('nKey', 'ASC')->get() as $detail)
             <tr>
               <td>{{ $detail->nKey }}</td>
               <td>
