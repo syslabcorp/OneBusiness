@@ -49,7 +49,7 @@ Route::get('/delete_module/{module_id}', 'AccessLevelController@destroymodule');
 
 Route::any('/add_feature/{feature_id?}/{module_id?}', 'AccessLevelController@add_feature');
 Route::get('/list_feature/{module_id?}', 'AccessLevelController@list_feature');
-Route::get('/delete_feature/{feature_id}', 'AccessLevelController@destroyfeature');
+Route::get('/delete_feature/{feature_id}/{module_id?}', 'AccessLevelController@destroyfeature');
 
 Route::any('/add_template/{template_id?}', 'AccessLevelController@add_template');
 Route::any('/template_module', 'AccessLevelController@template_module');
@@ -62,3 +62,12 @@ Route::any('/add_menu/{parent_id?}/{id?}', 'AccessLevelController@add_menu');
 Route::any('/list_menu/{parent_id?}', 'AccessLevelController@list_menu');
 Route::get('/delete_menu/{id}', 'AccessLevelController@delete_menu');
 Route::any('/get_child_menu', 'AccessLevelController@get_child_menu');
+Route::any('/add_group/{id?}', 'AccessLevelController@add_group');
+Route::get('/list_group', 'AccessLevelController@list_group');
+Route::get('/delete_group/{id}', 'AccessLevelController@delete_group');
+Route::any('/update_active_group', 'AccessLevelController@update_active_group');
+Route::get('/list_user', 'AccessLevelController@list_user');
+Route::any('/add_user/{id?}', 'AccessLevelController@add_user');
+Route::any('/city/{user_id?}', 'AccessLevelController@city');
+Route::any('/branch/{user_id?}', 'AccessLevelController@branch');
+Route::any('/provinces/{user_id?}', 'AccessLevelController@provinces');
