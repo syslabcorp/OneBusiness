@@ -89,10 +89,15 @@ function get_child_menus(id,menu_ids){
 }
 $(function(){
 	var menu_ids = {};
+	<?php if(isset($menu_ids)){ ?>
+	var menu_ids = <?php echo json_encode($menu_ids); ?>;
+	<?php } ?>
     <?php 
         if(isset($detail_edit_template->template_id)){ ?>
             get_template_module("<?php echo $detail_edit_template->template_id; ?>");
-        <?php }
+        <?php }else{ ?>
+			get_template_module(0);
+		<?php }
     ?>
 	get_child_menus(0, menu_ids);
 	$.each(menu_ids, function(k,v){
@@ -136,7 +141,14 @@ $(function(){
 });
 
 $(function () {
-	get_template_module(0);
+	$("#template-module").on("click", ".click_module", function(){
+		var _this_rel = $(this).attr("rel");
+		if($(_this_rel).hasClass("in")){
+			$(_this_rel).collapse("hide");
+		}else{
+			$(_this_rel).collapse("show");
+		}
+	});
     $("#corporation_name").change(function () {
         var template_id = $(this).attr('template-id');
         var corp_id = $(this).val();
