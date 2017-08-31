@@ -77,7 +77,7 @@
         <input type="time" class="form-control" disabled="true" value="{{ $rate->ZoneStart3 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 31:</label>
+        <label for="">Discount 3:</label>
         <input type="number" class="form-control" disabled="true" value="{{ $rate->Discount3 }}">
       </div>
     </div>
@@ -104,10 +104,12 @@
   </div>
   <hr style="margin: 0px 0px 10px 0px;">
   <div class="form-group text-center">
+    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "A"))
     <a class="btn btn-sm btn-success" href="{{ route('branchs.rates.index', [$branch, 'action' => 'new']) }}">
       <i class="fa fa-plus"></i> New
     </a>
-    @if($rate)
+    @endif
+    @if($rate && \Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
     <a class="btn btn-sm btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'tmplate_id' => $rate->tmplate_id]) }}">
       <i class="fa fa-pencil"></i> Edit
     </a>
@@ -141,7 +143,7 @@
         </tr>
       </thead>
       <tbody>
-        @foreach($rate->details()->get() as $detail)
+        @foreach($rate->details()->orderBy('nKey', 'ASC')->get() as $detail)
         <tr>
           <td style="vertical-align: middle;">{{ $detail->nKey }}</td>
           <td>
@@ -167,11 +169,13 @@
       </tbody>
     </table>
     <hr>
-    <div class="col-md-12">
+    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
       </button>
     </div>
+    @endif
   </form>
   @else
   <form action="{{ route('branchs.rates.details', [$branch, $rate]) }}" method="POST">
@@ -264,11 +268,13 @@
       @endfor
     </div>
     <hr>
-    <div class="col-md-12">
+    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
       </button>
     </div>
+    @endif
   </form>
   @endif
 </div>

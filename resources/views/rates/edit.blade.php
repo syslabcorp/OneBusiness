@@ -63,11 +63,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-6">
-        <label for="">Timezone 1:</label>
+        <label for="">Timezone 2:</label>
         <input type="time" class="form-control" name="ZoneStart2" value="{{ $rate->ZoneStart2 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 2:</label>
         <input type="number" class="form-control" name="Discount2" value="{{ $rate->Discount2 }}">
       </div>
     </div>
@@ -75,11 +75,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-6">
-        <label for="">Timezone 1:</label>
+        <label for="">Timezone 3:</label>
         <input type="time" class="form-control" name="ZoneStart3" value="{{ $rate->ZoneStart3 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 3:</label>
         <input type="number" class="form-control" name="Discount3" value="{{ $rate->Discount3 }}">
       </div>
     </div>

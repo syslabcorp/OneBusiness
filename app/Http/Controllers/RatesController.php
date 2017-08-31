@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 class RatesController extends Controller
 {
   public function index(Request $request, Branch $branch) {
-
     if($request->get('tmplate_id')) {
       $rate = RateTemplate::find($request->get('tmplate_id'));
     } else {
@@ -56,9 +55,29 @@ class RatesController extends Controller
   }
 
   public function store(Request $request, Branch $branch) {
+    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "A"))
+    {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+    }
     $this->validate($request,[
       'tmplate_name' => 'required',
     ]);
+
+    if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart2'))) {
+      \Session::flash('error', "Timezone 2 must be greater than Timezone 1");
+      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']));
+    }
+
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) >= strtotime($request->get('ZoneStart3'))) {
+      \Session::flash('error', "Timezone 3 must be greater than Timezone 2");
+      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']));
+    }
+
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart3'))) {
+      \Session::flash('error', "Timezone 3 must be greater than Timezone 1");
+      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']));
+    }
 
     $branch->rates()->create($request->only(
       'charge_mode', 'ZoneStart1', 'ZoneStart2', 'ZoneStart3', 'DiscStubPrint', "DiscStubMsg",
@@ -71,9 +90,30 @@ class RatesController extends Controller
   }
 
   public function update(Request $request, Branch $branch, RateTemplate $rate) {
+    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+    }
+
     $this->validate($request,[
       'tmplate_name' => 'required',
     ]);
+    
+    if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart2'))) {
+      \Session::flash('error', "Timezone 2 must be greater than Timezone 1");
+      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']));
+    }
+
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) >= strtotime($request->get('ZoneStart3'))) {
+      \Session::flash('error', "Timezone 3 must be greater than Timezone 2");
+      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']));
+    }
+
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart3'))) {
+      \Session::flash('error', "Timezone 3 must be greater than Timezone 1");
+      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']));
+    }
 
     $rate->update($request->only(
       'charge_mode', 'ZoneStart1', 'ZoneStart2', 'ZoneStart3', 'DiscStubPrint', "DiscStubMsg",
@@ -86,6 +126,12 @@ class RatesController extends Controller
   }
 
   public function details(Request $request, Branch $branch, RateTemplate $rate) {
+    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+    }
+
     foreach($rate->details()->get() as $detail) {
       $params = $request->get('detail')[$detail->nKey];
       foreach($params as $key => $value) {
@@ -99,6 +145,12 @@ class RatesController extends Controller
   }
 
   public function assign(Request $request, Branch $branch) {
+    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+    }
+
     if(empty($request->get('tmplate_id')) || empty($request->get('start_date')) || empty($request->get('end_date'))) {
       \Session::flash('error', "Can't assign rate template");
     }else {
