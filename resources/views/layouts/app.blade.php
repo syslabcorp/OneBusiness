@@ -31,10 +31,13 @@
 
 	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
 
+
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
 	</style>
+
+    @yield('header-scripts')
 </head>
 <body>
     <div id="app">
@@ -148,5 +151,6 @@
 			});
 		}
 	</script>
+@yield('footer-scripts')
 </body>
 </html>
