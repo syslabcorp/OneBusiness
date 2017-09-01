@@ -50,7 +50,7 @@
     <div class="row">
       <div class="col-xs-6">
         <label for="">Timezone 1:</label>
-        <input type="time" class="form-control" name="ZoneStart1">
+        <input type="time" class="form-control" name="ZoneStart1"  value="{{ old('ZoneStart1') }}">
       </div>
       <div class="col-xs-6">
         <label for="">Discount 1:</label>
@@ -61,11 +61,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-6">
-        <label for="">Timezone 1:</label>
-        <input type="time" class="form-control" name="ZoneStart2">
+        <label for="">Timezone 2:</label>
+        <input type="time" class="form-control" name="ZoneStart2" value="{{ old('ZoneStart2') }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 2:</label>
         <input type="number" class="form-control" name="Discount2">
       </div>
     </div>
@@ -73,11 +73,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-6">
-        <label for="">Timezone 1:</label>
-        <input type="time" class="form-control" name="ZoneStart3">
+        <label for="">Timezone 3:</label>
+        <input type="time" class="form-control" name="ZoneStart3" value="{{ old('ZoneStart3') }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 3:</label>
         <input type="number" class="form-control" name="Discount3">
       </div>
     </div>
