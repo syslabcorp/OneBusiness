@@ -40,11 +40,11 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+      /*  if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }
+        }*/
 
         //get instances of inventoryType
         $invTypes = InventoryType::orderBy('type_desc', 'ASC')->get();
@@ -74,7 +74,7 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
 
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccess("Retail Items", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -136,7 +136,7 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+        if(!\Auth::user()->checkAccess("Retail Items", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -169,7 +169,7 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+        if(!\Auth::user()->checkAccess("Retail Items", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -218,7 +218,7 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "D"))
+        if(!\Auth::user()->checkAccess("Retail Items", "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");

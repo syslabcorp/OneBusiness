@@ -14,7 +14,7 @@ class ProductLineController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
+        if(!\Auth::user()->checkAccess("Products", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -45,7 +45,7 @@ class ProductLineController extends Controller
      */
     public function store(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccess("Products", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -96,7 +96,7 @@ class ProductLineController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+        if(!\Auth::user()->checkAccess("Products", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -122,7 +122,7 @@ class ProductLineController extends Controller
      */
     public function destroy($id)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "D"))
+        if(!\Auth::user()->checkAccess("Products", "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
