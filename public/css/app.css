@@ -17,10 +17,13 @@ label.error {color: #ff0000;font-size: 12px;font-weight: normal;}
 .click_module{cursor:pointer}
 .margin-0{ margin: 0 !important; }
 
-.container-fluid {padding-top: 110px;}
+.container-fluid {padding-top: 90px;}
 nav.navbar-static-top {position: fixed;width: 100%;z-index: 99999;}
 .registermargin-top{margin-top: 110px;}
 
 /*****19-08-2017*******/
 .sweet-overlay{  z-index: 99999 !important;}
 .sweet-alert{  z-index:999999 !important;}
+.visibility-hidden{ visibility: hidden; }
+#page-content-togle-sidebar-sec h3.text-center {padding-top: 20px;}
+.margin-top-20{margin-top:20px;}

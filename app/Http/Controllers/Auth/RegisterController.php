@@ -49,8 +49,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'Full_Name' => 'required|max:255',
-            'Username' => 'required|max:255|unique:sysusers',
-            'email' => 'required|email|max:255|unique:sysusers',
+            'Username' => 'required|max:255|unique:t_users',
+            'email' => 'required|email|max:255|unique:t_users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -65,13 +65,14 @@ class RegisterController extends Controller
     {
         return User::create([
             'Full_Name' => $data['Full_Name'],
-            'Username' => $data['Username'],
+            'UserName' => $data['Username'],
+            'uname' => $data['Username'],
             'email' => $data['email'],
             'mobile_no' => str_replace("-", "", $data['mobile_no']),
             'otp_auth' => (isset($data['otp_auth']) ? $data['otp_auth'] : 0),
             'bio_auth' => (isset($data['bio_auth']) ? $data['bio_auth'] : 0),
             //'password' => bcrypt($data['password']),
-            'password' => md5($data['password']),
+            'passwrd' => md5($data['password']),
         ]);
     }
 }

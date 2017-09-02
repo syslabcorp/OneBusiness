@@ -53,11 +53,17 @@
                                         else if(isset($det->Area_type) && $det->Area_type == "CT"){ $ar_type = "City";}
                                         else if(isset($det->Area_type) && $det->Area_type == "BR"){ $ar_type = "Branch";}
                                         else{ $ar_type = "";}
+                                        /* username Check*/
+                                        if(!empty($det->uname)){
+                                            $username = $det->uname;
+                                        }else{
+                                            $username = $det->UserName;
+                                        }
                                         ?>
                                             <tr>
                                                 <td>{{ $det->UserID }}</td>
-                                                <td>{{ $det->Username }}</td>
-                                                <td>{{ ($det->template_ID) ? $det->template_ID : '' }}</td>
+                                                <td>{{ $username }}</td>
+                                                <td>{{ ($det->rights_template_id) ? $det->rights_template_id : '' }}</td>
                                                 <td>{{ $ar_type }}</td>
                                                 <td>{{ implode(", ", $grpname) }}</td>
                                                 <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="glyphicon glyphicon-pencil"></span></a>

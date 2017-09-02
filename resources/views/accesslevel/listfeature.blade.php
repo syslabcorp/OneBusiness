@@ -29,9 +29,7 @@
                             @if(!isset($module_id))
                                 List of Features 
                             @else
-                                @foreach($detailfeature as $key=>$detailfet)
-                                    <?php $desc = $detailfet->description; ?>
-                                @endforeach
+                                <?php $desc = $module_desc->description; ?>
                                     <a href="{{ URL('list_module') }}" >{{ $desc }}</a>
                             @endif   
                             <a href="{{ URL('add_feature'.(($module_id) ? ('/0/'.$module_id) : '' )) }}" class="pull-right">Add Feature</a></div>

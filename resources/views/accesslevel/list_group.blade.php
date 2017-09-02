@@ -33,7 +33,7 @@
                                         <tr>
                                             <th>Group No.</th>
                                             <th>Group Description</th>
-                                            <th>Active</th>
+                                            <th class="text-center">Active</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -42,8 +42,8 @@
                                             <tr>
                                                 <td>{{ $det->group_ID }}</td>
                                                 <td>{{ $det->desc }}</td>
-                                                <td>
-                                                    <input id="active_grp" class="active_group" type="checkbox" group-id="{{ $det->group_ID }}" name="active_group" {{isset($det->status) && $det->status == 1 ? "checked" : "" }} >
+                                                <td class="text-center" >
+                                                    <input id="active_grp" class="active_group" type="checkbox" group-id="{{ $det->group_ID }}" name="active_group" {{isset($det->status) && $det->status == 1 ? "checked" : "" }} disabled >
                                                 </td>
 
                                                 <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="glyphicon glyphicon-pencil"></span></a>

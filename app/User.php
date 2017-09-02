@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
-	protected $table = 'sysusers';
+	protected $table = 't_users';
 	protected $primaryKey = 'UserID';
 	
     /**
@@ -20,7 +20,7 @@ class User extends Authenticatable
         'name', 'username', 'email', 'password', 'phone', 'pswd_auth', 'otp_auth', 'bio_auth',
     ]; */
 	protected $fillable = [
-        'Full_Name', 'Username', 'email', 'password', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
+        'UserName', 'uname','Full_Name','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
     ];
 
     /**
@@ -29,6 +29,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'passwrd', 'remember_token',
     ];
 }

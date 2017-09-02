@@ -19,7 +19,7 @@
     position: fixed;
     height: 100%;
     z-index: 10000;
-    transition: all .4s ease 0s;    margin-top: -21px;
+    transition: all .4s ease 0s;
 }
 
 .sidebar-nav {
@@ -41,7 +41,7 @@
     padding-left: 300px;
 }
 #togle-sidebar-sec.active #sidebar-togle-sidebar-sec {
-    left: 300px;    margin-top: -21px;
+    left: 300px;    margin-top: 0px;
 }
 
 #page-content-togle-sidebar-sec {
