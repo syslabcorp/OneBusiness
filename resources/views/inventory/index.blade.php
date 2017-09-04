@@ -1,25 +1,26 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <style>
-        thead:before, thead:after { display: none; }
-        tbody:before, tbody:after { display: none; }
-        .dataTables_scroll
-        {
-            overflow-x: auto;
-            overflow-y: auto;
-        }
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-        th.dt-center, td.dt-center { text-align: center; }
+    <link href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css"/></link>
+
+
+    <!--Fonts-->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">
+    <style>
+
 
         .panel-body {
             padding: 15px !important;
         }
-        div.dataTables_wrapper {
-            margin: 0 auto;
-        }
 
         tr > td:last-child{
-            width: 90px !important;
+            width: 70px !important;
+        }
+
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
         }
 
     </style>
@@ -27,7 +28,10 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-md-2">
+                <div id="treeview_json"></div>
+            </div>
+            <div class="col-md-10">
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -35,9 +39,7 @@
                             <div class="col-md-6">
                             </div>
                             <div class="col-md-6 text-right">
-                                @if(\Auth::user()->checkAccess("Retail Items", "A"))
-                                <a href="{!! url('inventory/create') !!}" class="pull-right">Add Item</a>
-                                    @endif
+                                <a href="{!! url('inventory/create') !!}" class="pull-right @if(\Auth::user()->checkAccess("Retail Items", "A")) disabled @endif">Add Item</a>
                             </div>
                         </div>
 
@@ -46,7 +48,7 @@
                         <table class="table table-striped table-bordered" id="myTable">
                             <thead>
                             <tr>
-                                <th>ItemID</th>
+                                <th>Item ID</th>
                                 <th>Item Code</th>
                                 <th>Product Line</th>
                                 <th>Brand</th>
@@ -85,16 +87,12 @@
                                 <td><input type="checkbox" name="printThis" @if($article->Print_This == 1) checked @endif disabled></td>
                                 <td><input type="checkbox" name="prodActive" @if($article->Active == 1) checked @endif disabled></td>
                                 <td>
-                                    @if(\Auth::user()->checkAccess("Retail Items", "E"))
-                                    <a href="/inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm">
+                                    <a href="/inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm @if(\Auth::user()->checkAccess("Retail Items", "E")) disabled @endif">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    @endif
-                                    @if(\Auth::user()->checkAccess("Retail Items", "D"))
-                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete">
+                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Retail Items", "D")) disabled @endif">
                                         <i class="fa fa-trash"></i><span style="display: none;">{{ $article->item_id }}</span>
                                     </a>
-                                    @endif
                                 </td>
                             </tr>
                                 @endforeach
@@ -137,16 +135,15 @@
 @section('footer-scripts')
     <script>
         (function($){
-                $('#myTable').DataTable({
-                    stateSave: true,
-                    dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
-                    columnDefs: [
-                        { orderable: false, targets: 15},
-                    ]
-                });
-                jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+         var table = $('#myTable').DataTable({
+                deferRender:    true,
+                stateSave: true,
+                scrollX: true,
+                dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
+            });
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();

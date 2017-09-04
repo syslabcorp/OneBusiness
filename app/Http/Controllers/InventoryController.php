@@ -19,6 +19,11 @@ class InventoryController extends Controller
      */
     public function index()
     {
+        if(!\Auth::user()->checkAccess("Retail Items", "V"))
+        {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
 
         //user access rights
         $articles = DB::table('s_invtry_hdr')
@@ -40,11 +45,11 @@ class InventoryController extends Controller
      */
     public function create()
     {
-      /*  if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccess("Retail Items", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }*/
+        }
 
         //get instances of inventoryType
         $invTypes = InventoryType::orderBy('type_desc', 'ASC')->get();
