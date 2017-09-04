@@ -20,54 +20,74 @@
             cursor: default;
         }
     </style>
-    @endsection
+@endsection
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2">
-                <div id="treeview_json"></div>
-            </div>
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+            <div id="togle-sidebar-sec" class="active">
+                <!-- Sidebar -->
+                <div id="sidebar-togle-sidebar-sec">
+                    <ul id="sidebar_menu" class="sidebar-nav">
+                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                    </ul>
+                    <div class="sidebar-nav" id="sidebar">
+                        <div id="treeview_json"></div>
+                    </div>
+                </div>
+
+                <!-- Page content -->
+                <div id="page-content-togle-sidebar-sec">
+                    @if(Session::has('alert-class'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @elseif(Session::has('flash_message'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @endif
+                    <div class="col-md-12 col-xs-12">
+                        <h3 class="text-center">Services</h3>
                         <div class="row">
-                            <div class="col-xs-6">
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                <a href="#" class="pull-right @if(\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
-                               <span class="text-muted"> Add New Service</span>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                        </div>
+                                        <div class="col-xs-6 text-right">
+                                            <a href="#" class="pull-right @if(\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                                            <span class="text-muted"> Add New Service</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered" id="myTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Service Code</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($services as $service)
+                                            <tr>
+                                                <td>{{ $service->Serv_Code }}</td>
+                                                <td>{{ $service->Description }}</td>
+                                                <td>
+                                                    @if(\Auth::user()->checkAccess("Services", "E"))
+                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(\Auth::user()->checkAccess("Services", "E")) disabled @endif">
+                                                            <i class="fa fa-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
+                                                        </a>
+
+                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Services", "D")) disabled @endif">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                </td>
+                                                @endforeach
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-striped table-bordered" id="myTable">
-                            <thead>
-                            <tr>
-                                <th>Service Code</th>
-                                <th>Description</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($services as $service)
-                            <tr>
-                                <td>{{ $service->Serv_Code }}</td>
-                                <td>{{ $service->Description }}</td>
-                                <td>
-                                    @if(\Auth::user()->checkAccess("Services", "E"))
-                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(\Auth::user()->checkAccess("Services", "E")) disabled @endif">
-                                        <i class="fa fa-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
-                                    </a>
-
-                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Services", "D")) disabled @endif">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </td>
-                                @endforeach
-                            </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -165,26 +185,26 @@
                         <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
                     </div>
                     <form action="" method="POST" >
-                    <div class="modal-body">
-                        <p>You are about to delete one track, this procedure is irreversible.</p>
-                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
-                        <p class="debug-url"></p>
-                    </div>
+                        <div class="modal-body">
+                            <p>You are about to delete one track, this procedure is irreversible.</p>
+                            <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                            <p class="debug-url"></p>
+                        </div>
 
-                    <div class="modal-footer">
-                        <input style="display: none" class="serviceId" >
-                        {!! csrf_field() !!}
-                        {{ method_field('Delete') }}
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
-                    </div>
+                        <div class="modal-footer">
+                            <input style="display: none" class="serviceId" >
+                            {!! csrf_field() !!}
+                            {{ method_field('Delete') }}
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
         <!-- end Modal -->
     </div>
-    @endsection
+@endsection
 
 @section('footer-scripts')
     <script>
@@ -217,7 +237,7 @@
                 $('#editService .serviceDescription').val(description);
                 $('#editService form').attr('action', 'services/'+id);
                 $('#editService').modal("show");
-             //   alert($(this).closest('td').find('span').text());
+                //   alert($(this).closest('td').find('span').text());
             });
 
             $(document).on('click', '.delete', function (e) {
@@ -233,4 +253,4 @@
 
         })(jQuery);
     </script>
-    @endsection
+@endsection

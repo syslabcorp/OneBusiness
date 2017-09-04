@@ -22,54 +22,73 @@
     </style>
 @endsection
 @section('content')
-    <div class="container">
-        <div class="col-md-2">
-            <div id="treeview_json"></div>
-        </div>
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-10">
+            <div id="togle-sidebar-sec" class="active">
+                <!-- Sidebar -->
+                <div id="sidebar-togle-sidebar-sec">
+                    <ul id="sidebar_menu" class="sidebar-nav">
+                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                    </ul>
+                    <div class="sidebar-nav" id="sidebar">
+                        <div id="treeview_json"></div>
+                    </div>
+                </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <!-- Page content -->
+                <div id="page-content-togle-sidebar-sec">
+                    @if(Session::has('alert-class'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @elseif(Session::has('flash_message'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @endif
+                    <div class="col-md-12 col-xs-12">
+                        <h3 class="text-center">Product Lines</h3>
                         <div class="row">
-                            <div class="col-xs-6">
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                <a href="#" class="pull-right  @if(\Auth::user()->checkAccess("Products", "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                        </div>
+                                        <div class="col-xs-6 text-right">
+                                            <a href="#" class="pull-right  @if(\Auth::user()->checkAccess("Products", "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered" id="myTable">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Product Line</th>
+                                            <th>Active</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($products as $product)
+                                            <tr>
+                                                <td>{{ $product->ProdLine_ID }}</td>
+                                                <td>{{ $product->Product }}</td>
+                                                <td>
+                                                    <input type="checkbox" @if($product->Active) checked @endif disabled>
+                                                </td>
+                                                <td>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(\Auth::user()->checkAccess("Products", "E")) disabled @endif">
+                                                        <i class="fa fa-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
+                                                    </a>
+                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(\Auth::user()->checkAccess("Products", "D")) disabled @endif">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                                @endforeach
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-striped table-bordered" id="myTable">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product Line</th>
-                                <th>Active</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($products as $product)
-                                <tr>
-                                    <td>{{ $product->ProdLine_ID }}</td>
-                                    <td>{{ $product->Product }}</td>
-                                    <td>
-                                        <input type="checkbox" @if($product->Active) checked @endif disabled>
-                                    </td>
-                                    <td>
-                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(\Auth::user()->checkAccess("Products", "E")) disabled @endif">
-                                            <i class="fa fa-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
-                                        </a>
-                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(\Auth::user()->checkAccess("Products", "D")) disabled @endif">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </td>
-                                    @endforeach
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
