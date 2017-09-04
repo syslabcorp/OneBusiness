@@ -9,7 +9,7 @@
 			<div class="alert alert-danger alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
 		@endif
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
+            <div class="panel panel-default margin-top-20">
                 <div class="panel-heading">Change Password</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ URL::to('/change_pass') }}" id="form-change-password">

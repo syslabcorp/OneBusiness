@@ -9,7 +9,7 @@
 			<div class="alert alert-danger alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
 		@endif
         <div class="col-md-12">
-            <div class="panel panel-default">
+            <div class="panel panel-default margin-top-20">
                 <div class="panel-heading">Business One Users List</div>
                 <div class="panel-body">
 						<div class='row'>

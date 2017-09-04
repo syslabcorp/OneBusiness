@@ -53,7 +53,7 @@ input.area_user {
                                         <select class="form-control required" id="temp_name" name="temp_id">
                                             <option value="">Select a Template</option>
                                                 @foreach ($template as $temp) 
-                                                    <option value="{{ $temp ->template_id }}" {{ (isset($detail_edit_sysuser->template_ID) && ($detail_edit_sysuser->template_ID == $temp ->template_id)) ? "selected" : "" }} >{{ $temp->description }}</option> 
+                                                    <option value="{{ $temp ->template_id }}" {{ (isset($detail_edit_sysuser->rights_template_id) && ($detail_edit_sysuser->rights_template_id == $temp ->template_id)) ? "selected" : "" }} >{{ $temp->description }}</option> 
                                                 @endforeach
                                         </select>
                                     </div>

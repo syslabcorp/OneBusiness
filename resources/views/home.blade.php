@@ -18,7 +18,7 @@
       <!-- Page content -->
       <div id="page-content-togle-sidebar-sec">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-default margin-top-20">
 				<div class="panel-body">
 					<div class="col-md-12">
 						<div class="row">

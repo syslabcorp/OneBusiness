@@ -148,13 +148,15 @@ class AccessLevelController extends Controller
     }
 	
     public function list_feature($module_id = NULL)
-    {
+    {   
+        $data['module_id'] = $module_id;
 		if($module_id == NULL){
-			$detailfeature = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->get();   
+			$data['detailfeature'] = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->get();   
 		}else{
-			$detailfeature = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->where('module_masters.module_id', $module_id)->get();   
+			$data['detailfeature'] = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->where('module_masters.module_id', $module_id)->get(); 
+            $data['module_desc'] =   DB::table('module_masters')->select('description')->where('module_id', $module_id)->first(); 
 		}
-        return view('accesslevel.listfeature', ['detailfeature' => $detailfeature, 'module_id' => $module_id]);  
+        return view('accesslevel.listfeature', $data);  
     }
 	
     public function destroyfeature($feature_id,$module_id = NULL)
@@ -518,7 +520,7 @@ class AccessLevelController extends Controller
         }
         $data['grp_IDs'] = $grp_IDs;
         
-        $detail = DB::table('sysusers')->get();
+        $detail = DB::table('t_users')->get();
         $data['user_detail'] = $detail;
         return view('accesslevel.list_user',$data);  
     }
@@ -554,14 +556,14 @@ class AccessLevelController extends Controller
             $provience_id  = isset($formData['provience_id']) ? implode(",", $formData['provience_id']) : "";
             
             $data_user_area = array('user_ID' => $id ,'branch' => $branch_id ,'city' => $city_id,'province' => $provience_id);
-            $data_sysusers = array('template_ID' => $template_ID ,'Area_type' => $Area_type,'group_ID' => $groupids);
+            $data_sysusers = array('rights_template_id' => $template_ID ,'Area_type' => $Area_type,'group_ID' => $groupids);
             $user_exists = DB::table('user_area')->where('user_ID', $id)->first(); 
             if($user_exists){
-                DB::table('sysusers')->where('UserID', $id)->update($data_sysusers);
+                DB::table('t_users')->where('UserID', $id)->update($data_sysusers);
                 DB::table('user_area')->where('user_ID', $id)->update($data_user_area);
                 Request::session()->flash('flash_message', 'Users has been added.');
             }else{   
-                DB::table('sysusers')->where('UserID', $id)->update($data_sysusers);
+                DB::table('t_users')->where('UserID', $id)->update($data_sysusers);
                 DB::table('user_area')->insert($data_user_area);
                 Request::session()->flash('flash_message', 'Users has been added.');
             }
@@ -569,7 +571,7 @@ class AccessLevelController extends Controller
             return redirect('list_user');
         }
         if ($id != NULL) {
-            $detail_edit_sysuser = DB::table('sysusers')->where('UserID', $id)->first(); 
+            $detail_edit_sysuser = DB::table('t_users')->where('UserID', $id)->first(); 
             $data['group_ids'] = explode(",", $detail_edit_sysuser->group_ID);
             $data['detail_edit_sysuser'] = $detail_edit_sysuser;  
         }
@@ -625,7 +627,6 @@ class AccessLevelController extends Controller
         }
         return view('accesslevel.branch', $data);
     }
-
     
 }
 

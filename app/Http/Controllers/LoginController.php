@@ -22,10 +22,10 @@ class LoginController extends Controller
 		if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$email = $formData['email'];
-			$users = DB::table('sysusers')->where('Username', $email)->first();
+			$users = DB::table('t_users')->where('uname', $email)->first();
 			if(count($users)){
 				$data['email'] = $users->email;
-				$data['username'] = $users->Username;
+				$data['username'] = $users->uname;
 				
 				$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 				if($users->bio_auth == 1 && $finger_exist && $users->otp_auth != 1){
@@ -67,13 +67,13 @@ class LoginController extends Controller
 			$formData = Request::all();
 			$email = $formData['email'];
 			$password = $formData['password'];
-			$users = DB::table('sysusers')->where('email', $email)->get();
+			$users = DB::table('t_users')->where('email', $email)->get();
 			$id = 0;
 			foreach($users AS $user){
-				if(md5($password) == $user->password){
+				if(md5($password) == $user->passwrd){
 					$id = $user->UserID;
 					$phone = $user->mobile_no;
-					$username = $user->Username;
+					$username = $user->uname;
 					break;
 				}
 			}
@@ -101,7 +101,7 @@ class LoginController extends Controller
 						Request::session()->flash('flash_message', 'Phone number is invalid or not registered.');
 						return redirect()->intended('username');
 					}
-					DB::table('sysusers')->where('UserID', $id)->update(['otp' => $otp, 'otp_generate_time' => time() ]);
+					DB::table('t_users')->where('UserID', $id)->update(['otp' => $otp, 'otp_generate_time' => time() ]);
 					$data['user_id'] = $id;
 					return view('login.one_time_pass', $data);
 				}
@@ -120,7 +120,7 @@ class LoginController extends Controller
 		if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$currtime = strtotime("- 5 minutes");
-			$users = DB::table('sysusers')->where('UserID', $formData['user_id'])->where('otp', $formData['otp'])->first();
+			$users = DB::table('t_users')->where('UserID', $formData['user_id'])->where('otp', $formData['otp'])->first();
 			if(count($users)){
 				if($users->otp_generate_time < $currtime){
 					Request::session()->flash('flash_message', 'Your OTP has been expired.');
@@ -128,7 +128,7 @@ class LoginController extends Controller
 				}else if($formData['is_forgot']){
 					return redirect()->intended('change_pass/'.base64_encode($formData['user_id']));
 				}
-				$username = $users->Username;
+				$username = $users->uname;
 				if(!$this->check_active_users($username)){
 					$datalog = array('user_name' => $users->Username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
 					DB::table('demo_log')->insert($datalog);
@@ -174,7 +174,7 @@ class LoginController extends Controller
 			$formData = Request::all();
 			switch($formData['action']){
 				case 'check_btn':
-					$users = DB::table('sysusers')->where('Username', $formData['username'])->first();
+					$users = DB::table('t_users')->where('uname', $formData['username'])->first();
 					if(!empty($users) && $users->otp_auth == 0 && $users->bio_auth == 1){
 						$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 						$response['id'] = $users->UserID;
@@ -203,7 +203,7 @@ class LoginController extends Controller
 				break;
 				
 				case 'btnontype':
-					$users = DB::table('sysusers')->where('Username', $formData['username'])->first();
+					$users = DB::table('t_users')->where('uname', $formData['username'])->first();
 					$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 					$response['id'] = $users->UserID;
 					$response['finger_exist'] = $finger_exist;
@@ -212,7 +212,7 @@ class LoginController extends Controller
 						$response['btn'] = "<a href='finspot:FingerspotVer;$url_verification' class='btn btn-success'>Login</a>";
 					}else{
 						$url_register = base64_encode($base_url."/register.php?user_id=".$users->UserID);
-						$response['btn'] = "<a href='finspot:FingerspotReg;$url_register' class='user-finger btn btn-primary' onclick=\"user_register_type('".$users->UserID."','".$users->Username."')\" finger-count = '$finger_exist'>Register</a>";
+						$response['btn'] = "<a href='finspot:FingerspotReg;$url_register' class='user-finger btn btn-primary' onclick=\"user_register_type('".$users->UserID."','".$users->uname."')\" finger-count = '$finger_exist'>Register</a>";
 					}
 					echo json_encode($response);
 				break;
@@ -306,11 +306,11 @@ class LoginController extends Controller
 	}
 	
 	function getUser() {
-		$finger_count = DB::table('sysusers')->where('bio_auth', 1)->orderBy('Username')->get();
+		$finger_count = DB::table('t_users')->where('bio_auth', 1)->orderBy('uname')->get();
 		foreach ($finger_count AS $fingercount) {
 			$arr[] = array(
 				'user_id'	=> $fingercount->UserID,
-				'user_name'	=> $fingercount->Username
+				'user_name'	=> $fingercount->uname
 			);
 		}
 		return $arr;
@@ -326,7 +326,7 @@ class LoginController extends Controller
 	}
 	
 	function checkUserName($user_name) {
-		$finger_count = DB::table('sysusers')->where('Username', $user_name)->count();
+		$finger_count = DB::table('t_users')->where('uname', $user_name)->count();
 		if ($finger_count>0) {
 			return "Username exist!";
 		} else {
@@ -371,12 +371,12 @@ class LoginController extends Controller
 		if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$username = $formData['username'];
-			$users = DB::table('sysusers')->where('Username', $username)->first();
+			$users = DB::table('t_users')->where('uname', $username)->first();
 			if(count($users)){
 				$id = $users->UserID;
 				$phone = $users->mobile_no;
 				$data['email'] = $users->email;
-				$data['username'] = $users->Username;
+				$data['username'] = $users->uname;
 				$otp = mt_rand(1000, 9999);
 				$message = "Business One Forgot Password OTP: ".$otp;
 				$response = Nexmo::message()->send([
@@ -388,7 +388,7 @@ class LoginController extends Controller
 					Request::session()->flash('flash_message', 'Phone number is invalid or not registered.');
 					return redirect()->intended('forgot_pass');
 				}
-				DB::table('sysusers')->where('UserID', $id)->update(['otp' => $otp, 'otp_generate_time' => time() ]);
+				DB::table('t_users')->where('UserID', $id)->update(['otp' => $otp, 'otp_generate_time' => time() ]);
 				$data['user_id'] = $id;
 				$data['forgot_pass'] = 1;
 				return view('login.one_time_pass', $data);
@@ -408,7 +408,7 @@ class LoginController extends Controller
 				$user_id = base64_encode($formData['user_id']);
 				return redirect()->intended('change_pass/'.$user_id);
 			}else{
-				DB::table('sysusers')->where('UserID', $formData['user_id'])->update(['password' => md5($formData['password'])]);
+				DB::table('t_users')->where('UserID', $formData['user_id'])->update(['passwrd' => md5($formData['password'])]);
 				Request::session()->flash('flash_message', 'Password has been updated.');
 				Request::Session()->flash('alert-class', 'alert-success');
 				$user_id = base64_encode($formData['user_id']);
@@ -426,7 +426,7 @@ class LoginController extends Controller
 		if(!isset($inputs['username'])){
 			return response()->json(['status' => false]);
 		}
-		$is_exist = DB::table('sysusers')->where('Username', $inputs['username'])->count();
+		$is_exist = DB::table('t_users')->where('uname', $inputs['username'])->count();
 		if($is_exist){
 			return response()->json(['status' => true]);
 		}else{
@@ -440,7 +440,7 @@ class LoginController extends Controller
 		if(!isset($inputs['username']) || !isset($inputs['password'])){
 			return response()->json(['status' => false]);
 		}
-		$is_exist = DB::table('sysusers')->where('Username', $inputs['username'])->where('password', md5($inputs['password']))->count();
+		$is_exist = DB::table('t_users')->where('uname', $inputs['username'])->where('passwrd', md5($inputs['password']))->count();
 		if($is_exist){
 			return response()->json(['status' => true]);
 		}else{
@@ -454,7 +454,7 @@ class LoginController extends Controller
 		if(!isset($inputs['username']) || !isset($inputs['otp'])){
 			return response()->json(['status' => false]);
 		}
-		$is_exist = DB::table('sysusers')->where('Username', $inputs['username'])->where('otp', $inputs['otp'])->where('otp_generate_time', '>', strtotime("- 5 minutes"))->count();
+		$is_exist = DB::table('t_users')->where('uname', $inputs['username'])->where('otp', $inputs['otp'])->where('otp_generate_time', '>', strtotime("- 5 minutes"))->count();
 		if($is_exist){
 			return response()->json(['status' => true]);
 		}else{
@@ -468,7 +468,7 @@ class LoginController extends Controller
 		if(!isset($inputs['username']) || !isset($inputs['password'])){
 			return response()->json(['status' => false]);
 		}
-		$user = DB::table('sysusers')->where('Username', $inputs['username'])->where('password', md5($inputs['password']))->first();
+		$user = DB::table('t_users')->where('uname', $inputs['username'])->where('passwrd', md5($inputs['password']))->first();
 		if(isset($user->mobile_no) && $user->mobile_no != ''){
 			$otp = mt_rand(1000, 9999);
 			$message = "Business One login OTP: ".$otp;
@@ -481,7 +481,7 @@ class LoginController extends Controller
 				return response()->json(['status' => false]);
 			}else{
 				$id = $user->UserID;
-				DB::table('sysusers')->where('UserID', $id)->update(['otp' => $otp, 'otp_generate_time' => time() ]);
+				DB::table('t_users')->where('UserID', $id)->update(['otp' => $otp, 'otp_generate_time' => time() ]);
 				return response()->json(['status' => true]);
 			}
 		}else{
