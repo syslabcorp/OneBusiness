@@ -14,11 +14,11 @@ class BrandController extends Controller
      */
     public function index()
     {
-        /*if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
+        if(!\Auth::user()->checkAccess("Brands", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }*/
+        }
         //retrieve brands
         $brands = Brand::orderBy('Brand_ID', 'ASC')->get();
 

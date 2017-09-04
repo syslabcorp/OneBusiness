@@ -14,22 +14,28 @@
         .panel-body {
             padding: 15px !important;
         }
+
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
     @endsection
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-lg-12">
-
+            <div class="col-md-2">
+                <div id="treeview_json"></div>
+            </div>
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-6">
                             </div>
                             <div class="col-xs-6 text-right">
-                                @if(\Auth::user()->checkAccess("Services", "A"))
-                                <a href="#" class="pull-right" data-toggle="modal" data-target="#addNewService">Add New Service</a>
-                                    @endif
+                                <a href="#" class="pull-right @if(\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                               <span class="text-muted"> Add New Service</span>
                             </div>
                         </div>
 
@@ -50,15 +56,13 @@
                                 <td>{{ $service->Description }}</td>
                                 <td>
                                     @if(\Auth::user()->checkAccess("Services", "E"))
-                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit">
+                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(\Auth::user()->checkAccess("Services", "E")) disabled @endif">
                                         <i class="fa fa-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
                                     </a>
-                                    @endif
-                                    @if(\Auth::user()->checkAccess("Services", "D"))
-                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete">
+
+                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Services", "D")) disabled @endif">
                                         <i class="fa fa-trash"></i>
                                     </a>
-                                    @endif
                                 </td>
                                 @endforeach
                             </tr>
