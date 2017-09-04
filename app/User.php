@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
-	protected $table = 'sysusers';
+	protected $table = 't_users';
 	protected $primaryKey = 'UserID';
 	private $permissions;
     /**
@@ -41,10 +41,9 @@ class User extends Authenticatable
     {
         if($this->permissions == null)
         {
-            $this->permissions = \DB::table('sysuser_template')
-                ->leftJoin("rights_detail", "sysuser_template.template_id", "=", "rights_detail.template_id")
+            $this->permissions = \DB::table('rights_detail')
                 ->leftJoin("feature_masters", "rights_detail.feature_id", "=", "feature_masters.feature_id")
-                ->where('sysuser_template.UserID', '=', \Auth::user()->UserID)
+                ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
                 ->get();
         }
 

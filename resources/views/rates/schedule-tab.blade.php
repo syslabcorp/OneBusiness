@@ -1,6 +1,6 @@
 <div class="col-md-4">
   <h4>View Rates Schedule By:</h4>
-  <form method="GET">
+  <form method="GET" action="{{ route('branchs.rates.index', [$branch, '#schedule'])}}">
     <div class="form-group">
       <label for="">Year</label>
       <select name="year" class="form-control">
@@ -14,7 +14,7 @@
       <div class="clearfix"></div>
       @for($i = 1; $i <= 12; $i++)
       @php $month = date_create("01-$i-2017") @endphp
-      <div class="control-checkbox" style="display:inline-block;margin: 2px 20px 2px 0px;">
+      <div class="control-checkbox" style="display:inline-block;margin: 5px 0px 5px 0px;width: 25%;">
         <input type="checkbox" name="months[]" id="{{ $month->format('F') }}" value="{{ $month->format('n') }}"
           {{ array_search($month->format('n'), $months) !== false ? "checked" : "" }}>
         <label for="{{ $month->format('F') }}">{{ $month->format('F') }}</label>
@@ -26,10 +26,12 @@
       <button class="btn btn-sm btn-primary">
         Filter
       </button>
+      @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
       <button class="btn btn-sm btn-success" data-toggle="modal" type="button"
         data-target="#assign-rate-template">
         Assign Template
       </button>
+      @endif
       <a class="btn btn-sm btn-default" href="{{ route('branchs.index') }}">
         Back
       </a>
@@ -58,13 +60,17 @@
           @endif
         </td>
         <td>{{ $schedule->rate_date->format('d') }}</td>
-        <td>{{ $schedule->template->template_name }}</td>
+        <td>
+          <span style="color: {{ $schedule->template->Color }}">
+            {{ $schedule->template->tmplate_name }}
+          </span>
+        </td>
       </tr>
       @endforeach
       @if(!count($schedules))
       <tr>
         <td colspan="4" class="text-center">
-          <i>Count not found any schedules</i>
+          <i>No scheduled template</i>
         </td>
       </tr>
       @endif
@@ -137,10 +143,10 @@
           </div>
           <div class="form-group">
             <label for="" style="font-weight: 500;">Select Template:</label>
-            <select name="template_id" class="form-control">
+            <select name="tmplate_id" class="form-control">
               <option value="">Select Name</option>
               @foreach($branch->rates()->get() as $template)
-                <option value="{{ $template->template_id }}">{{ $template->template_name }}</option>
+                <option value="{{ $template->tmplate_id }}">{{ $template->tmplate_name }}</option>
               @endforeach
             </select>
           </div>

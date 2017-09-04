@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('head')
 <title>Edit Branch: {{ $branch->ShortName }}</title>
@@ -8,10 +8,7 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div class="col-md-2">
-            <div id="treeview_json"></div>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4>Edit Branch: {{ $branch->ShortName }}</h4>

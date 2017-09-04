@@ -1,11 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('content')
 <section class="content rate-page">
-    <div class="col-md-2">
-        <div id="treeview_json"></div>
-    </div>
-    <div class="col-md-10">
+    <div class="col-md-12">
         <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Branch: {{ $branch->ShortName }}</h4>
@@ -18,7 +15,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane" id="template">
-                    @if(\Auth::user()->checkAccess("Branch Details", "V"))
+                    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "V"))
                         @include('rates.template-tab')
                     @else
                         <div class="alert alert-danger no-close">
@@ -27,7 +24,7 @@
                     @endif
                 </div>
                 <div role="tabpanel" class="tab-pane" id="schedule">
-                    @if(\Auth::user()->checkAccess("Miscellaneous Settings", "V"))
+                    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "V"))
                         @include('rates.schedule-tab')
                     @else
                         <div class="alert alert-danger no-close">
