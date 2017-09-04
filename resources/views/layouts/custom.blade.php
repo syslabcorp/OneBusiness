@@ -32,13 +32,10 @@
 
 	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
 
-
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
 	</style>
-
-    @yield('header-scripts')
 </head>
 <body>
     <div id="app">
@@ -73,8 +70,6 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-                            <li><a href="{{ URL('list_group') }}">Manage Groups</a></li>
-                            <li><a href="{{ URL('list_user') }}">Manage Users</a></li>
 							<li><a href="{{ URL('active_users') }}">Active Users</a></li>
 							<li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
 							<li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
@@ -112,8 +107,23 @@
                 </div>
             @endif
         </div>
-
-        @yield('content')
+        <div class="container-fluid">
+          <div class="row">
+            <div id="togle-sidebar-sec" class="active">
+              <div id="sidebar-togle-sidebar-sec">
+                <ul id="sidebar_menu" class="sidebar-nav">
+                    <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                </ul>
+                <div class="sidebar-nav" id="sidebar">     
+                    <div id="treeview_json"></div>
+                </div>
+              </div>
+              <div id="page-content-togle-sidebar-sec">
+                @yield('content')
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
     </div>
 
@@ -188,6 +198,5 @@
 			$('.alertfade').fadeOut(5000); // 5 seconds x 1000 milisec = 5000 milisec
         });
 	</script>
-@yield('footer-scripts')
 </body>
 </html>

@@ -9,6 +9,7 @@ class Mac extends Model
     public $timestamps = false;
     protected $table = "t_rates";
     protected $primaryKey = "nKey";
+    protected $connection = 'mysql2';
 
     protected $fillable = [
         'PC_No', 'Mac_Address', 'IP_Addr', 'StnType', 'LastChgMAC',

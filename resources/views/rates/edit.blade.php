@@ -3,13 +3,13 @@
   <input type="hidden" name="Modified" value="1">
   {{ csrf_field() }}
 <div class="col-md-12 text-center">
-  <div class="form-group {{ $errors->has('template_name') ? 'has-error' : '' }}"
+  <div class="form-group {{ $errors->has('tmplate_name') ? 'has-error' : '' }}"
       style="display:inline-block;">
     <label for="">Template name:</label>
-    <input type="text" class="form-control" name="template_name" style="width: 300px;display:inline-block;"
-      value="{{ $rate->template_name }}">
-    @if($errors->has('template_name'))
-      <span class="help-block">{{ $errors->first('template_name') }}</span>
+    <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;"
+      value="{{ $rate->tmplate_name }}">
+    @if($errors->has('tmplate_name'))
+      <span class="help-block">Template Name can't blank.</span>
     @endif
   </div>
   <div class="form-group" style="display:inline-block;vertical-align: top;">
@@ -63,11 +63,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-6">
-        <label for="">Timezone 1:</label>
+        <label for="">Timezone 2:</label>
         <input type="time" class="form-control" name="ZoneStart2" value="{{ $rate->ZoneStart2 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 2:</label>
         <input type="number" class="form-control" name="Discount2" value="{{ $rate->Discount2 }}">
       </div>
     </div>
@@ -75,11 +75,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-6">
-        <label for="">Timezone 1:</label>
+        <label for="">Timezone 3:</label>
         <input type="time" class="form-control" name="ZoneStart3" value="{{ $rate->ZoneStart3 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 3:</label>
         <input type="number" class="form-control" name="Discount3" value="{{ $rate->Discount3 }}">
       </div>
     </div>

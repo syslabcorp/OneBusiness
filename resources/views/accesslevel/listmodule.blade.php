@@ -31,7 +31,7 @@
                                     <table id="list_modul" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>SNo.</th>
+                                                <th>Module ID</th>
                                                 <th>Corporation Name</th>
                                                 <th>Module Description</th>
                                                 <th>Action</th>
@@ -40,7 +40,7 @@
                                         <tbody>
                                             @foreach($detail as $key=>$det)
                                                 <tr>
-                                                    <td>{{ ++$key }}</td>
+                                                    <td>{{ $det->module_id}}</td>
                                                     <td>{{ $det->corp_name }}</td>
                                                     <td>{{ $det->description }}</td>
                                                     <td>
