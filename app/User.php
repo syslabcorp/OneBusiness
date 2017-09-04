@@ -8,7 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+/*
 	protected $table = 't_users';
+*/
+	protected $table = 'sysusers';
 	protected $primaryKey = 'UserID';
 	private $permissions;
     /**
