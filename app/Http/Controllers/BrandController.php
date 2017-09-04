@@ -14,11 +14,11 @@ class BrandController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
+        /*if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }
+        }*/
         //retrieve brands
         $brands = Brand::orderBy('Brand_ID', 'ASC')->get();
 
@@ -44,7 +44,7 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccess("Brands", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -95,7 +95,7 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+        if(!\Auth::user()->checkAccess("Brands", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -122,7 +122,7 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "D"))
+        if(!\Auth::user()->checkAccess("Brands", "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");

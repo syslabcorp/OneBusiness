@@ -9,12 +9,6 @@
             overflow-y: auto;
         }
 
-        td {
-            font-size: 0.9em;
-        }
-        th {
-            font-size: 0.8em;
-        }
         th.dt-center, td.dt-center { text-align: center; }
 
         .panel-body {
@@ -33,7 +27,9 @@
                             <div class="col-xs-6">
                             </div>
                             <div class="col-xs-6 text-right">
+                                @if(\Auth::user()->checkAccess("Products", "A"))
                                 <a href="#" class="pull-right" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
+                                    @endif
                             </div>
                         </div>
 
@@ -44,7 +40,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Product Line</th>
-                                <th>Status</th>
+                                <th>Active</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -53,14 +49,20 @@
                                 <tr>
                                     <td>{{ $product->ProdLine_ID }}</td>
                                     <td>{{ $product->Product }}</td>
-                                    <td>{{ $product->Active ? 'Yes' : 'No' }}</td>
                                     <td>
+                                        <input type="checkbox" @if($product->Active) checked @endif disabled>
+                                    </td>
+                                    <td>
+                                        @if(\Auth::user()->checkAccess("Products", "E"))
                                         <a href="#" name="edit" class="btn btn-primary btn-sm edit">
                                             <i class="fa fa-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
                                         </a>
+                                        @endif
+                                        @if(\Auth::user()->checkAccess("Products", "D"))
                                         <a href="#" name="delete" class="btn btn-danger btn-sm delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
+                                            @endif
 
                                     </td>
                                     @endforeach
@@ -175,6 +177,7 @@
     <script>
         (function($){
             $('#myTable').DataTable({
+                stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
@@ -183,7 +186,8 @@
                     { "orderable": true, "width": "60%", "targets": 1 },
                     { "orderable": true, "targets": 2 },
                     { "orderable": false, "targets": 3 },
-                    {"className": "dt-center", "targets": "_all"}
+                    {"className": "dt-center", "targets": 3},
+                    {"className": "dt-center", "targets": 2}
                 ]
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');

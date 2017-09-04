@@ -9,12 +9,6 @@
             overflow-y: auto;
         }
 
-        td {
-            font-size: 0.8em;
-        }
-        th {
-            font-size: 0.7em;
-        }
         th.dt-center, td.dt-center { text-align: center; }
 
         .panel-body {
@@ -33,7 +27,9 @@
                             <div class="col-xs-6">
                             </div>
                             <div class="col-xs-6 text-right">
+                                @if(\Auth::user()->checkAccess("Services", "A"))
                                 <a href="#" class="pull-right" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                                    @endif
                             </div>
                         </div>
 
@@ -53,13 +49,16 @@
                                 <td>{{ $service->Serv_Code }}</td>
                                 <td>{{ $service->Description }}</td>
                                 <td>
+                                    @if(\Auth::user()->checkAccess("Services", "E"))
                                     <a href="#" name="edit" class="btn btn-primary btn-sm edit">
                                         <i class="fa fa-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
                                     </a>
+                                    @endif
+                                    @if(\Auth::user()->checkAccess("Services", "D"))
                                     <a href="#" name="delete" class="btn btn-danger btn-sm delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
-
+                                    @endif
                                 </td>
                                 @endforeach
                             </tr>
@@ -187,13 +186,14 @@
     <script>
         (function($){
             $('#myTable').DataTable({
+                stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
                     { "width": "18%", "targets": 0},
                     { "orderable": false, "width": "9%", "targets": 2 },
-                    {"className": "dt-center", "targets": "_all"}
+                    {"className": "dt-center", "targets": 2}
                 ]
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');

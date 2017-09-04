@@ -129,31 +129,36 @@
                                     <div class="form-group">
                                         <label class="col-md-4 control-label" for="itemUnit">Unit:</label>
                                         <div class="col-md-6">
-                                            <input id="itemUnit" name="itemUnit" value="{{ old('itemUnit') }}" type="text" class="form-control input-md">
+                                            <input id="itemUnit" name="itemUnit" value="{{ old('itemUnit') }}" type="text"
+                                                   class="form-control input-md">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-4 control-label" for="itemPackageQuantity">Package Qty:</label>
                                         <div class="col-md-6">
-                                            <input id="itemPackageQuantity" name="itemPackageQuantity" value="{{ old('itemPackageQuantity') }}" type="text" class="form-control input-md">
+                                            <input id="itemPackageQuantity" name="itemPackageQuantity" value="{{ old('itemPackageQuantity') ? old('itemPackageQuantity') : 1 }}"
+                                                   type="text" class="form-control input-md">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-4 control-label" for="itemThresholdQty">Threshold Qty:</label>
                                         <div class="col-md-6">
-                                            <input id="itemThresholdQty" name="itemThresholdQty" value="{{ old('itemThresholdQty') }}"  type="text" class="form-control input-md">
+                                            <input id="itemThresholdQty" name="itemThresholdQty" value="{{ old('itemThresholdQty') ?  old('itemThresholdQty') : 1}}"
+                                                   type="text" class="form-control input-md">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-4 control-label" for="itemMultipDays">Multiplyer (days):</label>
                                         <div class="col-md-6">
-                                            <input id="itemMultipDays" name="itemMultipDays" type="text" value="{{ old('itemMultiDays') }}" class="form-control input-md">
+                                            <input id="itemMultipDays" name="itemMultipDays" type="text" value="{{ old('itemMultiDays') ? old('itemMultiDays') : 1 }}"
+                                                   class="form-control input-md">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-4 control-label" for="itemMinLevel">Min Level:</label>
                                         <div class="col-md-6">
-                                            <input id="itemMinLevel" name="itemMinLevel" type="text" value="{{ old('itemMinLevel') }}" class="form-control input-md">
+                                            <input id="itemMinLevel" name="itemMinLevel" type="text" value="{{ old('itemMinLevel') ? old('itemMinLevel') : 0 }} "
+                                                   class="form-control input-md">
                                         </div>
                                     </div>
                                 </div>

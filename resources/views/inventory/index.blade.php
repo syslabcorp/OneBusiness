@@ -8,32 +8,36 @@
             overflow-x: auto;
             overflow-y: auto;
         }
-        td {
-            font-size: 0.8em;
-        }
-        th {
-            font-size: 0.7em;
-        }
+
         th.dt-center, td.dt-center { text-align: center; }
 
         .panel-body {
             padding: 15px !important;
         }
+        div.dataTables_wrapper {
+            margin: 0 auto;
+        }
+
+        tr > td:last-child{
+            width: 90px !important;
+        }
 
     </style>
     @endsection
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-md-6">
                             </div>
-                            <div class="col-xs-6 text-right">
+                            <div class="col-md-6 text-right">
+                                @if(\Auth::user()->checkAccess("Retail Items", "A"))
                                 <a href="{!! url('inventory/create') !!}" class="pull-right">Add Item</a>
+                                    @endif
                             </div>
                         </div>
 
@@ -76,18 +80,21 @@
                                 <td>{{ $article->barcode }}</td>
                                 <td>{{ $article->type_desc }}</td>
                                 <td>
-                                    <input type="checkbox" name="trackThis" @if($article->TrackThis == 1) checked @endif readonly/>
+                                    <input type="checkbox" name="trackThis" @if($article->TrackThis == 1) checked @endif disabled>
                                 </td>
-                                <td><input type="checkbox" name="printThis" @if($article->Print_This == 1) checked @endif readonly/></td>
-                                <td><input type="checkbox" name="prodActive" @if($article->Active == 1) checked @endif readonly/></td>
+                                <td><input type="checkbox" name="printThis" @if($article->Print_This == 1) checked @endif disabled></td>
+                                <td><input type="checkbox" name="prodActive" @if($article->Active == 1) checked @endif disabled></td>
                                 <td>
+                                    @if(\Auth::user()->checkAccess("Retail Items", "E"))
                                     <a href="/inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm">
                                         <i class="fa fa-pencil"></i>
                                     </a>
+                                    @endif
+                                    @if(\Auth::user()->checkAccess("Retail Items", "D"))
                                     <a href="#" name="delete" class="btn btn-danger btn-sm delete">
                                         <i class="fa fa-trash"></i><span style="display: none;">{{ $article->item_id }}</span>
                                     </a>
-
+                                    @endif
                                 </td>
                             </tr>
                                 @endforeach
@@ -131,28 +138,12 @@
     <script>
         (function($){
                 $('#myTable').DataTable({
+                    stateSave: true,
                     dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
-                    "columnDefs": [
-                        { "orderable": true, "width": "1%", "targets": 0},
-                        { "orderable": false, "targets": 1},
-                        { "orderable": false, "targets": 2 },
-                        { "orderable": false, "targets": 3 },
-                        { "orderable": false, "width": "14%", "targets": 4 },
-                        { "orderable": false, "targets": 5 },
-                        { "orderable": false, "targets": 6 },
-                        { "orderable": false, "targets": 7 },
-                        { "orderable": false, "targets": 8 },
-                        { "orderable": false, "targets": 9 },
-                        { "orderable": false, "targets": 10 },
-                        { "orderable": false, "targets": 11 },
-                        { "orderable": false, "targets": 12 },
-                        { "orderable": false, "targets": 13 },
-                        { "orderable": false, "targets": 14 },
-                        { "orderable": false, "width": "8%", "targets": 15 },
-
-                        {"className": "dt-center", "targets": "_all"}
+                    columnDefs: [
+                        { orderable: false, targets: 15},
                     ]
                 });
                 jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
