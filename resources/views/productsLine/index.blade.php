@@ -51,7 +51,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right  @if(\Auth::user()->checkAccess("Products", "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
+                                            <a href="#" class="pull-right  @if(!\Auth::user()->checkAccess("Products", "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
                                         </div>
                                     </div>
 
@@ -75,15 +75,15 @@
                                                     <input type="checkbox" @if($product->Active) checked @endif disabled>
                                                 </td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(\Auth::user()->checkAccess("Products", "E")) disabled @endif">
-                                                        <i class="fa fa-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccess("Products", "E")) disabled @endif">
+                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(\Auth::user()->checkAccess("Products", "D")) disabled @endif">
-                                                        <i class="fa fa-trash"></i>
+                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(!\Auth::user()->checkAccess("Products", "D")) disabled @endif">
+                                                        <i class="glyphicon glyphicon-trash"></i>
                                                     </a>
                                                 </td>
-                                                @endforeach
                                             </tr>
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>

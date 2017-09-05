@@ -14,11 +14,11 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        /*if(!\Auth::user()->checkAccess("Services", "V"))
+        if(!\Auth::user()->checkAccess("Services", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }*/
+        }
 
         //get services list
         $services = Service::orderBy('Serv_ID', 'ASC')->get();

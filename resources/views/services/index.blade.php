@@ -51,7 +51,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
                                             <span class="text-muted"> Add New Service</span>
                                         </div>
                                     </div>
@@ -72,17 +72,16 @@
                                                 <td>{{ $service->Serv_Code }}</td>
                                                 <td>{{ $service->Description }}</td>
                                                 <td>
-                                                    @if(\Auth::user()->checkAccess("Services", "E"))
-                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(\Auth::user()->checkAccess("Services", "E")) disabled @endif">
-                                                            <i class="fa fa-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
+                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(!\Auth::user()->checkAccess("Services", "E")) disabled @endif">
+                                                            <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
                                                         </a>
 
-                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Services", "D")) disabled @endif">
-                                                            <i class="fa fa-trash"></i>
+                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("Services", "D")) disabled @endif">
+                                                            <i class="glyphicon glyphicon-trash"></i>
                                                         </a>
                                                 </td>
-                                                @endforeach
                                             </tr>
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>
