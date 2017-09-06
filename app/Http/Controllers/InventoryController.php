@@ -92,7 +92,6 @@ class InventoryController extends Controller
             'itemBrand' => 'required',
             'itemProduct' => 'required',
             'itemUnit' => 'required',
-            'barcodeNum' => 'required',
             'itemPackageQuantity' => 'required',
             'itemThresholdQty' => 'required',
             'itemMultipDays' => 'required',
@@ -118,7 +117,7 @@ class InventoryController extends Controller
         $inventory->save();
 
         \Session::flash('success', "Item added successfully");
-        return redirect("/inventory");
+        return redirect()->route('inventory.create');
 
     }
 
@@ -212,7 +211,7 @@ class InventoryController extends Controller
         $inventory->save();
 
         \Session::flash('success', "Item updated successfully");
-        return redirect("/inventory");
+        return redirect()->route('inventory.index');
     }
 
     /**
@@ -232,7 +231,7 @@ class InventoryController extends Controller
         $inventoryItem = Inventory::where("item_id", $id)->delete();
         if($inventoryItem) {
             \Session::flash('success', "Item deleted successfully");
-            return redirect("/inventory");
+            return redirect()->route('inventory.index');
         }
     }
 }

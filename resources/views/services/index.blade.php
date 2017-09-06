@@ -51,8 +51,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
-                                            <span class="text-muted"> Add New Service</span>
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
                                         </div>
                                     </div>
 
@@ -72,17 +71,16 @@
                                                 <td>{{ $service->Serv_Code }}</td>
                                                 <td>{{ $service->Description }}</td>
                                                 <td>
-                                                    @if(\Auth::user()->checkAccess("Services", "E"))
-                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(\Auth::user()->checkAccess("Services", "E")) disabled @endif">
-                                                            <i class="fa fa-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
+                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(!\Auth::user()->checkAccess("Services", "E")) disabled @endif">
+                                                            <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
                                                         </a>
 
-                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Services", "D")) disabled @endif">
-                                                            <i class="fa fa-trash"></i>
+                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("Services", "D")) disabled @endif">
+                                                            <i class="glyphicon glyphicon-trash"></i>
                                                         </a>
                                                 </td>
-                                                @endforeach
                                             </tr>
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -92,118 +90,118 @@
                 </div>
             </div>
         </div>
-        <!-- Modal create item and service -->
-        <div id="addNewService" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h5 class="modal-title">Add New Service</h5>
-                    </div>
-                    <form class="form-horizontal" action="{{ url('/services') }}" METHOD="POST">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="serviceCode">Item Code</label>
-                                <div class="col-md-8">
-                                    <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md" required="">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="serviceDescription">Description</label>
-                                <div class="col-md-8">
-                                    <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md" required="">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
-                                </div>
-                                <div class="col-sm-6">
-                                    {!! csrf_field() !!}
-                                    <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- end modal for creting new service -->
-
-        <!-- Modal for editing service -->
-        <div id="editService" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h5 class="modal-title">Edit Service: <span style="font-weight: bold" class="serviceToEdit"></span></h5>
-                    </div>
-                    <form class="form-horizontal" action="" METHOD="post">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="serviceCode">Item Code</label>
-                                <div class="col-md-8">
-                                    <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md serviceCode" required="">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="serviceDescription">Description</label>
-                                <div class="col-md-8">
-                                    <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md serviceDescription" required="">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
-                                </div>
-                                <div class="col-sm-6">
-                                    {!! csrf_field() !!}
-                                    {{ method_field('PUT') }}
-                                    <input type="hidden" class="serviceId" value="">
-                                    <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- end modal for editing service -->
-        <!-- Modal delete item from inventory -->
-        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
-                    </div>
-                    <form action="" method="POST" >
-                        <div class="modal-body">
-                            <p>You are about to delete one track, this procedure is irreversible.</p>
-                            <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
-                            <p class="debug-url"></p>
-                        </div>
-
-                        <div class="modal-footer">
-                            <input style="display: none" class="serviceId" >
-                            {!! csrf_field() !!}
-                            {{ method_field('Delete') }}
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- end Modal -->
     </div>
+    <!-- Modal create item and service -->
+    <div id="addNewService" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Add New Service</h5>
+                </div>
+                <form class="form-horizontal" action="{{ url('/services') }}" METHOD="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="serviceCode">Item Code</label>
+                            <div class="col-md-8">
+                                <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="serviceDescription">Description</label>
+                            <div class="col-md-8">
+                                <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md" required="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                            </div>
+                            <div class="col-sm-6">
+                                {!! csrf_field() !!}
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end modal for creting new service -->
+
+    <!-- Modal for editing service -->
+    <div id="editService" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Edit Service: <span style="font-weight: bold" class="serviceToEdit"></span></h5>
+                </div>
+                <form class="form-horizontal" action="" METHOD="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="serviceCode">Item Code</label>
+                            <div class="col-md-8">
+                                <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md serviceCode" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="serviceDescription">Description</label>
+                            <div class="col-md-8">
+                                <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md serviceDescription" required="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                            </div>
+                            <div class="col-sm-6">
+                                {!! csrf_field() !!}
+                                {{ method_field('PUT') }}
+                                <input type="hidden" class="serviceId" value="">
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end modal for editing service -->
+    <!-- Modal delete item from inventory -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <form action="" method="POST" >
+                    <div class="modal-body">
+                        <p>You are about to delete one track, this procedure is irreversible.</p>
+                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input style="display: none" class="serviceId" >
+                        {!! csrf_field() !!}
+                        {{ method_field('Delete') }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end Modal -->
 @endsection
 
 @section('footer-scripts')

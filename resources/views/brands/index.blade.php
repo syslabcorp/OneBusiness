@@ -22,7 +22,7 @@
     </style>
 @endsection
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
@@ -43,7 +43,7 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Edit Inventory</h3>
+                        <h3 class="text-center">Brands</h3>
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -51,7 +51,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(\Auth::user()->checkAccess("Brands", "A")) disabled @endif" data-toggle="modal" data-target="#addNewBrand">Add New Brand</a>
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccess("Brands", "A")) disabled @endif" data-toggle="modal" data-target="#addNewBrand">Add New Brand</a>
                                         </div>
                                     </div>
 
@@ -71,15 +71,15 @@
                                                 <td>{{ $brand->Brand_ID }}</td>
                                                 <td>{{ $brand->Brand }}</td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(\Auth::user()->checkAccess("Brands", "E")) disabled @endif">
-                                                        <i class="fa fa-pencil"></i><span style="display: none;">{{ $brand->Brand_ID }}</span>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccess("Brands", "E")) disabled @endif">
+                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $brand->Brand_ID }}</span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(\Auth::user()->checkAccess("Brands", "D")) disabled @endif">
-                                                        <i class="fa fa-trash"></i>
+                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("Brands", "D")) disabled @endif">
+                                                        <i class="glyphicon glyphicon-trash"></i>
                                                     </a>
                                                 </td>
-                                                @endforeach
                                             </tr>
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -89,104 +89,104 @@
                 </div>
             </div>
         </div>
-        <!-- Modal add new brand -->
-        <div id="addNewBrand" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h5 class="modal-title">Add New Brand</h5>
-                    </div>
-                    <form class="form-horizontal" action="{{ url('/brands') }}" METHOD="POST">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="brandName">Brand Name</label>
-                                <div class="col-md-8">
-                                    <input id="brandName" name="brandName" type="text" class="form-control input-md" required="">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
-                                </div>
-                                <div class="col-sm-6">
-                                    {!! csrf_field() !!}
-                                    <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- end modal for creting new service -->
-
-        <!-- Modal for editing service -->
-        <div id="editBrand" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h5 class="modal-title">Edit Brand: <span style="font-weight: bold" class="brandToEdit"></span></h5>
-                    </div>
-                    <form class="form-horizontal" action="" METHOD="post">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="editBrandName">Brand Name</label>
-                                <div class="col-md-8">
-                                    <input id="editBrandName" name="editBrandName" type="text" class="form-control input-md editBrandName" required="">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
-                                </div>
-                                <div class="col-sm-6">
-                                    {!! csrf_field() !!}
-                                    {{ method_field('PUT') }}
-                                    <input type="hidden" class="brandId" value="">
-                                    <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- end modal for editing service -->
-        <!-- Modal delete item from inventory -->
-        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
-                    </div>
-                    <form action="" method="POST" >
-                        <div class="modal-body">
-                            <p>You are about to delete one track, this procedure is irreversible.</p>
-                            <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
-                            <p class="debug-url"></p>
-                        </div>
-
-                        <div class="modal-footer">
-                            <input style="display: none" class="serviceId" >
-                            {!! csrf_field() !!}
-                            {{ method_field('Delete') }}
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- end Modal -->
     </div>
+    <!-- Modal add new brand -->
+    <div id="addNewBrand" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Add New Brand</h5>
+                </div>
+                <form class="form-horizontal" action="{{ url('/brands') }}" METHOD="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="brandName">Brand Name</label>
+                            <div class="col-md-8">
+                                <input id="brandName" name="brandName" type="text" class="form-control input-md" required="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                            </div>
+                            <div class="col-sm-6">
+                                {!! csrf_field() !!}
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end modal for creting new service -->
+
+    <!-- Modal for editing service -->
+    <div id="editBrand" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Edit Brand: <span style="font-weight: bold" class="brandToEdit"></span></h5>
+                </div>
+                <form class="form-horizontal" action="" METHOD="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="editBrandName">Brand Name</label>
+                            <div class="col-md-8">
+                                <input id="editBrandName" name="editBrandName" type="text" class="form-control input-md editBrandName" required="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                            </div>
+                            <div class="col-sm-6">
+                                {!! csrf_field() !!}
+                                {{ method_field('PUT') }}
+                                <input type="hidden" class="brandId" value="">
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end modal for editing service -->
+    <!-- Modal delete item from inventory -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <form action="" method="POST" >
+                    <div class="modal-body">
+                        <p>You are about to delete one track, this procedure is irreversible.</p>
+                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input style="display: none" class="serviceId" >
+                        {!! csrf_field() !!}
+                        {{ method_field('Delete') }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end Modal -->
 @endsection
 
 @section('footer-scripts')

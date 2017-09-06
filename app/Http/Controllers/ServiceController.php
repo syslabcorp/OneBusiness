@@ -14,11 +14,11 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        /*if(!\Auth::user()->checkAccess("Services", "V"))
+        if(!\Auth::user()->checkAccess("Services", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }*/
+        }
 
         //get services list
         $services = Service::orderBy('Serv_ID', 'ASC')->get();
@@ -64,7 +64,7 @@ class ServiceController extends Controller
         $service->save();
 
         \Session::flash('success', "Service added successfully");
-        return redirect("/services");
+        return redirect()->route('services.index');
     }
 
     /**
@@ -116,7 +116,7 @@ class ServiceController extends Controller
         $service->save();
 
         \Session::flash('success', "Service updated successfully");
-        return redirect("/services");
+        return redirect()->route('services.index');
     }
 
     /**
@@ -138,6 +138,6 @@ class ServiceController extends Controller
         $service->delete();
 
         \Session::flash('success', "Service deleted successfully");
-        return redirect("/services");
+        return redirect()->route('services.index');
     }
 }
