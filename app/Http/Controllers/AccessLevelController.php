@@ -520,7 +520,7 @@ class AccessLevelController extends Controller
         }
         $data['grp_IDs'] = $grp_IDs;
         
-        $detail = DB::table('t_users')->get();
+        $detail = \App\User::get();
         $data['user_detail'] = $detail;
         return view('accesslevel.list_user',$data);  
     }
@@ -531,7 +531,7 @@ class AccessLevelController extends Controller
             $formData      = Request::all();
             if(isset($formData['area_type']) && $formData['area_type'] == "PR"){
                 if(!isset($formData['provience_id'])){
-                    Request::session()->flash('flash_message', 'Please select atleast one Provience.');
+                    Request::session()->flash('flash_message', 'Please select atleast one Province.');
                     return redirect('add_user/'.$id);
                 }
             }
@@ -559,11 +559,11 @@ class AccessLevelController extends Controller
             $data_sysusers = array('rights_template_id' => $template_ID ,'Area_type' => $Area_type,'group_ID' => $groupids);
             $user_exists = DB::table('user_area')->where('user_ID', $id)->first(); 
             if($user_exists){
-                DB::table('t_users')->where('UserID', $id)->update($data_sysusers);
+                \App\User::where('UserID', $id)->update($data_sysusers);
                 DB::table('user_area')->where('user_ID', $id)->update($data_user_area);
                 Request::session()->flash('flash_message', 'Users has been added.');
             }else{   
-                DB::table('t_users')->where('UserID', $id)->update($data_sysusers);
+                \App\User::where('UserID', $id)->update($data_sysusers);
                 DB::table('user_area')->insert($data_user_area);
                 Request::session()->flash('flash_message', 'Users has been added.');
             }
@@ -571,7 +571,7 @@ class AccessLevelController extends Controller
             return redirect('list_user');
         }
         if ($id != NULL) {
-            $detail_edit_sysuser = DB::table('t_users')->where('UserID', $id)->first(); 
+            $detail_edit_sysuser = \App\User::find($id);
             $data['group_ids'] = explode(",", $detail_edit_sysuser->group_ID);
             $data['detail_edit_sysuser'] = $detail_edit_sysuser;  
         }

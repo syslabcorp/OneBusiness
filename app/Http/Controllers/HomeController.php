@@ -28,7 +28,7 @@ class HomeController extends Controller
     {
 		$base_url = URL::to('/biomertic-login');
 		$userId = Auth::id();
-		$users = DB::table('t_users')->where('UserID', $userId)->first();
+		$users = \App\User::find($userId);
 		$finger_exist = DB::table('demo_finger')->where('user_id', $userId)->count();
 		if($finger_exist || $users->bio_auth == 0){
 			$data['btn'] = "";
@@ -62,7 +62,7 @@ class HomeController extends Controller
 			$formData = Request::all();
 			switch($formData['action']){
 				case 'check_btn':
-					$users = DB::table('t_users')->where('uname', $formData['username'])->first();
+					$users =  \App\User::where('uname', $formData['username'])->first();
 					if(!empty($users) && $users->otp_auth == 0 && $users->bio_auth == 1){
 						$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 						$response['id'] = $users->UserID;
@@ -92,7 +92,7 @@ class HomeController extends Controller
 				break;
 				
 				case 'btnontype':
-					$users = DB::table('t_users')->where('uname', $formData['username'])->first();
+					$users =  \App\User::where('uname', $formData['username'])->first();
 					$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 					$response['id'] = $users->UserID;
 					$response['finger_exist'] = $finger_exist;
@@ -108,7 +108,7 @@ class HomeController extends Controller
 			
 				case 'remove_finger':
 					DB::table('demo_finger')->where('user_id', $formData['user_id'])->delete();
-					$users = DB::table('t_users')->where('UserID', $formData['user_id'])->first();
+					$users = \App\User::find($formData['user_id']);
 					$url_register = base64_encode($base_url."/register.php?user_id=".$users->UserID);
 					$response['btn'] = "<a href='finspot:FingerspotReg;$url_register' class='user-finger btn btn-xs btn-primary' onclick=\"user_register_admin('".$users->UserID."','".$users->uname."')\" finger-count = '0'>Register</a>";
 					echo json_encode($response);

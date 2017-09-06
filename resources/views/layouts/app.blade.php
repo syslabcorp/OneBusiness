@@ -97,7 +97,8 @@
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->Full_Name }} <span class="caret"></span>
+                                <?php if(isset(Auth::user()->Full_Name) && Auth::user()->Full_Name !== "" ){ echo Auth::user()->Full_Name; }else{ echo "User"; }  ?> 
+                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ URL('logout') }}">Logout</a></li>
@@ -154,6 +155,9 @@
         $(document).on('click','.node-treeview_json',function(event) {
 			var obj=$(this).find('a');
 			var href=obj.attr('href');
+            if(typeof (href) === 'undefined'){
+                return false;
+            }
 			var val=$(this).attr('data-nodeid');
 			var path = window.location.href;
 			path = path.split('#')[0];
