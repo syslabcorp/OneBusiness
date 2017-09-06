@@ -174,7 +174,7 @@ class LoginController extends Controller
 			$formData = Request::all();
 			switch($formData['action']){
 				case 'check_btn':
-					$users = DB::table('t_users')->where('uname', $formData['username'])->first();
+					$users = \App\User::where('uname', $formData['username'])->first();
 					if(!empty($users) && $users->otp_auth == 0 && $users->bio_auth == 1){
 						$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 						$response['id'] = $users->UserID;
@@ -203,7 +203,7 @@ class LoginController extends Controller
 				break;
 				
 				case 'btnontype':
-					$users = DB::table('t_users')->where('uname', $formData['username'])->first();
+					$users = \App\User::where('uname', $formData['username'])->first();
 					$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 					$response['id'] = $users->UserID;
 					$response['finger_exist'] = $finger_exist;
