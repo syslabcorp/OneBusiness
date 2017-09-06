@@ -111,7 +111,7 @@ class BrandController extends Controller
         $brand->save();
 
         \Session::flash('success', "Brand updated successfully");
-        return redirect("/brands");
+        return redirect()->route('brands.index');
     }
 
     /**
@@ -132,7 +132,7 @@ class BrandController extends Controller
         $success = $brand->delete();
         if($success){
             \Session::flash('success', "Brand deleted successfully");
-            return redirect("/brands");
+            return redirect()->route('brands.index');
         }
     }
 }

@@ -112,7 +112,7 @@ class ProductLineController extends Controller
         $product->save();
 
         \Session::flash('success', "Product Line updated successfully");
-        return redirect("/productlines");
+        return redirect()->route('productlines.index');
     }
 
     /**
@@ -131,7 +131,7 @@ class ProductLineController extends Controller
         $success = ProductLine::where('ProdLine_ID', $id)->delete();
         if($success){
             \Session::flash('success', "Product Line deleted successfully");
-            return redirect("/productlines");
+            return redirect()->route('productlines.index');
         }
     }
 }

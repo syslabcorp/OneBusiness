@@ -64,7 +64,7 @@ class ServiceController extends Controller
         $service->save();
 
         \Session::flash('success', "Service added successfully");
-        return redirect("/services");
+        return redirect()->route('services.index');
     }
 
     /**
@@ -116,7 +116,7 @@ class ServiceController extends Controller
         $service->save();
 
         \Session::flash('success', "Service updated successfully");
-        return redirect("/services");
+        return redirect()->route('services.index');
     }
 
     /**
@@ -138,6 +138,6 @@ class ServiceController extends Controller
         $service->delete();
 
         \Session::flash('success', "Service deleted successfully");
-        return redirect("/services");
+        return redirect()->route('services.index');
     }
 }

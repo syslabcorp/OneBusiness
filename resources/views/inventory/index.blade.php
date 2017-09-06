@@ -1,13 +1,7 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <link href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css"/></link>
-
-
-    <!--Fonts-->
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">
-    <style>
+ <style>
 
 
         .panel-body {
@@ -15,7 +9,7 @@
         }
 
         tr > td:last-child{
-            width: 70px !important;
+            width: 80px !important;
         }
 
         a.disabled {
@@ -74,7 +68,7 @@
                                             <th>Packaging</th>
                                             <th>Threshold</th>
                                             <th>Multiplier</th>
-                                            <th>Barcode #</th>
+                                            <th>Barcode</th>
                                             <th>Type</th>
                                             <th>Track</th>
                                             <th>Print</th>
@@ -121,35 +115,35 @@
                 </div>
             </div>
         </div>
-        <!-- Modal delete item from inventory -->
-        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
+    </div>
+    <!-- Modal delete item from inventory -->
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
-                    </div>
-                    <form action="" method="POST" >
-                        <div class="modal-body">
-                            <p>You are about to delete one track, this procedure is irreversible.</p>
-                            <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
-                            <p class="debug-url"></p>
-                        </div>
-
-                        <div class="modal-footer">
-                            <input style="display: none" class="serviceId" >
-                            {!! csrf_field() !!}
-                            {{ method_field('Delete') }}
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
-                        </div>
-                    </form>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
                 </div>
+                <form action="" method="POST" >
+                    <div class="modal-body">
+                        <p>You are about to delete one track, this procedure is irreversible.</p>
+                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input style="display: none" class="serviceId" >
+                        {!! csrf_field() !!}
+                        {{ method_field('Delete') }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <!-- end Modal -->
     </div>
+    <!-- end Modal -->
 @endsection
 @section('footer-scripts')
     <script>
