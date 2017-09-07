@@ -97,7 +97,7 @@
                                                 <td><input type="checkbox" name="printThis" @if($article->Print_This == 1) checked @endif disabled></td>
                                                 <td><input type="checkbox" name="prodActive" @if($article->Active == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="/inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccess("Retail Items", "E")) disabled @endif">
+                                                    <a href="inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccess("Retail Items", "E")) disabled @endif">
                                                         <i class="glyphicon glyphicon-pencil"></i>
                                                     </a>
                                                     <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("Retail Items", "D")) disabled @endif">
