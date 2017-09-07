@@ -78,7 +78,7 @@
 	function getUser() {
 
 		//$sql 	= 'SELECT * FROM demo_user ORDER BY user_name ASC';
-		$sql 	= 'SELECT * FROM sysusers WHERE bio_auth = "1" ORDER BY Username ASC';
+		$sql 	= 'SELECT * FROM t_users WHERE bio_auth = "1" ORDER BY uname ASC';
 		$result	= mysql_query($sql);
 		$arr 	= array();
 		$i 	= 0;
@@ -91,7 +91,7 @@
 			); */
 			$arr[$i] = array(
 				'user_id'	=> $row['UserID'],
-				'user_name'	=> $row['Username']
+				'user_name'	=> $row['uname']
 			);
 
 			$i++;
@@ -119,7 +119,7 @@
 	function checkUserName($user_name) {
 
 		//$sql	= "SELECT user_name FROM demo_user WHERE user_name = '".$user_name."'";
-		$sql	= "SELECT user_name FROM sysusers WHERE Username = '".$user_name."'";
+		$sql	= "SELECT * FROM t_users WHERE uname = '".$user_name."'";
 		$result	= mysql_query($sql);
 		$row	= mysql_num_rows($result);
 

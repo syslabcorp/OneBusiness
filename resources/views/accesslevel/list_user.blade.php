@@ -28,12 +28,12 @@
                         <div class="panel-heading">List of users</div>
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table id="list_group" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                <table id="list_user" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
                                             <th>User ID .</th>
                                             <th>Name</th>
-                                            <th>Template ID</th>
+                                            <th>Template Name</th>
                                             <th>Area Type</th>
                                             <th>Remittance Group</th>
                                             <th>Action</th>
@@ -41,6 +41,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($user_detail as $key=>$det)
+                                        
                                         <?php 
                                         $ids = explode(",", $det->group_ID);
                                         $grpname = array();
@@ -59,17 +60,22 @@
                                         }else{
                                             $username = $det->UserName;
                                         }
+                                        if($det->rights_template_id !== 0){
+                                            $template_name = $temp_ids[$det->rights_template_id];
+                                        }else{
+                                            $template_name = "";
+                                        }
                                         ?>
                                             <tr>
                                                 <td>{{ $det->UserID }}</td>
                                                 <td>{{ $username }}</td>
-                                                <td>{{ ($det->rights_template_id) ? $det->rights_template_id : '' }}</td>
+                                                <td>{{ $template_name }}</td>
                                                 <td>{{ $ar_type }}</td>
                                                 <td>{{ implode(", ", $grpname) }}</td>
-                                                <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" data-toggle="tooltip" data-placement="top" title="Delete Group"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                                <td><a class="btn btn-primary btn-md blue-tooltip" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit User"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <a class="btn btn-danger btn-md sweet-4 red-tooltip" href="#" rel="{{ URL::to('delete_user/' . $det->UserID) }}" data-id ="{{ $det->UserID }}" data-toggle="tooltip" data-placement="top" title="Delete User"><span class="glyphicon glyphicon-trash"></span></a></td>
                                             </tr>  
-                                        @endforeach
+                                        @endforeach 
                                     </tbody>
                                 </table>
                             </div>
@@ -81,12 +87,31 @@
     </div>
 </div>
 </div>
+<?php $userId = Auth::id(); print_r($userId);?>
+<input type="hidden" id="user_id" name="user_id" value="{{ $userId }}">
 <script>
 $(document).ready(function() {
-    $('#list_group').DataTable();
-   /* $(document).on("click", ".sweet-4", function(){
+     $('#list_user').DataTable({
+        "fnDrawCallback": function( oSettings ) {
+           $('[data-toggle="tooltip"]').tooltip();    
+        },
+    });
+    $(document).on("click", ".sweet-4", function(){
         var delete_url = $(this).attr("rel");
-        swal({
+        var delete_id = $(this).attr("data-id");
+        var userid = $('#user_id').val();
+        if(delete_id == userid){
+            swal({
+            title: "",
+            text:  "You cannot delete Logged In User.",
+            type:  "warning",
+            showCancelButton: false,
+            cancelButtonText: "Ok",
+            closeOnCancel: true
+            });
+        }
+        else{
+          swal({
             title: "Are you sure?",
             text:  "You will not be able to recover this Group Data!",
             type:  "warning",
@@ -96,15 +121,17 @@ $(document).ready(function() {
             cancelButtonText: "No",
             closeOnConfirm: false,
             closeOnCancel: true
-        },
-        function(isConfirm){
-            if (isConfirm){
-                window.location.replace(delete_url);
-            } else {
-                return false;
-            }
-        });
-    });*/
+            },
+            function(isConfirm){
+                if (isConfirm){
+                    window.location.replace(delete_url);
+                } else {
+                    return false;
+                }
+            });
+        }
+  
+    });
     $('[data-toggle="tooltip"]').tooltip();
   
 });
