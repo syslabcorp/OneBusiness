@@ -63,7 +63,7 @@
                                             $username = $det->UserName;
                                         }
                                         if($det->rights_template_id !== 0){
-                                            $template_name = $temp_ids[$det->rights_template_id];
+                                            $template_name = isset($temp_ids[$det->rights_template_id]) ? $temp_ids[$det->rights_template_id] : '';
                                         }else{
                                             $template_name = "";
                                         }
