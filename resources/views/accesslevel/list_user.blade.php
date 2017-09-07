@@ -43,13 +43,15 @@
                                         @foreach($user_detail as $key=>$det)
                                         
                                         <?php 
-                                        $ids = explode(",", $det->group_ID);
                                         $grpname = array();
-                                        foreach ($ids as $value) {
-                                            if(!empty($grp_IDs[$value])){
-                                                array_push($grpname, $grp_IDs[$value]);
-                                            }
-                                        }
+										if(!empty($det->group_ID)){
+											$ids = explode(",", $det->group_ID);
+											foreach ($ids as $value) {
+												if(!empty($grp_IDs[$value])){
+													array_push($grpname, $grp_IDs[$value]);
+												}
+											}
+										}
                                         if(isset($det->Area_type) && $det->Area_type == "PR"){ $ar_type = "Province";}
                                         else if(isset($det->Area_type) && $det->Area_type == "CT"){ $ar_type = "City";}
                                         else if(isset($det->Area_type) && $det->Area_type == "BR"){ $ar_type = "Branch";}
