@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\InventoryChange;
 use Illuminate\Http\Request;
 use Auth;
 use App\Inventory;
@@ -209,6 +210,25 @@ class InventoryController extends Controller
         $inventory->Print_This = ($request->itemPrintStub) ? 1 : 0;
         $inventory->Active = ($request->itemActive) ? 1 : 0;
         $inventory->save();
+
+
+        //check if item exists in the s_changes table
+        $inventoryItem = InventoryChange::where('invtry_hdr', $inventory->id)->first();
+        if($inventoryItem){
+            $inventoryItem->invtry_hdr = $inventory->item_id;
+            $inventoryItem->prodline = $inventory->Prod_Line;
+            $inventoryItem->brands = $inventory->Brand_ID;
+            $inventoryItem->save();
+
+        }else{
+            $inventoryChange = new InventoryChange;
+            $inventoryChange->invtry_hdr = $inventory->item_id;
+            $inventoryChange->prodline = $inventory->Prod_Line;
+            $inventoryChange->brands = $inventory->Brand_ID;
+            $inventoryChange->item_cfg = 1;
+            $inventoryChange->save();
+
+        }
 
         \Session::flash('success', "Item updated successfully");
         return redirect()->route('inventory.index');

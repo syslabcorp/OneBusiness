@@ -210,7 +210,7 @@
                                     <div class="panel-footer">
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <a href="{{ url('/inventory') }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</a>
+                                                <a href="{{ url('/inventory') }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
                                             </div>
                                             <div class="col-sm-6">
                                                 {!! csrf_field() !!}

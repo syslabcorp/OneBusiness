@@ -36,6 +36,10 @@
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
+
+        #sidebar-togle-sidebar-sec {
+            z-index: 100 !important;
+        }
 	</style>
 
     @yield('header-scripts')

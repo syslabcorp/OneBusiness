@@ -4,8 +4,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/masterfilemodule', 'MasterFileController@index');
-
 
 
 Auth::routes();
