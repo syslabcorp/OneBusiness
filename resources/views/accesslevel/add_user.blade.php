@@ -18,6 +18,9 @@ input.area_user {
 .combine_branch {
     padding-left: 27px;
 }
+.save_button{
+    margin-right: 15px;
+}
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -41,7 +44,14 @@ input.area_user {
                 <div class="col-md-12 col-xs-12">
                     <h3 class="text-center">Manage Users</h3>
                     <div class="panel panel-default">
-                        <div class="panel-heading">USER ACCESS PROFILE</div>
+                        <?php
+                            if(!empty($detail_edit_sysuser->uname)){
+                                $username = $detail_edit_sysuser->uname;
+                            }else{
+                                $username = $detail_edit_sysuser->UserName;
+                            } 
+                        ?>
+                        <div class="panel-heading">USER ACCESS PROFILE&nbsp;:&nbsp;{{ $username }}</div>
                         <div class="panel-body">
                             <form class="form-horizontal form-group" role="form" method="POST" id ="userform">
                                 {{ csrf_field() }}
@@ -109,9 +119,14 @@ input.area_user {
                                     </div>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <a type="button" class="btn btn-default" href="{{ URL('list_user') }}"><span class="glyphicon glyphicon-arrow-left"></span>
+                                        Back
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary pull-right save_button">
                                         {{isset($detail_edit_sysuser->UserID) ? "Save " : "Create " }}
                                         </button>
                                     </div>

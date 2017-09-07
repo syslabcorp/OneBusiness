@@ -335,9 +335,18 @@ class AccessLevelController extends Controller
     }
 	
     public function list_menu($parent_id = 0)
-    {   
+    {  
+        $userId = Auth::id(); 
+        $t_user_data = \App\User::find($userId);
+        $template_menu = DB::table('rights_template')->where('template_id', $t_user_data->rights_template_id)->select('template_menus')->first();
+        if(!empty($template_menu)) {
+            $temp_menu_array = explode(",", $template_menu->template_menus);
+        }else{
+             $temp_menu_array = array();
+        }
+        
         if (Request::isMethod('post')){
-			$menus  =  DB::table('menus')->select('id', 'parent_id', 'title', 'url','icon')->get(); 
+			$menus  =  DB::table('menus')->whereIn('id', $temp_menu_array)->select('id', 'parent_id', 'title', 'url','icon')->get(); 
 			$datamenu = array();
 			$data = array();
 			foreach ($menus AS $menu){
@@ -521,6 +530,11 @@ class AccessLevelController extends Controller
         $data['grp_IDs'] = $grp_IDs;
         
         $detail = \App\User::get();
+        $template = DB::table('rights_template')->select('template_id', 'description')->get();
+        foreach($template as $key=>$det){
+            $temp_ids[$det->template_id]= $det->description; 
+        }
+        $data['temp_ids'] = $temp_ids;
         $data['user_detail'] = $detail;
         return view('accesslevel.list_user',$data);  
     }
@@ -626,6 +640,17 @@ class AccessLevelController extends Controller
             $data['Branch_ids'] = explode(",", $detail_edit_user_area->branch);
         }
         return view('accesslevel.branch', $data);
+    }
+    public function delete_user($id)
+    {
+        $user_data = DB::table('user_area')->where('user_ID', $id)->first();
+        if($user_data){
+            DB::table('user_area')->where('user_ID', $id)->delete();
+        }
+        \App\User::where('UserID', $id)->delete();
+        Request::session()->flash('flash_message', 'User has been Deleted.');
+        Request::Session()->flash('alert-class', 'alert-success');
+        return redirect('list_user');  
     }
     
 }
