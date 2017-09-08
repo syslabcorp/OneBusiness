@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link href="/css/parsley.css" rel="stylesheet" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.0/chosen.min.css" rel="stylesheet" >
     <style>
         .panel-footer {
@@ -61,7 +62,7 @@
                                     </div>
 
                                 </div>
-                                <form class="form-horizontal" action="{{ url('/inventory') }}" METHOD="POST">
+                                <form class="form-horizontal" action="{{ url('/inventory') }}" METHOD="POST" id="form1" data-parsley-validate>
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -81,7 +82,7 @@
                                                     <label class="col-md-4 control-label" for="itemType">Type:</label>
                                                     <div class="col-md-8">
                                                         <select class="form-control" id="itemType" name="itemType">
-                                                            <option selected="selected" disabled>Select Type</option>
+                                                            <option value="">Select Type</option>
                                                             @foreach($invTypes as $invType)
                                                                 <option value="{{ $invType->inv_type }}" {{ old('itemType') == $invType->inv_type
                                                      ? 'selected' : ''}}>{!! $invType->type_desc !!}</option>
@@ -94,8 +95,8 @@
                                                     <div class="col-md-8">
                                                         <div class="row">
                                                             <div class="col-md-8">
-                                                                <select class="form-control" id="itemBrand" name="itemBrand">
-                                                                    <option selected disabled>Select Brand</option>
+                                                                <select class="form-control" id="itemBrand" name="itemBrand" required>
+                                                                    <option value="">Select Brand</option>
                                                                     @foreach($brands as $brand)
                                                                         <option value="{{ $brand->Brand_ID }}" {{ old('itemBrand') == $brand->Brand_ID
                                                             ? 'selected' : ''}}>{!! $brand->Brand !!}</option>
@@ -113,8 +114,8 @@
                                                     <div class="col-md-8">
                                                         <div class="row">
                                                             <div class="col-md-8">
-                                                                <select class="form-control" name="itemProduct" id="itemProduct">
-                                                                    <option selected="selected" disabled>Select Product</option>
+                                                                <select class="form-control" name="itemProduct" id="itemProduct" required>
+                                                                    <option value="">Select Product</option>
                                                                     @foreach($products as $product)
                                                                         <option value="{!! $product->ProdLine_ID !!}" {{ old('itemProduct') == $product->ProdLine_ID
                                                             ? 'selected' : ''}}>{!! $product->Product !!}</option>
@@ -176,7 +177,7 @@
                                                 <div class="form-gorup">
                                                     <div class="row">
                                                         <div class="col-md-2">
-                                                            <input type="checkbox" name="itemActive" {{ old('itemActive') ? 'checked' : '' }} class="itemActive"/>
+                                                            <input type="checkbox" name="itemActive" {{ old('itemActive') ? 'checked' : '' }} class="itemActive" />
                                                         </div>
                                                         <div class="col-md-10">
                                                             <label class="pull-left" for="itemActive">Active</label>
@@ -294,10 +295,13 @@
     </div>
 @endsection
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.0/chosen.jquery.min.js"></script>
     <script>
         (function($){
             $('#itemProduct, #itemBrand, #itemType').chosen();
+
+            $('#form1').parsley();
         })(jQuery);
     </script>
 @endsection
