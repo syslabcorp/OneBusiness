@@ -131,7 +131,7 @@
                                                     <label class="col-md-4 control-label" for="itemDescription">Description:</label>
                                                     <div class="col-md-8">
                                             <textarea class="form-control" rows="3" id="itemDescription"
-                                                      name="itemDescription" value="{{ $inventory->Description }}"></textarea>
+                                                      name="itemDescription" value="{{ $inventory->Description }}" placeholder="{{ $inventory->Description }}"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -240,7 +240,7 @@
                         <div class="modal-footer">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                                 </div>
                                 <div class="col-sm-6">
                                     {!! csrf_field() !!}
