@@ -17,6 +17,10 @@
             cursor: default;
         }
 
+        .modal {
+            z-index: 10001 !important;;
+        }
+
     </style>
 @endsection
 @section('content')
