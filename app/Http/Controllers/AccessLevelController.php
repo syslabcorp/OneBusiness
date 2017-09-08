@@ -644,7 +644,7 @@ class AccessLevelController extends Controller
     public function delete_user($id)
     {
         $user_data = DB::table('user_area')->where('user_ID', $id)->first();
-        if($user_data){
+        if((isset($user_data)) && ($user_data !="")) {
             DB::table('user_area')->where('user_ID', $id)->delete();
         }
         \App\User::where('UserID', $id)->delete();
