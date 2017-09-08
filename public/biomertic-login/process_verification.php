@@ -18,7 +18,7 @@ if (isset($_POST['VerPas']) && !empty($_POST['VerPas'])) {
 	$result1 	= mysql_query($sql1);
 	$data 		= mysql_fetch_array($result1);
 	//$user_name	= $data['user_name'];
-	$user_name	= $data['Username'];
+	$user_name	= $data['uname'];
 		
 	$salt = md5($sn.$fingerData[0]['finger_data'].$device[0]['vc'].$time.$user_id.$device[0]['vkey']);
 	

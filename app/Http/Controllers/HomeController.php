@@ -26,13 +26,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-		$base_url = URL::to('/biomertic-login');
+		$base_url = URL::to('/public/biomertic-login');
 		$userId = Auth::id();
 		$users = \App\User::find($userId);
 		$finger_exist = DB::table('demo_finger')->where('user_id', $userId)->count();
 		if($finger_exist || $users->bio_auth == 0){
 			$data['btn'] = "";
 		}else{
+			//echo $base_url."/register.php?user_id=".$users->UserID; die;
 			$url_register = base64_encode($base_url."/register.php?user_id=".$users->UserID);
 			$data['btn'] = "<a href='finspot:FingerspotReg;$url_register' class='user-finger btn btn-primary' onclick=\"user_register('".$users->UserID."','".$users->uname."')\" finger-count = '$finger_exist'>Register</a>";
 			//$data['btn'] = "<a href='javascript:;' class='user-finger btn btn-primary' onclick=\"user_register('".$users->UserID."','".$users->Username."')\" finger-count = '$finger_exist'>Register</a>";
@@ -58,7 +59,7 @@ class HomeController extends Controller
 	
 	public function home_ajax_action(){
 		if(Request::isMethod('post')){
-			$base_url = URL::to('/biomertic-login');
+			$base_url = URL::to('/public/biomertic-login');
 			$formData = Request::all();
 			switch($formData['action']){
 				case 'check_btn':
