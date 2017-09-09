@@ -2,6 +2,14 @@
 @section('header-scripts')
 
  <style>
+     thead:before, thead:after { display: none; }
+     tbody:before, tbody:after { display: none; }
+     .dataTables_scroll
+     {
+         overflow-x: auto;
+         overflow-y: auto;
+     }
+
         .panel-body {
             padding: 15px !important;
         }
@@ -58,7 +66,7 @@
 
                                 </div>
                                 <div class="panel-body">
-                                    <table class="table table-striped table-bordered" id="myTable" cellspacing="0" width="100%">
+                                    <table class="table table-striped table-bordered" id="myTable" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
                                             <th>Item ID</th>
@@ -154,11 +162,11 @@
             var table = $('#myTable').DataTable({
                 deferRender:    true,
                 stateSave: true,
-                scrollX: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
             });
+            $('#myTable').wrap('<div class="dataTables_scroll" />');
 
 
             $(document).on('click', '.delete', function (e) {
