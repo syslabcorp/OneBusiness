@@ -3,8 +3,8 @@
 	error_reporting(0);*/
 
 	$base_path		= "http://onebusiness.shacknet.biz/OneBusiness/public/biomertic-login/";
-	$application_path		= "http://onebusiness.shacknet.biz/OneBusiness/public/";
-	$db_name		= "weblogindb";
+	$application_path		= "http://onebusiness.shacknet.biz/OneBusiness/";
+	$db_name		= "global";
 	$db_user		= "aditya";
 	$db_pass		= "aditya0607";
 	$db_host		= "localhost";

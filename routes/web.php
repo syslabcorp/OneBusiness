@@ -78,3 +78,4 @@ Route::any('/add_user/{id?}', 'AccessLevelController@add_user');
 Route::any('/city/{user_id?}', 'AccessLevelController@city');
 Route::any('/branch/{user_id?}', 'AccessLevelController@branch');
 Route::any('/provinces/{user_id?}', 'AccessLevelController@provinces');
+Route::get('/delete_user/{id}', 'AccessLevelController@delete_user');
