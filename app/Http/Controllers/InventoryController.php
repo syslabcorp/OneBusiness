@@ -215,17 +215,18 @@ class InventoryController extends Controller
         //check if item exists in the s_changes table
         $inventoryItem = InventoryChange::where('invtry_hdr', $inventory->id)->first();
         if($inventoryItem){
-            $inventoryItem->invtry_hdr = $inventory->item_id;
-            $inventoryItem->prodline = $inventory->Prod_Line;
+            $inventoryItem->invtry_hdr = 1;
+            $inventoryItem->prodline = 1;
+            $inventoryItem->services = 1;
             $inventoryItem->brands = $inventory->Brand_ID;
             $inventoryItem->save();
 
         }else{
             $inventoryChange = new InventoryChange;
-            $inventoryChange->invtry_hdr = $inventory->item_id;
-            $inventoryChange->prodline = $inventory->Prod_Line;
+            $inventoryItem->invtry_hdr = 1;
+            $inventoryItem->prodline = 1;
+            $inventoryItem->services = 1;
             $inventoryChange->brands = $inventory->Brand_ID;
-            $inventoryChange->item_cfg = 1;
             $inventoryChange->save();
 
         }
