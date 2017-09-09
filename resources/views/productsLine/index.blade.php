@@ -18,6 +18,7 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
+            color: transparent;
         }
 
         .modal {
@@ -55,9 +56,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            @if(\Auth::user()->checkAccess("Products", "A"))
-                                            <a href="#" class="pull-right" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
-                                            @endif
+                                            <a href="#" class="pull-right  @if(!\Auth::user()->checkAccess("Products", "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
                                         </div>
                                     </div>
 
