@@ -24,6 +24,18 @@
             padding: 15px !important;
         }
 
+        .modal {
+            z-index: 10001 !important;;
+        }
+
+        .parsley-required {
+            color: red;
+        }
+
+        .error-border-ps {
+            border: 2px solid #EF4836;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -62,7 +74,7 @@
                                     </div>
 
                                 </div>
-                                <form class="form-horizontal" action="{{ url('/inventory') }}" METHOD="POST" id="form1" data-parsley-validate>
+                                <form class="form-horizontal" action="{{ url('/inventory') }}" METHOD="POST" id="form1">
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-5">
@@ -95,7 +107,7 @@
                                                     <div class="col-md-8">
                                                         <div class="row">
                                                             <div class="col-md-8">
-                                                                <select class="form-control" id="itemBrand" name="itemBrand" required>
+                                                                <select class="form-control" id="itemBrand" name="itemBrand"  data-parsley-required="true" data-parsley-required-message="Brand is required.">
                                                                     <option value="">Select Brand</option>
                                                                     @foreach($brands as $brand)
                                                                         <option value="{{ $brand->Brand_ID }}" {{ old('itemBrand') == $brand->Brand_ID
@@ -114,7 +126,7 @@
                                                     <div class="col-md-8">
                                                         <div class="row">
                                                             <div class="col-md-8">
-                                                                <select class="form-control" name="itemProduct" id="itemProduct" required>
+                                                                <select class="form-control" name="itemProduct" id="itemProduct" data-parsley-required="true"  data-parsley-required-message="Product is required.">
                                                                     <option value="">Select Product</option>
                                                                     @foreach($products as $product)
                                                                         <option value="{!! $product->ProdLine_ID !!}" {{ old('itemProduct') == $product->ProdLine_ID
@@ -215,7 +227,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 {!! csrf_field() !!}
-                                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                                                <button type="submit" class="btn btn-success pull-right createBtn">Create</button>
                                             </div>
                                         </div>
                                     </div>
@@ -302,6 +314,33 @@
             $('#itemProduct, #itemBrand, #itemType').chosen();
 
             $('#form1').parsley();
+
+            $('.createBtn').on('click', function() {
+                var selectVal1 = $('select#itemProduct').val();
+                var selectVal2 = $('select#itemBrand').val();
+
+                if(selectVal1 == ""){
+                    $('#itemProduct_chosen').addClass("error-border-ps");
+                }
+
+                if(selectVal2 == ""){
+                    $('#itemBrand_chosen').addClass("error-border-ps");
+                }
+            });
+
+            $('#itemProduct').on('change', function () {
+                var selectVal1 = $('select#itemProduct').val();
+                if(selectVal1 != ""){
+                    $('#itemProduct_chosen').removeClass("error-border-ps");
+                }
+            })
+
+            $('#itemBrand').on('change', function () {
+                var selectVal2 = $('select#itemBrand').val();
+                if(selectVal2 != ""){
+                    $('#itemBrand_chosen').removeClass("error-border-ps");
+                }
+            })
         })(jQuery);
     </script>
 @endsection
