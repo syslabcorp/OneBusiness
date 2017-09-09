@@ -97,7 +97,7 @@
                                                     <label class="col-md-4 control-label" for="itemBrand">Brand:</label>
                                                     <div class="col-md-8">
                                                         <div class="row">
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-8" style="margin-left: -16px;">
                                                                 <select class="form-control" id="itemBrand" name="itemBrand">
                                                                     <option selected disabled>Select Brand</option>
                                                                     @foreach($brands as $brand)
@@ -116,7 +116,7 @@
                                                     <label class="col-md-4 control-label" for="itemProduct">Product:</label>
                                                     <div class="col-md-8">
                                                         <div class="row">
-                                                            <div class="col-md-8">
+                                                            <div class="col-md-8" style="margin-left: -16px;">
                                                                 <select class="form-control" name="itemProduct" id="itemProduct">
                                                                     <option value="">Select Product</option>
                                                                     @foreach($products as $product)
