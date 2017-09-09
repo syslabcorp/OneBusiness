@@ -13,6 +13,7 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
+            color: transparent;
         }
 
         .modal {
@@ -51,9 +52,7 @@
                                         <div class="col-md-6 col-xs-6">
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
-                                            @if(\Auth::user()->checkAccess("Retail Items", "A"))
-                                            <a href="{!! url('inventory/create') !!}" class="pull-right">Add Item</a>
-                                            @endif
+                                            <a href="{!! url('inventory/create') !!}" class="pull-right  @if(!\Auth::user()->checkAccess("Retail Items", "A")) disabled @endif">Add Item</a>
                                         </div>
                                     </div>
 
