@@ -2,8 +2,6 @@
 @section('header-scripts')
 
  <style>
-
-
         .panel-body {
             padding: 15px !important;
         }
@@ -53,13 +51,15 @@
                                         <div class="col-md-6 col-xs-6">
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
-                                            <a href="{!! url('inventory/create') !!}" class="pull-right @if(!\Auth::user()->checkAccess("Retail Items", "A")) disabled @endif">Add Item</a>
+                                            @if(\Auth::user()->checkAccess("Retail Items", "A"))
+                                            <a href="{!! url('inventory/create') !!}" class="pull-right">Add Item</a>
+                                            @endif
                                         </div>
                                     </div>
 
                                 </div>
                                 <div class="panel-body">
-                                    <table class="table table-striped table-bordered" id="myTable">
+                                    <table class="table table-striped table-bordered" id="myTable" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
                                             <th>Item ID</th>
@@ -167,10 +167,9 @@
 
                 var id  = $(this).closest('td').find('span').text();
                 var itemCode  = $(this).closest('tr').find('td:nth-child(4)').text();
-                console.log(id +' '+itemCode);
                 $('#confirm-delete').find('.serviceId').val(id);
                 $('#confirm-delete .itemToDelete').text(itemCode);
-                $('#confirm-delete form').attr('action', '/inventory/'+id);
+                $('#confirm-delete form').attr('action', 'inventory/'+id);
                 $('#confirm-delete').modal("show");
             });
 

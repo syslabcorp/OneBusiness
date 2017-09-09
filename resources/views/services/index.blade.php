@@ -55,13 +55,15 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                                            @if(\Auth::user()->checkAccess("Services", "A"))
+                                            <a href="#" class="pull-right" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                                            @endif
                                         </div>
                                     </div>
 
                                 </div>
                                 <div class="panel-body">
-                                    <table class="table table-striped table-bordered" id="myTable">
+                                    <table class="table table-striped table-bordered" id="myTable" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
                                             <th>Service Code</th>

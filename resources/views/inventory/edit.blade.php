@@ -23,6 +23,10 @@
             padding: 15px !important;
         }
 
+        .modal {
+            z-index: 10001 !important;;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -114,9 +118,9 @@
                                                         <div class="row">
                                                             <div class="col-md-8">
                                                                 <select class="form-control" name="itemProduct" id="itemProduct">
-                                                                    <option  selected disabled>Select Product</option>
+                                                                    <option value="">Select Product</option>
                                                                     @foreach($products as $product)
-                                                                        <option value="{!! $product->ProdLine_ID !!}" {{ $inventory->ProdLine_ID == $product->Prod_Line
+                                                                        <option value="{!! $product->ProdLine_ID !!}" {{ $product->ProdLine_ID == $inventory->Prod_Line
                                                      ? 'selected' : ''}}>{!! $product->Product !!}</option>
                                                                     @endforeach
                                                                 </select>
