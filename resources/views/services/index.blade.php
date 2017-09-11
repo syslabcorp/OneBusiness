@@ -56,7 +56,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccess("Services", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccess("20", "A")) disabled @endif" data-toggle="modal" data-target="#addNewService">Add New Service</a>
                                         </div>
                                     </div>
 
@@ -76,11 +76,11 @@
                                                 <td>{{ $service->Serv_Code }}</td>
                                                 <td>{{ $service->Description }}</td>
                                                 <td>
-                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(!\Auth::user()->checkAccess("Services", "E")) disabled @endif">
+                                                        <a href="#" name="edit" class="btn btn-primary btn-sm edit @if(!\Auth::user()->checkAccess("20", "E")) disabled @endif">
                                                             <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $service->Serv_ID }}</span>
                                                         </a>
 
-                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("Services", "D")) disabled @endif">
+                                                        <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("20", "D")) disabled @endif">
                                                             <i class="glyphicon glyphicon-trash"></i>
                                                         </a>
                                                 </td>
