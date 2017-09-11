@@ -168,7 +168,8 @@ $(document).on("click", ".area_type", function(){
     var value = $(this).val();
     get_area_type(value,userid);
 });
-$( window ).load(function() {
+//$( window ).load(function() {
+$(function() {
     var value = $('.area_type:checked').val();
     var userid = $("#userid").val();
     if(typeof(value) === 'undefined'){
