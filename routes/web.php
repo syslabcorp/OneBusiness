@@ -79,3 +79,12 @@ Route::any('/city/{user_id?}', 'AccessLevelController@city');
 Route::any('/branch/{user_id?}', 'AccessLevelController@branch');
 Route::any('/provinces/{user_id?}', 'AccessLevelController@provinces');
 Route::get('/delete_user/{id}', 'AccessLevelController@delete_user');
+
+
+//-------ADDED FOR LOCATIONS (TEST ONLY)
+
+Route::resource('list_provinces', 'LocationsController', ['middleware' => 'auth']);
+Route::get('/view_cities/{prov_id?}','LocationsController@list_cities');// displaying cities within the province selected
+Route::any('add_city/{city_id?}/{prov_id?}','LocationsController@add_city');
+Route::any('/add_province/{prov_id?}','LocationsController@add_province');
+Route::get('/sys_settings','SettingsController@show_settings_page');// displaying settings page only
