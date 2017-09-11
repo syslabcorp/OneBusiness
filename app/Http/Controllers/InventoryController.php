@@ -20,7 +20,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccess("Retail Items", "V"))
+        if(!\Auth::user()->checkAccess("18", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -80,7 +80,7 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
 
-        if(!\Auth::user()->checkAccess("Retail Items", "A"))
+        if(!\Auth::user()->checkAccess("18", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -141,7 +141,7 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
-        if(!\Auth::user()->checkAccess("Retail Items", "E")) {
+        if(!\Auth::user()->checkAccess("18", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -174,7 +174,7 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!\Auth::user()->checkAccess("Retail Items", "E")) {
+        if(!\Auth::user()->checkAccess("18", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -243,7 +243,7 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-        if(!\Auth::user()->checkAccess("Retail Items", "D"))
+        if(!\Auth::user()->checkAccess("18", "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");

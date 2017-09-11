@@ -14,7 +14,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccess("Services", "V"))
+        if(!\Auth::user()->checkAccess("20", "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -45,7 +45,7 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Services", "A"))
+        if(!\Auth::user()->checkAccess("20", "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -98,7 +98,7 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!\Auth::user()->checkAccess("Services", "E")) {
+        if(!\Auth::user()->checkAccess("20", "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -127,7 +127,7 @@ class ServiceController extends Controller
      */
     public function destroy($id)
     {
-        if(!\Auth::user()->checkAccess("Services", "D"))
+        if(!\Auth::user()->checkAccess("20", "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
