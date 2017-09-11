@@ -29,7 +29,7 @@ class LoginController extends Controller
 				
 				$finger_exist = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 				if($users->bio_auth == 1 && $finger_exist && $users->otp_auth != 1){
-					$base_url = URL::to('/biomertic-login');
+					$base_url = URL::to('/public/biomertic-login');
 					$url_verification = base64_encode($base_url."/verification.php?user_id=".$users->UserID);
 					$data['btn'] = "<a href='finspot:FingerspotVer;$url_verification' class='btn btn-success'>Login</a>";
 					return view('login.login_type', $data);
@@ -170,7 +170,7 @@ class LoginController extends Controller
 	
 	public function ajax_action(){
 		if(Request::isMethod('post')){
-			$base_url = URL::to('/biomertic-login');
+			$base_url = URL::to('/public/biomertic-login');
 			$formData = Request::all();
 			switch($formData['action']){
 				case 'check_btn':
