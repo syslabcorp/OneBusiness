@@ -118,7 +118,7 @@ class InventoryController extends Controller
         $inventory->save();
 
         \Session::flash('success', "Item added successfully");
-        return redirect()->route('inventory.create');
+        return redirect()->route('inventory.index');
 
     }
 
@@ -223,9 +223,9 @@ class InventoryController extends Controller
 
         }else{
             $inventoryChange = new InventoryChange;
-            $inventoryItem->invtry_hdr = 1;
-            $inventoryItem->prodline = 1;
-            $inventoryItem->services = 1;
+            $inventoryChange->invtry_hdr = 1;
+            $inventoryChange->prodline = 1;
+            $inventoryChange->services = 1;
             $inventoryChange->brands = $inventory->Brand_ID;
             $inventoryChange->save();
 
