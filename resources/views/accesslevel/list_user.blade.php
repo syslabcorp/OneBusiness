@@ -74,8 +74,8 @@
                                                 <td>{{ $template_name }}</td>
                                                 <td>{{ $ar_type }}</td>
                                                 <td>{{ implode(", ", $grpname) }}</td>
-                                                <td><a class="btn btn-primary btn-md blue-tooltip" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit User"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <a class="btn btn-danger btn-md sweet-4 red-tooltip" href="#" rel="{{ URL::to('delete_user/' . $det->UserID) }}" data-id ="{{ $det->UserID }}" data-toggle="tooltip" data-placement="top" title="Delete User"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                                <td class="text-center"><a class="btn btn-primary btn-md blue-tooltip" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit User"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <!-- <a class="btn btn-danger btn-md sweet-4 red-tooltip" href="#" rel="{{ URL::to('delete_user/' . $det->UserID) }}" data-id ="{{ $det->UserID }}" data-toggle="tooltip" data-placement="top" title="Delete User"><span class="glyphicon glyphicon-trash"></span></a> --></td>
                                             </tr>  
                                         @endforeach 
                                     </tbody>

@@ -168,7 +168,7 @@ class HomeController extends Controller
 	}
 
 	public function logout() {
-		$request = Auth::user()->Username;
+		$request = Auth::user()->UserName;
 		$deleteloguser = DB::table('demo_log')->where('user_name', '=', $request)->delete();
 	    Auth::logout();
 	    return redirect('/'); 

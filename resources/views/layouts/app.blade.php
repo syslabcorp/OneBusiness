@@ -97,7 +97,8 @@
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                <?php if(isset(Auth::user()->Full_Name) && Auth::user()->Full_Name !== "" ){ echo Auth::user()->Full_Name; }else{ echo "User"; }  ?> 
+                                 {{ Auth::user()->UserName }} 
+                                
                                      <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
