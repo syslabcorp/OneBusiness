@@ -34,9 +34,8 @@
                                     <td>
                                 
 									<a href="{{ URL::to('add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="glyphicon glyphicon-pencil"></span></a>
-
-									 
-									  <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_feature/'.$det->City_ID) }}" data-toggle="tooltip" data-placement="top" title="Delete Feature"><span class="glyphicon glyphicon-trash"></span></a></td>
+									
+									 <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(18, 'D') ? '' : 'disabled' }}"" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' ))  }}" data-toggle="tooltip" data-placement="top" title="Delete City"><span class="glyphicon glyphicon-trash"></span></a></td>
 									 
 									 </td>
                                     
@@ -57,17 +56,45 @@
         </div>
     </div>
 </div>
+
+   <!-- Modal delete item from inventory -->
+    <div class="modal fade" id="confirm-delete" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <form action="" method="POST" >
+                    <div class="modal-body">
+                        <p>You are about to delete one track, this procedure is irreversible.</p>
+                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input style="display: none" class="serviceId" >
+                        {!! csrf_field() !!}
+                        {{ method_field('Delete') }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 <script>
- $('[data-toggle="tooltip"]').tooltip();
- 
-<script>
+
 $(document).ready(function() {
+	$('[data-toggle="tooltip"]').tooltip();
     $('#list_city').DataTable();
     $(document).on("click", ".sweet-4", function(){
         var delete_url = $(this).attr("rel");
         swal({
             title: "Are you sure?",
-            text: "You will not be able to recover this Featured Data!",
+            text: "You will not be able to recover this data..",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: 'btn-danger',
@@ -84,8 +111,9 @@ $(document).ready(function() {
           }
         });
     });
-    $('[data-toggle="tooltip"]').tooltip();
+   
+
 });
 </script>
-@endsection
 
+@endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Request;
 use App\Branch;
+use App\City;
 use DB;
 use URL;
 
@@ -47,7 +48,7 @@ public function __construct()
 					\Session::flash('flash_message', 'Province has been updated.');
 				  }
 				   \Session::flash('alert-class', 'alert-success');
-				  return redirect('settings');
+				  return redirect('list_provinces');
 				}
 
     $data =array();
@@ -124,20 +125,25 @@ public function __construct()
     }
 	
 	
-	  public function deletecity($id)
+	  public function deletecity($id,$prov_id)
     {
-        if(!\Auth::user()->checkAccess(18, "D"))
+        if(!\Auth::user()->checkAccessById(18, "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
-
-        //if validator passed store service item
-        $service = City::where('City_ID', $id)->first();
-        $service->delete();
-
+		
+		DB::table('t_cities')->where('City_ID','=', $id)->delete();  
         \Session::flash('success', "City was deleted successfully");
-        return redirect()->route('services.index');
+		
+		if($prov_id == NULL){
+				return redirect('view_cities');
+			}else{
+				return redirect('view_cities/'.$prov_id);
+			}
+			 
+			 
+       //return redirect('list_provinces');
     }
 
 
