@@ -88,3 +88,5 @@ Route::get('/view_cities/{prov_id?}','LocationsController@list_cities');// displ
 Route::any('add_city/{city_id?}/{prov_id?}','LocationsController@add_city');
 Route::any('/add_province/{prov_id?}','LocationsController@add_province');
 Route::get('/sys_settings','SettingsController@show_settings_page');// displaying settings page only
+Route::get('/delete_city/{city_id}', 'LocationsController@deletecity');
+

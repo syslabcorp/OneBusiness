@@ -5,10 +5,8 @@
 <h3 class="text-center">System Settings</h3>
 <div class="container-fluid">
     <div class="row">
-	    <div class="col-md-2">
-	<!--menu here-->
-	    </div>
-	    <div class="col-md-8">
+
+	    <div class="col-md-12">
 		    <div class="panel panel-default">
 		    	<div class="panel-heading"> Masterfiles
 

@@ -1,15 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('content')
 <h3 class="text-center">List of Locations</h3>
 <div class="container-fluid">
     <div class="row">
-		<div class="col-md-2">
-		
-		</div>
-        <div class="col-md-8">
+	  <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">{{isset($detail_edit_city->City_ID)? "Edit " : "Add " }}City</div>
+                <div class="panel-heading">{{isset($detail_edit_city->City_ID)? "Edit City: " : "Add City" }}</div>
                 <div class="panel-body">
                     <form class="form-horizontal form" role="form" method="POST" action="" id ="cityform">
                         {{ csrf_field() }}
@@ -18,9 +15,7 @@
                             <div class="col-md-6"> 
                          
                             <select class="form-control required" id="prov_id" name="Prov_ID">
-                                    <option value="">Choose Province</option>
-										
-									
+                                    <option value="">Choose Province</option>					
 									
                                         @foreach ($province as $prov) 
                                             <option {{ (isset($detail_edit_city->Prov_ID) && 

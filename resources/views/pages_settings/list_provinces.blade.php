@@ -1,20 +1,17 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('content')
 
 <h3 class="text-center">Manage Locations</h3>
 <div class="container-fluid">
     <div class="row">
-	     <div class="col-md-2">
-    <!--menu here-->
-        </div>
-        <div class="col-md-8">
+       <div class="col-md-12">
 		    <div class="panel panel-default">
 		    	<div class="panel-heading"> List of Provinces 
 
-                @if(\Auth::user()->checkAccess("Locations", "A"))
+                @if(\Auth::user()->checkAccessById(18, "A"))
                     <a href="{{ URL('add_province') }}" class="pull-right">Add Province</a>
-                @endif
+                @endif 
                 </div>
 		    	<div class="panel-body">
 		    			 <table id="list_modul" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -36,7 +33,7 @@
                                     <td>
                                     <a href="{{ URL::to('view_cities/'.$det->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View" data-toggle="tooltip" data-placement="top" title="View Province"><span class="glyphicon glyphicon-eye-open"></span></a>
 
-                                    <a href="{{ URL('add_province/'.$det->Prov_ID) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccess('Locations', 'E') ? '' : 'disabled' }}"  data-title="Edit" data-toggle="tooltip" data-placement="top" title="Edit Province"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a href="{{ URL('add_province/'.$det->Prov_ID) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}"  data-title="Edit" data-toggle="tooltip" data-placement="top" title="Edit Province"><span class="glyphicon glyphicon-pencil"></span></a>
                                    </td>
 
                                 </tr>  
@@ -45,7 +42,7 @@
                     </table>
 		    	</div>
 		    </div>
-	    </div>
+		</div>
     </div>
 </div>
 

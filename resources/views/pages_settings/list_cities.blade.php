@@ -1,18 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('content')
 
 <h3 class="text-center">Manage Locations</h3>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-2">
-    <!--menu here-->
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">List of Cities
 
-                @if(\Auth::user()->checkAccess("Locations", "A"))
+                @if(\Auth::user()->checkAccessById(18, "A"))
                     <!--a href="{{ URL('add_city/') }}" class="pull-right">Add City</a-->
 				<a href="{{ URL('add_city'.(($prov_id) ? ('/0/'.$prov_id) : '' )) }}" class="pull-right">Add City</a>
                 @endif
@@ -36,11 +33,12 @@
                                     <td>{{ $det->City}}</td>
                                     <td>
                                 
-									<a href="{{ URL::to('add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccess('Locations', 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="glyphicon glyphicon-pencil"></span></a>
+									<a href="{{ URL::to('add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="glyphicon glyphicon-pencil"></span></a>
 
-                                    <!--a class="btn btn-danger btn-md blue-tooltip {{ \Auth::user()->checkAccess('Locations', 'D') ? '' : 'disabled' }}" data-title="Delete"  data-toggle="tooltip" data-placement="top" title="Delete City"><span class="glyphicon glyphicon-trash"></span></a-->
-									 <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccess('Locations', 'D') ? '' : 'disabled' }}"
-									 data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_city/' . $det->City_ID) }}" data-toggle="tooltip" data-placement="top" title="Delete City"><span class="glyphicon glyphicon-trash"></span></a></td>
+									 
+									  <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_feature/'.$det->City_ID) }}" data-toggle="tooltip" data-placement="top" title="Delete Feature"><span class="glyphicon glyphicon-trash"></span></a></td>
+									 
+									 </td>
                                     
                                    </td>
 
@@ -62,6 +60,7 @@
 <script>
  $('[data-toggle="tooltip"]').tooltip();
  
+<script>
 $(document).ready(function() {
     $('#list_city').DataTable();
     $(document).on("click", ".sweet-4", function(){

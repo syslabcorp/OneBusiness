@@ -20,7 +20,7 @@ public function __construct()
  public function index(Request $request)
     {
 
-        if(!\Auth::user()->checkAccess("Locations", "V"))
+        if(!\Auth::user()->checkAccessById(18, "V"))
         {
             \Session::flash('error', "You don't have permission..."); 
         
@@ -121,6 +121,23 @@ public function __construct()
 				$data['detail_edit_city'] = (object) $default_prov;
 			}
 		    return view('pages_settings.form_add_city', $data);
+    }
+	
+	
+	  public function deletecity($id)
+    {
+        if(!\Auth::user()->checkAccess(18, "D"))
+        {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
+        //if validator passed store service item
+        $service = City::where('City_ID', $id)->first();
+        $service->delete();
+
+        \Session::flash('success', "City was deleted successfully");
+        return redirect()->route('services.index');
     }
 
 

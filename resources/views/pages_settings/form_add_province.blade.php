@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.custom')
+
 @section('content')
 
 <h3 class="text-center">Manage Locations</h3>
@@ -9,12 +10,9 @@
         @elseif(Session::has('flash_message'))
             <div class="alert alert-danger"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
         @endif
-	    <div class="col-md-2">
-	<!--menu here-->
-	    </div>
-	    <div class="col-md-8">
+	     <div class="col-md-12">
 		    <div class="panel panel-default">
-		    	<div class="panel-heading">{{isset($detail_edit->Prov_ID)? "Edit " : "Add " }} Province</div>
+		    	<div class="panel-heading">{{isset($detail_edit->Prov_ID)? "Edit Province: " : "Add Province" }} {{isset($detail_edit->Prov_ID)? $detail_edit->Province : "" }} </div>
 		    	<div class="panel-body">
 
                         <form class="form-horizontal" role="form" method="POST" action="" id ="Provinceform">
@@ -31,11 +29,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary">
-                                    {{isset($detail_edit->Prov_ID) ? "Save " : "Create " }}
-                                </button>
-                            </div>
+						<div class="panel-footer">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a href="{{ url('/list_provinces') }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {!! csrf_field() !!}
+                                                <button type="submit" class="btn btn-success pull-right">   {{isset($detail_edit->Prov_ID) ? "Save " : "Create " }}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                            
                         </div>
                     </form>
 		    	</div>
