@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('header-scripts')
-
  <style>
 
 
