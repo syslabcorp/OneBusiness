@@ -1,11 +1,12 @@
 <div class="col-md-12 combine_branch">
+	<input type="hidden" />
     <div class="panel panel-default">
         <div class="panel-heading">Branches</div>
         <div class="form-group{{ $errors->has('cities_name') ? ' has-error' : '' }}">
             <div class="panel-body">
                 <div class="col-md-7">
                     <table id="list_cities" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
+                        <thead> 
                             <tr>
                                 <th class="text-center">Province</th>
                                 <th class="text-center">City</th>
@@ -46,6 +47,7 @@
         </div>         
     </div>
 </div>
+
 <script>
 $(document).ready(function() {
     $("#select_all").change(function(){

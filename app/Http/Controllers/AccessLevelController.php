@@ -37,6 +37,7 @@ class AccessLevelController extends Controller
 		if ($corp_id != NULL) {
 			$data['detail_edit'] = DB::table('corporation_masters')->where('corp_id', $corp_id)->first();	
 		}
+		
 		return view('accesslevel.addcorporation',$data);
     }
 	

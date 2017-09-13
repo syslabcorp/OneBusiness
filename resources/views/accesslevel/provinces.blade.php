@@ -1,11 +1,12 @@
 <div class="col-md-12 combine_branch">
+	<input type="hidden" />
     <div class="panel panel-default">
         <div class="panel-heading">Provinces</div>
         <div class="form-group{{ $errors->has('provinces_name') ? ' has-error' : '' }}">
             <div class="panel-body">
                 <div class="col-md-5">
                     <table id="list_provinces" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
+                        <thead> 
                             <tr>
                                 <th>Name</th>
                                 <th><input class="selectall area_user" type="checkbox" name="selectall" id="select_all">Select</th>
@@ -30,6 +31,7 @@
         </div>         
     </div>
 </div>
+
 <script>
 $(document).ready(function() {
     $("#select_all").change(function(){

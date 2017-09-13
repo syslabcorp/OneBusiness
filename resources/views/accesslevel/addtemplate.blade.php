@@ -12,7 +12,9 @@
 .save_button{margin-right: 15px;}
 .back-button {margin-left: 15px;}
 </style>
-<div class="container-fluid">
+
+<div class="container-fluid"> 
+	<input type="hidden" />
     <div class="row">
         <div id="togle-sidebar-sec" class="active">   
             <!-- Sidebar -->
