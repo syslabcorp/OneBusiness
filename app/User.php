@@ -8,9 +8,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
-	protected $table = 't_users';
-	protected $primaryKey = 'UserID';
+
+/*
+	protected $table = 'sysusers';
+*/
 	
+
+	protected $table = 't_users';
+
+	protected $primaryKey = 'UserID';
+	private $permissions;
     /**
      * The attributes that are mass assignable.
      *
@@ -31,4 +38,57 @@ class User extends Authenticatable
     protected $hidden = [
         'passwrd', 'remember_token',
     ];
+
+    public function branchs()
+    {
+        return $this->hasMany(\App\Branch::class);
+    }
+
+	/*
+	paramete should be changed to FEATURE_ID, ACTION
+	*/
+	
+    public function checkAccess($feature, $action)
+    {
+        if($this->permissions == null)
+        {
+            $this->permissions = \DB::table('rights_detail')
+                ->leftJoin("feature_masters", "rights_detail.feature_id", "=", "feature_masters.feature_id")
+                ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+                ->get();
+        }
+
+        foreach($this->permissions as $permission)
+        {
+            if($feature == $permission->feature && preg_match("/$action/", $permission->access_type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+	
+	//this accepts (int,text), like checkAccessById(18,"A")
+   public function checkAccessById($feature_id, $action)
+    {
+        if($this->permissions == null)
+        {
+            $this->permissions = \DB::table('rights_detail')
+                ->leftJoin("feature_masters", "rights_detail.feature_id", "=", "feature_masters.feature_id")
+                ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+                ->get();
+        }
+
+        foreach($this->permissions as $permission)
+        {
+    
+            if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type))
+			{
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

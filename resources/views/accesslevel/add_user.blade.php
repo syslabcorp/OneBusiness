@@ -143,6 +143,7 @@ $(document).on("click", ".area_type", function(){
     get_area_type(value,userid);
 });
 
+
 $(function(){
     var value = $('.area_type:checked').val();
     var userid = $("#userid").val();
