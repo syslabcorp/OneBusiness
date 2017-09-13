@@ -79,6 +79,10 @@ Route::any('/city/{user_id?}', 'AccessLevelController@city');
 Route::any('/branch/{user_id?}', 'AccessLevelController@branch');
 Route::any('/provinces/{user_id?}', 'AccessLevelController@provinces');
 Route::get('/delete_user/{id}', 'AccessLevelController@delete_user');
+Route::any('/get_provinces_ids', 'AccessLevelController@get_provinces_ids');
+Route::any('/get_city_ids', 'AccessLevelController@get_city_ids');
+Route::any('/get_branch_ids', 'AccessLevelController@get_branch_ids');
+
 
 
 //-------ADDED FOR LOCATIONS (TEST ONLY)
@@ -88,4 +92,5 @@ Route::get('/view_cities/{prov_id?}','LocationsController@list_cities');// displ
 Route::any('add_city/{city_id?}/{prov_id?}','LocationsController@add_city');
 Route::any('/add_province/{prov_id?}','LocationsController@add_province');
 Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity');
+
 

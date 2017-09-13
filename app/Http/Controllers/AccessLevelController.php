@@ -589,7 +589,6 @@ class AccessLevelController extends Controller
             $data['group_ids'] = explode(",", $detail_edit_sysuser->group_ID);
             $data['detail_edit_sysuser'] = $detail_edit_sysuser;  
         }
-        $data['group'] = DB::table('Remit_group')->where('status', 1)->get();
         $data['template'] = DB::table('rights_template')->select('template_id', 'description')->get();
         return view('accesslevel.add_user', $data);
     }
@@ -652,7 +651,83 @@ class AccessLevelController extends Controller
         Request::Session()->flash('alert-class', 'alert-success');
         return redirect('list_user');  
     }
-    
+    public function get_provinces_ids()
+    {   
+        if (Request::isMethod('post')) {
+            $formData      = Request::all();
+            $matched_groups = array();
+            $ids = isset($formData['ids']) ? $formData['ids'] : array();
+            if(!empty($ids)){
+                $city = DB::table('t_cities')->select('City_ID')->whereIn('Prov_ID', $ids)->get();
+                if(isset($city) && !empty($city)){
+                    foreach ($city as $key => $city_ids) {
+                        $city_id[] = $city_ids->City_ID;
+                    }
+                    $branch = DB::table('t_sysdata')->select('Branch')->whereIn('City_ID', $city_id)->get();
+                    foreach ($branch as $key => $branch_ids) {
+                        $branch_id[] = $branch_ids->Branch;
+                    }
+                    $b_id = isset($branch_id) ? $branch_id : array();
+                
+                    $group = DB::table('Remit_group')->where('status', 1)->get();
+                    foreach ($group as $key => $groups) {
+                        $grp_branch = explode(",", $groups->branch);
+                        $intersect = array_intersect($grp_branch,$b_id);
+                        if(count($intersect) == count($b_id)){
+                            array_push($matched_groups, $groups);
+                        }
+                    }   
+                } 
+            }
+            echo json_encode($matched_groups);
+        }
+    }
+    public function get_city_ids()
+    {   
+         if (Request::isMethod('post')) {
+            $formData      = Request::all();
+            $matched_groups = array();
+            $ids = isset($formData['ids']) ? $formData['ids'] : array();
+            if(!empty($ids)){
+                $branch = DB::table('t_sysdata')->select('Branch')->whereIn('City_ID', $ids)->get();
+                if(isset($branch) && !empty($branch)){
+                    foreach ($branch as $key => $branch_ids) {
+                        $branch_id[] = $branch_ids->Branch;
+                    }
+                    $b_id = isset($branch_id) ? $branch_id : array();
+                
+                    $group = DB::table('Remit_group')->where('status', 1)->get();
+                    foreach ($group as $key => $groups) {
+                        $grp_branch = explode(",", $groups->branch);
+                        $intersect = array_intersect($grp_branch,$b_id);
+                        if(count($intersect) == count($b_id)){
+                            array_push($matched_groups, $groups);
+                        }
+                    }   
+                } 
+            }
+            echo json_encode($matched_groups);
+        }
+    }
+     public function get_branch_ids()
+    {   
+         if (Request::isMethod('post')) {
+            $formData      = Request::all();
+            $matched_groups = array();
+            $b_id = isset($formData['ids']) ? $formData['ids'] : array();
+            if(!empty($b_id)){
+                $group = DB::table('Remit_group')->where('status', 1)->get();
+                foreach ($group as $key => $groups) {
+                    $grp_branch = explode(",", $groups->branch);
+                    $intersect = array_intersect($grp_branch,$b_id);
+                    if(count($intersect) == count($b_id)){
+                        array_push($matched_groups, $groups);
+                    }
+                }       
+            }
+            echo json_encode($matched_groups);
+        }
+    }
 }
 
 

@@ -9,6 +9,8 @@
 #template-module .panel-collapse .col-md-12 {float: left;margin-bottom: 6px;width: 100%;}
 .mt-checkbox > input {float: left;margin-right: 5px;margin-top: 3px;}
 #menus ul {list-style-type: none;}
+.save_button{margin-right: 15px;}
+.back-button {margin-left: 15px;}
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -59,12 +61,17 @@
                                     </div>
                                 </div>
                                 <!-- menus end -->
-                                <div class="form-group">
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">
+                                <div class="form-group row">
+                                  <div class="col-md-6">
+                                      <a type="button" class="btn btn-default back-button" href="{{ URL('list_template') }}">
+                                      Back
+                                      </a>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <button type="submit" class="btn btn-primary pull-right save_button">
                                         {{isset($detail_edit_template->template_id) ? "Save " : "Create " }}
                                         </button>
-                                    </div>
+                                  </div>
                                 </div>
                             </form>
                         </div>
@@ -82,6 +89,7 @@ function get_child_menus(id,menu_ids){
 		url: ajax_url+'/get_child_menu',
 		data: {_token, id, menu_ids},
 		type: "POST",
+        async: false,
 		success: function(response){
 		   $(".appen-sub-"+id).append(response);
 		}

@@ -2,25 +2,12 @@
 
 @section('content')
 <style>
-
-#branch_name {
-    margin-right: 15px;
-}
-.user_temp {
-    margin-left: 30px;
-}
-input.area_user {
-    margin-right: 6px;
-}
-.branch_assign{
-    padding: 0px !important;
-}
-.combine_branch {
-    padding-left: 27px;
-}
-.save_button{
-    margin-right: 15px;
-}
+#branch_name {margin-right: 15px;}
+.user_temp {margin-left: 30px;}
+input.area_user {margin-right: 6px;}
+.branch_assign{padding: 0px !important;}
+.combine_branch {padding-left: 27px;}
+.save_button{margin-right: 15px;}
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -96,32 +83,19 @@ input.area_user {
                                 <div class ="row" class="branch_assignment" id="branch_assignment">
                                     
                                 </div>
-                                <div class="form-group{{ $errors->has('user_name') ? ' has-error' : '' }}">
-                                    <label for="user_nam" class="col-md-12">REMITTANCE GROUP</label>
-                                    <div class="col-md-12 user_temp">
-                                        @foreach($group as $groups)
-                                        <div class="col-md-2 branch_assign">
-                                            <input id="group_name" type="checkbox" name="group[]" value="{{$groups->group_ID }}" class="area_user"
-                                            <?php 
-                                            if(isset($group_ids)){ echo in_array($groups->group_ID, $group_ids) ? "checked" : '' ;
-                                            }
-                                            ?> >
-                                            {{$groups->desc }}
-
-                                            @if ($errors->has('group_name'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('group_name') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                        @endforeach
-
+                                <div class="form-group ">
+                                <?php 
+                                    $grp_idss = isset($group_ids) ? implode(",", $group_ids) : "";
+                                ?>
+                                <input type="hidden" id="slctd_grp_ids" value="{{ $grp_idss }}">
+                                    <label for="user_nam" class="col-md-12 label_remittance" style="display:none">REMITTANCE GROUP</label>
+                                    <div class="col-md-12 user_temp grp_append">
                                     </div>
                                 </div>
-                                
+                               
                                 <div class="form-group row">
                                     <div class="col-md-6">
-                                        <a type="button" class="btn btn-default" href="{{ URL('list_user') }}"><span class="glyphicon glyphicon-arrow-left"></span>
+                                        <a type="button" class="btn btn-default" href="{{ URL('list_user') }}">
                                         Back
                                         </a>
                                     </div>
@@ -168,8 +142,9 @@ $(document).on("click", ".area_type", function(){
     var value = $(this).val();
     get_area_type(value,userid);
 });
-//$( window ).load(function() {
-$(function() {
+
+
+$(function(){
     var value = $('.area_type:checked').val();
     var userid = $("#userid").val();
     if(typeof(value) === 'undefined'){

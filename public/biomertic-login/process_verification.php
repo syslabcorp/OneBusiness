@@ -14,11 +14,11 @@ if (isset($_POST['VerPas']) && !empty($_POST['VerPas'])) {
 	$fingerData = getUserFinger($user_id);
 	$device 	= getDeviceBySn($sn);
 	//$sql1 		= "SELECT * FROM demo_user WHERE user_id='".$user_id."'";
-	$sql1 		= "SELECT * FROM sysusers WHERE UserID='".$user_id."'";
+	$sql1 		= "SELECT * FROM t_users WHERE UserID='".$user_id."'";
 	$result1 	= mysql_query($sql1);
 	$data 		= mysql_fetch_array($result1);
 	//$user_name	= $data['user_name'];
-	$user_name	= $data['uname'];
+	$user_name	= $data['UserName'];
 		
 	$salt = md5($sn.$fingerData[0]['finger_data'].$device[0]['vc'].$time.$user_id.$device[0]['vkey']);
 	

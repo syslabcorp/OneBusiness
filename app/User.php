@@ -27,7 +27,7 @@ class User extends Authenticatable
         'name', 'username', 'email', 'password', 'phone', 'pswd_auth', 'otp_auth', 'bio_auth',
     ]; */
 	protected $fillable = [
-        'UserName', 'uname','Full_Name','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
+        'UserName', 'uname','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
     ];
 
     /**

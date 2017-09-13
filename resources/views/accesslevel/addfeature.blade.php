@@ -48,9 +48,14 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <a type="button" class="btn btn-default" href="{{ URL('list_feature') }}">
+                                Back
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary pull-right save_button">
                                     {{isset($detail_edit_feature->feature_id) ? "Save " : "Create " }}
                                 </button>
                             </div>
