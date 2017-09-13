@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('header-scripts')
-
  <style>
      thead:before, thead:after { display: none; }
      tbody:before, tbody:after { display: none; }

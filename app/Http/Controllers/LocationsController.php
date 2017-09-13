@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Request;
 use App\Branch;
+use App\City;
 use DB;
 use URL;
 
@@ -20,7 +21,7 @@ public function __construct()
  public function index(Request $request)
     {
 
-        if(!\Auth::user()->checkAccess("Locations", "V"))
+        if(!\Auth::user()->checkAccessById(18, "V"))
         {
             \Session::flash('error', "You don't have permission..."); 
         
@@ -47,7 +48,7 @@ public function __construct()
 					\Session::flash('flash_message', 'Province has been updated.');
 				  }
 				   \Session::flash('alert-class', 'alert-success');
-				  return redirect('settings');
+				  return redirect('list_provinces');
 				}
 
     $data =array();
@@ -121,6 +122,28 @@ public function __construct()
 				$data['detail_edit_city'] = (object) $default_prov;
 			}
 		    return view('pages_settings.form_add_city', $data);
+    }
+	
+	
+	  public function deletecity($id,$prov_id)
+    {
+        if(!\Auth::user()->checkAccessById(18, "D"))
+        {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+		
+		DB::table('t_cities')->where('City_ID','=', $id)->delete();  
+        \Session::flash('success', "City was deleted successfully");
+		
+		if($prov_id == NULL){
+				return redirect('view_cities');
+			}else{
+				return redirect('view_cities/'.$prov_id);
+			}
+			 
+			 
+       //return redirect('list_provinces');
     }
 
 
