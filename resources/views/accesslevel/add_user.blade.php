@@ -9,8 +9,10 @@ input.area_user {margin-right: 6px;}
 .combine_branch {padding-left: 27px;}
 .save_button{margin-right: 15px;}
 </style>
+
 <div class="container-fluid">
-    <div class="row">
+	<input type="hidden" />
+    <div class="row"> 
         <div id="togle-sidebar-sec" class="active">   
             <!-- Sidebar -->
             <div id="sidebar-togle-sidebar-sec">

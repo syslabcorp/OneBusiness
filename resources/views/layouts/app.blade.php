@@ -15,6 +15,7 @@
         <title>Web Login System</title>
     @endif
     <!-- Styles -->
+<<<<<<< HEAD
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL('/css/bootstrap.min.css') }}" />
@@ -23,8 +24,16 @@
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
+=======
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> 
+	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
+	
+>>>>>>> 333d74618f0b5984749cf6ef0f9042484376145b
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// --->
 	<!--[if lt IE 9]>
 	<script src="{{ URL('/biomertic-login/assets/js/html5shiv.min.js') }}"></script>
 	<script src="{{ URL('/biomertic-login/assets/js/respond.min.js') }}"></script>
@@ -77,19 +86,20 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-                            <li><a href="{{ URL('list_group') }}">Manage Groups</a></li>
-                            <li><a href="{{ URL('list_user') }}">Manage Users</a></li>
-							<li><a href="{{ URL('active_users') }}">Active Users</a></li>
-							<li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
-							<li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
+                           
 							<li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    Manage Masters <span class="caret"></span>
+                                    System <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ URL('list_corporation') }}">Corporations</a></li>
                                     <li><a href="{{ URL('list_module') }}">Modules</a></li>
                                     <li><a href="{{ URL('list_feature') }}">Features</a></li>
+                                    <li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
+                                    <li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
+                                    <li><a href="{{ URL('active_users') }}">Active Users</a></li>
+                                    <li><a href="{{ URL('list_user') }}">Manage Users</a></li>
+                                    <li><a href="{{ URL('list_group') }}">Manage Groups</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown">

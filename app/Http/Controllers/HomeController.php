@@ -24,6 +24,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+	 
     public function index()
     {
 		$base_url = URL::to('/public/biomertic-login');
