@@ -11,6 +11,7 @@
 #menus ul {list-style-type: none;}
 .save_button{margin-right: 15px;}
 .back-button {margin-left: 15px;}
+input.area_user {margin-right: 6px;}
 </style>
 
 <div class="container-fluid"> 
@@ -42,7 +43,7 @@
                                 {{ csrf_field() }}
                                 <input type="hidden" id="unique_temp_id" value="{{ isset($detail_edit_template->template_id) ? $detail_edit_template->template_id : 0 }}" />
                                 <div class="form-group{{ $errors->has('temp_name') ? ' has-error' : '' }}">
-                                    <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
+                                    <label for="temp_nam" class="col-md-3 control-label">Template Name</label>
                                     <div class="col-md-6">
                                         <input id="temp_name" type="text" class="form-control required" name="temp_name"  value="{{isset($detail_edit_template->description) ? $detail_edit_template->description : "" }}" template-id="{{isset($detail_edit_template->template_id)? $detail_edit_template->template_id :0}}" autofocus>
                                         @if ($errors->has('temp_name'))
@@ -50,6 +51,9 @@
                                             <strong>{{ $errors->first('temp_name') }}</strong>
                                         </span>
                                         @endif
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input class="superAdmin area_user" type="checkbox" name="is_super_admin" id="admincheck" value= "<?php if(isset($detail_edit_template->is_super_admin)){echo 1;} ?>" {{ (isset($detail_edit_template-> is_super_admin) && ($detail_edit_template-> is_super_admin == 1)) ? "checked" : "" }}><label class="control-label">Set as Super Admin</label>
                                     </div>
                                 </div>
                                 <div id="template-module"></div>
@@ -99,17 +103,18 @@ function get_child_menus(id,menu_ids){
 }
 $(function(){
 	var menu_ids = {};
-	<?php if(isset($menu_ids)){ ?>
+	<?php if(isset($menu_ids) && (isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 0 )){ ?>
 	var menu_ids = <?php echo json_encode($menu_ids); ?>;
-	<?php } ?>
-    <?php 
-        if(isset($detail_edit_template->template_id)){ ?>
+	<?php } if(isset($detail_edit_template->template_id)){ ?>
             get_template_module("<?php echo $detail_edit_template->template_id; ?>");
-        <?php }else{ ?>
+    <?php }else{ ?>
 			get_template_module(0);
 		<?php }
     ?>
 	get_child_menus(0, menu_ids);
+    <?php if(isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 1 ){?>
+        $("#menus input.append-child-menu").prop( "checked", true );
+    <?php } ?>
 	$.each(menu_ids, function(k,v){
 		get_child_menus(v, menu_ids);
 	});
@@ -162,6 +167,14 @@ $(function () {
     $("#corporation_name").change(function () {
         var template_id = $(this).attr('template-id');
         var corp_id = $(this).val();
+    });
+    $('#admincheck').change(function () {   
+        $('input:checkbox').prop('checked', this.checked);      
+        if($(this).is(":checked")){
+            $(this).val(1);
+        }else{
+            $(this).val(0);
+        }   
     });
 });
 function get_template_module(template_id){

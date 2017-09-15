@@ -184,13 +184,25 @@ class AccessLevelController extends Controller
 				Request::session()->flash('flash_message', 'Create a module and features first before you can create a template for this corporation.');
 				return redirect('add_template');
 			}
-            $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
+            if(isset($formData['is_super_admin']) && $formData['is_super_admin'] == 1){
+                $menu = DB::table('menus')->select('id')->get();
+                foreach ($menu as $value) {
+                    $menu_id[] = $value->id; 
+                }
+                $menus =implode(",", $menu_id);
+            }else{
+                $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
+            }
+            
+            
             $template_name  = $formData["temp_name"];
+            $is_super_admin = isset($formData['is_super_admin']) ? $formData['is_super_admin'] : 0;
             $created_at   = date("Y-m-d H:i:s");
             $datatemplate = array(
                 'description' => $template_name,
                 "created_at"  => date("Y-m-d H:i:s"),
-                "template_menus" =>$menus
+                "template_menus" =>$menus,
+                "is_super_admin" =>$is_super_admin 
             );
             if ($template_id == NULL) {
                 $tid = DB::table('rights_template')->insertGetId($datatemplate);
@@ -496,7 +508,12 @@ class AccessLevelController extends Controller
             $data['branch_ids'] = $branch_id_data;
             $data['detail_edit'] = $detail_edit_group;  
         }
-        $data['branches']  =  DB::table('t_sysdata')->get(); 
+        $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->select('t_sysdata.*', 'corporation_masters.corp_name')->get();
+        $data['branches'] = array();
+        foreach ($branches as $branch) {
+            $data['branches'][$branch->corp_name][] = $branch;
+        }
+ 
         return view('accesslevel.add_group', $data);
     }
 
@@ -626,8 +643,8 @@ class AccessLevelController extends Controller
     public function branch($user_id = NULL)
     {  
         $branches = DB::table('t_sysdata')->join('t_cities', 't_sysdata.City_ID', '=', 't_cities.City_ID')
-            ->join('t_provinces', 't_cities.Prov_ID', '=', 't_provinces.Prov_ID')
-            ->select('t_sysdata.Branch','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->get();
+            ->join('t_provinces', 't_cities.Prov_ID', '=', 't_provinces.Prov_ID')->join('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')
+            ->select('t_sysdata.Branch','t_sysdata.corp_id','corporation_masters.corp_name','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->get();
         foreach($branches as $key=>$det_branch){
             $city_b_array[$det_branch->City_ID][] =$det_branch->ShortName; 
             $prov_b_array[$det_branch->Prov_ID][] =$det_branch->ShortName; 
