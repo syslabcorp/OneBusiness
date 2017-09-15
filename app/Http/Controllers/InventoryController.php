@@ -20,7 +20,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccess("19", "V"))
+        if(!\Auth::user()->checkAccessById(19, "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -46,7 +46,7 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        if(!\Auth::user()->checkAccess("Retail Items", "A"))
+        if(!\Auth::user()->checkAccessById(19, "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -80,7 +80,7 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
 
-        if(!\Auth::user()->checkAccess("19", "A"))
+        if(!\Auth::user()->checkAccessById(19, "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -141,7 +141,7 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
-        if(!\Auth::user()->checkAccess("19", "E")) {
+        if(!\Auth::user()->checkAccessById(19, "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -174,7 +174,7 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!\Auth::user()->checkAccess("19", "E")) {
+        if(!\Auth::user()->checkAccessById(19, "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -243,7 +243,7 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-        if(!\Auth::user()->checkAccess("19", "D"))
+        if(!\Auth::user()->checkAccessById(19, "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");

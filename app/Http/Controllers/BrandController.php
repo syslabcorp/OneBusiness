@@ -14,7 +14,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccess("23", "V"))
+        if(!\Auth::user()->checkAccessById(23, "V"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -44,7 +44,7 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        if(!\Auth::user()->checkAccess("23", "A"))
+        if(!\Auth::user()->checkAccessById(23, "A"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
@@ -95,7 +95,7 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        if(!\Auth::user()->checkAccess("23", "E")) {
+        if(!\Auth::user()->checkAccessById(23, "E")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
@@ -122,7 +122,7 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        if(!\Auth::user()->checkAccess("23", "D"))
+        if(!\Auth::user()->checkAccessById(23, "D"))
         {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");

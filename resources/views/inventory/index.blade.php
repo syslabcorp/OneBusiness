@@ -59,7 +59,7 @@
                                         <div class="col-md-6 col-xs-6">
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
-                                            <a href="{!! url('inventory/create') !!}" class="pull-right  @if(!\Auth::user()->checkAccess("19", "A")) disabled @endif">Add Item</a>
+                                            <a href="{!! url('inventory/create') !!}" class="pull-right  @if(!\Auth::user()->checkAccessById(19, "A")) disabled @endif">Add Item</a>
                                         </div>
                                     </div>
 
@@ -107,10 +107,10 @@
                                                 <td><input type="checkbox" name="printThis" @if($article->Print_This == 1) checked @endif disabled></td>
                                                 <td><input type="checkbox" name="prodActive" @if($article->Active == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccess("19", "E")) disabled @endif">
+                                                    <a href="inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(19, "E")) disabled @endif">
                                                         <i class="glyphicon glyphicon-pencil"></i>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccess("19", "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(19, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $article->item_id }}</span>
                                                     </a>
                                                 </td>

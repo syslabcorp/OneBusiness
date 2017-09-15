@@ -56,7 +56,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right  @if(!\Auth::user()->checkAccess("24", "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
+                                            <a href="#" class="pull-right  @if(!\Auth::user()->checkAccessById(24, "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
                                         </div>
                                     </div>
 
@@ -80,10 +80,10 @@
                                                     <input type="checkbox" @if($product->Active) checked @endif disabled>
                                                 </td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccess("24", "E")) disabled @endif">
+                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(24, "E")) disabled @endif">
                                                         <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(!\Auth::user()->checkAccess("24", "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(!\Auth::user()->checkAccessById(24, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i>
                                                     </a>
                                                 </td>
