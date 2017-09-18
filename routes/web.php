@@ -21,10 +21,13 @@ Route::any('/ajax_action', 'LoginController@ajax_action');
 Route::get('posts/{post}/edit', 'PostController@edit');
 Route::get('test', 'LoginController@test');
 
+#MasterFile Module
 Route::resource('inventory', 'InventoryController', ['middleware' => 'auth']);
 Route::resource('services', 'ServiceController', ['middleware' => 'auth']);
 Route::resource('brands', 'BrandController', ['middleware' => 'auth']);
 Route::resource('productlines', 'ProductLineController', ['middleware' => 'auth']);
+Route::resource('satellite-branch', 'SatelliteBranchController', ['middleware' => 'auth']);
+#End of MasterFile Module
 
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
 Route::put('branchs/{branch}/misc', 'BranchsController@updateMisc')->middleware('auth')->name('branchs.misc');
