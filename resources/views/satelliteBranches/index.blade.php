@@ -104,103 +104,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal add new brand -->
-    <div id="addNewBrand" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Add New Brand</h5>
-                </div>
-                <form class="form-horizontal" action="{{ url('/brands') }}" METHOD="POST">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="brandName">Brand Name</label>
-                            <div class="col-md-8">
-                                <input id="brandName" name="brandName" type="text" class="form-control input-md" required="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
-                            </div>
-                            <div class="col-sm-6">
-                                {!! csrf_field() !!}
-                                <button type="submit" class="btn btn-primary pull-right">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- end modal for creting new service -->
 
-    <!-- Modal for editing service -->
-    <div id="editBrand" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Edit Brand: <span style="font-weight: bold" class="brandToEdit"></span></h5>
-                </div>
-                <form class="form-horizontal" action="" METHOD="post">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="editBrandName">Brand Name</label>
-                            <div class="col-md-8">
-                                <input id="editBrandName" name="editBrandName" type="text" class="form-control input-md editBrandName" required="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
-                            </div>
-                            <div class="col-sm-6">
-                                {!! csrf_field() !!}
-                                {{ method_field('PUT') }}
-                                <input type="hidden" class="brandId" value="">
-                                <button type="submit" class="btn btn-primary pull-right">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- end modal for editing service -->
-    <!-- Modal delete item from inventory -->
-    <div class="modal fade" id="confirm-delete" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
-                </div>
-                <form action="" method="POST" >
-                    <div class="modal-body">
-                        <p>You are about to delete one track, this procedure is irreversible.</p>
-                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
-                        <p class="debug-url"></p>
-                    </div>
-
-                    <div class="modal-footer">
-                        <input style="display: none" class="serviceId" >
-                        {!! csrf_field() !!}
-                        {{ method_field('Delete') }}
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- end Modal -->
 @endsection
 
 @section('footer-scripts')
@@ -210,7 +114,7 @@
                 initComplete: function () {
                     this.api().columns(3).every( function () {
                         var column = this;
-                        var select = $('<select><option value="">Select Active</option></select>')
+                        var select = $('<select><option value="">All</option></select>')
                             .appendTo( '#example_ddl' )
                             .on( 'change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
@@ -224,7 +128,7 @@
 
                         column.data().unique().sort().each( function ( d, j ) {
                             var activeName = "";
-                            if(d == 1) { activeName = 'Yes'; } else { activeName = 'No'; };
+                            if(d == 1) { activeName = 'Active'; } else { activeName = 'Inactive'; };
                             select.append( '<option value="'+d+'">'+activeName+'</option>' )
                         } );
                     } );
