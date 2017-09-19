@@ -184,7 +184,6 @@ class InventoryController extends Controller
             'itemCode' => 'required',
             'itemType' => 'required',
             'itemBrand' => 'required',
-            'barcodeNum' => 'required',
             'itemProduct' => 'required',
             'itemUnit' => 'required',
             'itemPackageQuantity' => 'required',
