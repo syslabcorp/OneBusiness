@@ -9,15 +9,28 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--title>{{ config('app.name', 'Laravel') }}</title-->
-    <title>Web Login System</title>
-
+    @if(\View::hasSection('head'))
+        @yield('head')
+    @else
+        <title>Web Login System</title>
+    @endif
     <!-- Styles -->
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"> 
 	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
 	
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ URL('/css/bootstrap.min.css') }}" />
+    <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
+	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
+    <script src="{{ asset('js/app.js') }}"></script>
+
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// --->
 	<!--[if lt IE 9]>
@@ -25,28 +38,19 @@
 	<script src="{{ URL('/biomertic-login/assets/js/respond.min.js') }}"></script>
 	<![endif]-->
 
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="{{ URL('/biomertic-login/assets/js/jquery.min.js') }}"></script>
-	<script src="{{ URL('/biomertic-login/assets/js/jquery.timer.js') }}"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script src="{{ URL('/biomertic-login/assets/js/bootstrap.min.js') }}"></script>
-	<script src="{{ URL('/biomertic-login/assets/js/ajaxmask.js') }}"></script>
-
-	<script src="{{ URL('/biomertic-login/assets/js/custom.js') }}"></script>
 	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
-    <!-- Scripts -->
-    <script>
-        window.Laravel = {!! json_encode([
-            'csrfToken' => csrf_token(),
-        ]) !!};
-		var ajax_url = "{{ URL('/') }}";
-		var biometric_url = "{{ URL('/biomertic-login') }}";
-    </script>
-	<script src="{{ asset('js/login.js') }}"></script>
+
+
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
+
+        #sidebar-togle-sidebar-sec {
+            z-index: 100 !important;
+        }
 	</style>
+
+    @yield('header-scripts')
 </head>
 <body>
     <div id="app">
@@ -82,7 +86,7 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
                            
-							<li class="dropdown">
+							<!--li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     System <span class="caret"></span>
                                 </a>
@@ -96,7 +100,7 @@
                                     <li><a href="{{ URL('list_user') }}">Manage Users</a></li>
                                     <li><a href="{{ URL('list_group') }}">Manage Groups</a></li>
                                 </ul>
-                            </li>
+                            </li-->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                  {{ Auth::user()->UserName }} 
@@ -112,27 +116,48 @@
                 </div>
             </div>
         </nav>
+        <div class="row" style="margin-top: 15px;">
+            @if(\Session::get('error'))
+            <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
+                <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
+            </div>
+            @elseif(\Session::get('success'))
+                <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
+                    <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
+                </div>
+            @endif
+        </div>
+
         @yield('content')
     </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="{{ URL('/biomertic-login/assets/js/jquery.timer.js') }}"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="{{ URL('/biomertic-login/assets/js/bootstrap.min.js') }}"></script>
+	<script src="{{ URL('/biomertic-login/assets/js/ajaxmask.js') }}"></script>
+
+	<script src="{{ URL('/biomertic-login/assets/js/custom.js') }}"></script>
+
     <!-- Scripts -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken' => csrf_token(),
+        ]) !!};
+		var ajax_url = "{{ URL('/') }}";
+		var biometric_url = "{{ URL('/biomertic-login') }}";
+    </script>
+	<script src="{{ asset('js/login.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
+    <script src="{{ URL('/js/colorpicker.js') }}"></script>
 	<script>
 		if($("#treeview_json").length){
-			/* var curr_url  = window.location.href;
-			var open_menu = curr_url.split('#')[1];
-			if( typeof open_menu !== "undefined"){
-				$(".table-responsive a").each(function(){
-					if($(this).children().hasClass("glyphicon-pencil")){
-						alert($(this).attr("href"));
-					}
-				});
-			} */
-			
 			$("#menu-toggle").click(function(e) {
 					e.preventDefault();
 					$("#togle-sidebar-sec").toggleClass("active");
@@ -171,5 +196,6 @@
 			$('.alertfade').fadeOut(5000); // 5 seconds x 1000 milisec = 5000 milisec
         });
 	</script>
+@yield('footer-scripts')
 </body>
 </html>

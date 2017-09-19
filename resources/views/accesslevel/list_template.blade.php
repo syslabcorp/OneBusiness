@@ -42,7 +42,7 @@
                                                     <td>{{ $list->template_id }}</td>
                                                     <td>{{ $list->description }}</td>
                                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template" template-name="{{ $list->description }}" id="{{ $list->template_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach
                                         </tbody>
@@ -59,25 +59,28 @@
 <script>
 $(document).ready(function() {
     $('#list_templat').DataTable();
-    $(document).on("click", ".sweet-4", function(){
+     $(document).on("click", ".sweet-4", function(){
         var delete_url = $(this).attr("rel");
+        var template_name = $(this).attr("template-name");
+        var id = $(this).attr("id");
         swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this Template Data!",
-            type: "warning",
+            title: "<div class='delete-title'>Confirm Delete</div>",
+            text:  "<div class='delete-text'>You are about to delete Template <strong>"+id+" - "+template_name +"</strong><br/> Are you sure?</div>",
+            html:  true,
+            customClass: 'swal-wide',
             showCancelButton: true,
             confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: "No",
+            confirmButtonText: 'Delete',
+            cancelButtonText: "Cancel",
             closeOnConfirm: false,
             closeOnCancel: true
         },
         function(isConfirm){
-          if (isConfirm){
-            window.location.replace(delete_url);
-          } else {
-            return false;
-          }
+            if (isConfirm){
+                window.location.replace(delete_url);
+            } else {
+                return false;
+            }
         });
     });
     $('[data-toggle="tooltip"]').tooltip();   
