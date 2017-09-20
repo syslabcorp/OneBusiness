@@ -130,7 +130,7 @@ class LoginController extends Controller
 				}
 				$username = $users->uname;
 				if(!$this->check_active_users($username)){
-					$datalog = array('user_name' => $users->Username,'data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
+					$datalog = array('user_name' => $users->uname,'data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');
 					DB::table('demo_log')->insert($datalog);
 				}else{
 					$data = array('data' =>date('Y-m-d H:i:s'),"login_type" => 'otp');

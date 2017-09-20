@@ -39,19 +39,19 @@
 						<div class="col-md-8">
 							<div class="mt-checkbox-inline">
 								<label class="mt-checkbox">
-									<input type="checkbox" value="D"name ="access_{{$mid}}_{{$fid}}_d" <?php echo in_array('D', $access) ? "checked" :'' ?> > Delete
+									<input type="checkbox" value="D" class="feature_dave" name ="access_{{$mid}}_{{$fid}}_d" <?php echo in_array('D', $access) ? "checked" :'' ?> > Delete
 									<span></span>
 								</label>
 								<label class="mt-checkbox">
-									<input type="checkbox" value="A"name ="access_{{$mid}}_{{$fid}}_a" <?php echo in_array('A', $access) ? "checked" :'' ?> > Add
+									<input type="checkbox" value="A" class="feature_dave" name ="access_{{$mid}}_{{$fid}}_a" <?php echo in_array('A', $access) ? "checked" :'' ?> > Add
 									<span></span>
 								</label>
 								<label class="mt-checkbox">
-									<input type="checkbox" value="V"name ="access_{{$mid}}_{{$fid}}_v" <?php echo in_array('V', $access) ? "checked" :'' ?> > View
+									<input type="checkbox" value="V" class="feature_dave" name ="access_{{$mid}}_{{$fid}}_v" <?php echo in_array('V', $access) ? "checked" :'' ?> > View
 									<span></span>
 								</label>
 								<label class="mt-checkbox">
-									<input type="checkbox" value="E"name ="access_{{$mid}}_{{$fid}}_e" <?php echo in_array('E', $access) ? "checked" :'' ?> > Edit
+									<input type="checkbox" value="E" class="feature_dave" name ="access_{{$mid}}_{{$fid}}_e" <?php echo in_array('E', $access) ? "checked" :'' ?> > Edit
 									<span></span>
 								</label>
 							</div>

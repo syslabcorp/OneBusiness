@@ -11,8 +11,11 @@
 #menus ul {list-style-type: none;}
 .save_button{margin-right: 15px;}
 .back-button {margin-left: 15px;}
+input.area_user {margin-right: 6px;}
 </style>
-<div class="container-fluid">
+
+<div class="container-fluid"> 
+	<input type="hidden" />
     <div class="row">
         <div id="togle-sidebar-sec" class="active">   
             <!-- Sidebar -->
@@ -40,7 +43,7 @@
                                 {{ csrf_field() }}
                                 <input type="hidden" id="unique_temp_id" value="{{ isset($detail_edit_template->template_id) ? $detail_edit_template->template_id : 0 }}" />
                                 <div class="form-group{{ $errors->has('temp_name') ? ' has-error' : '' }}">
-                                    <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
+                                    <label for="temp_nam" class="col-md-3 control-label">Template Name</label>
                                     <div class="col-md-6">
                                         <input id="temp_name" type="text" class="form-control required" name="temp_name"  value="{{isset($detail_edit_template->description) ? $detail_edit_template->description : "" }}" template-id="{{isset($detail_edit_template->template_id)? $detail_edit_template->template_id :0}}" autofocus>
                                         @if ($errors->has('temp_name'))
@@ -49,6 +52,10 @@
                                         </span>
                                         @endif
                                     </div>
+                                    <div class="col-md-3">
+                                    <label class="control-label mt-checkbox">
+                                        <input class="superAdmin area_user" type="checkbox" name="is_super_admin" id="admincheck" value= "<?php if(isset($detail_edit_template->is_super_admin)){echo 1;} ?>" {{ (isset($detail_edit_template-> is_super_admin) && ($detail_edit_template-> is_super_admin == 1)) ? "checked" : "" }}>Set as Super User</label>
+                                    </div>
                                 </div>
                                 <div id="template-module"></div>
                                 <!-- menus start -->
@@ -56,7 +63,8 @@
                                     <div class="col-md-12" id="menus">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Menus</div>
-                                            <div class="panel-body appen-sub-0"></div>            
+                                            <div class="panel-body appen-sub-0"></div>    
+
                                         </div>
                                     </div>
                                 </div>
@@ -73,6 +81,9 @@
                                         </button>
                                   </div>
                                 </div>
+                                <div id="hiddenmodule-ids" class="hiddenmodule-ids"></div>
+                                <div id="hiddenfeature-dave" class="hiddenfeature-dave"></div>
+                                
                             </form>
                         </div>
 					</div>
@@ -97,17 +108,16 @@ function get_child_menus(id,menu_ids){
 }
 $(function(){
 	var menu_ids = {};
-	<?php if(isset($menu_ids)){ ?>
+    <?php if(isset($menu_ids)){ ?>
 	var menu_ids = <?php echo json_encode($menu_ids); ?>;
-	<?php } ?>
-    <?php 
-        if(isset($detail_edit_template->template_id)){ ?>
+	<?php } if(isset($detail_edit_template->template_id)){ ?>
             get_template_module("<?php echo $detail_edit_template->template_id; ?>");
-        <?php }else{ ?>
+    <?php }else{ ?>
 			get_template_module(0);
 		<?php }
     ?>
 	get_child_menus(0, menu_ids);
+    
 	$.each(menu_ids, function(k,v){
 		get_child_menus(v, menu_ids);
 	});
@@ -149,6 +159,10 @@ $(function(){
 });
 
 $(function () {
+    var all_menu_ids ={};
+    <?php if(isset($all_menu_ids)){ ?>
+    var all_menu_ids = <?php echo json_encode($all_menu_ids); ?>;
+    <?php } ?>
 	$("#template-module").on("click", ".click_module", function(){
 		var _this_rel = $(this).attr("rel");
 		if($(_this_rel).hasClass("in")){
@@ -161,6 +175,54 @@ $(function () {
         var template_id = $(this).attr('template-id');
         var corp_id = $(this).val();
     });
+    $('#admincheck').change(function () {   
+        $('input:checkbox').prop('checked', this.checked);      
+        if($(this).is(":checked")){
+            $(this).val(1);
+            <?php if(!isset($detail_edit_template->is_super_admin)){ ?>
+            $.each(all_menu_ids, function(k,v){
+                get_child_menus(v, all_menu_ids);
+            });
+            <?php }else if ($detail_edit_template->is_super_admin == 0) {?>  
+                var _thisClass = '';
+                $("#menus ul").each(function(){
+                    _thisClass = $(this).attr("class");
+                    if(_thisClass != 'remove-append-0'){
+                        $("#menus ul."+_thisClass).html('');
+                    }
+                });
+                    $.each(all_menu_ids, function(k,v){
+                    get_child_menus(v, all_menu_ids);
+                });
+             <?php } ?>
+            $("input.checkboxclick:checked").each(function (){  
+                    $('.hiddenmodule-ids').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+            });
+            $("input.feature_dave:checked").each(function (){  
+                $('.hiddenfeature-dave').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+            });
+            $('#template-module input:checkbox').attr('disabled', true);  
+            $("#menus input.append-child-menu").attr("disabled", true);
+        }else{
+            $(this).val(0);
+            $('.hiddenmodule-ids').html('');
+            $('.hiddenfeature-dave').html('');
+            <?php if(!isset($detail_edit_template->is_super_admin)){ ?>
+                    $("#menus .appen-sub-0").html('');
+                    get_child_menus(0, all_menu_ids);
+                    $('#template-module input:checkbox').removeAttr("disabled");
+                    $("#menus input.append-child-menu").removeAttr("disabled");
+                    $("#menus input.append-child-menu").removeAttr("checked");
+            <?php }else if(isset($detail_edit_template->is_super_admin)){?>
+                 $("#menus input.append-child-menu").removeAttr("disabled");
+                 $('#template-module input:checkbox').removeAttr("disabled");
+                 $("#menus input.append-child-menu").prop( "checked", true );
+                 <?php if($detail_edit_template->is_super_admin == 1){ ?>
+                 $('#template-module input:checkbox').prop('checked', true);  
+            <?php } } ?>
+            
+        }   
+    });
 });
 function get_template_module(template_id){
 	var corp_id = 0;
@@ -170,9 +232,32 @@ function get_template_module(template_id){
         type: "GET",
         success: function(res){
             $('#template-module').html(res);
+            <?php if(isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 1 ){?>
+                $("#template-module input:checkbox").attr("disabled", true); 
+                $("input.checkboxclick:checked").each(function (){  
+                    $('.hiddenmodule-ids').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+                });
+                $("input.feature_dave:checked").each(function (){  
+                    $('.hiddenfeature-dave').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+                });
+
+            <?php }else{ ?>
+                    $('.hiddenmodule-ids').html('');
+                    $('.hiddenfeature-dave').html('');
+           <?php } ?>
         }
     });
 }
+$(function(){
+    <?php if(isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 1 ){?> 
+        $("#menus input.append-child-menu").attr("disabled", true);
+        
+    <?php } ?>
+});
+$(document).ajaxStop(function(){
+    $(".loader").addClass("dispnone");
+});
+
 </script>
 @endsection
 

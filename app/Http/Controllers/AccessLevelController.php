@@ -37,6 +37,7 @@ class AccessLevelController extends Controller
 		if ($corp_id != NULL) {
 			$data['detail_edit'] = DB::table('corporation_masters')->where('corp_id', $corp_id)->first();	
 		}
+		
 		return view('accesslevel.addcorporation',$data);
     }
 	
@@ -71,7 +72,13 @@ class AccessLevelController extends Controller
             $created_at   = date("Y-m-d H:i:s");
             $data = array('corp_id' => $formData["corp_id"],'description' =>$formData["module_name"],"created_at" => date("Y-m-d H:i:s"));
             if ($module_id == NULL) {
-                DB::table('module_masters')->insertGetId($data);
+                $id_module = DB::table('module_masters')->insertGetId($data);
+                $tid_is_admin = DB::table('rights_template')->select('template_id')->where('is_super_admin', 1)->get();
+                if(isset($tid_is_admin)){
+                    foreach ($tid_is_admin as $key => $value) {
+                            DB::table('rights_mstr')->insertGetId(array('template_id' => $value->template_id,'module_id'   =>$id_module,));
+                    }
+                }
                 Request::session()->flash('flash_message', 'Module has been added.');
             }else{
                 DB::table('module_masters')->where('module_id', $module_id)->update($data);
@@ -124,8 +131,16 @@ class AccessLevelController extends Controller
                 'feature' =>$formData["feature_name"],
                 "created_at" => date("Y-m-d H:i:s")
             );
+            $mod_id = $formData["module_id"];
             if ($feature_id == NULL || $feature_id == 0) {
-                DB::table('feature_masters')->insertGetId($data);
+                $id_feature = DB::table('feature_masters')->insertGetId($data);
+                $tid_is_admin = DB::table('rights_template')->select('template_id')->where('is_super_admin', 1)->get();
+                if(isset($tid_is_admin)){
+                    foreach ($tid_is_admin as $key => $value) {
+                            DB::table('rights_detail')->insertGetId(array('module_id'   => $mod_id,'template_id' => $value->template_id,'feature_id'  => $id_feature,
+                            'access_type' => 'DAVE'));
+                    }
+                }
                 Request::session()->flash('flash_message', 'Feature has been added.');
             }else{
                 DB::table('feature_masters')->where('feature_id', $feature_id)->update($data);
@@ -183,13 +198,23 @@ class AccessLevelController extends Controller
 				Request::session()->flash('flash_message', 'Create a module and features first before you can create a template for this corporation.');
 				return redirect('add_template');
 			}
-            $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
+            if(isset($formData['is_super_admin']) && $formData['is_super_admin'] == 1){
+                $menu = DB::table('menus')->select('id')->get();
+                foreach ($menu as $value) {
+                    $menu_id[] = $value->id; 
+                }
+                $menus =implode(",", $menu_id);
+            }else{
+                $menus =isset($formData['menu']) ? implode(",", $formData['menu']) : NULL;
+            }
             $template_name  = $formData["temp_name"];
+            $is_super_admin = isset($formData['is_super_admin']) ? $formData['is_super_admin'] : 0;
             $created_at   = date("Y-m-d H:i:s");
             $datatemplate = array(
                 'description' => $template_name,
                 "created_at"  => date("Y-m-d H:i:s"),
-                "template_menus" =>$menus
+                "template_menus" =>$menus,
+                "is_super_admin" =>$is_super_admin 
             );
             if ($template_id == NULL) {
                 $tid = DB::table('rights_template')->insertGetId($datatemplate);
@@ -240,6 +265,11 @@ class AccessLevelController extends Controller
             $data['menu_ids'] = $menu_id_data;
             $data['detail_edit_template'] = $template_menu_ids;  
         }
+        $menu = DB::table('menus')->select('id')->get();
+        foreach ($menu as $value) {
+            $menu_id[] = $value->id; 
+        }
+        $data['all_menu_ids'] = $menu_id;     
         return view('accesslevel.addtemplate', $data);
     }
     public function template_module()
@@ -495,7 +525,12 @@ class AccessLevelController extends Controller
             $data['branch_ids'] = $branch_id_data;
             $data['detail_edit'] = $detail_edit_group;  
         }
-        $data['branches']  =  DB::table('t_sysdata')->get(); 
+        $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->select('t_sysdata.*', 'corporation_masters.corp_name')->get();
+        $data['branches'] = array();
+        foreach ($branches as $branch) {
+            $data['branches'][$branch->corp_name][] = $branch;
+        }
+ 
         return view('accesslevel.add_group', $data);
     }
 
@@ -524,6 +559,7 @@ class AccessLevelController extends Controller
     public function list_user()
     {   
         $group  = DB::table('Remit_group')->get();
+        $grp_IDs =array(); 
         foreach($group as $key=>$det){
             $grp_IDs[$det->group_ID]= $det->desc;     
         }
@@ -589,7 +625,7 @@ class AccessLevelController extends Controller
             $data['group_ids'] = explode(",", $detail_edit_sysuser->group_ID);
             $data['detail_edit_sysuser'] = $detail_edit_sysuser;  
         }
-        $data['template'] = DB::table('rights_template')->select('template_id', 'description')->get();
+        $data['template'] = DB::table('rights_template')->select('template_id', 'description','is_super_admin')->get();
         return view('accesslevel.add_user', $data);
     }
     public function provinces($user_id = NULL)
@@ -625,8 +661,8 @@ class AccessLevelController extends Controller
     public function branch($user_id = NULL)
     {  
         $branches = DB::table('t_sysdata')->join('t_cities', 't_sysdata.City_ID', '=', 't_cities.City_ID')
-            ->join('t_provinces', 't_cities.Prov_ID', '=', 't_provinces.Prov_ID')
-            ->select('t_sysdata.Branch','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->get();
+            ->join('t_provinces', 't_cities.Prov_ID', '=', 't_provinces.Prov_ID')->join('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')
+            ->select('t_sysdata.Branch','t_sysdata.corp_id','corporation_masters.corp_name','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->get();
         foreach($branches as $key=>$det_branch){
             $city_b_array[$det_branch->City_ID][] =$det_branch->ShortName; 
             $prov_b_array[$det_branch->Prov_ID][] =$det_branch->ShortName; 
@@ -673,11 +709,25 @@ class AccessLevelController extends Controller
                     foreach ($group as $key => $groups) {
                         $grp_branch = explode(",", $groups->branch);
                         $intersect = array_intersect($grp_branch,$b_id);
-                        if(count($intersect) == count($b_id)){
-                            array_push($matched_groups, $groups);
+                        if(count($intersect) == count($grp_branch)){
+                            array_push($matched_groups, (array) $groups);
                         }
                     }   
                 } 
+            }
+            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->get();
+            foreach($brnch_name as $key=>$det){
+                $b_name[$det->Branch] =$det->ShortName;  
+            }
+
+            foreach ($matched_groups as $key => $matched_group) {
+                $matched_group = $matched_group;
+                if(isset($matched_group['branch'])){
+                    $matched_groups[$key]['branch'] = array();
+                    foreach ((explode(",", $matched_group['branch'])) as $brnch) {
+                        $matched_groups[$key]['branch'][] = $b_name[$brnch];
+                    }
+                }
             }
             echo json_encode($matched_groups);
         }
@@ -700,11 +750,25 @@ class AccessLevelController extends Controller
                     foreach ($group as $key => $groups) {
                         $grp_branch = explode(",", $groups->branch);
                         $intersect = array_intersect($grp_branch,$b_id);
-                        if(count($intersect) == count($b_id)){
-                            array_push($matched_groups, $groups);
+                        if(count($intersect) == count($grp_branch)){
+                            array_push($matched_groups, (array) $groups);
                         }
                     }   
                 } 
+            }
+            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->get();
+            foreach($brnch_name as $key=>$det){
+                $b_name[$det->Branch] =$det->ShortName;  
+            }
+
+            foreach ($matched_groups as $key => $matched_group) {
+                $matched_group = $matched_group;
+                if(isset($matched_group['branch'])){
+                    $matched_groups[$key]['branch'] = array();
+                    foreach ((explode(",", $matched_group['branch'])) as $brnch) {
+                        $matched_groups[$key]['branch'][] = $b_name[$brnch];
+                    }
+                }
             }
             echo json_encode($matched_groups);
         }
@@ -720,10 +784,24 @@ class AccessLevelController extends Controller
                 foreach ($group as $key => $groups) {
                     $grp_branch = explode(",", $groups->branch);
                     $intersect = array_intersect($grp_branch,$b_id);
-                    if(count($intersect) == count($b_id)){
-                        array_push($matched_groups, $groups);
+                    if(count($intersect) == count($grp_branch)){
+                        array_push($matched_groups, (array) $groups);
                     }
                 }       
+            }
+            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->get();
+            foreach($brnch_name as $key=>$det){
+                $b_name[$det->Branch] =$det->ShortName;  
+            }
+
+            foreach ($matched_groups as $key => $matched_group) {
+                $matched_group = $matched_group;
+                if(isset($matched_group['branch'])){
+                    $matched_groups[$key]['branch'] = array();
+                    foreach ((explode(",", $matched_group['branch'])) as $brnch) {
+                        $matched_groups[$key]['branch'][] = $b_name[$brnch];
+                    }
+                }
             }
             echo json_encode($matched_groups);
         }

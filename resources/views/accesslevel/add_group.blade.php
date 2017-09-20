@@ -3,9 +3,10 @@
 @section('content')
 <style>
 .activecheck {padding-top: 9px;}
-#branch_name {margin-right: 15px;}
+#branch_name {margin-right: 5px;}
 .save_button{margin-right: 15px;}
 .back-button {margin-left: 15px;}
+label.mt-checkbox {font-weight: 400;}
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -56,17 +57,20 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Branches</div>
                                             <div class="form-group{{ $errors->has('branch_name') ? ' has-error' : '' }}">
+                                            @foreach ($branches as $corp_name=>$corp)
                                             <div class="panel-body">
                                                 <div class="col-md-12">
-                                                    @foreach($branches as $branch)
+                                                <h4>{{ $corp_name }}</h4>
+                                                    @foreach($corp as $branch)
                                                     <div class="col-md-5">
+                                                    <label class="mt-checkbox">
                                                         <input id="branch_name" type="checkbox" name="branch[]" value="{{$branch->Branch }}"
                                                         <?php 
                                                         if(isset($branch_ids)){ echo in_array($branch->Branch, $branch_ids) ? "checked" : '' ;
                                                         }
                                                         ?> >
                                                         {{$branch->ShortName }}
-
+                                                    </label>
                                                         @if ($errors->has('branch_name'))
                                                             <span class="help-block">
                                                                 <strong>{{ $errors->first('branch_name') }}</strong>
@@ -76,6 +80,7 @@
                                                     @endforeach
                                                 </div>
                                             </div>
+                                            @endforeach
                                         </div>         
                                         </div>
                                     </div>
