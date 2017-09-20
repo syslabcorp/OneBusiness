@@ -27,6 +27,10 @@ Route::resource('services', 'ServiceController', ['middleware' => 'auth']);
 Route::resource('brands', 'BrandController', ['middleware' => 'auth']);
 Route::resource('productlines', 'ProductLineController', ['middleware' => 'auth']);
 Route::resource('satellite-branch', 'SatelliteBranchController', ['middleware' => 'auth']);
+Route::resource('banks', 'BankController', ['middleware' => 'auth']);
+Route::resource('bank-accounts', 'BankAccountController', ['middleware' => 'auth']);
+
+Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
 #End of MasterFile Module
 
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);

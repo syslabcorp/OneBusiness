@@ -53,7 +53,8 @@ input.area_user {margin-right: 6px;}
                                         @endif
                                     </div>
                                     <div class="col-md-3">
-                                        <input class="superAdmin area_user" type="checkbox" name="is_super_admin" id="admincheck" value= "<?php if(isset($detail_edit_template->is_super_admin)){echo 1;} ?>" {{ (isset($detail_edit_template-> is_super_admin) && ($detail_edit_template-> is_super_admin == 1)) ? "checked" : "" }}><label class="control-label">Set as Super Admin</label>
+                                    <label class="control-label mt-checkbox">
+                                        <input class="superAdmin area_user" type="checkbox" name="is_super_admin" id="admincheck" value= "<?php if(isset($detail_edit_template->is_super_admin)){echo 1;} ?>" {{ (isset($detail_edit_template-> is_super_admin) && ($detail_edit_template-> is_super_admin == 1)) ? "checked" : "" }}>Set as Super User</label>
                                     </div>
                                 </div>
                                 <div id="template-module"></div>
@@ -62,7 +63,8 @@ input.area_user {margin-right: 6px;}
                                     <div class="col-md-12" id="menus">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Menus</div>
-                                            <div class="panel-body appen-sub-0"></div>            
+                                            <div class="panel-body appen-sub-0"></div>    
+
                                         </div>
                                     </div>
                                 </div>
@@ -79,6 +81,9 @@ input.area_user {margin-right: 6px;}
                                         </button>
                                   </div>
                                 </div>
+                                <div id="hiddenmodule-ids" class="hiddenmodule-ids"></div>
+                                <div id="hiddenfeature-dave" class="hiddenfeature-dave"></div>
+                                
                             </form>
                         </div>
 					</div>
@@ -103,7 +108,7 @@ function get_child_menus(id,menu_ids){
 }
 $(function(){
 	var menu_ids = {};
-	<?php if(isset($menu_ids) && (isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 0 )){ ?>
+    <?php if(isset($menu_ids)){ ?>
 	var menu_ids = <?php echo json_encode($menu_ids); ?>;
 	<?php } if(isset($detail_edit_template->template_id)){ ?>
             get_template_module("<?php echo $detail_edit_template->template_id; ?>");
@@ -112,9 +117,7 @@ $(function(){
 		<?php }
     ?>
 	get_child_menus(0, menu_ids);
-    <?php if(isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 1 ){?>
-        $("#menus input.append-child-menu").prop( "checked", true );
-    <?php } ?>
+    
 	$.each(menu_ids, function(k,v){
 		get_child_menus(v, menu_ids);
 	});
@@ -156,6 +159,10 @@ $(function(){
 });
 
 $(function () {
+    var all_menu_ids ={};
+    <?php if(isset($all_menu_ids)){ ?>
+    var all_menu_ids = <?php echo json_encode($all_menu_ids); ?>;
+    <?php } ?>
 	$("#template-module").on("click", ".click_module", function(){
 		var _this_rel = $(this).attr("rel");
 		if($(_this_rel).hasClass("in")){
@@ -172,8 +179,48 @@ $(function () {
         $('input:checkbox').prop('checked', this.checked);      
         if($(this).is(":checked")){
             $(this).val(1);
+            <?php if(!isset($detail_edit_template->is_super_admin)){ ?>
+            $.each(all_menu_ids, function(k,v){
+                get_child_menus(v, all_menu_ids);
+            });
+            <?php }else if ($detail_edit_template->is_super_admin == 0) {?>  
+                var _thisClass = '';
+                $("#menus ul").each(function(){
+                    _thisClass = $(this).attr("class");
+                    if(_thisClass != 'remove-append-0'){
+                        $("#menus ul."+_thisClass).html('');
+                    }
+                });
+                    $.each(all_menu_ids, function(k,v){
+                    get_child_menus(v, all_menu_ids);
+                });
+             <?php } ?>
+            $("input.checkboxclick:checked").each(function (){  
+                    $('.hiddenmodule-ids').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+            });
+            $("input.feature_dave:checked").each(function (){  
+                $('.hiddenfeature-dave').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+            });
+            $('#template-module input:checkbox').attr('disabled', true);  
+            $("#menus input.append-child-menu").attr("disabled", true);
         }else{
             $(this).val(0);
+            $('.hiddenmodule-ids').html('');
+            $('.hiddenfeature-dave').html('');
+            <?php if(!isset($detail_edit_template->is_super_admin)){ ?>
+                    $("#menus .appen-sub-0").html('');
+                    get_child_menus(0, all_menu_ids);
+                    $('#template-module input:checkbox').removeAttr("disabled");
+                    $("#menus input.append-child-menu").removeAttr("disabled");
+                    $("#menus input.append-child-menu").removeAttr("checked");
+            <?php }else if(isset($detail_edit_template->is_super_admin)){?>
+                 $("#menus input.append-child-menu").removeAttr("disabled");
+                 $('#template-module input:checkbox').removeAttr("disabled");
+                 $("#menus input.append-child-menu").prop( "checked", true );
+                 <?php if($detail_edit_template->is_super_admin == 1){ ?>
+                 $('#template-module input:checkbox').prop('checked', true);  
+            <?php } } ?>
+            
         }   
     });
 });
@@ -185,9 +232,32 @@ function get_template_module(template_id){
         type: "GET",
         success: function(res){
             $('#template-module').html(res);
+            <?php if(isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 1 ){?>
+                $("#template-module input:checkbox").attr("disabled", true); 
+                $("input.checkboxclick:checked").each(function (){  
+                    $('.hiddenmodule-ids').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+                });
+                $("input.feature_dave:checked").each(function (){  
+                    $('.hiddenfeature-dave').append('<input type ="hidden" type="checkbox" name="'+($(this).attr('name'))+'" value="'+($(this).val())+'">');
+                });
+
+            <?php }else{ ?>
+                    $('.hiddenmodule-ids').html('');
+                    $('.hiddenfeature-dave').html('');
+           <?php } ?>
         }
     });
 }
+$(function(){
+    <?php if(isset($detail_edit_template->is_super_admin) && $detail_edit_template->is_super_admin == 1 ){?> 
+        $("#menus input.append-child-menu").attr("disabled", true);
+        
+    <?php } ?>
+});
+$(document).ajaxStop(function(){
+    $(".loader").addClass("dispnone");
+});
+
 </script>
 @endsection
 

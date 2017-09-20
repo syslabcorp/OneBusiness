@@ -27,3 +27,8 @@ nav.navbar-static-top {position: fixed;width: 100%;z-index: 9;}
 .visibility-hidden{ visibility: hidden; }
 #page-content-togle-sidebar-sec h3.text-center {padding-top: 20px;}
 .margin-top-20{margin-top:20px;}
+.swal-wide{width: 560px !important; padding: 0 10px 10px 10px !important;}
+.delete-title{float: left;margin-top: 0px;font-size: 20px;border-bottom: 1px solid #ccc;width: 100%;text-align: left;padding-bottom: 6px;}
+.delete-text{clear: left;text-align: left;padding-top: 15px;font-size: 16px;}
+.sa-button-container {text-align: right !important;border-top: 1px solid #ccc !important;padding-top: 6px !important;}
+.btn-lg, .btn-group-lg>.btn {padding: 8px 15px !important;font-size: 15px !important;line-height: 1.0 !important;border-radius: 6px !important;}

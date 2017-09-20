@@ -175,8 +175,9 @@
                 </div>
                 <form action="" method="POST" >
                     <div class="modal-body">
-                        <p>You are about to delete one track, this procedure is irreversible.</p>
-                        <p>Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                        <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
+                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span>-
+                            <span class="descriptionToDelete" style="font-weight: bold" ></span> ?</p>
                         <p class="debug-url"></p>
                     </div>
 
@@ -231,7 +232,8 @@
                 var id  = $(this).closest('td').find('span').text();
                 var itemCode  = $(this).closest('tr').find('td:nth-child(2)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
-                $('#confirm-delete .itemToDelete').text(itemCode);
+                $('#confirm-delete .itemToDelete').text(id);
+                $('#confirm-delete .descriptionToDelete').text(itemCode);
                 $('#confirm-delete form').attr('action', 'brands/'+id);
                 $('#confirm-delete').modal("show");
             });

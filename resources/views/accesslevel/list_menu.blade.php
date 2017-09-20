@@ -50,7 +50,7 @@
                                     <td>{{ $det->url }}</td>
                                     <td class="text-center"><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="glyphicon glyphicon-pencil"></span></a>
-                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation" menu-name="{{ $det->title }}" id="{{ $det->id }}" has-sub-menus ="{{ isset($submenu_count[$det->id]) ? ' and all its sub menus.' : '' }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 </tr>  
                             @endforeach
                         </tbody>
@@ -71,14 +71,18 @@ $(document).ready(function() {
     $('#list_menu').DataTable();
     $(document).on("click", ".sweet-4", function(){
         var delete_url = $(this).attr("rel");
+        var menu_name = $(this).attr("menu-name");
+        var has_sub_menus = $(this).attr("has-sub-menus");
+        var id = $(this).attr("id");
         swal({
-            title: "Are you sure?",
-            text:  "You will not be able to recover this Menu Data!",
-            type:  "warning",
+            title: "<div class='delete-title'>Confirm Delete</div>",
+            text:  "<div class='delete-text'>You are about to delete Menu <strong>"+id+" - "+menu_name +"  " + has_sub_menus +"</strong><br/> Are you sure?</div>",
+            html:  true,
+            customClass: 'swal-wide',
             showCancelButton: true,
             confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: "No",
+            confirmButtonText: 'Delete',
+            cancelButtonText: "Cancel",
             closeOnConfirm: false,
             closeOnCancel: true
         },

@@ -67,13 +67,44 @@ $(document).ready(function() {
             })              
         }
     });
+    var isAdmin = $('#temp_name option:selected').attr('is-admin');
     if($('#slctd_grp_ids').val() != ''){
         var g_id = $('#slctd_grp_ids').val();
         arr_grp_id = g_id.split(',');
-        GetSelectedvalues();
+        if(isAdmin == 1){
+            $(".select").each(function(){
+                this.checked=true;
+                this.disabled=true;
+            });
+            $('#append_areatype').html('');
+            $("input.branch_id:checked").each(function (){   
+                $('#append_areatype').append('<input type ="hidden" type="checkbox" name="branch_id[]" value="'+($(this).val())+'">');
+            });
+            GetSelectedvalues();
+            $(".selectall").attr("checked", true);
+            $(".selectall").attr("disabled", true);
+        }else{
+            GetSelectedvalues();
+            $('#append_areatype').html('');
+        }
     }else{
         arr_grp_id = [""];
-        GetSelectedvalues();
+        if(isAdmin == 1){
+            $(".select").each(function(){
+                this.checked=true;
+                this.disabled=true;
+            });
+            $('#append_areatype').html('');
+            $("input.branch_id:checked").each(function (){   
+                $('#append_areatype').append('<input type ="hidden" type="checkbox" name="branch_id[]" value="'+($(this).val())+'">');
+            });
+            GetSelectedvalues();
+            $(".selectall").attr("checked", true);
+            $(".selectall").attr("disabled", true); 
+        }else{
+            GetSelectedvalues();
+            $('#append_areatype').html('');
+        }
     }
 });
 function GetSelectedvalues() {
@@ -81,6 +112,7 @@ function GetSelectedvalues() {
     $('.label_remittance').css("display", "none");
     var _token = $("meta[name='csrf-token']").attr("content");
     var ids = []
+    var isAdmin = $('#temp_name option:selected').attr('is-admin');
     $("input.branch_id:checked").each(function ()
     {
         ids.push(parseInt($(this).val()));
@@ -90,15 +122,37 @@ function GetSelectedvalues() {
         type: "POST",
         data: {_token,ids },
         dataType: 'JSON',
-        success: function(response){    
+        success: function(response){ 
             if((response).length){
                 $('.label_remittance').css("display", "block");
+                $('#appendall_group').html('');
                 $.each(response, function(k,v){
                     grp = v.group_ID.toString();
-                    if ($.inArray(grp,arr_grp_id) !== -1) {
-                        $('.grp_append').append('<div class="col-md-2 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select" checked>'+v.desc+'</div>'); 
+                    if(isAdmin == 1){
+                        var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select" disabled checked><label>'+v.desc+'</label></div><div class="col-md-12">';
+                        $.each(v.branch, function(k,br){
+                            appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
+                        });
+                        appendGroup += '</div></div>';
+                        $('.grp_append').append(appendGroup);
+                        $('#appendall_group').append('<input type ="hidden" type="checkbox" name="group[]" value="'+v.group_ID+'">');
                     }else{
-                        $('.grp_append').append('<div class="col-md-2 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select">'+v.desc+'</div>'); 
+                        $('#appendall_group').html('');
+                        if ($.inArray(grp,arr_grp_id) !== -1) {
+                            var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'"class="area_user grp_select" checked><label>'+v.desc+'</label></div><div class="col-md-12">';
+                            $.each(v.branch, function(k,br){
+                                appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
+                            });
+                            appendGroup += '</div></div>';
+                            $('.grp_append').append(appendGroup); 
+                        }else{
+                            var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select"><label>'+v.desc+'</label></div><div class="col-md-12">';
+                            $.each(v.branch, function(k,br){
+                                appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
+                            });
+                            appendGroup += '</div></div>';
+                            $('.grp_append').append(appendGroup);
+                        }
                     }
                 });
             }
