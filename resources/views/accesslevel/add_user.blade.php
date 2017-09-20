@@ -8,6 +8,8 @@ input.area_user {margin-right: 6px;}
 .branch_assign{padding: 0px !important;}
 .combine_branch {padding-left: 27px;}
 .save_button{margin-right: 15px;}
+.label-superAdmin{margin: 10px;}
+.grp-brnch {float: left;margin-bottom: 5px;padding: 0px !important;}
 </style>
 
 <div class="container-fluid">
@@ -49,13 +51,14 @@ input.area_user {margin-right: 6px;}
                                 <div class="form-group{{ $errors->has('user_name') ? ' has-error' : '' }}">
                                     <label for="user_nam" class="col-md-12">ACCESS RIGHTS TEMPLATE</label>
                                     <div class="col-md-6 user_temp">
-                                        <select class="form-control required" id="temp_name" name="temp_id">
+                                        <select class="form-control required template_name" id="temp_name" name="temp_id">
                                             <option value="">Select a Template</option>
                                                 @foreach ($template as $temp) 
-                                                    <option value="{{ $temp ->template_id }}" {{ (isset($detail_edit_sysuser->rights_template_id) && ($detail_edit_sysuser->rights_template_id == $temp ->template_id)) ? "selected" : "" }} >{{ $temp->description }}</option> 
+                                                    <option value="{{ $temp ->template_id }}" is-admin="{{ $temp ->is_super_admin }}"{{ (isset($detail_edit_sysuser->rights_template_id) && ($detail_edit_sysuser->rights_template_id == $temp ->template_id)) ? "selected" : "" }}>{{ $temp->description }} </option> 
                                                 @endforeach
                                         </select>
                                     </div>
+                                    <div class="col-md-5 label-superAdmin"></div>
                                 </div>
                                 <div class="form-group{{ $errors->has('active_group') ? ' has-error' : '' }}">
                                     <label for="active_grp" class="col-md-12">BRANCH ASSIGNMENT</label>
@@ -107,6 +110,8 @@ input.area_user {margin-right: 6px;}
                                         </button>
                                     </div>
                                 </div>
+                                <div id ="append_areatype"></div>
+                                <div id ="appendall_group"></div>
                             </form>
                         </div>
                     </div>
@@ -117,7 +122,84 @@ input.area_user {margin-right: 6px;}
 </div>
 <script>
 $(function(){
+    var isAdmin = $('option:selected', this).attr('is-admin');
+    if(isAdmin == 1){ 
+        $('.label-superAdmin').html('');
+        $('.label-superAdmin').append('<label>This is a Super User Template</label>'); 
+    }else{
+        $('.label-superAdmin').html('');
+    }
     $("#userform").validate();  
+    $(".template_name").change(function(){ 
+        var isAdmin = $('option:selected', this).attr('is-admin');
+        var value_areatype = $('.area_type:checked').val();
+        if(isAdmin == 1){ 
+            $('.label-superAdmin').html('');
+            $('.label-superAdmin').append('<label>This is a Super User Template</label>');   
+            if(typeof(value_areatype) === 'undefined'){
+                $(".select").each(function(){
+                    this.checked=true;
+                    this.disabled=true;
+                });
+                $('#append_areatype').html('');
+                $("input.province_id:checked").each(function (){  
+                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="provience_id[]" value="'+($(this).val())+'">');
+                });
+                GetSelectedvalues(); 
+                $(".selectall").attr("checked", true);
+                $(".selectall").attr("disabled", true);
+                
+            }else if(value_areatype == "BR"){
+                $(".select").each(function(){
+                    this.checked=true;
+                    this.disabled=true;
+                });
+                $('#append_areatype').html('');
+                $("input.branch_id:checked").each(function (){   
+                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="branch_id[]" value="'+($(this).val())+'">');
+                });
+                GetSelectedvalues(); 
+                $(".selectall").attr("checked", true);
+                $(".selectall").attr("disabled", true);
+                
+            }else if(value_areatype == "CT"){
+                $(".select").each(function(){
+                    this.checked=true;
+                    this.disabled=true;
+                });
+                $('#append_areatype').html('');
+                $("input.city_id:checked").each(function (){   
+                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="city_id[]" value="'+($(this).val())+'">');
+                });
+                GetSelectedvalues();
+                $(".selectall").attr("checked", true); 
+                $(".selectall").attr("disabled", true);
+                
+            }else if(value_areatype == "PR"){
+                $(".select").each(function(){
+                    this.checked=true;
+                    this.disabled=true;
+                });
+                $('#append_areatype').html('');
+                $("input.province_id:checked").each(function (){  
+                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="provience_id[]" value="'+($(this).val())+'">');
+                });
+                GetSelectedvalues(); 
+                $(".selectall").attr("checked", true);
+                $(".selectall").attr("disabled", true);
+                
+            }
+        }else{
+             $('input:checkbox').removeAttr('checked');
+             $('input:checkbox').removeAttr('disabled');
+             $('.grp_append').html('');
+             $('.label_remittance').css("display", "none");
+             $('#append_areatype').html('');
+             $('#appendall_group').html('');
+             $('.label-superAdmin').html('');
+             
+        }
+    }); 
 
 });
 function get_area_type(value,userid){
@@ -144,7 +226,6 @@ $(document).on("click", ".area_type", function(){
     var value = $(this).val();
     get_area_type(value,userid);
 });
-
 
 $(function(){
     var value = $('.area_type:checked').val();
