@@ -525,7 +525,7 @@ class AccessLevelController extends Controller
             $data['branch_ids'] = $branch_id_data;
             $data['detail_edit'] = $detail_edit_group;  
         }
-        $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->select('t_sysdata.*', 'corporation_masters.corp_name')->get();
+        $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->select('t_sysdata.*', 'corporation_masters.corp_name')->orderBy('corporation_masters.corp_name', 'asc')->orderBy('t_sysdata.ShortName', 'asc')->get();
         $data['branches'] = array();
         foreach ($branches as $branch) {
             $data['branches'][$branch->corp_name][] = $branch;
@@ -662,13 +662,15 @@ class AccessLevelController extends Controller
     {  
         $branches = DB::table('t_sysdata')->join('t_cities', 't_sysdata.City_ID', '=', 't_cities.City_ID')
             ->join('t_provinces', 't_cities.Prov_ID', '=', 't_provinces.Prov_ID')->join('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')
-            ->select('t_sysdata.Branch','t_sysdata.corp_id','corporation_masters.corp_name','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->get();
+            ->select('t_sysdata.Branch','t_sysdata.corp_id','corporation_masters.corp_name','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->orderBy('corporation_masters.corp_name', 'asc')->orderBy('t_sysdata.ShortName', 'asc')->get();
         foreach($branches as $key=>$det_branch){
             $city_b_array[$det_branch->City_ID][] =$det_branch->ShortName; 
             $prov_b_array[$det_branch->Prov_ID][] =$det_branch->ShortName; 
+            $corp_b_array[$det_branch->corp_id][] =$det_branch->ShortName; 
         }
         $data['city_b_array'] =$city_b_array;
         $data['prov_b_array'] =$prov_b_array; 
+        $data['corp_b_array'] =$corp_b_array; 
         $data['branches'] = $branches;
         $detail_edit_user_area = DB::table('user_area')->where('user_ID', $user_id)->first();
         if(isset($detail_edit_user_area->branch)){

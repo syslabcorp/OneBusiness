@@ -10,6 +10,8 @@ input.area_user {margin-right: 6px;}
 .save_button{margin-right: 15px;}
 .label-superAdmin{margin: 10px;}
 .grp-brnch {float: left;margin-bottom: 5px;padding: 0px !important;}
+.modal-backdrop {background: none;}
+
 </style>
 
 <div class="container-fluid">
@@ -58,6 +60,8 @@ input.area_user {margin-right: 6px;}
                                                 @endforeach
                                         </select>
                                     </div>
+                                    <input type="hidden" name="hideTemp" id="hideTemp" value="{{isset($detail_edit_sysuser->rights_template_id) ? $detail_edit_sysuser->rights_template_id : '' }}">
+                                    <input type="hidden" name="superuser" id="superuser" value="0">
                                     <div class="col-md-5 label-superAdmin"></div>
                                 </div>
                                 <div class="form-group{{ $errors->has('active_group') ? ' has-error' : '' }}">
@@ -130,65 +134,110 @@ $(function(){
         $('.label-superAdmin').html('');
     }
     $("#userform").validate();  
-    $(".template_name").change(function(){ 
+    $(".template_name").change(function(){
+        var lastValue = $('#hideTemp').val();
         var isAdmin = $('option:selected', this).attr('is-admin');
         var value_areatype = $('.area_type:checked').val();
+        var superuser = $('#superuser').val();
+        if(superuser == "1"){
+            var value = $('.area_type:checked').val();
+            var userid = $("#userid").val();
+            if(typeof(value) === 'undefined'){
+                value = 'PR';
+                $(":radio[value=PR]").attr("checked","true");
+                get_area_type(value,userid);
+            }else{
+                get_area_type(value,userid);
+            }
+        }
         if(isAdmin == 1){ 
             $('.label-superAdmin').html('');
-            $('.label-superAdmin').append('<label>This is a Super User Template</label>');   
-            if(typeof(value_areatype) === 'undefined'){
-                $(".select").each(function(){
-                    this.checked=true;
-                    this.disabled=true;
-                });
-                $('#append_areatype').html('');
-                $("input.province_id:checked").each(function (){  
-                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="provience_id[]" value="'+($(this).val())+'">');
-                });
-                GetSelectedvalues(); 
-                $(".selectall").attr("checked", true);
-                $(".selectall").attr("disabled", true);
+            $('.label-superAdmin').append('<label>This is a Super User Template</label>');
+            swal({
+                title: "<div class='delete-title'>Switching Access template</div>",
+                text:  '<div class="delete-text" style="height: 200px;">You are about to switch this user`s template to a "Super User" template. Previous Configuration in for this account will be overwritten and will not be saved. Do you want to continue?</div>',
+                html:  true,
+                customClass: 'swal-wide',
+                showCancelButton: true,
+                confirmButtonClass: 'btn-primary',
+                confirmButtonText: 'Proceed',
+                cancelButtonText: "Close",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function(isConfirm){
+                if (isConfirm){
+                    $('#superuser').val("1");
+                    if(typeof(value_areatype) === 'undefined'){
+                    $(".select").each(function(){
+                        this.checked=true;
+                        this.disabled=true;
+                    });
+                    $('#append_areatype').html('');
+                    $("input.province_id:checked").each(function (){  
+                        $('#append_areatype').append('<input type ="hidden" type="checkbox" name="provience_id[]" value="'+($(this).val())+'">');
+                    });
+                    GetSelectedvalues(); 
+                    $(".selectall").attr("checked", true);
+                    $(".selectall").attr("disabled", true);
+                    
+                }else if(value_areatype == "BR"){
+                    $(".select").each(function(){
+                        this.checked=true;
+                        this.disabled=true;
+                    });
+                    $('#append_areatype').html('');
+                    $("input.branch_id:checked").each(function (){   
+                        $('#append_areatype').append('<input type ="hidden" type="checkbox" name="branch_id[]" value="'+($(this).val())+'">');
+                    });
+                    GetSelectedvalues(); 
+                    $(".selectall").attr("checked", true);
+                    $(".selectall").attr("disabled", true);
+                    
+                }else if(value_areatype == "CT"){
+                    $(".select").each(function(){
+                        this.checked=true;
+                        this.disabled=true;
+                    });
+                    $('#append_areatype').html('');
+                    $("input.city_id:checked").each(function (){   
+                        $('#append_areatype').append('<input type ="hidden" type="checkbox" name="city_id[]" value="'+($(this).val())+'">');
+                    });
+                    GetSelectedvalues();
+                    $(".selectall").attr("checked", true); 
+                    $(".selectall").attr("disabled", true);
+                    
+                }else if(value_areatype == "PR"){
+                    $(".select").each(function(){
+                        this.checked=true;
+                        this.disabled=true;
+                    });
+                    $('#append_areatype').html('');
+                    $("input.province_id:checked").each(function (){  
+                        $('#append_areatype').append('<input type ="hidden" type="checkbox" name="provience_id[]" value="'+($(this).val())+'">');
+                    });
+                    GetSelectedvalues(); 
+                    $(".selectall").attr("checked", true);
+                    $(".selectall").attr("disabled", true);
+                    
+                }
+                } else {
+                    $('#temp_name').val(lastValue);
+                    return false;
+                }
+            });
+                   
                 
-            }else if(value_areatype == "BR"){
-                $(".select").each(function(){
-                    this.checked=true;
-                    this.disabled=true;
-                });
-                $('#append_areatype').html('');
-                $("input.branch_id:checked").each(function (){   
-                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="branch_id[]" value="'+($(this).val())+'">');
-                });
-                GetSelectedvalues(); 
-                $(".selectall").attr("checked", true);
-                $(".selectall").attr("disabled", true);
-                
-            }else if(value_areatype == "CT"){
-                $(".select").each(function(){
-                    this.checked=true;
-                    this.disabled=true;
-                });
-                $('#append_areatype').html('');
-                $("input.city_id:checked").each(function (){   
-                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="city_id[]" value="'+($(this).val())+'">');
-                });
-                GetSelectedvalues();
-                $(".selectall").attr("checked", true); 
-                $(".selectall").attr("disabled", true);
-                
-            }else if(value_areatype == "PR"){
-                $(".select").each(function(){
-                    this.checked=true;
-                    this.disabled=true;
-                });
-                $('#append_areatype').html('');
-                $("input.province_id:checked").each(function (){  
-                    $('#append_areatype').append('<input type ="hidden" type="checkbox" name="provience_id[]" value="'+($(this).val())+'">');
-                });
-                GetSelectedvalues(); 
-                $(".selectall").attr("checked", true);
-                $(".selectall").attr("disabled", true);
-                
-            }
+            
+        }else if(isAdmin == 0){
+             //$('input:checkbox').removeAttr('checked');
+             $('input:checkbox').removeAttr('disabled');
+             $('.grp_append').html('');
+             $('.label_remittance').css("display", "none");
+             $('#append_areatype').html('');
+             $('#appendall_group').html('');
+             $('.label-superAdmin').html('');
+             
         }else{
              $('input:checkbox').removeAttr('checked');
              $('input:checkbox').removeAttr('disabled');
