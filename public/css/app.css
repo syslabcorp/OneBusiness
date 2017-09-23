@@ -32,3 +32,4 @@ nav.navbar-static-top {position: fixed;width: 100%;z-index: 9;}
 .delete-text{clear: left;text-align: left;padding-top: 15px;font-size: 16px;}
 .sa-button-container {text-align: right !important;border-top: 1px solid #ccc !important;padding-top: 6px !important;}
 .btn-lg, .btn-group-lg>.btn {padding: 8px 15px !important;font-size: 15px !important;line-height: 1.0 !important;border-radius: 6px !important;}
+.branchcheckbox{margin-left: 55px;}

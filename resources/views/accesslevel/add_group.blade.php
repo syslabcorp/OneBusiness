@@ -57,30 +57,35 @@ label.mt-checkbox {font-weight: 400;}
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Branches</div>
                                             <div class="form-group{{ $errors->has('branch_name') ? ' has-error' : '' }}">
-                                            @foreach ($branches as $corp_name=>$corp)
                                             <div class="panel-body">
+                                            @foreach ($branches as $corp_name=>$corp)
                                                 <div class="col-md-12">
-                                                <h4>{{ $corp_name }}</h4>
-                                                    @foreach($corp as $branch)
-                                                    <div class="col-md-5">
-                                                    <label class="mt-checkbox">
-                                                        <input id="branch_name" type="checkbox" name="branch[]" value="{{$branch->Branch }}"
-                                                        <?php 
-                                                        if(isset($branch_ids)){ echo in_array($branch->Branch, $branch_ids) ? "checked" : '' ;
-                                                        }
-                                                        ?> >
-                                                        {{$branch->ShortName }}
-                                                    </label>
-                                                        @if ($errors->has('branch_name'))
-                                                            <span class="help-block">
-                                                                <strong>{{ $errors->first('branch_name') }}</strong>
-                                                            </span>
-                                                        @endif
-                                                    </div>
+                                                    <h4>{{ $corp_name }}</h4>
+                                                    @foreach($corp as $cityname=>$city)
+                                                        <div class="col-md-5">
+                                                            <label>{{ $cityname }}</label>
+                                                            @foreach($city as $branch)
+                                                            <div class="col-md-12">
+                                                            <label class="mt-checkbox branchcheckbox">
+                                                                <input id="branch_name" type="checkbox" name="branch[]" value="{{$branch->Branch }}"
+                                                                <?php 
+                                                                if(isset($branch_ids)){ echo in_array($branch->Branch, $branch_ids) ? "checked" : '' ;
+                                                                }
+                                                                ?> >
+                                                                {{$branch->ShortName }}
+                                                            </label>
+                                                                @if ($errors->has('branch_name'))
+                                                                    <span class="help-block">
+                                                                        <strong>{{ $errors->first('branch_name') }}</strong>
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                            @endforeach
+                                                        </div>
                                                     @endforeach
                                                 </div>
-                                            </div>
                                             @endforeach
+                                            </div>
                                         </div>         
                                         </div>
                                     </div>
