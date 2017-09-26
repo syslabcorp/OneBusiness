@@ -18,11 +18,13 @@ class AccessLevelController extends Controller
     }
 
     public function add_corporation($corp_id = NULL)
-    {
+    {   
+        $data =array();
+        $data['corporation_type'] = DB::table('corporation_masters')->groupBy('corp_type')->select('corp_type')->get();
     	if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$created_at   = date("Y-m-d H:i:s");
-        	$data = array('corp_name' => $formData["corporation_title"],"created_at" => date("Y-m-d H:i:s"));
+        	$data = array('corp_type' => $formData["corp_type"],'corp_name' => $formData["corporation_title"],"created_at" => date("Y-m-d H:i:s"));
         	if ($corp_id == NULL) {
 	        	DB::table('corporation_masters')->insertGetId($data);
 	        	Request::session()->flash('flash_message', 'Corporation has been added.');
@@ -33,7 +35,7 @@ class AccessLevelController extends Controller
 			Request::Session()->flash('alert-class', 'alert-success');
         	return redirect('list_corporation');
 		}
-		$data =array();
+		
 		if ($corp_id != NULL) {
 			$data['detail_edit'] = DB::table('corporation_masters')->where('corp_id', $corp_id)->first();	
 		}
