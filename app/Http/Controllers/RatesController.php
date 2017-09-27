@@ -36,8 +36,7 @@ class RatesController extends Controller
     }
 
     $year = empty($request->get('year')) ? date('Y') : $request->get('year');
-    $months = empty($request->get('months')) ? [0] : $request->get('months');
-
+    $months = empty($request->get('months')) ? [1,2,3,4,5,6,7,8,9,10,11,12] : $request->get('months');
     $monthsStr = implode(',', $months);
 
     $schedules = $branch->schedules()->whereYear("rate_date", '=', $year)
@@ -64,19 +63,24 @@ class RatesController extends Controller
       'tmplate_name' => 'required',
     ]);
 
+    $validator = \Validator::make(
+      $request->all(), []
+    );
+  
     if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart2'))) {
-      \Session::flash('error', "Timezone 2 must be greater than Timezone 1");
-      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']));
+      $validator->getMessageBag()->add('ZoneStart2', 'Timezone 2 must be greater than Timezone 1');
     }
 
     if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) >= strtotime($request->get('ZoneStart3'))) {
-      \Session::flash('error', "Timezone 3 must be greater than Timezone 2");
-      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']));
+      $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 2');
     }
 
     if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart3'))) {
-      \Session::flash('error', "Timezone 3 must be greater than Timezone 1");
-      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']));
+      $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 1');
+    }
+    
+    if(count($validator->getMessageBag())) {
+      return redirect(route('branchs.rates.index', [$branch, 'action' => 'new']))->withErrors($validator)->withInput();;
     }
 
     $branch->rates()->create($request->only(
@@ -99,21 +103,27 @@ class RatesController extends Controller
     $this->validate($request,[
       'tmplate_name' => 'required',
     ]);
-    
+
+    $validator = \Validator::make(
+      $request->all(), []
+    );
+  
     if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart2'))) {
-      \Session::flash('error', "Timezone 2 must be greater than Timezone 1");
-      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']));
+      $validator->getMessageBag()->add('ZoneStart2', 'Timezone 2 must be greater than Timezone 1');
     }
 
     if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) >= strtotime($request->get('ZoneStart3'))) {
-      \Session::flash('error', "Timezone 3 must be greater than Timezone 2");
-      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']));
+      $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 2');
     }
 
     if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart3'))) {
-      \Session::flash('error', "Timezone 3 must be greater than Timezone 1");
-      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']));
+      $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 1');
     }
+    
+    if(count($validator->getMessageBag())) {
+      return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id, 'action' => 'edit']))->withErrors($validator)->withInput();;
+    }
+    
 
     $rate->update($request->only(
       'charge_mode', 'ZoneStart1', 'ZoneStart2', 'ZoneStart3', 'DiscStubPrint', "DiscStubMsg",

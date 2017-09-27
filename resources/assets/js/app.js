@@ -262,6 +262,10 @@ $(document).ready(function()
         $(this).parents('form').submit();
     });
 
+    $('.rate-page .table .form-control').click(function(event) {
+      $(this).select();
+    });
+
 
     toastr.options = {
         "closeButton": false,
