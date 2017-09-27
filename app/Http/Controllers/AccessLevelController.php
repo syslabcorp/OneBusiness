@@ -18,11 +18,13 @@ class AccessLevelController extends Controller
     }
 
     public function add_corporation($corp_id = NULL)
-    {
+    {   
+        $data =array();
+        $data['corporation_type'] = DB::table('corporation_masters')->groupBy('corp_type')->select('corp_type')->get();
     	if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$created_at   = date("Y-m-d H:i:s");
-        	$data = array('corp_name' => $formData["corporation_title"],"created_at" => date("Y-m-d H:i:s"));
+        	$data = array('corp_type' => $formData["corp_type"],'corp_name' => $formData["corporation_title"],"created_at" => date("Y-m-d H:i:s"));
         	if ($corp_id == NULL) {
 	        	DB::table('corporation_masters')->insertGetId($data);
 	        	Request::session()->flash('flash_message', 'Corporation has been added.');
@@ -33,7 +35,7 @@ class AccessLevelController extends Controller
 			Request::Session()->flash('alert-class', 'alert-success');
         	return redirect('list_corporation');
 		}
-		$data =array();
+		
 		if ($corp_id != NULL) {
 			$data['detail_edit'] = DB::table('corporation_masters')->where('corp_id', $corp_id)->first();	
 		}
@@ -525,12 +527,11 @@ class AccessLevelController extends Controller
             $data['branch_ids'] = $branch_id_data;
             $data['detail_edit'] = $detail_edit_group;  
         }
-        $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->select('t_sysdata.*', 'corporation_masters.corp_name')->get();
+        $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->LeftJoin('t_cities', 't_cities.City_ID', '=', 't_sysdata.City_ID')->select('t_sysdata.*', 'corporation_masters.corp_name','t_cities.City')->orderBy('t_cities.City', 'asc')->orderBy('corporation_masters.corp_name', 'asc')->orderBy('t_sysdata.ShortName', 'asc')->get();
         $data['branches'] = array();
         foreach ($branches as $branch) {
-            $data['branches'][$branch->corp_name][] = $branch;
+            $data['branches'][$branch->corp_name][$branch->City][] = $branch;
         }
- 
         return view('accesslevel.add_group', $data);
     }
 
@@ -662,13 +663,15 @@ class AccessLevelController extends Controller
     {  
         $branches = DB::table('t_sysdata')->join('t_cities', 't_sysdata.City_ID', '=', 't_cities.City_ID')
             ->join('t_provinces', 't_cities.Prov_ID', '=', 't_provinces.Prov_ID')->join('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')
-            ->select('t_sysdata.Branch','t_sysdata.corp_id','corporation_masters.corp_name','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->get();
+            ->select('t_sysdata.Branch','t_sysdata.corp_id','corporation_masters.corp_name','t_sysdata.ShortName', 't_cities.city', 't_provinces.Province', 't_cities.City_ID', 't_provinces.Prov_ID')->orderBy('t_cities.Prov_ID')->orderBy('t_cities.City_ID', 'asc')->orderBy('corporation_masters.corp_name', 'asc')->orderBy('t_sysdata.ShortName', 'asc')->get();
         foreach($branches as $key=>$det_branch){
             $city_b_array[$det_branch->City_ID][] =$det_branch->ShortName; 
             $prov_b_array[$det_branch->Prov_ID][] =$det_branch->ShortName; 
+            $corp_b_array[$det_branch->City_ID][$det_branch->corp_id][] =$det_branch->ShortName; 
         }
         $data['city_b_array'] =$city_b_array;
         $data['prov_b_array'] =$prov_b_array; 
+        $data['corp_b_array'] =$corp_b_array; 
         $data['branches'] = $branches;
         $detail_edit_user_area = DB::table('user_area')->where('user_ID', $user_id)->first();
         if(isset($detail_edit_user_area->branch)){
@@ -705,7 +708,7 @@ class AccessLevelController extends Controller
                     }
                     $b_id = isset($branch_id) ? $branch_id : array();
                 
-                    $group = DB::table('Remit_group')->where('status', 1)->get();
+                    $group = DB::table('Remit_group')->where('status', 1)->orderBy('desc')->get();
                     foreach ($group as $key => $groups) {
                         $grp_branch = explode(",", $groups->branch);
                         $intersect = array_intersect($grp_branch,$b_id);
@@ -715,7 +718,7 @@ class AccessLevelController extends Controller
                     }   
                 } 
             }
-            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->get();
+            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->orderBy('ShortName')->get();
             foreach($brnch_name as $key=>$det){
                 $b_name[$det->Branch] =$det->ShortName;  
             }
@@ -746,7 +749,7 @@ class AccessLevelController extends Controller
                     }
                     $b_id = isset($branch_id) ? $branch_id : array();
                 
-                    $group = DB::table('Remit_group')->where('status', 1)->get();
+                    $group = DB::table('Remit_group')->where('status', 1)->orderBy('desc')->get();
                     foreach ($group as $key => $groups) {
                         $grp_branch = explode(",", $groups->branch);
                         $intersect = array_intersect($grp_branch,$b_id);
@@ -756,7 +759,7 @@ class AccessLevelController extends Controller
                     }   
                 } 
             }
-            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->get();
+            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->orderBy('ShortName')->get();
             foreach($brnch_name as $key=>$det){
                 $b_name[$det->Branch] =$det->ShortName;  
             }
@@ -780,7 +783,7 @@ class AccessLevelController extends Controller
             $matched_groups = array();
             $b_id = isset($formData['ids']) ? $formData['ids'] : array();
             if(!empty($b_id)){
-                $group = DB::table('Remit_group')->where('status', 1)->get();
+                $group = DB::table('Remit_group')->where('status', 1)->orderBy('desc')->get();
                 foreach ($group as $key => $groups) {
                     $grp_branch = explode(",", $groups->branch);
                     $intersect = array_intersect($grp_branch,$b_id);
@@ -789,7 +792,7 @@ class AccessLevelController extends Controller
                     }
                 }       
             }
-            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->get();
+            $brnch_name = DB::table('t_sysdata')->select('Branch','ShortName')->orderBy('ShortName')->get();
             foreach($brnch_name as $key=>$det){
                 $b_name[$det->Branch] =$det->ShortName;  
             }

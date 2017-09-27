@@ -18,10 +18,12 @@
                         <tbody> 
                             <?php $old_prov_id = 0; 
                                   $old_city_id = 0;  
+                                  $old_corp_id = 0;
                             ?>
                             @foreach($branches as $key=>$det)
                                 <?php $count_city = count($city_b_array[$det->City_ID]); 
                                       $count_prov = count($prov_b_array[$det->Prov_ID]); 
+                                      $count_corp = count($corp_b_array[$det->City_ID][$det->corp_id]); 
                                 ?>
                                 <tr>
                                     <?php if($det->Prov_ID != $old_prov_id) { ?>
@@ -30,7 +32,9 @@
                                     <?php if($det->City_ID != $old_city_id) { ?>
                                     <td rowspan="{{$count_city}}">{{$det->city}}</td>
                                     <?php  } ?>
-                                    <td>{{ $det->corp_name }}</td>
+                                    <?php if($det->corp_id != $old_corp_id || ($det->City_ID != $old_city_id)) { ?>
+                                    <td rowspan="{{$count_corp}}">{{ $det->corp_name }}</td>
+                                    <?php  } ?>
                                     <td>{{ $det->ShortName }}</td>
                                     <td class="text-center"><input class="select branch_id" onclick="GetSelectedvalues()" type="checkbox" name="branch_id[]" value="{{$det->Branch }}"
                                     <?php 
@@ -40,7 +44,8 @@
                                     ></td>
                                 </tr>
                                 <?php $old_prov_id = $det->Prov_ID;
-                                $old_city_id = $det->City_ID; ?>
+                                $old_city_id = $det->City_ID; 
+                                $old_corp_id = $det->corp_id; ?>
                             @endforeach
                         </tbody>
                     </table>
@@ -128,9 +133,12 @@ function GetSelectedvalues() {
                 $('#appendall_group').html('');
                 $.each(response, function(k,v){
                     grp = v.group_ID.toString();
+                    var branchsort = new Array();
+                    arrayBranch =  v.branch.toString().split(",");
+                    branchsort  = arrayBranch.sort();
                     if(isAdmin == 1){
                         var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select" disabled checked><label>'+v.desc+'</label></div><div class="col-md-12">';
-                        $.each(v.branch, function(k,br){
+                        $.each(branchsort, function(k,br){
                             appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
                         });
                         appendGroup += '</div></div>';
@@ -140,14 +148,15 @@ function GetSelectedvalues() {
                         $('#appendall_group').html('');
                         if ($.inArray(grp,arr_grp_id) !== -1) {
                             var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'"class="area_user grp_select" checked><label>'+v.desc+'</label></div><div class="col-md-12">';
-                            $.each(v.branch, function(k,br){
+                            $.each(branchsort, function(k,br){
+
                                 appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
                             });
                             appendGroup += '</div></div>';
                             $('.grp_append').append(appendGroup); 
                         }else{
                             var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select"><label>'+v.desc+'</label></div><div class="col-md-12">';
-                            $.each(v.branch, function(k,br){
+                            $.each(branchsort, function(k,br){
                                 appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
                             });
                             appendGroup += '</div></div>';
