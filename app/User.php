@@ -9,15 +9,11 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-/*
-	protected $table = 'sysusers';
-*/
-	
-
 	protected $table = 't_users';
 
 	protected $primaryKey = 'UserID';
-	private $permissions;
+    private $permissions;
+    protected $connection = 'mysql';
     /**
      * The attributes that are mass assignable.
      *
