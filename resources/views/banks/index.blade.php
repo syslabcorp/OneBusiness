@@ -25,11 +25,6 @@
             z-index: 10001 !important;;
         }
 
-        #example_ddl > select {
-            margin: 2px 0 2px 0;
-            width: 176px;
-            height: 30px;
-        }
 
         @media (max-width: 960px) {
             .bankCodeRw {
@@ -69,11 +64,13 @@
                 left: -450px;
             }
         }
-        .selectMain {
-            position: relative !important;
-            margin:  0 5px 0 10px !important;
-            top: 2px;
+
+        #example_ddl label {
+            position: relative;
+            top: 8px;
         }
+
+
 
     </style>
 @endsection
@@ -125,7 +122,7 @@
                                             <th>Action</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody style="display: none">
                                         @foreach($banks as $bank)
                                             <tr>
                                                 <td><input type="checkbox" @if($bank->default_acct) checked @endif ></td>
@@ -427,6 +424,40 @@
     <script>
         (function($){
 
+            $('#myTable').DataTable({
+                initComplete: function () {
+                    $('<label for="">Filters:</label>').appendTo("#example_ddl");
+                    var corporationID = $('<select class="form-control"><option value="">Select Corporation</option></select>')
+                        .appendTo('#example_ddl2');
+                    var branchStatus = $('<select class="form-control"><option value="">Select Branch Status</option></select>')
+                        .appendTo('#example_ddl3');
+                    branchStatus.append('<option value="1">Active</option>');
+                    branchStatus.append('<option value="0">Inactive</option>');
+                    var branchStatus = $('<select class="form-control"><option value="">Select Branch</option></select>')
+                        .appendTo('#example_ddl4');
+                    var branchStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
+                        .appendTo('#example_ddl5');
+                },
+               "processing": true,
+               "serverSide": true,
+                "ajax" : {
+                   type: "POST",
+                    url: "/banks/get-banks-list",
+                },
+                stateSave: true,
+                dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
+                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2'<'#example_ddl3'>><'col-sm-2'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
+                "columnDefs": [
+                    { "orderable": false, "width": "5%", "targets": 0},
+                    { "visible": false, "searchable": true, "targets": 3 },
+                    { "orderable": false, "width": "9%", "targets": 5 },
+                    {"className": "dt-center", "targets": 5},
+                    {"className": "dt-center", "targets": 0}
+                ]
+            });
+
             //init datatables
             $('#bankTable').DataTable({
                 "bLengthChange": false,
@@ -438,12 +469,12 @@
                 ]
             });
 
-           var mainTable = $('#myTable').DataTable({
+          /* var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     this.api().columns(1).every( function () {
                         var column = this;
-                        var select = $('<select><option value="">Select branch</option></select>')
-                            .appendTo( '#example_ddl' )
+                        var select = $('<select class="form-control"><option value="">Select branch</option></select>')
+                            .appendTo( '#example_ddl2' )
                             .on( 'change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
@@ -461,10 +492,22 @@
                         } );
                     } );
                     $('<input type="checkbox" class="selectMain" style="margin-left 50px"><label for="selectMain">Main</label>').appendTo("#checkboxDDD");
+                    var branchStatus = $('<select class="form-control"><option value="">Branch Status</option></select>')
+                        .appendTo('#example_ddl');
+                    var selectActive = "";
+                    selectActive = '<?php echo json_decode($tSysData); ?>';
+                    $.each(selectActive, function ( d, j ) {
+                        console.log(d)
+                        var activeName = "";
+                        //   if(d == 1) { activeName = 'Active'; } else { activeName = 'Inactive'; };
+                        branchStatus.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'col-sm-6'<'#example_ddl.pull-left'><'col-sm-6'<'#checkboxDDD'>>>>" +
+                 "<'row'<'col-sm-12'<'#example_ddl.pull-left'>>" +
+                "<'row'<'col-sm-6'<'#example_ddl2.pull-left'><'col-sm-6'<'#checkboxDDD'>>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
@@ -474,8 +517,9 @@
                     {"className": "dt-center", "targets": 5},
                     {"className": "dt-center", "targets": 0}
                 ]
-            });
+            });*/
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
@@ -517,7 +561,7 @@
                 $('#editAccountModal').modal("toggle");
             });
 
-            $(document).on('click', '.checkDefaultAcct', function (e) {
+         /*   $(document).on('click', '.checkDefaultAcct', function (e) {
                 e.preventDefault();
 
                 var ref = $(this);
@@ -552,15 +596,18 @@
                 }
 
                 if (!checked) {
-                    return true;
+                    return false;
                 }
 
                 return false;
             });
 
+            mainTable.draw();
+            $('#myTable').find('tbody').show();
+
             $('.selectMain').on("click", function(e) {
                 mainTable.draw();
-            });
+            });*/
 
             })(jQuery);
     </script>

@@ -22,6 +22,11 @@
             width:18px; height:18px;
         }
 
+        .checkbox-inline span {
+            position: relative;
+            bottom: -5px;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -88,6 +93,19 @@
                                                     <label for="itemActive" style="margin-left: -7px;" class="col-md-3 col-xs-3 control-label">Active:</label>
                                                     <div class="col-md-8 col-xs-8 pull-left">
                                                         <input type="checkbox" style="margin-top: 7px;" name="itemActive" {{ ($satelliteBranch->active) ? 'checked' : '' }} class="itemActive" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-gorup">
+                                                    <label style="margin-left: -7px;" class="col-md-3 col-xs-3 control-label">Corporation:</label>
+                                                    <div class="row">
+                                                        <div class="col-md-9">
+                                                            @foreach($corporations as $key => $val)
+                                                                <label class="checkbox-inline">
+                                                                    <input type="checkbox" name="corporations[]" value="{{ $val->corp_id }}"
+                                                                    @if(preg_match('/'.$val->corp_id.'/', $satelliteBranch->corp_id)) checked @endif><span>{{ $val->corp_name }}</span>
+                                                                </label>
+                                                            @endforeach
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
