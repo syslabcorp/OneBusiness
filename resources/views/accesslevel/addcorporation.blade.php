@@ -36,6 +36,19 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group{{ $errors->has('corp_name') ? ' has-error' : '' }}">
+                            <label for="corp_nam" class="col-md-4 control-label">Business Type</label>
+                            <div class="col-md-6">
+                                <select class="form-control required" id="corp_type" name="corp_type">
+                                    <option value="">Choose Corporation Type</option>
+                                        @foreach ($corporation_type as $corp_type) 
+                                            @if($corp_type->corp_type != "")
+                                            <option {{ (isset($detail_edit->corp_type) && ($detail_edit->corp_type == $corp_type ->corp_type)) ? "selected" : "" }} value="{{ $corp_type ->corp_type }}">{{ $corp_type->corp_type }}</option>
+                                            @endif
+                                        @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group row">
                           <div class="col-md-6">
                               <a type="button" class="btn btn-default" href="{{ URL('list_corporation') }}">

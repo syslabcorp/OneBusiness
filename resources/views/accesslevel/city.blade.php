@@ -120,9 +120,12 @@ function GetSelectedvalues() {
                 $('#appendall_group').html('');
                 $.each(response, function(k,v){
                     grp = v.group_ID.toString();
+                    var branchsort = new Array();
+                    arrayBranch =  v.branch.toString().split(",");
+                    branchsort  = arrayBranch.sort();
                     if(isAdmin == 1){
                         var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select" disabled checked><label>'+v.desc+'</label></div><div class="col-md-12">';
-                        $.each(v.branch, function(k,br){
+                        $.each(branchsort, function(k,br){
                             appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
                         });
                         appendGroup += '</div></div>';
@@ -132,14 +135,14 @@ function GetSelectedvalues() {
                         $('#appendall_group').html('');
                         if ($.inArray(grp,arr_grp_id) !== -1) {
                             var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'"class="area_user grp_select" checked><label>'+v.desc+'</label></div><div class="col-md-12">';
-                            $.each(v.branch, function(k,br){
+                            $.each(branchsort, function(k,br){
                                 appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
                             });
                             appendGroup += '</div></div>';
                             $('.grp_append').append(appendGroup); 
                         }else{
                             var appendGroup = '<div class="row"> <div class="col-md-12 branch_assign"><input id="group_name" type="checkbox" name="group[]" value="'+v.group_ID+'" class="area_user grp_select"><label>'+v.desc+'</label></div><div class="col-md-12">';
-                            $.each(v.branch, function(k,br){
+                            $.each(branchsort, function(k,br){
                                 appendGroup += '<div class="col-md-2 grp-brnch">'+br+'</div>';
                             });
                             appendGroup += '</div></div>';
