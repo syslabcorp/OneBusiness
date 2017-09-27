@@ -4,7 +4,7 @@
   <div class="form-group {{ $errors->has('tmplate_name') ? 'has-error' : '' }}"
       style="display:inline-block;">
     <label for="">Template name:</label>
-    <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;">
+    <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;" value="{{ old('tmplate_name') }}">
     @if($errors->has('tmplate_name'))
       <span class="help-block">Template Name can't be blank</span>
     @endif
@@ -53,31 +53,37 @@
         <input type="time" class="form-control" name="ZoneStart1"  value="{{ old('ZoneStart1') }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 1: (%)</label>
         <input type="number" class="form-control" name="Discount1">
       </div>
     </div>
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('ZoneStart2') ? 'has-error' : '' }}">
         <label for="">Timezone 2:</label>
         <input type="time" class="form-control" name="ZoneStart2" value="{{ old('ZoneStart2') }}">
+        @if($errors->has('ZoneStart2'))
+          <span class="help-block">{{ $errors->first('ZoneStart2') }}</span>
+        @endif
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 2:</label>
+        <label for="">Discount 2: (%)</label>
         <input type="number" class="form-control" name="Discount2">
       </div>
     </div>
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('ZoneStart3') ? 'has-error' : '' }}">
         <label for="">Timezone 3:</label>
         <input type="time" class="form-control" name="ZoneStart3" value="{{ old('ZoneStart3') }}">
+        @if($errors->has('ZoneStart3'))
+          <span class="help-block">{{ $errors->first('ZoneStart3') }}</span>
+        @endif
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 3:</label>
+        <label for="">Discount 3: (%)</label>
         <input type="number" class="form-control" name="Discount3">
       </div>
     </div>

@@ -79,7 +79,7 @@
                 </td>
                 <td>
                     @if($mac->user)
-                        {{ $mac->user->Username }}
+                        {{ $mac->user->uname }}
                     @endif
                 </td>
                 <td>
