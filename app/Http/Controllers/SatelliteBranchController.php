@@ -37,6 +37,7 @@ class SatelliteBranchController extends Controller
             ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
             ->whereIn('t_sysdata.Branch', $branch)
             ->select('corporation_masters.corp_id', 'corporation_masters.corp_name')
+            ->distinct()
             ->get();
 
         return view('satelliteBranches.index')
