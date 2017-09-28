@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\SatelliteBranch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -24,8 +25,23 @@ class SatelliteBranchController extends Controller
         //get all items
         $satelliteBranches = SatelliteBranch::orderBy('sat_branch', 'DESC')->get();
 
+        //get user data
+        $branches = DB::table('user_area')
+            ->where('user_ID', '=', \Auth::user()->UserID)
+            ->pluck('branch');
+
+        $branch = explode(",", $branches[0]);
+
+        //dd($branch);
+        $corporations = DB::table('t_sysdata')
+            ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
+            ->whereIn('t_sysdata.Branch', $branch)
+            ->select('corporation_masters.corp_id', 'corporation_masters.corp_name')
+            ->get();
+
         return view('satelliteBranches.index')
-            ->with('satelliteBranches', $satelliteBranches);
+            ->with('satelliteBranches', $satelliteBranches)
+            ->with('corporations', $corporations);
     }
 
     /**
@@ -40,8 +56,23 @@ class SatelliteBranchController extends Controller
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
+       //get user data
+        $branches = DB::table('user_area')
+            ->where('user_ID', '=', \Auth::user()->UserID)
+            ->pluck('branch');
 
-        return view('satelliteBranches.create');
+        $branch = explode(",", $branches[0]);
+
+        //dd($branch);
+        $corporations = DB::table('t_sysdata')
+            ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
+            ->whereIn('t_sysdata.Branch', $branch)
+            ->select('corporation_masters.corp_id', 'corporation_masters.corp_name')
+            ->get();
+
+
+        return view('satelliteBranches.create')
+                ->with('corporations', $corporations);
     }
 
     /**
@@ -63,6 +94,12 @@ class SatelliteBranchController extends Controller
         $branchDescription = $request->input('branchDescription');
         $branchNotes = $request->input('branchNotes');
         $active = $request->input('itemActive');
+        $corporations = $request->input('corporations');
+
+        if($corporations){
+            $corporations = implode(',', $corporations);
+        }
+
 
         //create new instance
         $satelliteBranch = new SatelliteBranch;
@@ -70,6 +107,7 @@ class SatelliteBranchController extends Controller
         $satelliteBranch->description = $branchDescription;
         $satelliteBranch->notes = $branchNotes;
         $satelliteBranch->active = $active ? 1 : 0;
+        $satelliteBranch->corp_id = $corporations != null ? $corporations : "";
         $success = $satelliteBranch->save();
 
         if($success) {
@@ -105,10 +143,25 @@ class SatelliteBranchController extends Controller
             return redirect("/home");
         }
 
+        //get user data
+        $branches = DB::table('user_area')
+            ->where('user_ID', '=', \Auth::user()->UserID)
+            ->pluck('branch');
+
+        $branch = explode(",", $branches[0]);
+
+        //dd($branch);
+        $corporations = DB::table('t_sysdata')
+            ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
+            ->whereIn('t_sysdata.Branch', $branch)
+            ->select('corporation_masters.corp_id', 'corporation_masters.corp_name')
+            ->get();
+
         //find instance
         $satelliteBranch = SatelliteBranch::where('sat_branch', $id)->first();
         return view('satelliteBranches.edit')
-            ->with('satelliteBranch', $satelliteBranch);
+            ->with('satelliteBranch', $satelliteBranch)
+            ->with('corporations', $corporations);
     }
 
     /**
@@ -131,12 +184,18 @@ class SatelliteBranchController extends Controller
         $branchDescription = $request->input('branchDescription');
         $branchNotes = $request->input('branchNotes');
         $active = $request->input('itemActive');
+        $corporations = $request->input('corporations');
+
+        if($corporations){
+            $corporations = implode(',', $corporations);
+        }
 
         $satelliteBranch->update([
-           'short_name' => $branchName,
+            'short_name' => $branchName,
             'description' => $branchDescription,
             'notes' => $branchNotes,
-            'active' => $active ? 1 : 0
+            'active' => $active ? 1 : 0,
+            'corp_id' => $corporations != null ? $corporations : ""
         ]);
 
         \Session::flash('success', "Satellite branch updated successfully");
@@ -152,5 +211,134 @@ class SatelliteBranchController extends Controller
     public function destroy(SatelliteBranch $satelliteBranch)
     {
         //
+    }
+
+    public function getBranches(Request $request){
+
+        $statusData = $request->input('statusData');
+        $corpId = $request->input('corpId');
+
+        $draw = $request->input('draw');
+        $start = $request->input('start');
+        $length = $request->input('length');
+        $columns = $request->input('columns');
+        $orderable = $request->input('order');
+        $orderNumColumn = $orderable[0]['column'];
+        $orderDirection = $orderable[0]['dir'];
+        $columnName = $columns[$orderNumColumn]['data'];
+        $search = $request->input('search');
+
+
+        $searchVal = explode(" ", $search['value']);
+        $recordsTotal = SatelliteBranch::count();
+
+        if($searchVal != null && $statusData != "" && $corpId == ""){
+
+            $satelliteBranch = SatelliteBranch::where('active', $statusData)
+                ->where(function ($q) use ($search, $columns){
+                for($i = 0; $i<sizeof($columns)-1; $i++){
+                    $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                }
+            })
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $columns = array(
+                "draw" => $draw,
+                "recordsTotal" => $recordsTotal,
+                "recordsFiltered" => ($satelliteBranch != null) ? $satelliteBranch->count() : 0,
+                "data" => ($satelliteBranch != null) ? $satelliteBranch : 0
+            );
+
+            return response()->json($columns, 200);
+        }else if($search['value'] != "" && $corpId != "" && $statusData == ""){
+            $satelliteBranch = SatelliteBranch::where('corp_id', $corpId)
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<sizeof($columns)-1; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+
+            $columns = array(
+                "draw" => $draw,
+                "recordsTotal" => $recordsTotal,
+                "recordsFiltered" => ($satelliteBranch != null) ? $satelliteBranch->count() : 0,
+                "data" => ($satelliteBranch != null) ? $satelliteBranch : 0
+            );
+
+            return response()->json($columns, 200);
+        }else if($search['value'] != "" && $corpId != "" && $statusData != ""){
+            $satelliteBranch = SatelliteBranch::where('corp_id', 'LIKE', '%'.$corpId.'%')
+                ->where('active', $statusData)
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<sizeof($columns)-1; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $columns = array(
+                "draw" => $draw,
+                "recordsTotal" => $recordsTotal,
+                "recordsFiltered" => ($satelliteBranch != null) ? $satelliteBranch->count() : 0,
+                "data" => ($satelliteBranch != null) ? $satelliteBranch : 0
+            );
+
+            return response()->json($columns, 200);
+        }else if($search['value'] == "" && $statusData != "" && $corpId != ""){
+            $satelliteBranch = SatelliteBranch::where('corp_id', 'LIKE', '%'.$corpId.'%')
+                ->where('active', $statusData)
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $columns = array(
+                "draw" => $draw,
+                "recordsTotal" => $recordsTotal,
+                "recordsFiltered" => ($satelliteBranch != null) ? $satelliteBranch->count() : 0,
+                "data" => ($satelliteBranch != null) ? $satelliteBranch : 0
+            );
+
+            return response()->json($columns, 200);
+        }
+
+
+
+        if($statusData != ""){
+            $satelliteBranch = SatelliteBranch::where('active', $statusData)
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+        }else if($corpId != ""){
+            $satelliteBranch = SatelliteBranch::where('corp_id', 'LIKE', '%'.$corpId.'%')
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+        }else{
+            $satelliteBranch = null;
+        }
+        $columns = array(
+            "draw" => $draw,
+            "recordsTotal" => $recordsTotal,
+            "recordsFiltered" => ($satelliteBranch != null) ? $satelliteBranch->count() : 0,
+            "data" => ($satelliteBranch != null) ? $satelliteBranch : 0
+        );
+
+        return response()->json($columns, 200);
     }
 }
