@@ -154,8 +154,7 @@
                         "render": function ( data, type, row ) {
                             var checkAccess = '<?php  if(!\Auth::user()->checkAccessById(23, "E")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
-                            if(1) { optionClass = 'disabled' };
-                            console.log(checkAccess);
+                            if(checkAccess) { optionClass = 'disabled' };
                             return '<a href="/satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>'
                         },
