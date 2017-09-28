@@ -168,6 +168,53 @@
         @endforeach
       </tbody>
     </table>
+    <div class="box-assign" style="display: none;">
+      <hr>
+      <table class="table borderred">
+        <thead>
+          <tr>
+            <th colspan="2">Time Zone 1</th>
+            <th colspan="2">Time Zone 2</th>
+            <th colspan="2">Time Zone 3</th>
+          </tr>
+          <tr>
+            <th>Min Change</th>
+            <th>Per Minute</th>
+            <th>Min Change</th>
+            <th>Per Minute</th>
+            <th>Min Change</th>
+            <th>Per Minute</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input type="number" step="any" class="form-control">
+            </td>
+            <td>
+              <input type="number" step="any" class="form-control">
+            </td>
+            <td>
+              <input type="number" step="any" class="form-control">
+            </td>
+            <td>
+              <input type="number" step="any" class="form-control">
+            </td>
+            <td>
+              <input type="number" step="any" class="form-control">
+            </td>
+            <td>
+              <input type="number" step="any" class="form-control">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-right">
+        <button class="btn btn-sm btn-primary" type="button">
+          <i class="fa fa-magic"></i> Assign
+        </button>
+      </div>
+    </div>
     <hr>
     @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
     <div class="col-md-12 text-right">
@@ -271,6 +318,77 @@
         </table>
       </div>
       @endfor
+
+      <div class="box-assign" style="display: none;">
+        <hr>
+        <table class="table borderred">
+          <thead>
+            <tr>
+              <th>5 mins</th>
+              <th>10 mins</th>
+              <th>15 mins</th>
+              <th>20 mins</th>
+              <th>25 mins</th>
+              <th>30 mins</th>
+              <th>35 mins</th>
+              <th>40 mins</th>
+              <th>45 mins</th>
+              <th>50 mins</th>
+              <th>55 mins</th>
+              <th>60 mins</th>
+              <th>Min Charge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+              <td>
+                <input type="text" class="form-control">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-right">
+          <button class="btn btn-sm btn-primary" type="button">
+            <i class="fa fa-magic"></i> Assign
+          </button>
+        </div>
+      </div>
     </div>
     <hr>
     @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
