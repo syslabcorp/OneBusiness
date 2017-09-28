@@ -112,7 +112,7 @@
                 "order": [[ 0, "asc" ]],
                 "ajax" : {
                     type: "POST",
-                    url: "/satellite-branch/get-branch-list",
+                    url: "satellite-branch/get-branch-list",
                     data: function ( d ) {
                         d.statusData = $('#example_ddl3 select option:selected').val(),
                         d.corpId = $('#example_ddl2 select option:selected').val()
