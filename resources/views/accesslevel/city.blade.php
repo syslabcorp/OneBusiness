@@ -43,6 +43,17 @@
 
 <script>
 $(document).ready(function() {
+    var isSelected = [];
+    $('tbody tr td input[type="checkbox"]').each(function() {
+        if ($(this).is(":checked")) {
+            isSelected.push("true");
+        } else {
+            isSelected.push("false");
+        }
+    });
+    if ($.inArray("false", isSelected) < 0) {
+        $(".selectall").attr("checked", true);
+    }
     $("#select_all").change(function(){
         $('.grp_append').html('');
         if(this.checked){ 
