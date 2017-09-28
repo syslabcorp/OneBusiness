@@ -34,6 +34,30 @@
 
 <script>
 $(document).ready(function() {
+   /* var flag;
+    //flag = 0;
+    $('tbody tr td input[type="checkbox"]').each(function(){
+        if(this.checked == true){ 
+            flag = 0;
+            alert(flag);
+        }else{
+            flag = 1;
+        }
+    });
+    if(flag == 0){
+        $(".selectall").attr("checked", true);
+    }*/
+    var isSelected = [];
+    $('tbody tr td input[type="checkbox"]').each(function() {
+        if ($(this).is(":checked")) {
+            isSelected.push("true");
+        } else {
+            isSelected.push("false");
+        }
+    });
+    if ($.inArray("false", isSelected) < 0) {
+        $(".selectall").attr("checked", true);
+    }
     $("#select_all").change(function(){
         $('.grp_append').html('');
         if(this.checked){ 
