@@ -263,7 +263,48 @@ $(document).ready(function()
     });
 
     $('.rate-page .table .form-control').click(function(event) {
-      $(this).select();
+      if(event.ctrlKey) {
+        $(this).parents('tr').each(function(index, element) {
+          $(this).toggleClass('selected');
+        });
+      }else if(event.shiftKey) {
+        if($('.rate-page .table tr.selected').length == 0) {
+          $(this).parents('tr').addClass('selected');
+        }else {
+          var startIndex = $('.rate-page .table tr.selected').index();
+          var endIndex = $(this).parents('tr').index();
+          $('.rate-page .table tr.selected').removeClass('selected');
+          if(startIndex == endIndex) {
+            $(this).parents('tr').removeClass('selected');
+          }else {
+            if(endIndex < startIndex) {
+              var temp = startIndex;
+
+              startIndex = endIndex;
+              endIndex = temp;
+            }
+            for(startIndex; startIndex <= endIndex; startIndex++) {
+              $('.rate-page .table tbody tr:eq(' + startIndex + ')').addClass('selected');
+            }
+          }
+        }
+      }else {
+        $(this).select();
+      }
+
+      if($('.rate-page .table tr.selected').length != 0) {
+        $('.rate-page .box-assign').slideDown(500);
+      }else {
+        $('.rate-page .box-assign').slideUp(500);
+      }
+    });
+
+    $('.rate-page .box-assign .btn').click(function(event) {
+      $('.rate-page .table tr.selected').each(function(index) {
+        $(this).find('.form-control').each(function(key, element) {
+          $(this).val($('.rate-page .box-assign td:eq(' + key + ') .form-control').val());
+        });
+      });
     });
 
 
