@@ -93,18 +93,22 @@
 @section('footer-scripts')
     <script>
         (function($){
-            var __statusData = "";
+
             var table = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="">Select Corporation</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}" selected>{{ $corporations[0]->corp_name }}</option></select>')
                         .appendTo('#example_ddl2');
+                    var cntCorp = 0;
                     @foreach($corporations as $key => $val)
-                    corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            if(cntCorp != 0) {
+                        corporationID.append('<option value="{{ $val->corp_id }}" >{{ $val->corp_name }}</option>');
+
+                    }
+                    cntCorp++;
                     @endforeach
-                    var branchStatus = $('<select class="form-control"><option value="">Branch Status</option></select>')
+                    var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
                         .appendTo('#example_ddl3');
-                    branchStatus.append('<option value="1">Active</option>');
                     branchStatus.append('<option value="0">Inactive</option>');
                 },
                 "processing": true,
@@ -114,8 +118,8 @@
                     type: "POST",
                     url: "satellite-branch/get-branch-list",
                     data: function ( d ) {
-                        d.statusData = $('#example_ddl3 select option:selected').val(),
-                        d.corpId = $('#example_ddl2 select option:selected').val()
+                        d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val(),
+                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val()
                         // d.custom = $('#myInput').val();
                         // etc
                     }
@@ -152,10 +156,10 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            var checkAccess = '<?php  if(!\Auth::user()->checkAccessById(23, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
-                            if(checkAccess) { optionClass = 'disabled' };
-                            return '<a href="/satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
+                            if(checkAccess == 0) { optionClass = 'disabled' };
+                            return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>'
                         },
                         "targets": 4
@@ -173,6 +177,7 @@
                 ],
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();

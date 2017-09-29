@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bank;
 use App\BankAccount;
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -22,13 +23,102 @@ class BankController extends Controller
             return redirect("/home");
         }
 
+        //get records from t_sysdata
+        $tSysdata = DB::table('t_sysdata')
+            ->select('Active')
+            ->orderBy('Branch', 'ASC')
+            ->get();
+
+        //get user data
+        $branches = DB::table('user_area')
+            ->where('user_ID', \Auth::user()->UserID)
+            ->pluck('branch');
+
+        $branch = explode(",", $branches[0]);
+
+
+
+        //dd($branch);
+        $corporations = DB::table('t_sysdata')
+            ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
+            ->whereIn('t_sysdata.Branch', $branch)
+            ->select('corporation_masters.corp_id', 'corporation_masters.corp_name')
+            ->orderBy('corporation_masters.corp_name', 'ASC')
+            ->distinct()
+            ->get();
+
+
         $banks = BankAccount::orderBy('bank_id', 'ASC')->get();
         //get banks from db
         $selectBank = Bank::orderBy('bank_id', 'ASC')->get();
 
+        $tSysdata = json_encode($tSysdata);
+
         return view('banks.index')
             ->with('selectBank', $selectBank)
+            ->with('tSysData', json_encode($tSysdata))
+            ->with('branch', $branch)
+            ->with('corporations', $corporations)
             ->with('banks', $banks);
+    }
+
+    public function getBanksList(Request $request){
+        $statusData = $request->input('dataStatus');
+        $branch = $request->input('branch');
+        $corpID = $request->input('corpId');
+        $mainStatus = $request->input('MainStatus');
+
+        $draw = $request->input('draw');
+        $start = $request->input('start');
+        $length = $request->input('length');
+        $columns = $request->input('columns');
+        $orderable = $request->input('order');
+        $orderNumColumn = $orderable[0]['column'];
+        $orderDirection = $orderable[0]['dir'];
+        $columnName = $columns[$orderNumColumn]['data'];
+        $search = $request->input('search');
+
+        //get data from sysdata
+        /*$sysData = DB::table('t_sysdata')
+            ->where('user_ID', \Auth::user()->UserID)
+            ->pluck('branch');*/
+
+
+        $banks = "";
+        $recordsTotal = BankAccount::count();
+
+        if($statusData != "" && $branch != "" && $corpID != "" && $mainStatus == "false"){
+            $banks = DB::table('cv_bank_acct')
+                ->join('cv_banks', 'cv_bank_acct.bank_id', '=', 'cv_banks.bank_id')
+                ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
+                ->where('cv_bank_acct.bank_id', $branch)
+                ->where('t_sysdata.Active', $statusData)
+                ->where('t_sysdata.corp_id', $corpID)
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+        }else if($mainStatus != "false"){
+            $banks = DB::table('cv_bank_acct')
+                ->join('cv_banks', 'cv_bank_acct.bank_id', '=', 'cv_banks.bank_id')
+                ->where('cv_bank_acct.branch', -1)
+                ->orderBy($columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+        }
+
+
+
+        $columns = array(
+            "draw" => $draw,
+            "recordsTotal" => $recordsTotal,
+            "recordsFiltered" => ($banks != null) ? $banks->count() : 0,
+            "data" => ($banks != null) ? $banks : 0
+        );
+
+        return response()->json($columns, 200);
     }
 
     /**

@@ -70,6 +70,15 @@
             top: 8px;
         }
 
+        #example_ddl5 {
+            position: relative;
+            top: 5px;
+        }
+
+        #example_ddl2, #example_ddl3, #example_ddl4 {
+            margin-right: 5px !important;
+        }
+
 
 
     </style>
@@ -117,31 +126,10 @@
                                             <th>Use</th>
                                             <th>Bank Code</th>
                                             <th>Account Number</th>
-                                            <th>Active</th>
                                             <th>Date Created</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
-                                        <tbody style="display: none">
-                                        @foreach($banks as $bank)
-                                            <tr>
-                                                <td><input type="checkbox" @if($bank->default_acct) checked @endif ></td>
-                                                <td>{{ $bank->banks->bank_code }}</td>
-                                                <td>{{ $bank->acct_no }}</td>
-                                                <td>{{ $bank->branch }}</td>
-                                                <td><?php $dt = new DateTime($bank->date_created); echo $dt->format('d/m/Y'); ?></td>
-                                                <td>
-                                                    <a href="#" name="checkDefaultAcct" class="btn btn-success btn-sm checkDefaultAcct  @if(!\Auth::user()->checkAccessById(27, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">{{ $bank->bank_acct_id }}</span>
-                                                    </a>
-                                                    <a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount  @if(!\Auth::user()->checkAccessById(27, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i><span class="editBankID" style="display: none;">{{ $bank->bank_acct_id }}</span>
-                                                            <span class="codeNumID" style="display: none;">{{ $bank->bank_id }}</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -421,41 +409,115 @@
 @endsection
 @section('footer-scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
     <script>
         (function($){
 
-            $('#myTable').DataTable({
+            var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
                     var corporationID = $('<select class="form-control"><option value="">Select Corporation</option></select>')
                         .appendTo('#example_ddl2');
+                    var cntCorp = 0;
+                    @foreach($corporations as $key => $val)
+                    if(cntCorp == 0){
+                        var typeSelected = "selected";
+                        cntCorp++;
+                    }else{
+                        typeSelected = "";
+                    }
+                    corporationID.append('<option value="{{ $val->corp_id }}" '+ typeSelected +'>{{ $val->corp_name }}</option>');
+                            @endforeach
                     var branchStatus = $('<select class="form-control"><option value="">Select Branch Status</option></select>')
                         .appendTo('#example_ddl3');
-                    branchStatus.append('<option value="1">Active</option>');
+                    branchStatus.append('<option value="1" selected>Active</option>');
                     branchStatus.append('<option value="0">Inactive</option>');
-                    var branchStatus = $('<select class="form-control"><option value="">Select Branch</option></select>')
+                    var branches = $('<select class="form-control"><option value="">Select Branch</option></select>')
                         .appendTo('#example_ddl4');
-                    var branchStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
+                    var cntBranches = 0;
+                    @foreach($selectBank as $key => $val)
+                    if(cntBranches == 0){
+                        var typeSelected = "selected";
+                        cntBranches++;
+                    }else{
+                        typeSelected = "";
+                    }
+                    branches.append('<option value="{{ $val->bank_id }}" '+ typeSelected +'>{{ $val->bank_code }}</option>');
+                    @endforeach
+                    var mainStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
                         .appendTo('#example_ddl5');
                 },
                "processing": true,
                "serverSide": true,
                 "ajax" : {
                    type: "POST",
-                    url: "/banks/get-banks-list",
+                    url: "banks/get-banks-list",
+                    data: function (d) {
+                        d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
+                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
+                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $selectBank[0]->bank_id }}' : $('#example_ddl4 select option:selected').val();
+                        d.MainStatus = $('#example_ddl5 input').is(":checked");
+
+                    }
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2'<'#example_ddl3'>><'col-sm-2'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
+                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
+                    {
+                        "render": function ( data, type, row ) {
+                            var checked = "";
+                            if(row.default_acct) checked = "checked";
+                            return '<input type="checkbox" '+ checked +' disabled >';
+                        },
+                        "targets": 0
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.bank_code;
+                        },
+                        "targets": 1
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.acct_no;
+                        },
+                        "targets": 2
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                           // console.log($.format.date(row.date_created, 'dd/MM/yyyy'));
+                            var dateMin = $.format.date(row.date_created, 'dd/MM/yyyy');
+                            return dateMin;
+                        },
+                        "targets": 3
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(27, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var optionClass = "";
+                            if(checkAccess == 0) { optionClass = 'disabled' };
+                           return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-sm checkDefaultAcct" '+optionClass+'>' +
+                            '<i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">'+ row.bank_acct_id +'</span>' +
+                            '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount" '+optionClass+'>' +
+                            '<i class="glyphicon glyphicon-pencil"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
+                            '<span class="codeNumID" style="display: none;">'+row.bank_id+'</span></a>'
+                        },
+                        "targets": 4
+                    },
                     { "orderable": false, "width": "5%", "targets": 0},
-                    { "visible": false, "searchable": true, "targets": 3 },
-                    { "orderable": false, "width": "9%", "targets": 5 },
-                    {"className": "dt-center", "targets": 5},
+                    { "orderable": false, "width": "10%", "targets": 4 },
+                    {"className": "dt-center", "targets": 4},
                     {"className": "dt-center", "targets": 0}
-                ]
+                ],
+                "columns": [
+                    { "data": "default_acct" },
+                    { "data": "bank_code" },
+                    { "data": "acct_no" },
+                    { "data": "date_created" }
+                ],
             });
 
             //init datatables
@@ -469,55 +531,7 @@
                 ]
             });
 
-          /* var mainTable = $('#myTable').DataTable({
-                initComplete: function () {
-                    this.api().columns(1).every( function () {
-                        var column = this;
-                        var select = $('<select class="form-control"><option value="">Select branch</option></select>')
-                            .appendTo( '#example_ddl2' )
-                            .on( 'change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
 
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false )
-                                    .draw();
-                            } );
-
-                        column.data().unique().sort().each( function ( d, j ) {
-                            var activeName = "";
-                         //   if(d == 1) { activeName = 'Active'; } else { activeName = 'Inactive'; };
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
-                        } );
-                    } );
-                    $('<input type="checkbox" class="selectMain" style="margin-left 50px"><label for="selectMain">Main</label>').appendTo("#checkboxDDD");
-                    var branchStatus = $('<select class="form-control"><option value="">Branch Status</option></select>')
-                        .appendTo('#example_ddl');
-                    var selectActive = "";
-                    selectActive = '<?php echo json_decode($tSysData); ?>';
-                    $.each(selectActive, function ( d, j ) {
-                        console.log(d)
-                        var activeName = "";
-                        //   if(d == 1) { activeName = 'Active'; } else { activeName = 'Inactive'; };
-                        branchStatus.append( '<option value="'+d+'">'+d+'</option>' )
-                    } );
-
-                },
-                stateSave: true,
-                dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                 "<'row'<'col-sm-12'<'#example_ddl.pull-left'>>" +
-                "<'row'<'col-sm-6'<'#example_ddl2.pull-left'><'col-sm-6'<'#checkboxDDD'>>>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
-                "columnDefs": [
-                    { "orderable": false, "width": "5%", "targets": 0},
-                    { "visible": false, "searchable": true, "targets": 3 },
-                    { "orderable": false, "width": "9%", "targets": 5 },
-                    {"className": "dt-center", "targets": 5},
-                    {"className": "dt-center", "targets": 0}
-                ]
-            });*/
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
 
 
@@ -561,7 +575,7 @@
                 $('#editAccountModal').modal("toggle");
             });
 
-         /*   $(document).on('click', '.checkDefaultAcct', function (e) {
+            $(document).on('click', '.checkDefaultAcct', function (e) {
                 e.preventDefault();
 
                 var ref = $(this);
@@ -580,7 +594,7 @@
 
                         $.alert({
                             title: 'Default Account',
-                            content: 'Successfully changed!',
+                            content: '<span style="color: green">Successfully changed!</span>',
                             backgroundDismiss: true,
                         });
                     }
@@ -588,26 +602,22 @@
 
             });
 
-            $.fn.dataTableExt.afnFiltering.push(function(oSettings, aData, iDataIndex) {
-                var checked = $('.selectMain').is(':checked');
 
-                if (checked && aData[3] == -1) {
-                    return true;
-                }
-
-                if (!checked) {
-                    return false;
-                }
-
-                return false;
+            $('#example_ddl5').on("click", function(e) {
+                mainTable.ajax.reload();
             });
 
-            mainTable.draw();
-            $('#myTable').find('tbody').show();
+            $('#example_ddl2').on('change', function () {
+                mainTable.ajax.reload();
+            })
 
-            $('.selectMain').on("click", function(e) {
-                mainTable.draw();
-            });*/
+            $('#example_ddl3').on('change', function () {
+                mainTable.ajax.reload();
+            })
+
+            $('#example_ddl4').on('change', function () {
+                mainTable.ajax.reload();
+            })
 
             })(jQuery);
     </script>
