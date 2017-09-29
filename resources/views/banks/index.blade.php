@@ -451,7 +451,7 @@
                "serverSide": true,
                 "ajax" : {
                    type: "POST",
-                    url: "/banks/get-banks-list",
+                    url: "banks/get-banks-list",
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();

@@ -80,7 +80,7 @@
                                                     <label class="col-md-3 control-label" for="branchDescription">Description:</label>
                                                     <div class="col-md-7">
                                                         <input id="branchDescription" name="branchDescription" type="text" value="{{ old('branchDescription') }}"
-                                                               data-parsley-required-message="Branch description is required" class="form-control input-md" required>
+                                                               class="form-control input-md">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
