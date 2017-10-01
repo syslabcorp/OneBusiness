@@ -30,11 +30,13 @@ Route::resource('satellite-branch', 'SatelliteBranchController', ['middleware' =
 Route::resource('banks', 'BankController', ['middleware' => 'auth']);
 Route::resource('bank-accounts', 'BankAccountController', ['middleware' => 'auth']);
 Route::resource('checkbooks', 'CheckbookController', ['middleware' => 'auth']);
+Route::resource('vendors', 'VendorController', ['middleware' => 'auth']);
 
 Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
 Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getBranches')->middleware('auth');
 Route::post('banks/get-banks-list', 'BankController@getBanksList')->middleware('auth');
 Route::post('/checkbooks/get-accounts-for-branch', 'CheckbookController@getAccountForCheckbook')->middleware('auth');
+Route::post('/checkbooks/get-checkbooks', 'CheckbookController@getCheekbooks')->middleware('auth');
 #End of MasterFile Module
 
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);

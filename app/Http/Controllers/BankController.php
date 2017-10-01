@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bank;
 use App\BankAccount;
+use App\SatelliteBranch;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -48,7 +49,7 @@ class BankController extends Controller
             ->get();
 
 
-        $banks = BankAccount::orderBy('bank_id', 'ASC')->get();
+        $satelliteBranch = SatelliteBranch::orderBy('short_name', 'ASC')->get();
         //get banks from db
         $selectBank = Bank::orderBy('bank_id', 'ASC')->get();
 
@@ -59,7 +60,7 @@ class BankController extends Controller
             ->with('tSysData', json_encode($tSysdata))
             ->with('branch', $branch)
             ->with('corporations', $corporations)
-            ->with('banks', $banks);
+            ->with('satelliteBranch', $satelliteBranch);
     }
 
     public function getBanksList(Request $request){
@@ -90,10 +91,10 @@ class BankController extends Controller
         if($statusData != "" && $branch != "" && $corpID != "" && $mainStatus == "false"){
             $banks = DB::table('cv_bank_acct')
                 ->join('cv_banks', 'cv_bank_acct.bank_id', '=', 'cv_banks.bank_id')
-                ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
+                ->join('pc_branches', 'cv_bank_acct.bank_id', '=', 'pc_branches.sat_branch')
                 ->where('cv_bank_acct.bank_id', $branch)
-                ->where('t_sysdata.Active', $statusData)
-                ->where('t_sysdata.corp_id', $corpID)
+                ->where('pc_branches.active', $statusData)
+                ->where('pc_branches.corp_id', $corpID)
                 ->orderBy($columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
