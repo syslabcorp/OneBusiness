@@ -178,6 +178,7 @@
             <th colspan="2">Time Zone 3</th>
           </tr>
           <tr>
+            <th></th>
             <th>Min Change</th>
             <th>Per Minute</th>
             <th>Min Change</th>
@@ -188,6 +189,11 @@
         </thead>
         <tbody>
           <tr>
+            <td>
+              <button class="btn btn-sm btn-success" type="button">
+                <i class="fa fa-magic"></i>
+              </button>
+            </td>
             <td>
               <input type="number" step="any" class="form-control">
             </td>
@@ -209,11 +215,6 @@
           </tr>
         </tbody>
       </table>
-      <div class="text-right">
-        <button class="btn btn-sm btn-primary" type="button">
-          <i class="fa fa-magic"></i> Assign
-        </button>
-      </div>
     </div>
     <hr>
     @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
@@ -324,6 +325,7 @@
         <table class="table borderred">
           <thead>
             <tr>
+              <th></th>
               <th>5 mins</th>
               <th>10 mins</th>
               <th>15 mins</th>
@@ -341,6 +343,11 @@
           </thead>
           <tbody>
             <tr>
+              <td>
+                <button class="btn btn-sm btn-success" type="button">
+                  <i class="fa fa-magic"></i>
+                </button>
+              </td>
               <td>
                 <input type="text" class="form-control">
               </td>
@@ -383,11 +390,6 @@
             </tr>
           </tbody>
         </table>
-        <div class="text-right">
-          <button class="btn btn-sm btn-primary" type="button">
-            <i class="fa fa-magic"></i> Assign
-          </button>
-        </div>
       </div>
     </div>
     <hr>
