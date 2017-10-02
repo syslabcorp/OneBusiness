@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -97,7 +98,19 @@ class VendorController extends Controller
      */
     public function show(Vendor $vendor)
     {
-        //
+        $vendors = DB::table('cv_vendacct')
+            ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+            ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
+            ->orderBy('VendorName', 'ASC')
+            ->get();
+
+        $branches = DB::table('t_sysdata')
+            ->orderBy('Description', 'ASC')
+            ->get();
+
+        return view('vendors.management.index')
+            ->with('vendors', $vendors)
+            ->with('branches', $branches);
     }
 
     /**
