@@ -299,10 +299,35 @@ $(document).ready(function()
       }
     });
 
+    $('.rate-page .table .form-control').keydown(function(event) {
+      console.log(event.which);
+      var column = $(this).parents("td").index();
+      var row = $(this).parents("tr").index();
+      switch(event.which) {
+        case 37:
+          column -= 1;
+          break;
+        case 38:
+          row -= 1;
+          break;
+        case 39:
+          column += 1;
+          break;
+        case 40:
+          row += 1;
+          break;
+        default:
+          return;
+          break;
+      }
+      console.log(row + ":" + column);
+      $(this).parents('.table').find("tr:eq(" + (row + 1) + ") td:eq(" + column + ") .form-control").click();
+    });
+
     $('.rate-page .box-assign .btn').click(function(event) {
       $('.rate-page .table tr.selected').each(function(index) {
         $(this).find('.form-control').each(function(key, element) {
-          $(this).val($('.rate-page .box-assign td:eq(' + key + ') .form-control').val());
+          $(this).val($('.rate-page .box-assign td:eq(' + (key + 1) + ') .form-control').val());
         });
       });
     });
