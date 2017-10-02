@@ -98,7 +98,7 @@
                                                 <td>{{ $vendor->petty_visible }}</td>
                                                 <td><input type="checkbox" name="printThis" @if($vendor->withTracking == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
+                                                    <a href="vendors/{{ $vendor->Supp_ID }}" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
                                                         <i class="glyphicon glyphicon-eye-open"></i>
                                                     </a>
                                                     <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-warning btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">

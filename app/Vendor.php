@@ -13,4 +13,8 @@ class Vendor extends Model
         'x_check', 'petty_visible', 'withTracking'
     ];
     public $timestamps = false;
+
+    public function vendorsManagement(){
+        return $this->hasMany('App\VendorManagement', 'supp_id', 'Supp_ID');
+    }
 }
