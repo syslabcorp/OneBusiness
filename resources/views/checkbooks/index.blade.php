@@ -70,7 +70,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right {{--@if(!\Auth::user()->checkAccessById(23, "A")) disabled @endif--}}"
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(28, "A")) disabled @endif"
                                                data-toggle="modal" data-target="#addNewCheckbook" >Add Checkbook</a>
                                         </div>
                                     </div>
@@ -223,9 +223,9 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return '<a href="satellite-branch/1/edit" name="edit" class="btn btn-primary btn-sm edit  {{--@if(!\\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">' +
+                            return '<a href="satellite-branch/1/edit" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(28, "E")) disabled @endif">' +
                                 '<i class="glyphicon glyphicon-arrow-up"></i><span style="display: none;">1</span></a>' +
-                                '<a href="satellite-branch/1/edit" name="edit" class="btn btn-primary btn-sm edit  {{--@if(!\\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">\n' +
+                                '<a href="satellite-branch/1/edit" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(28, "E")) disabled @endif">' +
                                 '<i class="glyphicon glyphicon-arrow-down"></i><span style="display: none;">1</span></a>'
 
                         },

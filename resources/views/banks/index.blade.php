@@ -113,7 +113,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right {{--@if(!\Auth::user()->checkAccessById(27, "A")) disabled @endif"--}} "
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(27, "A")) disabled @endif "
                                                 data-toggle="modal" data-target="#addNewAccount" >Add Bank Account</a>
                                         </div>
                                     </div>
@@ -182,7 +182,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="pcBranchId" class="pcBranchId" value="{{ $satelliteBranch[0]->sat_branch }}">
+                                <input type="hidden" name="pcBranchId" class="pcBranchId" value="{{ $satelliteBranch[0]->Branch }}">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -431,12 +431,12 @@
                     var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
-                    var branches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->sat_branch }}">{{ $satelliteBranch[0]->short_name }}</option></select>')
+                    var branches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->Branch }}">{{ $satelliteBranch[0]->ShortName }}</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
                     @foreach($satelliteBranch as $key => $val)
                     if(cntBranches != 0){
-                        branches.append('<option value="{{ $val->sat_branch }}">{{ $val->short_name }}</option>');
+                        branches.append('<option value="{{ $val->Branch }}">{{ $val->ShortName }}</option>');
                     }
                     cntBranches++;
 
@@ -452,7 +452,7 @@
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->sat_branch }}' : $('#example_ddl4 select option:selected').val();
+                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
                     }

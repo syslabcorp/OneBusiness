@@ -95,10 +95,10 @@
                                                 <td>
                                                     <input type="checkbox" name="trackThis" @if($vendor->x_check == 1) checked @endif disabled>
                                                 </td>
-                                                <td>{{ $vendor->petty_visible }}</td>
+                                                <td>@if($vendor->petty_visible == 1) CDS @elseif($vendor->petty_visible == 2) Petty @else CDS&Petty @endif</td>
                                                 <td><input type="checkbox" name="printThis" @if($vendor->withTracking == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="vendors/{{ $vendor->Supp_ID }}" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
+                                                    <a href="vendors/{{ $vendor->Supp_ID }}" name="view" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
                                                         <i class="glyphicon glyphicon-eye-open"></i>
                                                     </a>
                                                     <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-warning btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
@@ -132,7 +132,7 @@
                 <form action="" method="POST" >
                     <div class="modal-body">
                         <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
-                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="brandToDelete"></span>-
+                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="brandToDelete"></span> -
                             <span style="font-weight:bold" class="descriptionOfBrand"></span> ?</p>
                         <p class="debug-url"></p>
                     </div>
@@ -163,7 +163,7 @@
                     { "width": "25%", "targets": 2},
                     { "width": "9%", "targets": 3},
                     { "orderable": false, "width": "18%", "targets": 10},
-                    { "orderable": false, "width": "7%", "targets": [7, 8, 9] },
+                    { "orderable": false, "width": "7%", "targets": [7, 9] },
                     {"className": "dt-center", "targets": [7, 8, 9, 10]}
                 ]
             });
@@ -177,7 +177,7 @@
                 var itemCode  = $(this).closest('tr').find('td:nth-child(1)').text();
                 var description  = $(this).closest('tr').find('td:nth-child(3)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
-                $('#confirm-delete .brandToDelete').text(itemCode);
+                $('#confirm-delete .brandToDelete').text(id);
                 $('#confirm-delete .descriptionOfBrand').text(description);
                 $('#confirm-delete form').attr('action', 'vendors/'+id);
                 $('#confirm-delete').modal("show");

@@ -190,7 +190,7 @@
                                             <div class="col-sm-6">
                                                 {!! csrf_field() !!}
                                                 {{ method_field('PUT') }}
-                                                <button type="submit" class="btn btn-success pull-right createBtn">Create</button>
+                                                <button type="submit" class="btn btn-success pull-right createBtn">Update</button>
                                             </div>
                                         </div>
                                     </div>
