@@ -71,22 +71,9 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-							<li><a href="{{ URL('active_users') }}">Active Users</a></li>
-							<li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
-							<li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
-							<li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    Manage Masters <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ URL('list_corporation') }}">Corporations</a></li>
-                                    <li><a href="{{ URL('list_module') }}">Modules</a></li>
-                                    <li><a href="{{ URL('list_feature') }}">Features</a></li>
-                                </ul>
-                            </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->Full_Name }} <span class="caret"></span>
+                                    {{ Auth::user()->uname }} <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ URL('logout') }}">Logout</a></li>
