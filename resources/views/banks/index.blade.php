@@ -113,7 +113,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(27, "A")) disabled @endif"
+                                            <a href="#" class="pull-right {{--@if(!\Auth::user()->checkAccessById(27, "A")) disabled @endif"--}} "
                                                 data-toggle="modal" data-target="#addNewAccount" >Add Bank Account</a>
                                         </div>
                                     </div>
@@ -182,6 +182,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
+                                <input type="hidden" name="pcBranchId" class="pcBranchId" value="{{ $satelliteBranch[0]->sat_branch }}">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -233,8 +234,8 @@
                                                         <td>{{ $bank->bank_code }}</td>
                                                         <td>{{ $bank->description }}</td>
                                                         <td>
-                                                            <a href="#" name="edit" class="btn btn-success btn-sm editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                                <i class="glyphicon glyphicon-ok"></i>
+                                                            <a href="#" name="edit" class="btn btn-primary btn-sm editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <i class="glyphicon glyphicon-pencil"></i>
                                                             </a>
                                                             <a href="#" name="delete" class="btn btn-danger btn-sm delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
                                                                 <i class="glyphicon glyphicon-remove"></i><span style="display: none;">{{ $bank->bank_id }}</span>
@@ -252,7 +253,8 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  data-toggle="modal"
+                                        data-target="#addNewAccount"><i class="fa fa-reply"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -416,33 +418,28 @@
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="">Select Corporation</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
                     @foreach($corporations as $key => $val)
-                    if(cntCorp == 0){
-                        var typeSelected = "selected";
-                        cntCorp++;
-                    }else{
-                        typeSelected = "";
+                    if(cntCorp != 0){
+                        corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
                     }
-                    corporationID.append('<option value="{{ $val->corp_id }}" '+ typeSelected +'>{{ $val->corp_name }}</option>');
+                    cntCorp++;
+
                             @endforeach
-                    var branchStatus = $('<select class="form-control"><option value="">Select Branch Status</option></select>')
+                    var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
                         .appendTo('#example_ddl3');
-                    branchStatus.append('<option value="1" selected>Active</option>');
                     branchStatus.append('<option value="0">Inactive</option>');
-                    var branches = $('<select class="form-control"><option value="">Select Branch</option></select>')
+                    var branches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->sat_branch }}">{{ $satelliteBranch[0]->short_name }}</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
-                    @foreach($selectBank as $key => $val)
-                    if(cntBranches == 0){
-                        var typeSelected = "selected";
-                        cntBranches++;
-                    }else{
-                        typeSelected = "";
+                    @foreach($satelliteBranch as $key => $val)
+                    if(cntBranches != 0){
+                        branches.append('<option value="{{ $val->sat_branch }}">{{ $val->short_name }}</option>');
                     }
-                    branches.append('<option value="{{ $val->bank_id }}" '+ typeSelected +'>{{ $val->bank_code }}</option>');
+                    cntBranches++;
+
                     @endforeach
                     var mainStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
                         .appendTo('#example_ddl5');
@@ -455,7 +452,7 @@
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $selectBank[0]->bank_id }}' : $('#example_ddl4 select option:selected').val();
+                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->sat_branch }}' : $('#example_ddl4 select option:selected').val();
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
                     }
@@ -583,7 +580,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/bank-accounts/change-default-account',
+                    url: 'bank-accounts/change-default-account',
                     data: { id : id },
                     success: function () {
                         ref.closest('tbody').find('input:checked').each(function () {
@@ -604,6 +601,11 @@
 
 
             $('#example_ddl5').on("click", function(e) {
+                if($('#example_ddl5 input').is(':checked')){
+                    $('#example_ddl4 select').attr('disabled', true);
+                }else{
+                    $('#example_ddl4 select').attr('disabled', false);
+                }
                 mainTable.ajax.reload();
             });
 
@@ -616,6 +618,8 @@
             })
 
             $('#example_ddl4').on('change', function () {
+                var id = $('#example_ddl4 option:selected').val();
+                $('.pcBranchId').val(id);
                 mainTable.ajax.reload();
             })
 
