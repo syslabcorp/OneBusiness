@@ -26,7 +26,6 @@ class BankController extends Controller
 
         //get records from t_sysdata
         $tSysdata = DB::table('t_sysdata')
-            ->select('Active')
             ->orderBy('Branch', 'ASC')
             ->get();
 
@@ -49,18 +48,15 @@ class BankController extends Controller
             ->get();
 
 
-        $satelliteBranch = SatelliteBranch::orderBy('short_name', 'ASC')->get();
         //get banks from db
         $selectBank = Bank::orderBy('bank_id', 'ASC')->get();
 
-        $tSysdata = json_encode($tSysdata);
 
         return view('banks.index')
             ->with('selectBank', $selectBank)
-            ->with('tSysData', json_encode($tSysdata))
             ->with('branch', $branch)
             ->with('corporations', $corporations)
-            ->with('satelliteBranch', $satelliteBranch);
+            ->with('satelliteBranch', $tSysdata);
     }
 
     public function getBanksList(Request $request){
@@ -91,10 +87,10 @@ class BankController extends Controller
         if($statusData != "" && $branch != "" && $corpID != "" && $mainStatus == "false"){
             $banks = DB::table('cv_bank_acct')
                 ->join('cv_banks', 'cv_bank_acct.bank_id', '=', 'cv_banks.bank_id')
-                ->join('pc_branches', 'cv_bank_acct.bank_id', '=', 'pc_branches.sat_branch')
-                ->where('cv_bank_acct.bank_id', $branch)
-                ->where('pc_branches.active', $statusData)
-                ->where('pc_branches.corp_id', $corpID)
+                ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
+                ->where('cv_bank_acct.Branch', $branch)
+                ->where('t_sysdata.Active', $statusData)
+                ->where('t_sysdata.corp_id', $corpID)
                 ->orderBy($columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)

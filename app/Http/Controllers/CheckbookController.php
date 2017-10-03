@@ -18,6 +18,13 @@ class CheckbookController extends Controller
     public function index()
     {
 
+        if(!\Auth::user()->checkAccessById(28, "V"))
+        {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
+
         //get records from t_sysdata
         $tSysdata = DB::table('t_sysdata')
             ->select('Active')
@@ -80,6 +87,13 @@ class CheckbookController extends Controller
      */
     public function store(Request $request)
     {
+
+        if(!\Auth::user()->checkAccessById(28, "A"))
+        {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
         //get input
         $acctId = $request->input('accountId');
         $starting = $request->input('startingNum');

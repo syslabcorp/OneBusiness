@@ -65,7 +65,7 @@ class SatelliteBranchController extends Controller
 
         $branch = explode(",", $branches[0]);
 
-        //dd($branch);
+
         $corporations = DB::table('t_sysdata')
             ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
             ->whereIn('t_sysdata.Branch', $branch)
@@ -107,7 +107,6 @@ class SatelliteBranchController extends Controller
         //create new instance
         $satelliteBranch = new SatelliteBranch;
         $satelliteBranch->short_name = $branchName;
-        $satelliteBranch->order_num = $satelliteBranch->max('order_num') + 1;
         $satelliteBranch->description = $branchDescription;
         $satelliteBranch->notes = $branchNotes;
         $satelliteBranch->active = $active ? 1 : 0;

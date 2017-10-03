@@ -157,7 +157,7 @@
                                                 <span class="visibiltyLbl">Visibility</span>
                                                 <div class="form-group noMargin">
                                                     <div class="col-md-12 col-xs-12">
-                                                        <input type="radio" style="margin-top: 7px;" name="visibilityInfo" value="1" {{ old('itemActive') ? 'checked' : '' }} class="itemActive" />
+                                                        <input type="radio" style="margin-top: 7px;" name="visibilityInfo" checked value="1" {{ old('itemActive') ? 'checked' : '' }} class="itemActive" />
                                                         <div style="margin-left: 30px">
                                                             <label for="visibilityInfo" style="position: relative; top: -19px;">CDS Only</label>
                                                         </div>
