@@ -54,7 +54,7 @@ class RatesController extends Controller
   }
 
   public function store(Request $request, Branch $branch) {
-    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "A"))
+    if(!\Auth::user()->checkAccessById(2, "A"))
     {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
@@ -94,7 +94,7 @@ class RatesController extends Controller
   }
 
   public function update(Request $request, Branch $branch, RateTemplate $rate) {
-    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    if(!\Auth::user()->checkAccessById(2, "E"))
     {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
@@ -136,7 +136,7 @@ class RatesController extends Controller
   }
 
   public function details(Request $request, Branch $branch, RateTemplate $rate) {
-    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    if(!\Auth::user()->checkAccessById(2, "E"))
     {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
@@ -155,7 +155,7 @@ class RatesController extends Controller
   }
 
   public function assign(Request $request, Branch $branch) {
-    if(!\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    if(!\Auth::user()->checkAccessById(2, "E"))
     {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
