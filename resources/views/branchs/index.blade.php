@@ -60,7 +60,7 @@
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <a href="{{ route('branchs.rates.index', [$branch]) }}" style="margin-right: 10px;" 
-                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "V") ? "" : "disabled" }}"
+                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>

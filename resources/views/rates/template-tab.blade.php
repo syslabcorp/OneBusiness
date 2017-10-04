@@ -104,12 +104,12 @@
   </div>
   <hr style="margin: 0px 0px 10px 0px;">
   <div class="form-group text-center">
-    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "A"))
+    @if(\Auth::user()->checkAccessById(2, "A"))
     <a class="btn btn-sm btn-success" href="{{ route('branchs.rates.index', [$branch, 'action' => 'new']) }}">
       <i class="fa fa-plus"></i> New
     </a>
     @endif
-    @if($rate && \Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    @if($rate && \Auth::user()->checkAccessById(2, "E"))
     <a class="btn btn-sm btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'tmplate_id' => $rate->tmplate_id]) }}">
       <i class="fa fa-pencil"></i> Edit
     </a>
@@ -147,22 +147,22 @@
         <tr>
           <td style="vertical-align: middle;">{{ $detail->nKey }}</td>
           <td>
-            <input type="number" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+            <input type="number" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+            <input type="number" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+            <input type="number" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+            <input type="number" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
         </tr>
         @endforeach
@@ -217,7 +217,7 @@
       </table>
     </div>
     <hr>
-    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    @if(\Auth::user()->checkAccessById(2, "E"))
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
@@ -263,55 +263,55 @@
               <td>{{ $detail->nKey }}</td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_5"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_5]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_5]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_10"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_10]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_10]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_15"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_15]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_15]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_20"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_20]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_20]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_25"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_25]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_25]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_30"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_30]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_30]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_35"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_35]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_35]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_40"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_40]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_40]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_45"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_45]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_45]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_50"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_50]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_50]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_55"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_55]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_55]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_60"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_60]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_60]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["MinAmt{$i}"] }}" 
-                  name="detail[{{ $detail->nKey }}][MinAmt{{$i}}]" {{ \Auth::user()->checkAccess("Rates & Schedule Assignment", "E") ? "" : "disabled" }}>
+                  name="detail[{{ $detail->nKey }}][MinAmt{{$i}}]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
               </td>
             </tr>
             @endforeach
@@ -393,7 +393,7 @@
       </div>
     </div>
     <hr>
-    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    @if(\Auth::user()->checkAccessById(2, "E"))
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save

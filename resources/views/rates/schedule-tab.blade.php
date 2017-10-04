@@ -26,7 +26,7 @@
       <button class="btn btn-sm btn-primary">
         Filter
       </button>
-      @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+      @if(\Auth::user()->checkAccessById(2, "E"))
       <button class="btn btn-sm btn-success" data-toggle="modal" type="button"
         data-target="#assign-rate-template">
         Assign Template
