@@ -128,12 +128,13 @@ class AccessLevelController extends Controller
         if (Request::isMethod('post')) {
             $formData = Request::all();
             $created_at   = date("Y-m-d H:i:s");
+            $moduleid = isset($formData["module_id"]) ? $formData["module_id"] : 0;
             $data = array(
-                'module_id' => $formData["module_id"],
+                'module_id' => $moduleid,
                 'feature' =>$formData["feature_name"],
                 "created_at" => date("Y-m-d H:i:s")
             );
-            $mod_id = $formData["module_id"];
+            $mod_id = isset($formData["module_id"]) ? $formData["module_id"] : 0;
             if ($feature_id == NULL || $feature_id == 0) {
                 $id_feature = DB::table('feature_masters')->insertGetId($data);
                 $tid_is_admin = DB::table('rights_template')->select('template_id')->where('is_super_admin', 1)->get();
@@ -168,7 +169,7 @@ class AccessLevelController extends Controller
     {   
         $data['module_id'] = $module_id;
 		if($module_id == NULL){
-			$data['detailfeature'] = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->get();   
+			$data['detailfeature'] = DB::table('feature_masters')->leftJoin('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->get();   
 		}else{
 			$data['detailfeature'] = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->where('module_masters.module_id', $module_id)->get(); 
             $data['module_desc'] =   DB::table('module_masters')->select('description')->where('module_id', $module_id)->first(); 
@@ -277,6 +278,14 @@ class AccessLevelController extends Controller
     public function template_module()
     { 
         $formData = Request::all(); 
+        
+        $fet = DB::table('feature_masters')->select('module_id AS modul_id','feature_id','feature')->where('module_id', '=', 0)->get();
+        $sys_mid = 0;
+        $data['sys_features'] = array();
+        foreach ($fet as $featuress) {
+            $data['sys_features'][] = $featuress;
+        }
+
         $modules=DB::table('module_masters')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 'module_masters.corp_id')->select('module_masters.*', 'corporation_masters.corp_name')->get();
 		$data['modules'] = array();
         foreach ($modules as $modul) {
