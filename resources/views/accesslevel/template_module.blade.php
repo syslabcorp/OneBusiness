@@ -4,7 +4,7 @@
 	<div class="panel-group">
 		<?php $mid = 0; ?>  	
 		<div class="panel panel-default">
-			<div class="panel-heading">
+			<!--div class="panel-heading">
 				<div class="form-check form-check col-md-1">
 					<label class="form-check-label">
 						<input class="form-check-input checkboxclick" type="checkbox"  value="{{$mid}}" rel="#collapseOne-{{$mid}}" name ="module_id[]" {{ (isset($module_ids) && in_array($mid, $module_ids)) ? "checked" : "" }} >
@@ -13,8 +13,8 @@
 				<h4 class="panel-title click_module" rel="#collapseOne-{{$mid}}"> 
 				  <span>  System Configuration</span>
 				</h4>
-			</div>
-			<div id="collapseOne-{{$mid}}" class="panel-collapse collapse {{ (isset($module_ids) && in_array($mid, $module_ids)) ? "" : "" }}">
+			</div-->
+			<div class="">
 				<div class="panel-body">
 					@foreach ($sys_features as $feature)
 					<?php $fid= $feature->feature_id;  
