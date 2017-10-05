@@ -1,20 +1,20 @@
 @if(isset($sys_features) && (!empty($sys_features)))
 	<div class="col-md-12">
-	<h4>SYSTEM</h4>
+	<!-- <h4>SYSTEM</h4> -->
 	<div class="panel-group">
 		<?php $mid = 0; ?>  	
 		<div class="panel panel-default">
-			<!--div class="panel-heading">
+			<div class="panel-heading">
 				<div class="form-check form-check col-md-1">
 					<label class="form-check-label">
 						<input class="form-check-input checkboxclick" type="checkbox"  value="{{$mid}}" rel="#collapseOne-{{$mid}}" name ="module_id[]" {{ (isset($module_ids) && in_array($mid, $module_ids)) ? "checked" : "" }} >
 					</label>
 				</div>
 				<h4 class="panel-title click_module" rel="#collapseOne-{{$mid}}"> 
-				  <span>  System Configuration</span>
+				  <span> SYSTEM</span>
 				</h4>
-			</div-->
-			<div class="">
+			</div>
+			<div id="collapseOne-{{$mid}}" class="panel-collapse collapse {{ (isset($module_ids) && in_array($mid, $module_ids)) ? "" : "" }}">
 				<div class="panel-body">
 					@foreach ($sys_features as $feature)
 					<?php $fid= $feature->feature_id;  
