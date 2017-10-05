@@ -147,36 +147,36 @@
         <tr>
           <td style="vertical-align: middle;">{{ $detail->nKey }}</td>
           <td>
-            <input type="number" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->Net_1 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
         </tr>
         @endforeach
+        @if($rate->details()->count() == 0)
+        <tr>
+          <td colspan="7"><strong>No data to display</strong></td>
+        </tr>
+        @endif
       </tbody>
     </table>
     <div class="box-assign" style="display: none;">
       <hr>
       <table class="table borderred">
         <thead>
-          <tr>
-            <th colspan="2">Time Zone 1</th>
-            <th colspan="2">Time Zone 2</th>
-            <th colspan="2">Time Zone 3</th>
-          </tr>
           <tr>
             <th></th>
             <th>Min Change</th>
@@ -195,22 +195,22 @@
               </button>
             </td>
             <td>
-              <input type="number" step="any" class="form-control">
+              <input type="text" step="any" class="form-control">
             </td>
             <td>
-              <input type="number" step="any" class="form-control">
+              <input type="text" step="any" class="form-control">
             </td>
             <td>
-              <input type="number" step="any" class="form-control">
+              <input type="text" step="any" class="form-control">
             </td>
             <td>
-              <input type="number" step="any" class="form-control">
+              <input type="text" step="any" class="form-control">
             </td>
             <td>
-              <input type="number" step="any" class="form-control">
+              <input type="text" step="any" class="form-control">
             </td>
             <td>
-              <input type="number" step="any" class="form-control">
+              <input type="text" step="any" class="form-control">
             </td>
           </tr>
         </tbody>
@@ -315,6 +315,11 @@
               </td>
             </tr>
             @endforeach
+            @if($rate->details()->count() == 0)
+              <tr>
+                <td colspan="14"><strong>No data to display</strong></td>
+              </tr>
+            @endif
           </tbody>
         </table>
       </div>

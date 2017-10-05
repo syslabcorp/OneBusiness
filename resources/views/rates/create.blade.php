@@ -48,9 +48,12 @@
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('ZoneStart1') ? 'has-error' : '' }}">
         <label for="">Timezone 1:</label>
         <input type="time" class="form-control" name="ZoneStart1"  value="{{ old('ZoneStart1') }}">
+        @if($errors->has('ZoneStart1'))
+          <span class="help-block">{{ $errors->first('ZoneStart1') }}</span>
+        @endif
       </div>
       <div class="col-xs-6">
         <label for="">Discount 1: (%)</label>
