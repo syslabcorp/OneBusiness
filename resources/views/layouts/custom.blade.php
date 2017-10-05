@@ -16,8 +16,10 @@
     @endif
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <link href="{{ URL('/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL('/css/bootstrap.min.css') }}" />
     <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
@@ -85,19 +87,7 @@
                 </div>
             </div>
         </nav>
-        @if(\Session::get('error') || \Session::get('success'))
-        <div class="row" style="margin-top: 15px;">
-            @if(\Session::get('error'))
-            <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
-                <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
-            </div>
-            @elseif(\Session::get('success'))
-                <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
-                    <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
-                </div>
-            @endif
-        </div>
-        @endif
+
         <div class="container-fluid">
           <div class="row">
             <div id="togle-sidebar-sec" class="active">
@@ -110,6 +100,19 @@
                 </div>
               </div>
               <div id="page-content-togle-sidebar-sec">
+                @if(\Session::get('error') || \Session::get('success'))
+                  <div class="row" style="margin-top: 15px;">
+                      @if(\Session::get('error'))
+                      <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
+                          <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
+                      </div>
+                      @elseif(\Session::get('success'))
+                          <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
+                              <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
+                          </div>
+                      @endif
+                  </div>
+                @endif
                 @yield('content')
               </div>
             </div>

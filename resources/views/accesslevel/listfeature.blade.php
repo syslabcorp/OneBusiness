@@ -51,7 +51,7 @@
                                                 <tr>
                                                     <td>{{ $detail->feature_id }}</td>
                                                     @if(!isset($module_id))
-                                                        <td>{{ $detail->description }}</td>
+                                                        <td>{{ isset($detail->description) ? $detail->description : 'System Module' }}</td>
                                                     @endif
                                                     <td>{{ $detail->feature }}</td>
                                                     <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="glyphicon glyphicon-pencil"></span></a>

@@ -38,6 +38,15 @@
                             </div>
                         </div>
                         <div class="form-group{{ $errors->has('feature_name') ? ' has-error' : '' }}">
+                            <label for="sysfeature" class="col-md-4 control-label"></label>
+                            <div class="col-md-6">
+                                <label class="mt-checkbox">
+                                    <input id="system_use" type="checkbox" name="system_use"  autofocus {{ (isset($detail_edit_feature->module_id) && ($detail_edit_feature->module_id == '0' )) ? "checked" : "" }} > For System use
+                                </label>
+                                
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('feature_name') ? ' has-error' : '' }}">
                             <label for="feature" class="col-md-4 control-label">Feature</label>
                             <div class="col-md-6">
                                 <input id="feature_name" type="text" class="form-control required" name="feature_name"  value="{{isset($detail_edit_feature->feature) ? $detail_edit_feature->feature : "" }}" autofocus>
@@ -70,8 +79,20 @@
 </div>
 <script>
 $(function(){
-    $("#featureform").validate();   
+    $("#featureform").validate(); 
+    <?php if(isset($detail_edit_feature->module_id) && ($detail_edit_feature->module_id == '0' )){ ?>
+        $("#module_name").attr("disabled", true);
+    <?php } ?>
+     $("#system_use").change(function(){
+        if(this.checked){ 
+            $("#module_name").attr("disabled", true);
+                         
+        }else{
+            $("#module_name").attr("disabled", false);
+        }
+    });  
 });
+
 </script>
 @endsection
 

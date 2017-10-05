@@ -14,7 +14,7 @@ class Branch extends Model
         'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active', "ShortName",
         'StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip', 'RollOver', 'TxfrRollOver',
         'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
-        'StubPrint', 'Modified'
+        'StubPrint', 'Modified', 'corp_id'
     ];
 
 

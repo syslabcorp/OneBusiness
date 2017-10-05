@@ -12,6 +12,7 @@
 .save_button{margin-right: 15px;}
 .back-button {margin-left: 15px;}
 input.area_user {margin-right: 6px;}
+.nofeature{ padding-left: 60px;}
 </style>
 
 <div class="container-fluid"> 

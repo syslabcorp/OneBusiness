@@ -41,6 +41,10 @@ class User extends Authenticatable
         return $this->hasMany(\App\Branch::class);
     }
 
+    public function area() {
+        return $this->belongsTo(\App\UserArea::class, 'UserID', 'user_ID');
+    }
+
 	/*
 	paramete should be changed to FEATURE_ID, ACTION
 	*/

@@ -61,6 +61,9 @@ class RatesController extends Controller
     }
     $this->validate($request,[
       'tmplate_name' => 'required',
+      'ZoneStart1' => 'required',
+      'ZoneStart2' => 'required',
+      'ZoneStart3' => 'required',
     ]);
 
     $validator = \Validator::make(
