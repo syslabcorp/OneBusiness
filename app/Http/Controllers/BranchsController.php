@@ -9,8 +9,7 @@ class BranchsController extends Controller
 {
     public function index(Request $request)
     {
-
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
+        if(!\Auth::user()->checkAccessById(1, "V"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -19,6 +18,14 @@ class BranchsController extends Controller
         $status = !empty($request->get('status')) ? $request->get('status') : "active";
 
         $branchs = Branch::orderBy('Branch', 'ASC');
+
+        $branchIds = [];
+
+        if(\Auth::user()->area) {
+          $branchIds = explode(",", \Auth::user()->area->branch);
+        }
+
+        $branchs = $branchs->whereIn('Branch', $branchIds);
 
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
@@ -39,24 +46,25 @@ class BranchsController extends Controller
         }
         return view('branchs.index', [
             'branchs' => $result,
-            'status' => $status
+            'status' => $status,
+            'corpId' => $request->get('corpID')
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccessById(1, "A"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
 
-        return view('branchs.create');
+        return view('branchs.create', ['corpId' => $request->get('corpID')]);
     }
 
     public function store(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccessById(1, "A"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -78,6 +86,7 @@ class BranchsController extends Controller
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
         $params['StubPrint'] = 0;
+        $params['corp_id'] = $params['corpID'];
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
@@ -121,10 +130,12 @@ class BranchsController extends Controller
 
     public function edit(Branch $branch)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+        if(!\Auth::user()->checkAccessById(1, "E") || !\Auth::user()->area ||
+          \Auth::user()->area && !preg_match("/$branch->Branch/", \Auth::user()->area->branch)) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home");
         }
+
 
         $lcUid = Branch::select(\DB::raw("AES_DECRYPT(lc_uid, '" . env("LOADCENTRAL_PWDKEY") .  "') as lc_uid"))->where("Branch", "=", $branch->Branch)->first();
 
@@ -138,7 +149,7 @@ class BranchsController extends Controller
     public function update(Request $request, Branch $branch)
     {
 
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E"))
+        if(!\Auth::user()->checkAccessById(1, "E"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 

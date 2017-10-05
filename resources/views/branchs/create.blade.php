@@ -9,7 +9,7 @@
               <h4>Create new branch</h4>
             </div>
             <div class="panel-body" style="margin-top: 30px;">
-                <form action="{{ route('branchs.store') }}" method="POST" class="col-md-12 form-horizontal" novalidate>
+                <form action="{{ route('branchs.store', ['corpID' => $corpId]) }}" method="POST" class="col-md-12 form-horizontal" novalidate>
                     {{ csrf_field() }}
                     <div class="form-group {{ $errors->has('branch_name') ? 'has-error' : '' }}">
                         <label class="col-sm-2 control-label">Branch Name</label>

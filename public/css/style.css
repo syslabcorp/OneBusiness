@@ -1,0 +1,18 @@
+.rate-page .table tr.selected .form-control {
+  background: green;
+  color: #FFF;
+}
+.modal-backdrop {
+  z-index: 99999;
+}
+.modal-open .modal {
+  z-index: 999999;
+}
+.color-picker {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d2d2d2;
+  border-radius: 3px;
+  vertical-align: middle;
+}

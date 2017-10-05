@@ -31,7 +31,7 @@
                             <th>Operator</th>
                             <th>Street</th>
                             <th>Units</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                         @foreach($branchs as $province)
                             @php $index = 0; @endphp
@@ -55,7 +55,7 @@
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
                                     <td>
-                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccess("Branch Setup & Details", "E") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccessById(1, "E") ? "" : "disabled" }}"
                                             title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
@@ -82,8 +82,8 @@
                 <a href="/OneBusiness/home" class="btn btn-default">
                     <i class="fa fa-reply"></i> Back
                 </a>
-                @if(\Auth::user()->checkAccess("Branch Setup & Details", "A"))
-                    <a href="{{ route('branchs.create') }}" class="btn btn-success">New Branch</a>
+                @if(\Auth::user()->checkAccessById(1, "A"))
+                    <a href="{{ route('branchs.create', ['corpID' => $corpId]) }}" class="btn btn-success">New Branch</a>
                 @endif
             </div>
           </div>
