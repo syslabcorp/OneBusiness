@@ -20,12 +20,19 @@ class BranchsController extends Controller
         $branchs = Branch::orderBy('Branch', 'ASC');
 
         $branchIds = [];
+        $cityIds = [];
+        $provinceIds = [];
 
         if(\Auth::user()->area) {
           $branchIds = explode(",", \Auth::user()->area->branch);
+          $cityIds = explode(",", \Auth::user()->area->city);
+          $provinceIds = explode(",", \Auth::user()->area->province);
         }
 
-        $branchs = $branchs->whereIn('Branch', $branchIds);
+        $branchs = $branchs->whereIn('Branch', $branchIds)
+                           ->whereIn('t_sysdata.City_ID', $cityIds)
+                           ->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
+                           ->whereIn('t_cities.Prov_ID', $provinceIds);
 
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
@@ -86,7 +93,7 @@ class BranchsController extends Controller
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
         $params['StubPrint'] = 0;
-        $params['corp_id'] = $params['corpID'];
+        $params['corp_id'] = isset($params['corpID']) ? $params['corpID'] : "";
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
@@ -204,7 +211,7 @@ class BranchsController extends Controller
 
         $this->validate($request, [
             'receiving_mobile_number' => 'max:11',
-            'MAC_Address' => 'required|unique:t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
+            'MAC_Address' => 'required|unique:mysql2.t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
             'cashier_ip' => 'required|regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/'
         ]);
 

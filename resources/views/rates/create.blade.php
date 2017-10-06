@@ -11,8 +11,8 @@
   </div>
   <div class="form-group" style="display:inline-block;vertical-align: top;">
     <label for="">Choose color:</label>
-    <div class="color-picker"></div>
-    <input type="hidden" name="Color">
+    <div class="color-picker" style="background: {{ old('Color') }}"></div>
+    <input type="hidden" name="Color" value="{{ old('Color') }}">
   </div>
 
   <hr style="margin: 10px 0px 0px 0px;">
@@ -22,11 +22,11 @@
   <h4>Miscellaneous</h4>
   <div class="row">
     <div class="control-radio col-xs-6">
-      <input type="radio" name="charge_mode" id="per_min" value="1" checked>
+      <input type="radio" name="charge_mode" id="per_min" value="1" {{ old('charge_mode') == 1 ? "checked" : ""}}>
       <label for="per_min">Per Min</label>
     </div>
     <div class="control-radio col-xs-6">
-      <input type="radio" name="charge_mode" id="per_5_min" value="5">
+      <input type="radio" name="charge_mode" id="per_5_min" value="5" {{ old('charge_mode') == 5 ? "checked" : ""}}>
       <label for="per_5_min">Per 5 Mins</label>
     </div>
   </div>
