@@ -29,10 +29,10 @@ class BranchsController extends Controller
           $provinceIds = explode(",", \Auth::user()->area->province);
         }
 
-        $branchs = $branchs->whereIn('Branch', $branchIds)
-                           ->whereIn('t_sysdata.City_ID', $cityIds)
+        $branchs = $branchs->orWhereIn('Branch', $branchIds)
+                           ->orWhereIn('t_sysdata.City_ID', $cityIds)
                            ->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
-                           ->whereIn('t_cities.Prov_ID', $provinceIds);
+                           ->orWhereIn('t_cities.Prov_ID', $provinceIds);
 
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
@@ -93,7 +93,7 @@ class BranchsController extends Controller
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
         $params['StubPrint'] = 0;
-        $params['corp_id'] = isset($params['corpID']) ? $params['corpID'] : "";
+        $params['corp_id'] = isset($params['corpID']) ? $params['corpID'] : null;
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
