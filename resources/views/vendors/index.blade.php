@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }
@@ -98,7 +99,7 @@
                                                 <td>@if($vendor->petty_visible == 1) CDS @elseif($vendor->petty_visible == 2) Petty @else CDS&Petty @endif</td>
                                                 <td><input type="checkbox" name="printThis" @if($vendor->withTracking == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="vendors/{{ $vendor->Supp_ID }}" name="view" class="btn btn-success btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
+                                                    <a href="#" name="view" class="btn btn-success btn-sm viewBtn @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
                                                         <i class="glyphicon glyphicon-eye-open"></i>
                                                     </a>
                                                     <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
@@ -151,6 +152,7 @@
     <!-- end Modal -->
 @endsection
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
     <script>
         (function($){
             var table = $('#myTable').DataTable({
@@ -182,6 +184,27 @@
                 $('#confirm-delete form').attr('action', 'vendors/'+id);
                 $('#confirm-delete').modal("show");
             });
+
+            $(document).on('click', '.viewBtn', function (e) {
+                e.preventDefault();
+                var id  = $(this).closest('td').find('span').text();
+                var checked  = $(this).closest('tr').find('td:nth-child(10) input').is(":checked");
+                if(checked == false){
+                    $.confirm({
+                        icon: 'glyphicon glyphicon-exclamation-sign',
+                        title: 'Invalid selection!',
+                        content: 'Tracking is not enabled for this vendor',
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            close: function () {
+                            }
+                        }
+                    });
+                }else{
+                    window.location.href = 'vendors/'+id
+                }
+            })
 
         })(jQuery);
     </script>
