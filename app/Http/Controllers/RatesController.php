@@ -59,12 +59,19 @@ class RatesController extends Controller
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
     }
+
+    $messages = [
+      'ZoneStart1.required' => 'Time zone 1 is required',
+      'ZoneStart2.required' => 'Time zone 2 is required',
+      'ZoneStart3.required' => 'Time zone 3 is required',
+    ];
+
     $this->validate($request,[
       'tmplate_name' => 'required',
       'ZoneStart1' => 'required',
       'ZoneStart2' => 'required',
       'ZoneStart3' => 'required',
-    ]);
+    ], $messages);
 
     $validator = \Validator::make(
       $request->all(), []
@@ -92,6 +99,10 @@ class RatesController extends Controller
       'Modified', 'tmplate_name', 'Color'
     ));
 
+    \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
+      'rates' => 1
+    ]);
+
     \Session::flash('success', "Rate Template has been created.");
     return redirect(route('branchs.rates.index', [$branch]));
   }
@@ -103,9 +114,18 @@ class RatesController extends Controller
         return redirect("/home"); 
     }
 
+    $messages = [
+      'ZoneStart1.required' => 'Time zone 1 is required',
+      'ZoneStart2.required' => 'Time zone 2 is required',
+      'ZoneStart3.required' => 'Time zone 3 is required',
+    ];
+
     $this->validate($request,[
       'tmplate_name' => 'required',
-    ]);
+      'ZoneStart1' => 'required',
+      'ZoneStart2' => 'required',
+      'ZoneStart3' => 'required'
+    ], $messages);
 
     $validator = \Validator::make(
       $request->all(), []
@@ -133,6 +153,10 @@ class RatesController extends Controller
       'DiscValidity', 'Discount1', 'Discount2', 'Discount3', 'MinimumChrg', 'MinimumTime',
       'Modified', 'tmplate_name', 'Color'
     ));
+
+    \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
+      'rates' => 1
+    ]);
 
     \Session::flash('success', "Rate Template has been updated.");
     return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id]));
