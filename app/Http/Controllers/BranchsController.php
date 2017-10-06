@@ -29,10 +29,10 @@ class BranchsController extends Controller
           $provinceIds = explode(",", \Auth::user()->area->province);
         }
 
-        $branchs = $branchs->whereIn('Branch', $branchIds)
-                           ->whereIn('t_sysdata.City_ID', $cityIds)
+        $branchs = $branchs->orWhereIn('Branch', $branchIds)
+                           ->orWhereIn('t_sysdata.City_ID', $cityIds)
                            ->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
-                           ->whereIn('t_cities.Prov_ID', $provinceIds);
+                           ->orWhereIn('t_cities.Prov_ID', $provinceIds);
 
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
