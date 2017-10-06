@@ -93,7 +93,7 @@ class BranchsController extends Controller
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
         $params['StubPrint'] = 0;
-        $params['corp_id'] = isset($params['corpID']) ? $params['corpID'] : "";
+        $params['corp_id'] = isset($params['corpID']) ? $params['corpID'] : null;
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
