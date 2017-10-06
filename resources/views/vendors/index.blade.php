@@ -98,10 +98,10 @@
                                                 <td>@if($vendor->petty_visible == 1) CDS @elseif($vendor->petty_visible == 2) Petty @else CDS&Petty @endif</td>
                                                 <td><input type="checkbox" name="printThis" @if($vendor->withTracking == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="vendors/{{ $vendor->Supp_ID }}" name="view" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
+                                                    <a href="vendors/{{ $vendor->Supp_ID }}" name="view" class="btn btn-success btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
                                                         <i class="glyphicon glyphicon-eye-open"></i>
                                                     </a>
-                                                    <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-warning btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
+                                                    <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
                                                         <i class="glyphicon glyphicon-pencil"></i>
                                                     </a>
                                                     <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(29, "D")) disabled @endif">
