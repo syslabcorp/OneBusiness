@@ -22,4 +22,5 @@ class RateTemplate extends Model
   public function details() {
     return $this->hasMany(\App\RateDetail::class, 'tmplate_id', 'tmplate_id');
   }
+
 }

@@ -217,7 +217,7 @@
       </table>
     </div>
     <hr>
-    @if(\Auth::user()->checkAccessById(2, "E"))
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0))
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
@@ -398,7 +398,7 @@
       </div>
     </div>
     <hr>
-    @if(\Auth::user()->checkAccessById(2, "E"))
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0))
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
