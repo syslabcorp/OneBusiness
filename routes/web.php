@@ -33,6 +33,8 @@ Route::resource('checkbooks', 'CheckbookController', ['middleware' => 'auth']);
 Route::resource('vendors', 'VendorController', ['middleware' => 'auth']);
 Route::resource('vendor-management', 'VendorManagementController', ['middleware' => 'auth']);
 
+Route::post('/banks/state_save', 'BankController@dtStateSave')->middleware('auth');
+
 Route::post('/vendor-management/get-account-for-vendor', 'VendorManagementController@getVendorAccount')->middleware('auth');
 Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
 Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getBranches')->middleware('auth');

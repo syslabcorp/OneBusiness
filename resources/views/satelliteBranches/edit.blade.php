@@ -22,7 +22,11 @@
             width:18px; height:18px;
         }
 
-        .checkbox-inline span {
+        input[type="radio"] {
+            width:18px; height:18px;
+        }
+
+        .radio-inline span {
             position: relative;
             bottom: -5px;
         }
@@ -100,8 +104,8 @@
                                                     <div class="row">
                                                         <div class="col-md-9">
                                                             @foreach($corporations as $key => $val)
-                                                                <label class="checkbox-inline">
-                                                                    <input type="checkbox" name="corporations[]" value="{{ $val->corp_id }}"
+                                                                <label class="radio-inline">
+                                                                    <input type="radio" name="corporations[]" value="{{ $val->corp_id }}"
                                                                     @if(preg_match('/'.$val->corp_id.'/', $satelliteBranch->corp_id)) checked @endif><span>{{ $val->corp_name }}</span>
                                                                 </label>
                                                             @endforeach
