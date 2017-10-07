@@ -30,6 +30,10 @@
             top: 8px;
         }
 
+        .edit {
+            margin-right: 2px;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -87,6 +91,36 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal delete satellite branch -->
+    <div class="modal fade" id="confirm-delete" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <form action="" method="POST" >
+                    <div class="modal-body">
+                        <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
+                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="brandToDelete"></span> -
+                            <span style="font-weight:bold" class="descriptionOfBrand"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input style="display: none" class="serviceId" >
+                        {!! csrf_field() !!}
+                        {{ method_field('Delete') }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end Modal -->
 
 @endsection
 
@@ -160,7 +194,10 @@
                             var optionClass = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
                             return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
-                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>'
+                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClass+'">'+
+                                '<i class="glyphicon glyphicon-trash"></i></a>';
+
                         },
                         "targets": 4
                     },
@@ -192,11 +229,23 @@
 
             $('#example_ddl3').on('change', function () {
                 table.ajax.reload();
-            })
+            });
 
             $('#example_ddl2').on('change', function () {
                 table.ajax.reload();
-            })
+            });
+
+            $(document).on('click', '.delete', function (e) {
+                e.preventDefault();
+
+                var id  = $(this).closest('td').find('span').text();
+                var description  = $(this).closest('tr').find('td:nth-child(2)').text();
+                $('#confirm-delete').find('.serviceId').val(id);
+                $('#confirm-delete .brandToDelete').text(id);
+                $('#confirm-delete .descriptionOfBrand').text(description);
+                $('#confirm-delete form').attr('action', 'satellite-branch/'+id);
+                $('#confirm-delete').modal("show");
+            });
 
 
         })(jQuery);

@@ -22,6 +22,10 @@
             width:18px; height:18px;
         }
 
+        input[type="radio"] {
+            width:18px; height:18px;
+        }
+
         .checkbox-inline span {
             position: relative;
             bottom: -5px;
@@ -101,8 +105,8 @@
                                                     <div class="row">
                                                         <div class="col-md-9">
                                                             @foreach($corporations as $key => $val)
-                                                            <label class="checkbox-inline">
-                                                                <input type="checkbox" name="corporations[]" {{ old('corporations') ? 'checked' : '' }} value="{{ $val->corp_id }}"><span>{{ $val->corp_name }}</span>
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="corporation" style="margin-top: -2px" {{ old('corporation') ? 'checked' : '' }} value="{{ $val->corp_id }}"><span>{{ $val->corp_name }}</span>
                                                             </label>
                                                             @endforeach
                                                         </div>

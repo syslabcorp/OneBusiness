@@ -204,7 +204,7 @@
                     {
                         "render": function ( data, type, row ) {
                             var checked = "";
-                            if(row.used) checked = "checked";
+                            if(row.used == 1) checked = "checked";
                             return '<input type="checkbox" '+ checked +'>';
                         },
                         "targets": 0

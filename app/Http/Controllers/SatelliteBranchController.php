@@ -97,11 +97,7 @@ class SatelliteBranchController extends Controller
         $branchDescription = $request->input('branchDescription');
         $branchNotes = $request->input('branchNotes');
         $active = $request->input('itemActive');
-        $corporations = $request->input('corporations');
-
-        if($corporations){
-            $corporations = implode(',', $corporations);
-        }
+        $corporations = $request->input('corporation');
 
 
         //create new instance
@@ -214,7 +210,20 @@ class SatelliteBranchController extends Controller
      */
     public function destroy(SatelliteBranch $satelliteBranch)
     {
-        //
+        if(!\Auth::user()->checkAccessById(26, "D"))
+        {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
+
+        $success = $satelliteBranch->delete();
+        if($success){
+            \Session::flash('success', "Satellite branch deleted successfully");
+            return redirect()->route('satellite-branch.index');
+        }
+        \Session::flash('error', "Something went wrong!");
+        return redirect()->route('satellite-branch.index');
     }
 
     public function getBranches(Request $request){

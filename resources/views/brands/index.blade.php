@@ -135,7 +135,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Edit Brand: <span style="font-weight: bold" class="brandToEdit"></span></h5>
+                    <h5 class="modal-title">Edit Brand</h5>
                 </div>
                 <form class="form-horizontal" action="" METHOD="post">
                     <div class="modal-body">
@@ -219,7 +219,6 @@
                 var brandName  = $(this).closest('tr').find('td:nth-child(2)').text();
 
                 $('#editBrand').find('.brandId').val(id);
-                $('#editBrand .brandToEdit').text(brandName);
                 $('#editBrand .editBrandName').val(brandName);
                 $('#editBrand form').attr('action', 'brands/'+id);
                 $('#editBrand').modal("show");
