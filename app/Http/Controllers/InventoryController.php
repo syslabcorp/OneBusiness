@@ -22,7 +22,7 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "V"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -48,7 +48,7 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -82,7 +82,7 @@ class InventoryController extends Controller
 
         if(!\Auth::user()->checkAccessById(19, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -142,7 +142,7 @@ class InventoryController extends Controller
     public function edit($id)
     {
         if(!\Auth::user()->checkAccessById(19, "E")) {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 

@@ -38,7 +38,7 @@ class BankAccountController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "A"))
         {
-            \Session::flash('alert-class', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
         //get input
@@ -56,10 +56,10 @@ class BankAccountController extends Controller
         $success = $account->save();
 
         if($success){
-            \Session::flash('flash_message', "Bank Account added successfully");
+            \Session::flash('alert-class', "Bank Account added successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('alert-class', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('banks.index');
 
 
@@ -97,7 +97,7 @@ class BankAccountController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(27, "E")) {
-            \Session::flash('alert-class', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -113,10 +113,10 @@ class BankAccountController extends Controller
         ]);
 
         if($success){
-            \Session::flash('flash_message', "Account updated successfully");
+            \Session::flash('alert-class', "Account updated successfully");
             return response()->json(200);
         }
-        \Session::flash('alert-class', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('banks.index');
     }
 
@@ -124,7 +124,7 @@ class BankAccountController extends Controller
     public function updateAccount(Request $request)
     {
         if(!\Auth::user()->checkAccessById(27, "E")) {
-            \Session::flash('alert-class', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -155,7 +155,7 @@ class BankAccountController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "D"))
         {
-            \Session::flash('alert-class', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -170,7 +170,7 @@ class BankAccountController extends Controller
     public function changeDefaultAccount(Request $request)
     {
         if(!\Auth::user()->checkAccessById(27, "E")) {
-            \Session::flash('alert-class', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
