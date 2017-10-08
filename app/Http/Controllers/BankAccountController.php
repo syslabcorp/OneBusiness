@@ -38,7 +38,7 @@ class BankAccountController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('alert-class', "You don't have permission");
             return redirect("/home");
         }
         //get input
@@ -56,10 +56,10 @@ class BankAccountController extends Controller
         $success = $account->save();
 
         if($success){
-            \Session::flash('success', "Bank Account added successfully");
+            \Session::flash('flash_message', "Bank Account added successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('alert-class', "Something went wrong!");
         return redirect()->route('banks.index');
 
 
@@ -97,7 +97,7 @@ class BankAccountController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(27, "E")) {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('alert-class', "You don't have permission");
             return redirect("/home");
         }
 
@@ -113,28 +113,64 @@ class BankAccountController extends Controller
         ]);
 
         if($success){
-            \Session::flash('success', "Account updated successfully");
-            return redirect()->route('banks.index');
+            \Session::flash('flash_message', "Account updated successfully");
+            return response()->json(200);
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('alert-class', "Something went wrong!");
         return redirect()->route('banks.index');
+    }
+
+
+    public function updateAccount(Request $request)
+    {
+        if(!\Auth::user()->checkAccessById(27, "E")) {
+            \Session::flash('alert-class', "You don't have permission");
+            return redirect("/home");
+        }
+
+        //get input
+        $bankId = $request->input('bankAccountCodeEdit');
+        $accountNum = $request->input('bankAccountNumberEdit');
+        $accountId = $request->input('accountID');
+
+        //find instance and update
+        $accountUpdate = BankAccount::where('bank_acct_id', $accountId)->first();
+        $accountUpdate->bank_id = $bankId;
+        $accountUpdate->acct_no = $accountNum;
+        $success = $accountUpdate->save();
+
+        if($success){
+            return response()->json("success", 200);
+        }
+        return response()->json("failure", 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        if(!\Auth::user()->checkAccessById(27, "D"))
+        {
+            \Session::flash('alert-class', "You don't have permission");
+            return redirect("/home");
+        }
+
+        $account = BankAccount::where('bank_acct_id', $request->input('id'))->delete();
+
+        if($account){
+            return response()->json("success", 200);
+        }
+        return response()->json("failure", 200);
     }
 
     public function changeDefaultAccount(Request $request)
     {
         if(!\Auth::user()->checkAccessById(27, "E")) {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('alert-class', "You don't have permission");
             return redirect("/home");
         }
 
