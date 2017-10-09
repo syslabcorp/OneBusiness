@@ -278,15 +278,18 @@ class AccessLevelController extends Controller
     public function template_module()
     { 
         $formData = Request::all(); 
-        
-        $fet = DB::table('feature_masters')->select('module_id AS modul_id','feature_id','feature')->where('module_id', '=', 0)->get();
-        $sys_mid = 0;
+        $module_fet=DB::table('module_masters')->select('module_id','description')->where('module_id','=', 0)->get();
+        $data['module_fet'] = array();
         $data['sys_features'] = array();
+        foreach ($module_fet as $modul_fet) {
+            $data['module_fet'] = $modul_fet;
+        }
+        $fet = DB::table('feature_masters')->select('module_id AS modul_id','feature_id','feature')->where('module_id', '=', 0)->get();
         foreach ($fet as $featuress) {
             $data['sys_features'][] = $featuress;
-        }
+        } 
 
-        $modules=DB::table('module_masters')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 'module_masters.corp_id')->select('module_masters.*', 'corporation_masters.corp_name')->get();
+        $modules=DB::table('module_masters')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 'module_masters.corp_id')->select('module_masters.*', 'corporation_masters.corp_name')->where('module_id','!=', 0)->get();
 		$data['modules'] = array();
         foreach ($modules as $modul) {
 			$data['modules'][$modul->corp_name][] = $modul;
