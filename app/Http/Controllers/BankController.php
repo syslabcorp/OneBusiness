@@ -24,10 +24,7 @@ class BankController extends Controller
             return redirect("/home");
         }
 
-        //get records from t_sysdata
-        $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
-            ->get();
+
 
         //get user data
         $branches = DB::table('user_area')
@@ -45,6 +42,13 @@ class BankController extends Controller
             ->select('corporation_masters.corp_id', 'corporation_masters.corp_name')
             ->orderBy('corporation_masters.corp_name', 'ASC')
             ->distinct()
+            ->get();
+
+        //get records from t_sysdata
+        $tSysdata = DB::table('t_sysdata')
+            ->orderBy('Branch', 'ASC')
+            ->where('Active', 1)
+            ->where('corp_id', $corporations[0]->corp_id)
             ->get();
 
 
@@ -138,7 +142,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -153,10 +157,10 @@ class BankController extends Controller
         $success = $bank->save();
 
         if($success){
-            \Session::flash('success', "Bank created successfully");
+            \Session::flash('alert-class', "Bank created successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('banks.index');
     }
 
@@ -193,7 +197,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "E"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -208,10 +212,10 @@ class BankController extends Controller
         ]);
 
         if($success){
-            \Session::flash('success', "Bank updated successfully");
+            \Session::flash('alert-class', "Bank updated successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('banks.index');
 
     }
@@ -226,7 +230,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "D"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -234,10 +238,26 @@ class BankController extends Controller
         $success = Bank::where('bank_id', $id)->delete();
 
         if($success){
-            \Session::flash('success', "Bank deleted successfully");
+            \Session::flash('alert-class', "Bank deleted successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('banks.index');
+    }
+
+    public function getBranches(Request $request){
+
+        $corpId  = $request->input('corpId');
+        $status  = $request->input('status');
+
+        //get records from t_sysdata
+        $tSysdata = DB::table('t_sysdata')
+            ->orderBy('Branch', 'ASC')
+            ->where('Active', intval($status))
+            ->where('corp_id', intval($corpId))
+            ->select('Branch', 'ShortName')
+            ->get();
+
+        return response()->json(json_encode($tSysdata), 200);
     }
 }

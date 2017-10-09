@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link href="/css/parsley.css" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
@@ -79,6 +80,15 @@
             margin-right: 5px !important;
         }
 
+        .my_custom {
+            position: relative;
+            left: 16px;
+        }
+
+        .editAccount {
+            margin-right: 4px;
+        }
+
 
 
     </style>
@@ -100,10 +110,11 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
+                    <div id="result" style="display: none;"></div>
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Banks</h3>
                         <div class="row">
@@ -306,7 +317,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Edit Bank</h5>
                 </div>
-                <form class="form-horizontal" action="" METHOD="POST">
+                <form class="form-horizontal" action="" METHOD="POST" id="editBankModalForm">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankDescriptionEdit">Bank Name:</label>
@@ -348,12 +359,12 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Edit Account</h5>
                 </div>
-                <form class="form-horizontal" action="" METHOD="POST">
+                <form class="form-horizontal" action="" id="editAccountModalForm">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
                             <div class="col-md-7 col-xs-12">
-                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id="">
+                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id="" required>
                                     <option value="">Select Bank:</option>
                                     @foreach($selectBank as $bank)
                                         <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
@@ -364,7 +375,8 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumberEdit">Account Number:</label>
                             <div class="col-md-7 col-xs-12">
-                                <input id="bankAccountNumberEdit" name="bankAccountNumberEdit" type="text" class="form-control input-md" required="">
+                                <input id="bankAccountNumberEdit" name="bankAccountNumberEdit" type="text" class="form-control input-md"
+                                       data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
                         </div>
                     </div>
@@ -374,8 +386,6 @@
                                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
-                                {!! csrf_field() !!}
-                                {{ method_field('PUT') }}
                                 <input type="hidden" class="accountID" name="accountID">
                                 <button type="submit" class="btn btn-success pull-right">Save</button>
                             </div>
@@ -408,13 +418,43 @@
     </div>
     <!-- end checkbox change modal -->
 
+    <!-- Modal delete item from inventory -->
+    <div class="modal fade" id="confirm-delete-account" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <form action="" method="POST" id="deleteAccount" >
+                    <div class="modal-body">
+                        <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
+                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="bankOfAccount"></span> -
+                            <span style="font-weight:bold" class="accountToDelete"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="hidden" class="deleteAccountId" >
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end Modal -->
+
 @endsection
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
     <script>
+        $('#editAccountModalForm').parsley();
         (function($){
-
+            var __data = "";
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
@@ -457,16 +497,29 @@
 
                     }
                 },
+                "stateSaveCallback": function (settings, data) {
+                    // save the filter settings without connecting it to a unique url
+                    data.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
+                    data.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
+                    data.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
+                    data.MainStatus = $('#example_ddl5 input').is(":checked");
+                    localStorage.setItem("dataTables_filterSettings", JSON.stringify(data));
+                },
+                "stateLoadCallback": function (settings) {
+                    // read out the filter settings and apply
+                    return JSON.parse(localStorage.getItem("dataTables_filterSettings"));
+                },
                 stateSave: true,
+                stateDuration:-1,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
+                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
                     {
                         "render": function ( data, type, row ) {
                             var checked = "";
-                            if(row.default_acct) checked = "checked";
+                            if(row.default_acct == 1) checked = "checked";
                             return '<input type="checkbox" '+ checked +' disabled >';
                         },
                         "targets": 0
@@ -500,12 +553,14 @@
                             '<i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">'+ row.bank_acct_id +'</span>' +
                             '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount" '+optionClass+'>' +
                             '<i class="glyphicon glyphicon-pencil"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
-                            '<span class="codeNumID" style="display: none;">'+row.bank_id+'</span></a>'
+                            '<span class="codeNumID" style="display: none;">'+row.bank_id+'</span></a>' +
+                               '<a href="#" name="delete" class="btn btn-danger btn-sm delete-account '+optionClass+'">'+
+                               '<i class="glyphicon glyphicon-trash"></i></a>';
                         },
                         "targets": 4
                     },
                     { "orderable": false, "width": "5%", "targets": 0},
-                    { "orderable": false, "width": "10%", "targets": 4 },
+                    { "orderable": false, "width": "15%", "targets": 4 },
                     {"className": "dt-center", "targets": 4},
                     {"className": "dt-center", "targets": 0}
                 ],
@@ -568,7 +623,6 @@
                 $('#bankAccountCodeEdit').val(codeNum);
                 $('#bankAccountNumberEdit').val(accountNum);
                 $('.accountID').val(id);
-                $('#editAccountModal form').attr('action', 'bank-accounts/'+id);
                 $('#editAccountModal').modal("toggle");
             });
 
@@ -595,25 +649,71 @@
                             backgroundDismiss: true,
                         });
                     }
-                })
+                });
 
             });
 
 
             $('#example_ddl5').on("click", function(e) {
                 if($('#example_ddl5 input').is(':checked')){
-                    $('#example_ddl4 select').attr('disabled', true);
+                    $('#example_ddl4 select').attr('disabled', true).css({"background-color":"#FFF", "color":"#FFF"});
                 }else{
-                    $('#example_ddl4 select').attr('disabled', false);
+                    $('#example_ddl4 select').attr('disabled', false).css("color", "#333");
                 }
                 mainTable.ajax.reload();
             });
 
             $('#example_ddl2').on('change', function () {
+                var dataStatus = $('#example_ddl3 select option:selected').val();
+                var corpId = $('#example_ddl2 select option:selected').val();
+
+                var options = $('#example_ddl4 select');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: 'banks/get-branches',
+                    data: { status : dataStatus, corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+                        if(cnt == 0){
+                            options.append('<option value="">No option</option>');
+                        }
+                    }
+
+                })
                 mainTable.ajax.reload();
             })
 
             $('#example_ddl3').on('change', function () {
+                var dataStatus = $('#example_ddl3 select option:selected').val();
+                var corpId = $('#example_ddl2 select option:selected').val();
+
+                var options = $('#example_ddl4 select');
+                options.empty();
+                var cnt = 0;
+                //get branches
+                $.ajax({
+                    method: 'POST',
+                    url: 'banks/get-branches',
+                    data: { status : dataStatus, corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+                        if(cnt == 0){
+                            options.append('<option value="">No option</option>');
+                        }
+                    }
+
+                })
                 mainTable.ajax.reload();
             })
 
@@ -621,6 +721,93 @@
                 var id = $('#example_ddl4 option:selected').val();
                 $('.pcBranchId').val(id);
                 mainTable.ajax.reload();
+            })
+
+            $(document).on('submit', '#editAccountModalForm', function (e) {
+                e.preventDefault();
+
+                var bankCode = $('#bankAccountCodeEdit option:selected').val();
+                var accountNum = $('#bankAccountNumberEdit').val();
+                var accountID = $('.accountID').val();
+
+                $.ajax({
+                    url: "/bank-accounts/update",
+                    method: "POST",
+                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID},
+                    success: function (data) {
+                        if(data == "success"){
+                            $('#editAccountModal').modal("toggle");
+
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                                '</span><em>&nbspAccount updated successfully!</em></div></div>');
+                            $('#result').fadeIn();
+                            $("#result").delay(3000).fadeOut("slow");
+                            mainTable.ajax.reload();
+                        }else{
+                            $('#editAccountModal').modal("toggle");
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                                '</span><em>&nbspSomething went wrong!</em></div></div>');
+                            $('#result').fadeIn();
+                            $("#result").delay(3000).fadeOut("slow");
+                        }
+                    },
+                    error: function () {
+                        $('#editAccountModal').modal("toggle");
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            '</span><em>&nbspSomething went wrong!</em></div></div>');
+                        $('#result').fadeIn();
+                        $("#result").delay(3000).fadeOut("slow");
+                    }
+                })
+            });
+
+            $(document).on('click', '.delete-account', function (e) {
+                e.preventDefault();
+
+                var id  = $(this).closest('td').find('.changeAccountID').text();
+                var itemCode  = $(this).closest('tr').find('td:nth-child(2)').text();
+                var account  = $(this).closest('tr').find('td:nth-child(3)').text();
+                $('#confirm-delete-account').find('.deleteAccountId').val(id);
+                $('#confirm-delete-account .bankOfAccount').text(itemCode);
+                $('#confirm-delete-account .accountToDelete').text(account);
+                $('#confirm-delete-account').modal("show");
+            });
+
+            $(document).on('submit', '#deleteAccount', function (e) {
+                e.preventDefault();
+
+                var accountID  = $('.deleteAccountId').val();
+
+                $.ajax({
+                    url: "/bank-accounts/delete",
+                    method: "POST",
+                    data: { id : accountID },
+                    success: function (data) {
+                        if(data == "success"){
+                            $('#confirm-delete-account').modal("toggle");
+
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                                '</span><em>&nbspAccount deleted successfully!</em></div></div>');
+                            $('#result').fadeIn();
+                            $("#result").delay(3000).fadeOut("slow");
+                            mainTable.ajax.reload();
+                        }else{
+                            $('#confirm-delete-account').modal("toggle");
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                                '</span><em>&nbspSomething went wrong!</em></div></div>');
+                            $('#result').fadeIn();
+                            $("#result").delay(3000).fadeOut("slow");
+                        }
+                    },
+                    error: function () {
+                        $('#confirm-delete-account').modal("toggle");
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            '</span><em>&nbspSomething went wrong!</em></div></div>');
+                        $('#result').fadeIn();
+                        $("#result").delay(3000).fadeOut("slow");
+                    }
+                })
+
             })
 
             })(jQuery);
