@@ -1,8 +1,8 @@
 @if(isset($sys_features) && (!empty($sys_features)))
 	<div class="col-md-12">
-	<!-- <h4>SYSTEM</h4> -->
+	<h4>SYSTEM</h4>
 	<div class="panel-group">
-		<?php $mid = 0; ?>  	
+		<?php $mid = $module_fet->module_id;?>  	
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<div class="form-check form-check col-md-1">
@@ -11,14 +11,15 @@
 					</label>
 				</div>
 				<h4 class="panel-title click_module" rel="#collapseOne-{{$mid}}"> 
-				  <span> SYSTEM</span>
+				  <span> {{ $module_fet->description }} </span>
 				</h4>
 			</div>
 			<div id="collapseOne-{{$mid}}" class="panel-collapse collapse {{ (isset($module_ids) && in_array($mid, $module_ids)) ? "" : "" }}">
 				<div class="panel-body">
+
 					@foreach ($sys_features as $feature)
-					<?php $fid= $feature->feature_id;  
-					
+					<?php 
+					$fid= $feature->feature_id;  
 					if(isset($fet_access[$fid])){
 						$access =array();
 						if($fet_access[$fid] != '0'){
@@ -61,6 +62,7 @@
 				</div>
 			</div>
 		</div>	
+		
 	</div>
 </div>
 @endif
@@ -134,7 +136,8 @@
 					@endforeach	
 				</div>
 			</div>
-		</div>	
+		</div>
+		
 	@endforeach		
 	</div>
 </div>
