@@ -1,25 +1,30 @@
-@extends('layouts.custom')
+@extends('layouts.app')
 
 @section('content')
- <!-- Page content -->
- 
-            <div id="page-content-togle-sidebar-sec">
-                @if(Session::has('alert-class'))
-                    <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-                @elseif(Session::has('flash_message'))
-                    <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-                @endif
-                <div class="col-md-12 col-xs-12">
-                    <h3 class="text-center">Manage Locations</h3>
-                    <div class="row">  
-                      
+  <div class="container-fluid">
+        <div class="row">
+            <div id="togle-sidebar-sec" class="active">
+					 <!-- Sidebar -->
+                <div id="sidebar-togle-sidebar-sec">
+                    <ul id="sidebar_menu" class="sidebar-nav">
+                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                    </ul>
+                    <div class="sidebar-nav" id="sidebar">
+                        <div id="treeview_json"></div>
                     </div>
                 </div>
-            </div>
-<div class="container-fluid">
-    <div class="row">
-				<div class="panel panel-default">
-						<div class="panel-heading">
+				<!--page content-->
+				<div id="page-content-togle-sidebar-sec">
+                    @if(Session::has('alert-class'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @elseif(Session::has('flash_message'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @endif
+                    <div class="col-md-12 col-xs-12">
+                        <h3 class="text-center">Province</h3>
+                        <div class="row">
+                           	<div class="panel panel-default">
+								<div class="panel-heading">
 						{{isset($detail_edit->Prov_ID)? "Edit Province: " : "Add Province" }} {{isset($detail_edit->Prov_ID)? $detail_edit->Province : "" }}
 						</div>
 						<div class="panel-body">
@@ -49,9 +54,12 @@
 									</div>
 							</form>
 						</div>
-				</div>
-    </div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+						
+      </div>
+	</div>
 </div>
-
 @endsection
-

@@ -57,6 +57,21 @@
                                 @endif
                             </div>
                         </div>
+						<!--?php $max = DB::table('feature_masters')->find(DB::table('feature_masters')->max('feature_id'));?-->
+						
+						<div class="form-group{{ $errors->has('feature_id') ? ' has-error' : '' }}">
+                            <label for="feature" class="col-md-4 control-label">Feature ID</label>
+                            <div class="col-md-6">
+                                <input id="feature_id" type="text" class="form-control required" name="feature_id"  value="{{isset($detail_edit_feature->feature) ? $detail_edit_feature->feature : "" }}" placeholder="LAST MAX ID" autofocus>
+								
+                                @if ($errors->has('feature_id'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('feature_id') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+						
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <a type="button" class="btn btn-default" href="{{ URL('list_feature') }}">

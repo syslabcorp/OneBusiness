@@ -1,60 +1,80 @@
-@extends('layouts.custom')
+@extends('layouts.app')
 
 @section('content')
- <!-- Page content -->
-            <div id="page-content-togle-sidebar-sec">
-                @if(Session::has('alert-class'))
-                    <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-                @elseif(Session::has('flash_message'))
-                    <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-                @endif
-                <div class="col-md-12 col-xs-12">
-                    <h3 class="text-center">Manage Locations</h3>
-                    <div class="row">  
-                      
-                    </div>
-                </div>
-            </div>
 <div class="container-fluid">
-    <div class="row">
-				<div class="panel panel-default">
-						<div class="panel-heading"> List of Provinces 
+<div class="row">
+<div id="togle-sidebar-sec" class="active">
+      
+      <!-- Sidebar -->
+       <div id="sidebar-togle-sidebar-sec">
+		  <ul id="sidebar_menu" class="sidebar-nav">
+			   <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+		  </ul>
+        <div class="sidebar-nav" id="sidebar">     
+          <div id="treeview_json"></div>
+        </div>
+      </div>
+          
+      <!-- Page content -->
+      <div id="page-content-togle-sidebar-sec">
+		@if(Session::has('alert-class'))
+			<div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+		@elseif(Session::has('flash_message'))
+			<div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+		@endif
+             <div class="col-md-12">
+			 <h3 class="text-center">Manage Locations</h3>
+		<div class="row">    
+         <div class="panel panel-default">
+                                <div class="panel-heading"> 
+                                    <div class="row">
+                                        <div class="col-md-6 col-xs-6">
+										List of Provinces 
+                                        </div>
+                                        <div class="col-md-6 col-xs-6 text-right">
+                                            	@if(\Auth::user()->checkAccessById(18, "A"))
+												<a href="{{ URL('add_province') }}" class="pull-right">Add Province</a>
+												@endif 
+                                        </div>
+                                    </div>
 
-						@if(\Auth::user()->checkAccessById(18, "A"))
-							<a href="{{ URL('add_province') }}" class="pull-right">Add Province</a>
-						@endif 
-						</div>
-						<div class="panel-body">
-								 <table id="list_modul" class="table table-striped table-bordered" cellspacing="0" width="100%">
-								<thead>
-									<tr>
-										<th>SNo.</th>
-										<th>Province</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									<!--tr>
-										<td> cities here</td>
-									</tr-->
-									   @foreach($provs as $key=>$det)
-										<tr>
-											<td>{{ ++$key }}</td>
-											<td>{{ $det->Province}}</td>
-											<td>
-											<a href="{{ URL::to('view_cities/'.$det->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View" data-toggle="tooltip" data-placement="top" title="View Province"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                </div>
+                                <div class="panel-body">
+										<table id="list_modul" class="table table-striped table-bordered" cellspacing="0" width="100%">
+											<thead>
+												<tr>
+													<th>SNo.</th>
+													<th>Province</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<!--tr>
+													<td> cities here</td>
+												</tr-->
+												   @foreach($provs as $key=>$det)
+													<tr>
+														<td>{{ ++$key }}</td>
+														<td>{{ $det->Province}}</td>
+														<td>
+														<a href="{{ URL::to('view_cities/'.$det->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View" data-toggle="tooltip" data-placement="top" title="View Province"><span class="glyphicon glyphicon-eye-open"></span></a>
 
-											<a href="{{ URL('add_province/'.$det->Prov_ID) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}"  data-title="Edit" data-toggle="tooltip" data-placement="top" title="Edit Province"><span class="glyphicon glyphicon-pencil"></span></a>
-										   </td>
+														<a href="{{ URL('add_province/'.$det->Prov_ID) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}"  data-title="Edit" data-toggle="tooltip" data-placement="top" title="Edit Province"><span class="glyphicon glyphicon-pencil"></span></a>
+													   </td>
 
-										</tr>  
-										@endforeach
-								</tbody>
-							</table>
-						</div>
-				</div>
+													</tr>  
+													@endforeach
+											</tbody>
+										</table>
+                                </div>
+                            </div>
+        </div>
     </div>
 </div>
-
+</div>
+</div>
+</div>
+</div>
 @endsection
+
 
