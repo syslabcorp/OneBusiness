@@ -212,6 +212,10 @@ class RatesController extends Controller
       }
     }
 
+    \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
+      'rates' => 1
+    ]);
+
     \Session::flash('success', "Rate Template has beed assigned.");
     return redirect(route('branchs.rates.index', [$branch, '#schedule']));
   }
