@@ -262,6 +262,12 @@ $(document).ready(function()
         $(this).parents('form').submit();
     });
 
+    $('.rate-page .cancel-selection').click(function(event) {
+      $('.rate-page .table .selected').removeClass('selected');
+      $('.box-assign').slideUp(400);
+      $(this).slideUp(0);
+    });
+
     $('.rate-page .table .form-control').click(function(event) {
       if(event.ctrlKey) {
         $(this).parents('tr').each(function(index, element) {
@@ -293,8 +299,10 @@ $(document).ready(function()
       }
 
       if($('.rate-page .table tr.selected').length != 0) {
+        $('.rate-page .cancel-selection').slideDown(0);
         $('.rate-page .box-assign').slideDown(500);
       }else {
+        $('.rate-page .cancel-selection').slideUp(0);
         $('.rate-page .box-assign').slideUp(500);
       }
     });

@@ -16,7 +16,9 @@
   <label for="">Color:</label>
   <div class="color-picker" style="background: {{ $rate->Color }};pointer-events: none;"></div>
   @endif
+  <button class="btn btn-danger cancel-selection" style="float:right;margin-top:5px;display:none;">Cancel Selection</button>
   <hr style="margin: 10px 0px 0px 0px;">
+  
 </div>
 
 <div class="col-md-4">
@@ -145,7 +147,7 @@
       <tbody>
         @foreach($rate->details()->orderBy('nKey', 'ASC')->get() as $detail)
         <tr>
-          <td style="vertical-align: middle;">{{ $detail->nKey }}</td>
+          <td style="vertical-align: middle;">{{ $detail->PC_No }}</td>
           <td>
             <input type="text" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
           </td>
@@ -217,7 +219,7 @@
       </table>
     </div>
     <hr>
-    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0))
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
@@ -260,7 +262,7 @@
           <tbody>
             @foreach($rate->details()->orderBy('nKey', 'ASC')->get() as $detail)
             <tr>
-              <td>{{ $detail->nKey }}</td>
+              <td>{{ $detail->pcNo }}</td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_5"] }}" 
                   name="detail[{{ $detail->nKey }}][Z{{$i}}min_5]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
@@ -398,7 +400,7 @@
       </div>
     </div>
     <hr>
-    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0))
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save

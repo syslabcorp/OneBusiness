@@ -137,8 +137,7 @@ class BranchsController extends Controller
 
     public function edit(Branch $branch)
     {
-        if(!\Auth::user()->checkAccessById(1, "E") || !\Auth::user()->area ||
-          \Auth::user()->area && !preg_match("/$branch->Branch/", \Auth::user()->area->branch)) {
+        if(!\Auth::user()->checkAccessById(1, "E")) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home");
         }
