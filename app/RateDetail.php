@@ -21,4 +21,15 @@ class RateDetail extends Model
         'Z3min_30', 'Z3min_35', 'Z3min_40', 'Z3min_45', 'Z3min_50', 'Z3min_55',
         'Z3min_60', 'nKey'
     ];
+
+    // Relationship
+    public function getPcNoAttribute() {
+      $rate = \DB::connection('mysql2')->table('t_rates_detail')->select('PC_no')
+          ->leftJoin("t_rates_hdr", "t_rates_detail.tmplate_id", "=", "t_rates_hdr.tmplate_id")
+          ->leftJoin("t_rates", "t_rates.Branch", "=", "t_rates_hdr.Branch")
+          ->where("t_rates.nKey", "=", $this->nKey)
+          ->where("t_rates_hdr.tmplate_id", "=", $this->tmplate_id)->first();
+
+      return $rate ? $rate->PC_no : "";
+    }
 }
