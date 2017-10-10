@@ -6,28 +6,18 @@ use Request;
 use App\Branch;
 use App\City;
 use DB;
-use URL;
 
 
 class LocationsController extends Controller
 {
-    //
-public function __construct()
-    {
-         $this->middleware('auth');
-    }
-
-
- public function index(Request $request)
+ public function index()
     {
 
-        if(!\Auth::user()->checkAccessById(18, "V"))
-        {
-            \Session::flash('error', "You don't have permission..."); 
-        
-            return redirect("/home"); 
+		if(!\Auth::user()->checkAccessById(18, "V"))
+		{
+		  \Session::flash('error', "You don't have permission");
+            return redirect("/home");
         }
-
         return self::list_provinces(); //just call the function that displays stuff
     }
 
@@ -134,8 +124,8 @@ public function __construct()
         }
 		
 		DB::table('t_cities')->where('City_ID','=', $id)->delete();  
-        \Session::flash('success', "City was deleted successfully");
-		
+        \Session::flash('flash_message', "City has been deleted.");
+		\Session::flash('alert-class', 'alert-success');
 		if($prov_id == NULL){
 				return redirect('view_cities');
 			}else{

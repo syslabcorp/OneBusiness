@@ -57,6 +57,8 @@
                                 @endif
                             </div>
                         </div>
+						
+						
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <a type="button" class="btn btn-default" href="{{ URL('list_feature') }}">
