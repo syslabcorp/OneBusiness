@@ -124,7 +124,7 @@ class AccessLevelController extends Controller
     public function add_feature($feature_id = NULL, $module_id = NULL)
     {   
         $data =array();
-        $data['module'] = DB::table('module_masters')->select('description', 'module_id')->get();
+        $data['module'] = DB::table('module_masters')->select('description', 'module_id')->where('module_id','!=', 0)->get();
         if (Request::isMethod('post')) {
             $formData = Request::all();
             $created_at   = date("Y-m-d H:i:s");
