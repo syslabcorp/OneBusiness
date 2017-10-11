@@ -43,6 +43,9 @@ Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getB
 Route::post('banks/get-banks-list', 'BankController@getBanksList')->middleware('auth');
 Route::post('/checkbooks/get-accounts-for-branch', 'CheckbookController@getAccountForCheckbook')->middleware('auth');
 Route::post('/checkbooks/get-checkbooks', 'CheckbookController@getCheekbooks')->middleware('auth');
+Route::post('/checkbooks/edit-row-order', 'CheckbookController@editRowOrder')->middleware('auth');
+Route::post('/checkbooks/delete', 'CheckbookController@destroy')->middleware('auth');
+Route::post('/checkbooks/edit-checkbook', 'CheckbookController@update')->middleware('auth');
 #End of MasterFile Module
 
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
