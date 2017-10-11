@@ -29,16 +29,19 @@ class BranchsController extends Controller
           $provinceIds = explode(",", \Auth::user()->area->province);
         }
 
-        $branchs = $branchs->orWhereIn('Branch', $branchIds)
-                           ->orWhereIn('t_sysdata.City_ID', $cityIds)
-                           ->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
-                           ->orWhereIn('t_cities.Prov_ID', $provinceIds);
-
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
         }elseif($status == "inactive") {
             $branchs = $branchs->where('active', '!=', 1);
         }
+
+        $branchs = $branchs->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
+                          ->where(function($q) use($branchIds, $cityIds, $provinceIds) {
+                            $q->orWhereIn('Branch', $branchIds)
+                              ->orWhereIn('t_sysdata.City_ID', $cityIds)
+                              ->orWhereIn('t_cities.Prov_ID', $provinceIds);
+                          });
+        
         $branchs = $branchs->get();
 
         $result = [];

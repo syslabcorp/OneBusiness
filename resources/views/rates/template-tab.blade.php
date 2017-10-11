@@ -122,7 +122,7 @@
   </div>
 </div>
 <div class="col-md-8" style="border-left: 1px solid #d2d2d2;padding: 0px;">
-  @if($rate->charge_mode == 1)
+  @if($rate->charge_mode == 1 || empty($rate->charge_mode))
   <form action="{{ route('branchs.rates.details', [$branch, $rate]) }}" method="POST">
     <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
@@ -149,22 +149,22 @@
         <tr>
           <td style="vertical-align: middle;">{{ $detail->PC_No }}</td>
           <td>
-            <input type="text" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="text" class="form-control" value="{{ $detail->Net_1 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->Net_1 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="text" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="text" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="text" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="text" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }}>
+            <input type="text" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
         </tr>
         @endforeach
@@ -175,7 +175,7 @@
         @endif
       </tbody>
     </table>
-    <div class="box-assign" style="display: none;">
+    <div class="box-assign nohide">
       <hr>
       <table class="table borderred">
         <thead>
@@ -227,7 +227,7 @@
     </div>
     @endif
   </form>
-  @else
+  @elseif($rate->charge_mode == 5)
   <form action="{{ route('branchs.rates.details', [$branch, $rate]) }}" method="POST">
     <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
