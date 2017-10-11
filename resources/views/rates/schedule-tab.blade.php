@@ -61,9 +61,11 @@
         </td>
         <td>{{ $schedule->rate_date->format('d') }}</td>
         <td>
+          @if($schedule->template)
           <span style="color: {{ $schedule->template->Color }}">
             {{ $schedule->template->tmplate_name }}
           </span>
+          @endif
         </td>
       </tr>
       @endforeach
