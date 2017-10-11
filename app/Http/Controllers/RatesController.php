@@ -67,7 +67,7 @@ class RatesController extends Controller
     ];
 
     $this->validate($request,[
-      'tmplate_name' => 'required',
+      'tmplate_name' => 'required|max:20',
       'ZoneStart1' => 'required',
       'ZoneStart2' => 'required',
       'ZoneStart3' => 'required',
@@ -121,7 +121,7 @@ class RatesController extends Controller
     ];
 
     $this->validate($request,[
-      'tmplate_name' => 'required',
+      'tmplate_name' => 'required|max:20',
       'ZoneStart1' => 'required',
       'ZoneStart2' => 'required',
       'ZoneStart3' => 'required'

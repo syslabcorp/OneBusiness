@@ -6,7 +6,7 @@
     <label for="">Template name:</label>
     <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;" value="{{ old('tmplate_name') }}">
     @if($errors->has('tmplate_name'))
-      <span class="help-block">Template Name can't be blank</span>
+      <span class="help-block">{{ preg_replace("/tmplate/", "template", $errors->first('tmplate_name')) }}</span>
     @endif
   </div>
   <div class="form-group" style="display:inline-block;vertical-align: top;">
