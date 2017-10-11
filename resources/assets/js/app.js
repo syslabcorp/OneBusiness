@@ -264,7 +264,7 @@ $(document).ready(function()
 
     $('.rate-page .cancel-selection').click(function(event) {
       $('.rate-page .table .selected').removeClass('selected');
-      $('.box-assign').slideUp(400);
+      $('.box-assign:not(.nohide)').slideUp(400);
       $(this).slideUp(0);
     });
 
@@ -300,10 +300,10 @@ $(document).ready(function()
 
       if($('.rate-page .table tr.selected').length != 0) {
         $('.rate-page .cancel-selection').slideDown(0);
-        $('.rate-page .box-assign').slideDown(500);
+        $('.rate-page .box-assign:not(.nohide)').slideDown(500);
       }else {
         $('.rate-page .cancel-selection').slideUp(0);
-        $('.rate-page .box-assign').slideUp(500);
+        $('.rate-page .box-assign:not(.nohide)').slideUp(500);
       }
     });
 
