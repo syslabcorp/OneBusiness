@@ -77,15 +77,16 @@
                     {{ __('No data to display') }}
                 </div>
               @endif
-            </div>
-            <div class="box-footer">
+              <div class="text-left">
                 <a href="/OneBusiness/home" class="btn btn-default">
-                    <i class="fa fa-reply"></i> Back
+                  <i class="fa fa-reply"></i> Back
                 </a>
                 @if(\Auth::user()->checkAccessById(1, "A"))
-                    <a href="{{ route('branchs.create', ['corpID' => $corpId]) }}" class="btn btn-success">New Branch</a>
+                  <a href="{{ route('branchs.create', ['corpID' => $corpId]) }}" class="btn btn-success">New Branch</a>
                 @endif
+              </div>
             </div>
+            
           </div>
         </div>
       </div>
