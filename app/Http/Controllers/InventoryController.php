@@ -66,9 +66,6 @@ class InventoryController extends Controller
             ->with('brands', $brands)
             ->with('products', $products);
 
-
-
-        //['invTypes' => $invTypes], ['brands' => $brands], ['products' => $products]);
     }
 
     /**
@@ -215,17 +212,11 @@ class InventoryController extends Controller
         $inventoryItem = InventoryChange::where('invtry_hdr', $inventory->id)->first();
         if($inventoryItem){
             $inventoryItem->invtry_hdr = 1;
-            $inventoryItem->prodline = 1;
-            $inventoryItem->services = 1;
-            $inventoryItem->brands = $inventory->Brand_ID;
            $success = $inventoryItem->save();
 
         }else{
             $inventoryChange = new InventoryChange;
             $inventoryChange->invtry_hdr = 1;
-            $inventoryChange->prodline = 1;
-            $inventoryChange->services = 1;
-            $inventoryChange->brands = $inventory->Brand_ID;
             $success = $inventoryChange->save();
 
         }

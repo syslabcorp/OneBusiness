@@ -20,16 +20,11 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "V"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
 
-        //get records from t_sysdata
-        $tSysdata = DB::table('t_sysdata')
-            ->select('Active')
-            ->orderBy('Branch', 'ASC')
-            ->get();
 
         //get user data
         $branches = DB::table('user_area')
@@ -56,17 +51,28 @@ class CheckbookController extends Controller
             ->distinct()
             ->get();
 
+        //get records from t_sysdata
+        $tSysdata = DB::table('t_sysdata')
+            ->orderBy('Branch', 'ASC')
+            ->where('Active', 1)
+            ->where('corp_id', $corporations[0]->corp_id)
+            ->get();
+
         //get records
         $checkbooks = Checkbook::orderBy('used', 'ASC')
             ->orderBy('order_num', 'ASC')
             ->get();
+
+
+
 
         return view('checkbooks.index')
             ->with('tSysData', $tSysdata)
             ->with('checkbooks', $checkbooks)
             ->with('branch', $branch)
             ->with('banks', $banks)
-            ->with('corporations', $corporations);
+            ->with('corporations', $corporations)
+            ->with('satelliteBranch', $tSysdata);
     }
 
     /**
@@ -90,7 +96,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -111,10 +117,10 @@ class CheckbookController extends Controller
         $success = $checkbook->save();
 
         if($success) {
-            \Session::flash('success', "Checkbook added successfully");
+            \Session::flash('alert-class', "Checkbook added successfully");
             return redirect()->route('checkbooks.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('checkbooks.index');
     }
 
@@ -144,23 +150,55 @@ class CheckbookController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Checkbook  $checkbook
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Checkbook $checkbook)
+    public function update(Request $request)
     {
-        //
+        if(!\Auth::user()->checkAccessById(28, "E"))
+        {
+            \Session::flash('flash_message', "You don't have permission");
+            return redirect("/home");
+        }
+
+        $id = $request->input('accountId');
+        $startNum = $request->input('editStart');
+        $endNum = $request->input('editEnd');
+
+        $update = Checkbook::where('txn_no', $id)->update([
+            'chknum_start' => $startNum,
+            'chknum_end' => $endNum
+        ]);
+
+        if($update){
+            return response()->json("success", 200);
+        }
+        return response()->json("failure", 200);
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Checkbook  $checkbook
+     * @param  Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Checkbook $checkbook)
+    public function destroy(Request $request)
     {
-        //
+
+        if(!\Auth::user()->checkAccessById(28, "D"))
+        {
+            \Session::flash('flash_message', "You don't have permission");
+            return redirect("/home");
+        }
+
+        $id = $request->input('id');
+
+        $account = Checkbook::where('txn_no', $id)->delete();
+
+        if($account){
+            return response()->json("success", 200);
+        }
+        return response()->json("failure", 200);
     }
 
     public function getAccountForCheckbook(Request $request){
@@ -181,6 +219,7 @@ class CheckbookController extends Controller
         $corpID = $request->input('corpId');
         $branch = $request->input('branch');
         $mainStatus = $request->input('MainStatus');
+        $sysBranch = $request->input('sysBranch');
 
         $draw = $request->input('draw');
         $start = $request->input('start');
@@ -192,21 +231,16 @@ class CheckbookController extends Controller
         $columnName = $columns[$orderNumColumn]['data'];
         $search = $request->input('search');
 
-        //get data from sysdata
-        /*$sysData = DB::table('t_sysdata')
-            ->where('user_ID', \Auth::user()->UserID)
-            ->pluck('branch');*/
-
-
         $recordsTotal = Checkbook::count();
 
-        if($dataStatus != "" && $corpID != "" && $branch != "" && $mainStatus == "false" && $search['value'] == ""){
+        if($dataStatus != "" && $corpID != "" && $branch != "" && $sysBranch != "" && $mainStatus == "false" && $search['value'] == ""){
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->join('pc_branches', 'cv_bank_acct.branch', '=', 'pc_branches.sat_branch')
-                ->where('pc_branches.active', $dataStatus)
+                ->join('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->where('t_sysdata.Active', $dataStatus)
                 ->where('cv_bank_acct.corp_id', $corpID)
+                ->where('cv_bank_acct.Branch', $sysBranch)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
@@ -217,17 +251,18 @@ class CheckbookController extends Controller
 
             $pagination = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->join('pc_branches', 'cv_bank_acct.branch', '=', 'pc_branches.sat_branch')
-                ->where('pc_branches.active', $dataStatus)
+                ->join('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->where('t_sysdata.Active', $dataStatus)
                 ->where('cv_bank_acct.corp_id', $corpID)
+                ->where('cv_bank_acct.Branch', $sysBranch)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
                 ->count();
 
-        }else if($mainStatus == "true"){
+        }else if($mainStatus == "true" && $search['value'] == ""){
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->leftjoin('pc_branches', 'cv_bank_acct.branch', '=', 'pc_branches.sat_branch')
+                ->leftjoin('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
                 ->where('cv_bank_acct.branch', -1)
@@ -238,22 +273,23 @@ class CheckbookController extends Controller
 
             $pagination = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->leftjoin('pc_branches', 'cv_bank_acct.branch', '=', 'pc_branches.sat_branch')
+                ->leftjoin('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
                 ->where('cv_bank_acct.branch', -1)
                 ->count();
-        }else if($dataStatus != "" && $corpID != "" && $branch != "" && $mainStatus == "false" && $search['value'] != ""){
+        }else if($dataStatus != "" && $corpID != "" && $branch != "" && $sysBranch != "" && $mainStatus == "false" && $search['value'] != ""){
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->join('pc_branches', 'cv_bank_acct.branch', '=', 'pc_branches.sat_branch')
+                ->join('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
                 ->where(function ($q) use ($search, $columns){
-                    for($i = 0; $i<sizeof($columns)-1; $i++){
+                    for($i = 0;  $i<2; $i++){
                         $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
                     }
                 })
-                ->where('pc_branches.active', $dataStatus)
+                ->where('t_sysdata.Active', $dataStatus)
                 ->where('cv_bank_acct.corp_id', $corpID)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
+                ->where('cv_bank_acct.Branch', $sysBranch)
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
                 ->orderBy('cv_chkbk_series.'.$columnName, $orderDirection)
@@ -265,13 +301,43 @@ class CheckbookController extends Controller
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
                 ->join('pc_branches', 'cv_bank_acct.branch', '=', 'pc_branches.sat_branch')
                 ->where(function ($q) use ($search, $columns){
-                    for($i = 0; $i<sizeof($columns)-1; $i++){
+                    for($i = 0; $i<2; $i++){
                         $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
                     }
                 })
                 ->where('pc_branches.active', $dataStatus)
+                ->where('cv_bank_acct.Branch', $sysBranch)
                 ->where('cv_bank_acct.corp_id', $corpID)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
+                ->count();
+        }else if($mainStatus == "true" && $search['value'] != "")
+        {
+            //get records
+            $checkbooks = DB::table('cv_chkbk_series')
+                ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
+                ->leftjoin('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<2; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->orderBy('cv_chkbk_series.used', 'ASC')
+                ->orderBy('cv_chkbk_series.order_num', 'ASC')
+                ->where('cv_bank_acct.branch', -1)
+                ->orderBy('cv_chkbk_series.'.$columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $pagination = DB::table('cv_chkbk_series')
+                ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
+                ->leftjoin('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<2; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->where('cv_bank_acct.branch', -1)
                 ->count();
         }
 
@@ -287,5 +353,18 @@ class CheckbookController extends Controller
         );
 
         return response()->json($columns, 200);
+    }
+
+    public function editRowOrder(Request $request){
+        $rowId = $request->input('rowId');
+        $rowId2 = $request->input('rowId2');
+        $row1 = $request->input('order_num');
+        $row2 = $request->input('order_num2');
+
+        DB::table('cv_chkbk_series')->where('txn_no', $rowId)->update(['order_num' => $row1]);
+        DB::table('cv_chkbk_series')->where('txn_no', $rowId2)->update(['order_num' => $row2]);
+
+
+        return response()->json("success", 200);
     }
 }

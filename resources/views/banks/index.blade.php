@@ -124,7 +124,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(27, "A")) disabled @endif "
+                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(27, "A")) disabled @endif"
                                                 data-toggle="modal" data-target="#addNewAccount" >Add Bank Account</a>
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="bankCode">Bank Code:</label>
                                     <div class="col-md-9">
-                                        <select name="bankCode" class="form-control input-md" id="">
+                                        <select name="bankCode" class="form-control input-md bankCode" id="">
                                             <option value="">Select Bank:</option>
                                             @foreach($selectBank as $bank)
                                                 <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
@@ -193,7 +193,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="pcBranchId" class="pcBranchId" value="{{ $satelliteBranch[0]->Branch }}">
+                                <input type="hidden" name="pcBranchId" class="pcBranchId" value="">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -548,7 +548,7 @@
                         "render": function ( data, type, row ) {
                             var checkAccess = '<?php  if(\Auth::user()->checkAccessById(27, "E")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
-                            if(checkAccess == 0) { optionClass = 'disabled' };
+                          if(checkAccess == 0) { optionClass = 'disabled' };
                            return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-sm checkDefaultAcct" '+optionClass+'>' +
                             '<i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">'+ row.bank_acct_id +'</span>' +
                             '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount" '+optionClass+'>' +
@@ -731,7 +731,7 @@
                 var accountID = $('.accountID').val();
 
                 $.ajax({
-                    url: "/bank-accounts/update",
+                    url: "/OneBusiness/bank-accounts/update",
                     method: "POST",
                     data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID},
                     success: function (data) {
@@ -779,7 +779,7 @@
                 var accountID  = $('.deleteAccountId').val();
 
                 $.ajax({
-                    url: "/bank-accounts/delete",
+                    url: "/OneBusiness/bank-accounts/delete",
                     method: "POST",
                     data: { id : accountID },
                     success: function (data) {
@@ -808,6 +808,11 @@
                     }
                 })
 
+            });
+
+            $(document).on('change', '.bankCode', function () {
+                var id = $('.bankCode option:selected').val();
+                $('.pcBranchId').val(id);
             })
 
             })(jQuery);
