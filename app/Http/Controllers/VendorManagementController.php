@@ -63,7 +63,7 @@ class VendorManagementController extends Controller
         $success = $vendorMgm->save();
 
         if($success){
-            \Session::flash('alert-success', "Vendor account created successfully");
+            \Session::flash('alert-class', "Vendor account created successfully");
             return redirect()->route('vendors.show', $suppId);
         }
         \Session::flash('flash_message', "Something went wrong!");
@@ -149,7 +149,7 @@ class VendorManagementController extends Controller
 
         $success = $vendorManagement->delete();
         if($success){
-            \Session::flash('alert-success', "Vendor deleted successfully");
+            \Session::flash('alert-class', "Vendor deleted successfully");
             return redirect()->route('vendors.show', $vendorManagement->supp_id);
         }
         \Session::flash('flash_message', "Something went wrong!");

@@ -20,7 +20,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "V"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -54,12 +54,14 @@ class BankController extends Controller
 
         //get banks from db
         $selectBank = Bank::orderBy('bank_id', 'ASC')->get();
+        $selectCorp = DB::table('corporation_masterS')->orderBy('corp_name', 'ASC')->get();
 
 
         return view('banks.index')
             ->with('selectBank', $selectBank)
             ->with('branch', $branch)
             ->with('corporations', $corporations)
+            ->with('selectCorp', $selectCorp)
             ->with('satelliteBranch', $tSysdata);
     }
 

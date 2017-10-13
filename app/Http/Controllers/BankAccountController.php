@@ -45,6 +45,7 @@ class BankAccountController extends Controller
         $bankID = $request->input('bankCode');
         $bankAccountNumber = $request->input('bankAccountNumber');
         $pcBranch = $request->input('pcBranchId');
+        $corpId = $request->input('corpName');
 
 
         //create new instance
@@ -52,6 +53,7 @@ class BankAccountController extends Controller
         $account->bank_id = $bankID;
         $account->acct_no = $bankAccountNumber;
         $account->branch = $pcBranch;
+        $account->corp_id = $corpId;
         $account->date_created = \Carbon\Carbon::now();
         $success = $account->save();
 
@@ -109,7 +111,7 @@ class BankAccountController extends Controller
         //find instance and update
         $success  = BankAccount::where('bank_acct_id', $accountId)->update([
             'bank_id' => $bankId,
-            'acct_no' => $accountNum
+            'acct_no' => $accountNum,
         ]);
 
         if($success){
@@ -128,15 +130,18 @@ class BankAccountController extends Controller
             return redirect("/home");
         }
 
+
         //get input
         $bankId = $request->input('bankAccountCodeEdit');
         $accountNum = $request->input('bankAccountNumberEdit');
         $accountId = $request->input('accountID');
+        $corpId = $request->input('corpId');
 
         //find instance and update
         $accountUpdate = BankAccount::where('bank_acct_id', $accountId)->first();
         $accountUpdate->bank_id = $bankId;
         $accountUpdate->acct_no = $accountNum;
+        $accountUpdate->corp_id = $corpId;
         $success = $accountUpdate->save();
 
         if($success){
