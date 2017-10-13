@@ -79,11 +79,6 @@ class BankController extends Controller
         $columnName = $columns[$orderNumColumn]['data'];
         $search = $request->input('search');
 
-        //get data from sysdata
-        /*$sysData = DB::table('t_sysdata')
-            ->where('user_ID', \Auth::user()->UserID)
-            ->pluck('branch');*/
-
 
         $banks = "";
         $recordsTotal = BankAccount::count();
