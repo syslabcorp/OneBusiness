@@ -36,6 +36,10 @@ class BranchsController extends Controller
             $branchs = $branchs->where('active', '!=', 1);
         }
 
+        if($request->get('corpID')) {
+            $branchs = $branchs->where('corp_id', '=', $request->get('corpID'));
+        }
+
         $branchs = $branchs->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
                           ->where(function($q) use($branchIds, $cityIds, $provinceIds) {
                             $q->orWhereIn('Branch', $branchIds)
@@ -139,7 +143,7 @@ class BranchsController extends Controller
 
         \Session::flash('success', "New branch has been created.");
 
-        return redirect(route('branchs.index'));
+        return redirect(route('branchs.index', ['corpID' => $branch->corp_id]));
     }
 
     public function edit(Branch $branch)

@@ -16,6 +16,9 @@
                             <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
                             <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
                         </select>
+                        @if($company)
+                        <input type="hidden" name="corpID" value="{{ $company->corp_id }}" />
+                        @endif
                     </form>
                 </div>
             </div>
