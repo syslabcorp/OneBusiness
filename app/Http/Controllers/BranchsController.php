@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Branch;
+use App\Company;
 use Illuminate\Http\Request;
 
 class BranchsController extends Controller
@@ -54,7 +55,10 @@ class BranchsController extends Controller
             $result[$branch->city->province->Prov_ID]['cities'][$branch->City_ID][] = $branch;
             $result[$branch->city->province->Prov_ID]['count'] += 1;
         }
+        $company = Company::find($request->get('corpID'));
+
         return view('branchs.index', [
+            'company' => $company,
             'branchs' => $result,
             'status' => $status,
             'corpId' => $request->get('corpID')
