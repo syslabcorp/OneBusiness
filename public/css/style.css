@@ -4,6 +4,7 @@
 }
 .modal-backdrop {
   z-index: 99999;
+  position: fixed;
 }
 .modal-open .modal {
   z-index: 999999;
@@ -35,4 +36,10 @@
 .table.list-macs .ip-address.active .form-control
 {
   border-color: #FF5722;
+}
+
+.error {
+  text-align: center;
+  color: #FF5722;
+  font-weight: bold;
 }
