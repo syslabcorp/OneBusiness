@@ -22,7 +22,7 @@
   <h4>Miscellaneous</h4>
   <div class="row">
     <div class="control-radio col-xs-6">
-      <input type="radio" name="charge_mode" id="per_min" value="1" {{ old('charge_mode') == 1 ? "checked" : ""}}>
+      <input type="radio" name="charge_mode" id="per_min" value="1" {{ old('charge_mode') == 1 || empty(old('charge_mode')) ? "checked" : ""}}>
       <label for="per_min">Per Min</label>
     </div>
     <div class="control-radio col-xs-6">

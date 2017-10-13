@@ -16,3 +16,23 @@
   border-radius: 3px;
   vertical-align: middle;
 }
+.box-content {
+  padding-top: 30px;
+}
+
+.edit-branch .tab-content{
+    margin-top: 20px;
+}
+
+.table.list-macs tr.active {
+  border: 1px solid #4CAF50;
+}
+.table.list-macs tr.active td{
+  border-top: 1px solid #4CAF50;
+  border-bottom: 1px solid #4CAF50;
+}
+
+.table.list-macs .ip-address.active .form-control
+{
+  border-color: #FF5722;
+}

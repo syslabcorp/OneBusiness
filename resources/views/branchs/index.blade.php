@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4>Branch Lists</h4>
+                        <h4>{{ $company ? $company->corp_name : "Branch Lists" }}</h4>
                     </div>
                     <form class="col-xs-3 pull-right" method="GET">
                         <select name="status" class="form-control" id="filter-branchs">
