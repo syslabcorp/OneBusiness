@@ -1,10 +1,19 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
 Route::get('/', function () {
     return view('welcome');
 });
-
-
 
 Auth::routes();
 
@@ -21,31 +30,8 @@ Route::any('/ajax_action', 'LoginController@ajax_action');
 Route::get('posts/{post}/edit', 'PostController@edit');
 Route::get('test', 'LoginController@test');
 
-#MasterFile Module
-Route::resource('inventory', 'InventoryController', ['middleware' => 'auth']);
-Route::resource('services', 'ServiceController', ['middleware' => 'auth']);
-Route::resource('brands', 'BrandController', ['middleware' => 'auth']);
-Route::resource('productlines', 'ProductLineController', ['middleware' => 'auth']);
-Route::resource('satellite-branch', 'SatelliteBranchController', ['middleware' => 'auth']);
-Route::resource('banks', 'BankController', ['middleware' => 'auth']);
-Route::resource('bank-accounts', 'BankAccountController', ['middleware' => 'auth']);
-
-Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
-#End of MasterFile Module
-
-Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
-Route::put('branchs/{branch}/misc', 'BranchsController@updateMisc')->middleware('auth')->name('branchs.misc');
-Route::resource('branchs.footers', 'FootersController', ['middleware' => 'auth']);
-Route::put('branchs/{branch}/footers/{footer}/copy', 'FootersController@copy')->middleware('auth')->name('branchs.footers.copy');
-Route::put('branchs/{branch}/macs/transfer', 'MacsController@transfer')->middleware('auth')->name('branchs.footers.transfer');
-Route::put('branchs/{branch}/macs/swap', 'MacsController@swap')->middleware('auth')->name('branchs.footers.swap');
-Route::resource('branchs.macs', 'MacsController', ['middleware' => 'auth']);
 Route::get('/process_register/{?}', 'LoginController@process_register');
 Route::get('/display_message/{?}', 'LoginController@display_message');
-
-Route::put('branchs/{branch}/rates/assign', 'RatesController@assign')->middleware('auth')->name('branchs.rates.assign');
-Route::resource('branchs.rates', 'RatesController', ['middleware' => 'auth']);
-Route::put('branchs/{branch}/rates/{rate}/details', 'RatesController@details')->middleware('auth')->name('branchs.rates.details');
 
 Route::get('/user_list', 'HomeController@user_list');
 Route::get('/finger_varification/{user_id}', 'LoginController@finger_varification');
@@ -86,18 +72,10 @@ Route::any('/city/{user_id?}', 'AccessLevelController@city');
 Route::any('/branch/{user_id?}', 'AccessLevelController@branch');
 Route::any('/provinces/{user_id?}', 'AccessLevelController@provinces');
 Route::get('/delete_user/{id}', 'AccessLevelController@delete_user');
+
 Route::any('/get_provinces_ids', 'AccessLevelController@get_provinces_ids');
 Route::any('/get_city_ids', 'AccessLevelController@get_city_ids');
 Route::any('/get_branch_ids', 'AccessLevelController@get_branch_ids');
 
 
-
-//-------ADDED FOR LOCATIONS (TEST ONLY)
-
-Route::resource('list_provinces', 'LocationsController', ['middleware' => 'auth']);
-Route::get('/view_cities/{prov_id?}','LocationsController@list_cities');// displaying cities within the province selected
-Route::any('add_city/{city_id?}/{prov_id?}','LocationsController@add_city');
-Route::any('/add_province/{prov_id?}','LocationsController@add_province');
-Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity');
-
-
+Route::any('/get_child_menu_call', 'AccessLevelController@get_child_menu_call');
