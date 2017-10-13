@@ -9,6 +9,7 @@ class Branch extends Model
     public $timestamps = false;
     protected $table = "t_sysdata";
     protected $primaryKey = "Branch";
+    protected $connection = 'mysql';
 
     protected $fillable = [
         'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active', "ShortName",
