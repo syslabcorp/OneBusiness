@@ -113,7 +113,9 @@
                       @endif
                   </div>
                 @endif
-                @yield('content')
+                <div class="box-content">
+                  @yield('content')
+                </div>
               </div>
             </div>
           </div>
