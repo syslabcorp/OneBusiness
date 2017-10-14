@@ -29,6 +29,21 @@
 
         }
 
+        #example_ddl label {
+            position: relative;
+            top: 8px;
+        }
+
+        #example_ddl2, #example_ddl3, #example_ddl4 {
+            margin-right: 5px !important;
+        }
+
+        .my_custom {
+            position: relative;
+            left: 16px;
+        }
+
+
     </style>
 @endsection
 @section('content')
@@ -48,7 +63,7 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
@@ -70,6 +85,7 @@
                                     <table class="table table-striped table-bordered" id="myTable" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
+                                            <th>Corporation</th>
                                             <th>Vendor Name</th>
                                             <th>Pay To</th>
                                             <th>Address</th>
@@ -86,6 +102,9 @@
                                         <tbody>
                                         @foreach($vendors as $vendor)
                                             <tr>
+                                                <td>
+                                                    {{ $corpName }}
+                                                </td>
                                                 <td>{{ $vendor->VendorName }}</td>
                                                 <td>{{ $vendor->PayTo }}</td>
                                                 <td>{{ $vendor->Address }}</td>
@@ -156,17 +175,60 @@
     <script>
         (function($){
             var table = $('#myTable').DataTable({
+                initComplete: function () {
+                    $('<label for="">Filters:</label>').appendTo("#example_ddl");
+                    @if(!Session::has('corpUrl'))
+                        var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
+                            .appendTo('#example_ddl2');
+                        var cntCorp = 0;
+                        @foreach($corporations as $key => $val)
+                         if(cntCorp != 0){
+                            corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                        }
+                        cntCorp++;
+                        @endforeach
+                    @else
+                        var corporationID = $('<select class="form-control"></select>')
+                            .appendTo('#example_ddl2');
+                        @foreach($corporations as $key => $val)
+                            corporationID.append('<option value="{{ $val->corp_id }}" @if(session('corpUrl') == $val->corp_id)  selected @endif>{{ $val->corp_name }}</option>');
+                    @endforeach
+                    @endif
+
+
+
+                    /*this.api().columns(5).every( function () {
+                        var column = this;
+                        var select = $('<select class="form-control"><option value="">All</option></select>')
+                            .appendTo( '#example_ddl3' )
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+
+                        select.append( '<option value="1">Active</option>' )
+                        select.append( '<option value="0">Inactive</option>' )
+
+                    } );*/
+                },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
+                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
-                    { "width": "25%", "targets": 0},
+                    { "width": "10%", "targets": 0},
+                    { "width": "10%", "targets": 1},
                     { "width": "25%", "targets": 2},
                     { "width": "9%", "targets": 3},
-                    { "orderable": false, "width": "18%", "targets": 10},
-                    { "orderable": false, "width": "7%", "targets": [7, 9] },
-                    {"className": "dt-center", "targets": [7, 8, 9, 10]}
+                    { "orderable": false, "width": "25%", "targets": 11},
+                    { "orderable": false, "width": "7%", "targets": [8, 10] },
+                    {"className": "dt-center", "targets": [8, 9, 10, 11]}
                 ]
             });
             $('#myTable').wrap('<div class="dataTables_scroll" />');
@@ -188,7 +250,7 @@
             $(document).on('click', '.viewBtn', function (e) {
                 e.preventDefault();
                 var id  = $(this).closest('td').find('span').text();
-                var checked  = $(this).closest('tr').find('td:nth-child(10) input').is(":checked");
+                var checked  = $(this).closest('tr').find('td:nth-child(11) input').is(":checked");
                 if(checked == false){
                     $.confirm({
                         icon: 'glyphicon glyphicon-exclamation-sign',
@@ -204,6 +266,12 @@
                 }else{
                     window.location.href = 'vendors/'+id
                 }
+            });
+
+
+            $(document).on('change', '#example_ddl2', function () {
+                var location = $('#example_ddl2 option:selected').val();
+                window.location.href = 'vendors?name='+location;
             })
 
         })(jQuery);

@@ -11,20 +11,34 @@ class VendorController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
+        $url = $request->input('name');
+        $url != null ? session(['corpUrl' => $url]) : null;
+        $corporations = DB::table('corporation_masters')
+            ->orderBy('corp_name', 'ASC')
+            ->get();
+
+        $vendors = new Vendor();
+        $vendors->setConnection('openbus');
         //get records
         $vendors = Vendor::orderBy('VendorName', 'ASC')->get();
+        $corpName = $corporations[0]->corp_name;
 
-        return view('vendors.index')->with('vendors', $vendors);
+
+
+        return view('vendors.index')
+            ->with('vendors', $vendors)
+            ->with('corpName', $corpName)
+            ->with('corporations', $corporations);
     }
 
     /**
@@ -36,7 +50,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -53,7 +67,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -83,10 +97,10 @@ class VendorController extends Controller
         $success = $vendor->save();
 
         if($success){
-            \Session::flash('success', "Vendor created successfully");
+            \Session::flash('alert-class', "Vendor created successfully");
             return redirect()->route('vendors.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('vendors.index');
     }
 
@@ -98,8 +112,19 @@ class VendorController extends Controller
      */
     public function show(Vendor $vendor)
     {
+        if(!\Auth::user()->checkAccessById(29, "V"))
+        {
+            \Session::flash('flash_message', "You don't have permission");
+            return redirect("/home");
+        }
+
+        $corporations = DB::table('corporation_masters')
+            ->orderBy('corp_name', 'ASC')
+            ->get();
+
         $vendors = DB::table('cv_vendacct')
             ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+            ->join('t_sysdata', 'cv_vendacct.nx_branch', '=', 't_sysdata.Branch')
             ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
             ->orderBy('VendorName', 'ASC')
             ->get();
@@ -110,6 +135,7 @@ class VendorController extends Controller
 
         return view('vendors.management.index')
             ->with('vendors', $vendors)
+            ->with('corporations', $corporations)
             ->with('branches', $branches);
     }
 
@@ -123,7 +149,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "E"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -141,7 +167,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "E"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -171,10 +197,10 @@ class VendorController extends Controller
         ]);
 
         if($success){
-            \Session::flash('success', "Vendor created successfully");
+            \Session::flash('alert-class', "Vendor created successfully");
             return redirect()->route('vendors.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('vendors.index');
     }
 
@@ -188,17 +214,17 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "D"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
 
         $success = $vendor->delete();
         if($success){
-            \Session::flash('success', "Vendor deleted successfully");
+            \Session::flash('alert-class', "Vendor deleted successfully");
             return redirect()->route('vendors.index');
         }
-        \Session::flash('error', "Something went wrong!");
+        \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('vendors.index');
     }
 }
