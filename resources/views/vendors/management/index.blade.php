@@ -54,7 +54,7 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
@@ -65,9 +65,10 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
+                                            {{ $vendors[0]->VendorName }}
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right {{--@if(!\Auth::user()->checkAccessById(23, "A")) disabled @endif--}}" >Add Account</a>
+                                            <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
                                         </div>
                                     </div>
 
@@ -88,7 +89,7 @@
                                         <tbody>
                                         @foreach($vendors as $vendormgm)
                                             <tr>
-                                                <td>{{ $vendormgm->VendorName }}</td>
+                                                <td>{{ $vendormgm->ShortName }}</td>
                                                 <td>{{ $vendormgm->acct_num }}</td>
                                                 <td>{{ $vendormgm->description }}</td>
                                                 <td>{{ $vendormgm->days_offset }}</td>
@@ -140,6 +141,21 @@
                                 <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
                                     <input type="checkbox" name="mainStatus" class="pull-left mainStatus" name="" id="">
                                     <label for="mainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="corporationId">Corporation:</label>
+                                    <div class="col-md-7">
+                                        <select name="corporationId" class="form-control input-md branchName" id="">
+                                            <option value="">Select Corporation:</option>
+                                            @foreach($corporations as $corporation)
+                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -219,6 +235,21 @@
                                 <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
                                     <input type="checkbox" name="editMainStatus" class="pull-left editMainStatus" name="" id="">
                                     <label for="editMainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
+                                    <div class="col-md-7">
+                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id="">
+                                            <option value="">Select Corporation:</option>
+                                            @foreach($corporations as $corporation)
+                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -309,7 +340,7 @@
         (function($){
             $('#myTable').DataTable({
                 initComplete: function () {
-                    this.api().columns(5).every( function () {
+                    this.api().columns(6).every( function () {
                         var column = this;
                         var select = $('<select><option value="">All</option></select>')
                             .appendTo( '#example_ddl' )
@@ -386,7 +417,7 @@
                         }else{
                             $('.editBranchName').val(data.nx_branch);
                         }
-
+                        $('.editCorporationId').val(data.corp_id);
                         $('#editVendorAccountNumber').val(data.acct_num);
                         $('input[name="editDescription"]').val(data.description);
                         $('input[name="editCycleDays"]').val(data.days_offset);
@@ -395,7 +426,7 @@
                         if(data.active){
                             $('input[name="editActiveAccount').attr("checked", true);
                         }
-                        $('#editAccount form').attr('action', '/OneBusiness/vendor-management/'+id);
+                        $('#editAccount form').attr('action', '/vendor-management/'+id);
                         $('#editAccount').modal("show");
                     }
                 })

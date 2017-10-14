@@ -139,6 +139,7 @@
                                             <th>Account Number</th>
                                             <th>Date Created</th>
                                             <th>Action</th>
+                                            <th>Corp Id</th>
                                         </tr>
                                         </thead>
                                     </table>
@@ -176,6 +177,19 @@
                                 </div>
                                 <div class="col-md-2 col-xs-12" style="margin-left: -30px;">
                                     <a href="#" class="addBank" data-dismiss="modal" data-toggle="modal" data-target="#addNewBank" style="font-size: 0.8em">Add Bank</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                <label class="col-md-3 control-label" for="corpName">Corporation:</label>
+                                <div class="col-md-9">
+                                    <select name="corpName" class="form-control input-md corpName" id="">
+                                        <option value="">Select Corporation:</option>
+                                        @foreach($selectCorp as $corp)
+                                            <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -373,6 +387,19 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                <label class="col-md-3 control-label" for="editCorpName">Corporation:</label>
+                                <div class="col-md-9">
+                                    <select name="editCorpName" class="form-control input-md editCorpName" id="">
+                                        <option value="">Select Corporation:</option>
+                                        @foreach($selectCorp as $corp)
+                                            <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumberEdit">Account Number:</label>
                             <div class="col-md-7 col-xs-12">
                                 <input id="bankAccountNumberEdit" name="bankAccountNumberEdit" type="text" class="form-control input-md"
@@ -467,7 +494,7 @@
                     }
                     cntCorp++;
 
-                            @endforeach
+                    @endforeach
                     var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
@@ -496,18 +523,6 @@
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
                     }
-                },
-                "stateSaveCallback": function (settings, data) {
-                    // save the filter settings without connecting it to a unique url
-                    data.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
-                    data.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                    data.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
-                    data.MainStatus = $('#example_ddl5 input').is(":checked");
-                    localStorage.setItem("dataTables_filterSettings", JSON.stringify(data));
-                },
-                "stateLoadCallback": function (settings) {
-                    // read out the filter settings and apply
-                    return JSON.parse(localStorage.getItem("dataTables_filterSettings"));
                 },
                 stateSave: true,
                 stateDuration:-1,
@@ -548,19 +563,30 @@
                         "render": function ( data, type, row ) {
                             var checkAccess = '<?php  if(\Auth::user()->checkAccessById(27, "E")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
-                          if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccess == 0) { optionClass = 'disabled' };
+
+                            var checkDelete = '<?php  if(\Auth::user()->checkAccessById(27, "D")) {  echo 1; }else{ echo 0; } ?>';
+                            var optionClassDel = "";
+                            if(checkDelete == 0) { optionClassDel = 'disabled' };
                            return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-sm checkDefaultAcct" '+optionClass+'>' +
                             '<i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">'+ row.bank_acct_id +'</span>' +
                             '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount" '+optionClass+'>' +
                             '<i class="glyphicon glyphicon-pencil"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
                             '<span class="codeNumID" style="display: none;">'+row.bank_id+'</span></a>' +
-                               '<a href="#" name="delete" class="btn btn-danger btn-sm delete-account '+optionClass+'">'+
+                               '<a href="#" name="delete" class="btn btn-danger btn-sm delete-account '+optionClassDel+'">'+
                                '<i class="glyphicon glyphicon-trash"></i></a>';
                         },
                         "targets": 4
                     },
+                    {
+                        "render": function ( data, type, row ) {
+                           return row.corp_id;
+                        },
+                        "targets": 5
+                    },
                     { "orderable": false, "width": "5%", "targets": 0},
                     { "orderable": false, "width": "15%", "targets": 4 },
+                    { "orderable": false, "visible" : false, "targets": 5 },
                     {"className": "dt-center", "targets": 4},
                     {"className": "dt-center", "targets": 0}
                 ],
@@ -622,6 +648,10 @@
                 var codeNum = $(this).closest('tr').find('.codeNumID').text();
                 $('#bankAccountCodeEdit').val(codeNum);
                 $('#bankAccountNumberEdit').val(accountNum);
+
+                var row = $(this).closest('tr');
+                var hiddenColumnValue = mainTable.row(row).data();
+                $('.editCorpName').val(hiddenColumnValue.corp_id);
                 $('.accountID').val(id);
                 $('#editAccountModal').modal("toggle");
             });
@@ -729,11 +759,13 @@
                 var bankCode = $('#bankAccountCodeEdit option:selected').val();
                 var accountNum = $('#bankAccountNumberEdit').val();
                 var accountID = $('.accountID').val();
+                var corpId = $('.editCorpName option:selected').val();
+                alert(corpId+'test');
 
                 $.ajax({
                     url: "/OneBusiness/bank-accounts/update",
                     method: "POST",
-                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID},
+                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID, corpId : corpId},
                     success: function (data) {
                         if(data == "success"){
                             $('#editAccountModal').modal("toggle");
