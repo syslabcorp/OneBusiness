@@ -65,6 +65,9 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
+                                            @if($vendors[0])
+                                                {{ $vendors[0]->VendorName }}
+                                            @endif
                                         </div>
                                         <div class="col-xs-6 text-right">
                                             <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
@@ -196,7 +199,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="suppId" value="{{ $vendors[0]->supp_id }}">
+                                <input type="hidden" name="suppId" value="">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
