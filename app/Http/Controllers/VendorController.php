@@ -27,8 +27,8 @@ class VendorController extends Controller
             ->orderBy('corp_name', 'ASC')
             ->get();
 
-        $vendors = new Vendor();
-        $vendors->setConnection('openbus');
+     /*   $vendors = new Vendor();
+        $vendors->setConnection('openbus');*/
         //get records
         $vendors = Vendor::orderBy('VendorName', 'ASC')->get();
         $corpName = $corporations[0]->corp_name;
