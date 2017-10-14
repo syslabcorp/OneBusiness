@@ -65,7 +65,6 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
-                                            {{ $vendors[0]->VendorName }}
                                         </div>
                                         <div class="col-xs-6 text-right">
                                             <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
