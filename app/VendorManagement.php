@@ -17,4 +17,8 @@ class VendorManagement extends Model
     public function vendors(){
         return $this->belongsTo('App\Vendor', 'supp_id');
     }
+
+    public function corporations(){
+        return $this->belongsTo('App\Corporation', 'corp_id');
+    }
 }

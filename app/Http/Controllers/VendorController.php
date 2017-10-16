@@ -11,25 +11,21 @@ class VendorController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        if(!\Auth::user()->checkAccessById(29, "V"))
+        /*if(!\Auth::user()->checkAccessById(29, "V"))
         {
             \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
-        }
-        $url = $request->input('name');
-        $url != null ? session(['corpUrl' => $url]) : null;
+        }*/
+
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
             ->get();
 
-     /*   $vendors = new Vendor();
-        $vendors->setConnection('openbus');*/
-        //get records
+
         $vendors = Vendor::orderBy('VendorName', 'ASC')->get();
         $corpName = $corporations[0]->corp_name;
 
@@ -108,9 +104,10 @@ class VendorController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Vendor  $vendor
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Vendor $vendor)
+    public function show(Vendor $vendor, Request $request)
     {
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
@@ -118,16 +115,42 @@ class VendorController extends Controller
             return redirect("/home");
         }
 
+        /*   $vendors = new Vendor();
+       $vendors->setConnection('openbus');*/
+        //get records
+
+        $url = $request->input('corp');
+        $url != null ? session(['corpUrl' => $url]) : null;
+
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
             ->get();
 
-        $vendors = DB::table('cv_vendacct')
-            ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
-            ->join('t_sysdata', 'cv_vendacct.nx_branch', '=', 't_sysdata.Branch')
-            ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
-            ->orderBy('VendorName', 'ASC')
-            ->get();
+
+
+        if($url == null)
+        {
+            $vendors = DB::table('cv_vendacct')
+                ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+                ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
+                ->join('t_sysdata', 'cv_vendacct.nx_branch', '=', 't_sysdata.Branch')
+                ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
+                ->orderBy('VendorName', 'ASC')
+                ->get();
+
+
+            session(['corpUrl' => $vendors[0]->corp_id]);
+        }else{
+            $vendors = DB::table('cv_vendacct')
+                ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+                ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
+                ->join('t_sysdata', 'cv_vendacct.nx_branch', '=', 't_sysdata.Branch')
+                ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
+                ->where('cv_vendacct.corp_id', $url)
+                ->orderBy('VendorName', 'ASC')
+                ->get();
+
+        }
 
         $branches = DB::table('t_sysdata')
             ->orderBy('Description', 'ASC')

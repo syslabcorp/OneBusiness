@@ -35,6 +35,20 @@
             width: 18px;
         }
 
+        #example_ddl label {
+            position: relative;
+            top: 8px;
+        }
+
+        #example_ddl2, #example_ddl3, #example_ddl4 {
+            margin-right: 5px !important;
+        }
+
+        .my_custom {
+            position: relative;
+            left: 16px;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -65,7 +79,7 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
-                                            @if($vendors[0])
+                                            @if($vendors->count() > 0 )
                                                 {{ $vendors[0]->VendorName }}
                                             @endif
                                         </div>
@@ -79,6 +93,7 @@
                                     <table class="table table-striped table-bordered" id="myTable" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
+                                            <th>Corporation</th>
                                             <th>Branch</th>
                                             <th>Account Number</th>
                                             <th>Description</th>
@@ -91,6 +106,7 @@
                                         <tbody>
                                         @foreach($vendors as $vendormgm)
                                             <tr>
+                                                <td>{{ $vendormgm->corp_name }}</td>
                                                 <td>{{ $vendormgm->ShortName }}</td>
                                                 <td>{{ $vendormgm->acct_num }}</td>
                                                 <td>{{ $vendormgm->description }}</td>
@@ -294,7 +310,7 @@
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
                                 {{ method_field('PUT') }}
-                                <input type="hidden" name="suppId" value="{{ $vendors[0]->supp_id }}">
+                                <input type="hidden" name="suppId" value="@if($vendors->count() > 0 ){{ $vendors[0]->supp_id }} @endif">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -342,10 +358,30 @@
         (function($){
             $('#myTable').DataTable({
                 initComplete: function () {
-                    this.api().columns(6).every( function () {
+                    $('<label for="">Filters:</label>').appendTo("#example_ddl");
+
+                            @if(!Session::has('corpUrl'))
+                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
+                            .appendTo('#example_ddl2');
+                    var cntCorp = 0;
+                    @foreach($corporations as $key => $val)
+                    if(cntCorp != 0){
+                        corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                    }
+                    cntCorp++;
+                            @endforeach
+                            @else
+                    var corporationID = $('<select class="form-control"></select>')
+                            .appendTo('#example_ddl2');
+                    @foreach($corporations as $key => $val)
+                    corporationID.append('<option value="{{ $val->corp_id }}" @if(session('corpUrl') == $val->corp_id)  selected @endif>{{ $val->corp_name }}</option>');
+                    @endforeach
+                            @endif
+
+                    this.api().columns(7).every( function () {
                         var column = this;
-                        var select = $('<select><option value="">All</option></select>')
-                            .appendTo( '#example_ddl' )
+                        var select = $('<select class="form-control"><option value="">All</option></select>')
+                            .appendTo( '#example_ddl3' )
                             .on( 'change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
@@ -363,7 +399,7 @@
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'col-sm-12'<'#example_ddl.pull-left'>>>" +
+                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
@@ -432,6 +468,11 @@
                         $('#editAccount').modal("show");
                     }
                 })
+            });
+
+            $(document).on('change', '#example_ddl2', function () {
+                var location = $('#example_ddl2 option:selected').val();
+                window.location.href = '?corp='+location;
             })
 
         })(jQuery);
