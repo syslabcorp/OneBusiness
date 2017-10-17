@@ -8,7 +8,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4>Branch Lists</h4>
+                        <h4>{{ $company ? $company->corp_name : "Branch Lists" }}</h4>
                     </div>
                     <form class="col-xs-3 pull-right" method="GET">
                         <select name="status" class="form-control" id="filter-branchs">
@@ -16,6 +16,9 @@
                             <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
                             <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
                         </select>
+                        @if($company)
+                        <input type="hidden" name="corpID" value="{{ $company->corp_id }}" />
+                        @endif
                     </form>
                 </div>
             </div>
@@ -31,7 +34,7 @@
                             <th>Operator</th>
                             <th>Street</th>
                             <th>Units</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                         @foreach($branchs as $province)
                             @php $index = 0; @endphp
@@ -55,11 +58,12 @@
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
                                     <td>
-                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccess("Branch Setup & Details", "E") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccessById(1, "E") ? "" : "disabled" }}"
                                             title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="{{ route('branchs.rates.index', [$branch]) }}" style="margin-right: 10px;" class="btn btn-success btn-xs"
+                                        <a href="{{ route('branchs.rates.index', [$branch]) }}" style="margin-right: 10px;" 
+                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
@@ -76,15 +80,16 @@
                     {{ __('No data to display') }}
                 </div>
               @endif
-            </div>
-            <div class="box-footer">
+              <div class="text-left">
                 <a href="/OneBusiness/home" class="btn btn-default">
-                    <i class="fa fa-reply"></i> Back
+                  <i class="fa fa-reply"></i> Back
                 </a>
-                @if(\Auth::user()->checkAccess("Branch Setup & Details", "A"))
-                    <a href="{{ route('branchs.create') }}" class="btn btn-success">New Branch</a>
+                @if(\Auth::user()->checkAccessById(1, "A"))
+                  <a href="{{ route('branchs.create', ['corpID' => $corpId]) }}" class="btn btn-success">New Branch</a>
                 @endif
+              </div>
             </div>
+            
           </div>
         </div>
       </div>

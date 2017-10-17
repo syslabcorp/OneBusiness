@@ -17,7 +17,16 @@
           
       <!-- Page content -->
       <div id="page-content-togle-sidebar-sec">
-		<div class="col-md-12">
+		@if(\Session::get('error'))
+            <div class="alert alertfade alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;margin-top: 15px;">
+                <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
+            </div>
+            @elseif(\Session::get('success'))
+			<div class="alert alert-success col-md-8 col-md-offset-2 alertfade" style="border-radius: 3px;margin-top: 15px;">
+				<span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
+			</div>
+		@endif
+		<div class="col-md-12 col-xs-12">
 			<div class="panel panel-default margin-top-20">
 				<div class="panel-body">
 					<div class="col-md-12">

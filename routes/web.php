@@ -30,6 +30,42 @@ Route::any('/ajax_action', 'LoginController@ajax_action');
 Route::get('posts/{post}/edit', 'PostController@edit');
 Route::get('test', 'LoginController@test');
 
+
+#MasterFile Module
+Route::resource('inventory', 'InventoryController', ['middleware' => 'auth']);
+Route::resource('services', 'ServiceController', ['middleware' => 'auth']);
+Route::resource('brands', 'BrandController', ['middleware' => 'auth']);
+Route::resource('productlines', 'ProductLineController', ['middleware' => 'auth']);
+Route::resource('satellite-branch', 'SatelliteBranchController', ['middleware' => 'auth']);
+Route::resource('banks', 'BankController', ['middleware' => 'auth']);
+Route::resource('bank-accounts', 'BankAccountController', ['middleware' => 'auth']);
+Route::resource('checkbooks', 'CheckbookController', ['middleware' => 'auth']);
+Route::resource('vendors', 'VendorController', ['middleware' => 'auth']);
+Route::resource('vendor-management', 'VendorManagementController', ['middleware' => 'auth']);
+
+Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth']);
+Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middleware' => 'auth']);
+Route::post('/banks/get-branches', 'BankController@getBranches')->middleware('auth');
+
+Route::post('/vendor-management/get-account-for-vendor', 'VendorManagementController@getVendorAccount')->middleware('auth');
+Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
+Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getBranches')->middleware('auth');
+Route::post('banks/get-banks-list', 'BankController@getBanksList')->middleware('auth');
+Route::post('/checkbooks/get-accounts-for-branch', 'CheckbookController@getAccountForCheckbook')->middleware('auth');
+Route::post('/checkbooks/get-checkbooks', 'CheckbookController@getCheekbooks')->middleware('auth');
+Route::post('/checkbooks/edit-row-order', 'CheckbookController@editRowOrder')->middleware('auth');
+Route::post('/checkbooks/delete', 'CheckbookController@destroy')->middleware('auth');
+Route::post('/checkbooks/edit-checkbook', 'CheckbookController@update')->middleware('auth');
+#End of MasterFile Module
+
+Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
+Route::put('branchs/{branch}/misc', 'BranchsController@updateMisc')->middleware('auth')->name('branchs.misc');
+Route::resource('branchs.footers', 'FootersController', ['middleware' => 'auth']);
+Route::put('branchs/{branch}/footers/{footer}/copy', 'FootersController@copy')->middleware('auth')->name('branchs.footers.copy');
+Route::put('branchs/{branch}/macs/transfer', 'MacsController@transfer')->middleware('auth')->name('branchs.footers.transfer');
+Route::put('branchs/{branch}/macs/swap', 'MacsController@swap')->middleware('auth')->name('branchs.footers.swap');
+Route::resource('branchs.macs', 'MacsController', ['middleware' => 'auth']);
+
 Route::get('/process_register/{?}', 'LoginController@process_register');
 Route::get('/display_message/{?}', 'LoginController@display_message');
 
@@ -78,4 +114,13 @@ Route::any('/get_city_ids', 'AccessLevelController@get_city_ids');
 Route::any('/get_branch_ids', 'AccessLevelController@get_branch_ids');
 
 
+
 Route::any('/get_child_menu_call', 'AccessLevelController@get_child_menu_call');
+
+#Locations
+Route::resource('list_provinces', 'LocationsController', ['middleware' => 'auth']);
+Route::get('/view_cities/{prov_id?}','LocationsController@list_cities');// displaying cities within the province selected
+Route::any('add_city/{city_id?}/{prov_id?}','LocationsController@add_city');
+Route::any('/add_province/{prov_id?}','LocationsController@add_province');
+Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity');
+

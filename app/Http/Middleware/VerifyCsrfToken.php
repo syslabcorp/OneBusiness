@@ -12,6 +12,9 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        //
+        'banks/get-banks-list',
+        'banks/get-branches',
+        '/satellite-branch/get-branch-list',
+        'checkbooks/get-checkbooks'
     ];
 }

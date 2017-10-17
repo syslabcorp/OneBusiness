@@ -23,7 +23,7 @@
 
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane" id="branch-details">
-                        @if(\Auth::user()->checkAccess("Branch Details", "V"))
+                        @if(\Auth::user()->checkAccessById(3, "V"))
                             @include('branchs.edit-tab')
                         @else
                             <div class="alert alert-danger no-close">

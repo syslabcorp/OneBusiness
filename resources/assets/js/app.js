@@ -262,6 +262,84 @@ $(document).ready(function()
         $(this).parents('form').submit();
     });
 
+    $('.rate-page .cancel-selection').click(function(event) {
+      $('.rate-page .table .selected').removeClass('selected');
+      $('.box-assign:not(.nohide)').slideUp(400);
+      $(this).slideUp(0);
+    });
+
+    $('.rate-page .table .form-control').click(function(event) {
+      if(event.ctrlKey) {
+        $(this).parents('tr').each(function(index, element) {
+          $(this).toggleClass('selected');
+        });
+      }else if(event.shiftKey) {
+        if($('.rate-page .table tr.selected').length == 0) {
+          $(this).parents('tr').addClass('selected');
+        }else {
+          var startIndex = $('.rate-page .table tr.selected').index();
+          var endIndex = $(this).parents('tr').index();
+          $('.rate-page .table tr.selected').removeClass('selected');
+          if(startIndex == endIndex) {
+            $(this).parents('tr').removeClass('selected');
+          }else {
+            if(endIndex < startIndex) {
+              var temp = startIndex;
+
+              startIndex = endIndex;
+              endIndex = temp;
+            }
+            for(startIndex; startIndex <= endIndex; startIndex++) {
+              $('.rate-page .table tbody tr:eq(' + startIndex + ')').addClass('selected');
+            }
+          }
+        }
+      }else {
+        $(this).select();
+      }
+
+      if($('.rate-page .table tr.selected').length != 0) {
+        $('.rate-page .cancel-selection').slideDown(0);
+        $('.rate-page .box-assign:not(.nohide)').slideDown(500);
+      }else {
+        $('.rate-page .cancel-selection').slideUp(0);
+        $('.rate-page .box-assign:not(.nohide)').slideUp(500);
+      }
+    });
+
+    $('.rate-page .table .form-control').keydown(function(event) {
+      var column = $(this).parents("td").index();
+      var row = $(this).parents("tr").index();
+      switch(event.which) {
+        case 37:
+          column -= 1;
+          break;
+        case 38:
+          row -= 1;
+          break;
+        case 39:
+          column += 1;
+          break;
+        case 40:
+          row += 1;
+          break;
+        default:
+          return;
+          break;
+      }
+      $(this).parents('.table').find("tbody tr:eq(" + row + ") td:eq(" + column + ") .form-control").click();
+    });
+
+    $('.rate-page .box-assign .btn').click(function(event) {
+      $('.rate-page .table tr.selected').each(function(index) {
+        $(this).find('.form-control').each(function(key, element) {
+          if($('.rate-page .box-assign td:eq(' + (key + 1) + ') .form-control').val()) {
+            $(this).val($('.rate-page .box-assign td:eq(' + (key + 1) + ') .form-control').val());
+          }
+        });
+      });
+    });
+
 
     toastr.options = {
         "closeButton": false,

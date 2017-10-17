@@ -24,6 +24,11 @@
         .modal {
             z-index: 10001 !important;;
         }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
     </style>
 @endsection
 @section('content')
@@ -114,6 +119,12 @@
                                     <input id="prodcutLineName" name="prodcutLineName" type="text" class="form-control input-md" required="">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="prodcutLineName">Active</label>
+                                <div class="col-md-8">
+                                    <input id="activeCheck" name="activeCheck" type="checkbox" >
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <div class="row">
@@ -122,7 +133,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     {!! csrf_field() !!}
-                                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                                    <button type="submit" class="btn btn-success pull-right">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +150,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Edit Product Line: <span style="font-weight: bold" class="productLineToEdit"></span></h5>
+                    <h5 class="modal-title">Edit Product Line</h5>
                 </div>
                 <form class="form-horizontal" action="" METHOD="post">
                     <div class="modal-body">
@@ -147,6 +158,12 @@
                             <label class="col-md-3 control-label" for="editProductLineName">Product Line</label>
                             <div class="col-md-8">
                                 <input id="editProductLineName" name="editProductLineName" type="text" class="form-control input-md editProductLineName" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="prodcutLineName">Active</label>
+                            <div class="col-md-8">
+                                <input id="editActiveCheck" class="editActiveCheck" name="editActiveCheck" type="checkbox" >
                             </div>
                         </div>
                     </div>
@@ -180,7 +197,8 @@
                 <form action="" method="POST" >
                     <div class="modal-body">
                         <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
-                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
+                        <p class="text-center">Do you want to proceed deleting  <span style="font-weight: bold" class="descriptionOfProduct">
+                            </span> -  <span style="font-weight: bold" class="itemToDelete"></span> ?</p>
                         <p class="debug-url"></p>
                     </div>
 
@@ -223,10 +241,14 @@
 
                 var id  = $(this).closest('td').find('span').text();
                 var productLineName  = $(this).closest('tr').find('td:nth-child(2)').text();
-
+                var activeCheck  = $(this).closest('tr').find('td:nth-child(3) input').is(":checked");
                 $('#editProdcutLine').find('.productLineId').val(id);
-                $('#editProdcutLine .productLineToEdit').text(productLineName);
                 $('#editProdcutLine .editProductLineName').val(productLineName);
+                if(activeCheck == true) {
+                    $('#editProdcutLine .editActiveCheck').attr("checked", true);
+                }else{
+                    $('#editProdcutLine .editActiveCheck').attr("checked", false);
+                }
                 $('#editProdcutLine form').attr('action', 'productlines/'+id);
                 $('#editProdcutLine').modal("show");
 
@@ -240,7 +262,7 @@
                // var description  = $(this).closest('tr').find('td:nth-child(2)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
                 $('#confirm-delete .itemToDelete').text(itemCode);
-               // $('#confirm-delete .descriptionOfProduct').text(itemCode);
+                $('#confirm-delete .descriptionOfProduct').text(id);
                 $('#confirm-delete form').attr('action', 'productlines/'+id);
                 $('#confirm-delete').modal("show");
             });

@@ -22,7 +22,7 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "V"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -48,7 +48,7 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -66,9 +66,6 @@ class InventoryController extends Controller
             ->with('brands', $brands)
             ->with('products', $products);
 
-
-
-        //['invTypes' => $invTypes], ['brands' => $brands], ['products' => $products]);
     }
 
     /**
@@ -82,7 +79,7 @@ class InventoryController extends Controller
 
         if(!\Auth::user()->checkAccessById(19, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -117,7 +114,7 @@ class InventoryController extends Controller
         $inventory->Active = ($request->itemActive) ? 1 : 0;
         $inventory->save();
 
-        \Session::flash('success', "Item added successfully");
+        \Session::flash('alert-class', "Item added successfully");
         return redirect()->route('inventory.index');
 
     }
@@ -142,7 +139,7 @@ class InventoryController extends Controller
     public function edit($id)
     {
         if(!\Auth::user()->checkAccessById(19, "E")) {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -175,7 +172,7 @@ class InventoryController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(19, "E")) {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -215,23 +212,22 @@ class InventoryController extends Controller
         $inventoryItem = InventoryChange::where('invtry_hdr', $inventory->id)->first();
         if($inventoryItem){
             $inventoryItem->invtry_hdr = 1;
-            $inventoryItem->prodline = 1;
-            $inventoryItem->services = 1;
-            $inventoryItem->brands = $inventory->Brand_ID;
-            $inventoryItem->save();
+           $success = $inventoryItem->save();
 
         }else{
             $inventoryChange = new InventoryChange;
             $inventoryChange->invtry_hdr = 1;
-            $inventoryChange->prodline = 1;
-            $inventoryChange->services = 1;
-            $inventoryChange->brands = $inventory->Brand_ID;
-            $inventoryChange->save();
+            $success = $inventoryChange->save();
 
         }
 
-        \Session::flash('success', "Item updated successfully");
-        return redirect()->route('inventory.index');
+        if($success){
+            \Session::flash('alert-class', "Item updated successfully");
+            return redirect()->route('inventory.index');
+        }
+        \Session::flash('flash_message', "Something went wrong!");
+        return back()->withInput();
+
     }
 
     /**
@@ -244,13 +240,13 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "D"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
         $inventoryItem = Inventory::where("item_id", $id)->delete();
         if($inventoryItem) {
-            \Session::flash('success', "Item deleted successfully");
+            \Session::flash('alert-class', "Item deleted successfully");
             return redirect()->route('inventory.index');
         }
     }

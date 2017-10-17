@@ -15,7 +15,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane" id="template">
-                    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "V"))
+                    @if(\Auth::user()->checkAccessById(2, "V"))
                         @include('rates.template-tab')
                     @else
                         <div class="alert alert-danger no-close">
@@ -24,7 +24,7 @@
                     @endif
                 </div>
                 <div role="tabpanel" class="tab-pane" id="schedule">
-                    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "V"))
+                    @if(\Auth::user()->checkAccessById(2, "V"))
                         @include('rates.schedule-tab')
                     @else
                         <div class="alert alert-danger no-close">

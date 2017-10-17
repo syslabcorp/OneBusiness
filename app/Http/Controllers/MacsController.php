@@ -19,7 +19,7 @@ class MacsController extends Controller
         }
 
         $this->validate($request, [
-            'mac.*.Mac_Address' => 'required_with:is_modify|unique:t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable',
+            'mac.*.Mac_Address' => 'required_with:is_modify|unique:mysql2.t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable',
             'mac.*.IP_Addr' => 'required_with:is_modify|regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/|nullable',
             'mac.*.PC_No' => 'max:5'
         ]);
@@ -85,7 +85,7 @@ class MacsController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'Mac_Address' => 'unique:t_rates|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
+            'Mac_Address' => 'unique:mysql2.t_rates|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|nullable'
         ]);
 
         if($validator->fails())

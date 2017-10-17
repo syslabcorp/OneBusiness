@@ -16,7 +16,10 @@
     @endif
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL('/css/bootstrap.min.css') }}" />
     <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
@@ -71,22 +74,9 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-							<li><a href="{{ URL('active_users') }}">Active Users</a></li>
-							<li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
-							<li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
-							<li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    Manage Masters <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ URL('list_corporation') }}">Corporations</a></li>
-                                    <li><a href="{{ URL('list_module') }}">Modules</a></li>
-                                    <li><a href="{{ URL('list_feature') }}">Features</a></li>
-                                </ul>
-                            </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->Full_Name }} <span class="caret"></span>
+                                    {{ Auth::user()->UserName }} <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ URL('logout') }}">Logout</a></li>
@@ -97,17 +87,7 @@
                 </div>
             </div>
         </nav>
-        <div class="row" style="margin-top: 15px;">
-            @if(\Session::get('error'))
-            <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
-                <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
-            </div>
-            @elseif(\Session::get('success'))
-                <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
-                    <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
-                </div>
-            @endif
-        </div>
+
         <div class="container-fluid">
           <div class="row">
             <div id="togle-sidebar-sec" class="active">
@@ -120,7 +100,22 @@
                 </div>
               </div>
               <div id="page-content-togle-sidebar-sec">
-                @yield('content')
+                @if(\Session::get('error') || \Session::get('success'))
+                  <div class="row">
+                      @if(\Session::get('error'))
+                      <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
+                          <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
+                      </div>
+                      @elseif(\Session::get('success'))
+                          <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
+                              <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
+                          </div>
+                      @endif
+                  </div>
+                @endif
+                <div class="box-content">
+                  @yield('content')
+                </div>
               </div>
             </div>
           </div>

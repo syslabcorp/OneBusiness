@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Branch;
+use App\Company;
 use Illuminate\Http\Request;
 
 class BranchsController extends Controller
 {
     public function index(Request $request)
     {
-
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "V"))
+        if(!\Auth::user()->checkAccessById(1, "V"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -20,11 +20,33 @@ class BranchsController extends Controller
 
         $branchs = Branch::orderBy('Branch', 'ASC');
 
+        $branchIds = [];
+        $cityIds = [];
+        $provinceIds = [];
+
+        if(\Auth::user()->area) {
+          $branchIds = explode(",", \Auth::user()->area->branch);
+          $cityIds = explode(",", \Auth::user()->area->city);
+          $provinceIds = explode(",", \Auth::user()->area->province);
+        }
+
         if($status == "active") {
             $branchs = $branchs->where('active', '=', 1);
         }elseif($status == "inactive") {
             $branchs = $branchs->where('active', '!=', 1);
         }
+
+        if($request->get('corpID')) {
+            $branchs = $branchs->where('corp_id', '=', $request->get('corpID'));
+        }
+
+        $branchs = $branchs->leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
+                          ->where(function($q) use($branchIds, $cityIds, $provinceIds) {
+                            $q->orWhereIn('Branch', $branchIds)
+                              ->orWhereIn('t_sysdata.City_ID', $cityIds)
+                              ->orWhereIn('t_cities.Prov_ID', $provinceIds);
+                          });
+        
         $branchs = $branchs->get();
 
         $result = [];
@@ -37,26 +59,30 @@ class BranchsController extends Controller
             $result[$branch->city->province->Prov_ID]['cities'][$branch->City_ID][] = $branch;
             $result[$branch->city->province->Prov_ID]['count'] += 1;
         }
+        $company = Company::find($request->get('corpID'));
+
         return view('branchs.index', [
+            'company' => $company,
             'branchs' => $result,
-            'status' => $status
+            'status' => $status,
+            'corpId' => $request->get('corpID')
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccessById(1, "A"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
 
-        return view('branchs.create');
+        return view('branchs.create', ['corpId' => $request->get('corpID')]);
     }
 
     public function store(Request $request)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "A"))
+        if(!\Auth::user()->checkAccessById(1, "A"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -78,6 +104,7 @@ class BranchsController extends Controller
         $params['City_ID'] = $params['City_ID'];
         $params['MaxUnits'] = $params['units'];
         $params['StubPrint'] = 0;
+        $params['corp_id'] = isset($params['corpID']) ? $params['corpID'] : null;
 
         $branch = Branch::create($params);
         for($i = 0; $i < $params['units']; $i++)
@@ -116,15 +143,16 @@ class BranchsController extends Controller
 
         \Session::flash('success', "New branch has been created.");
 
-        return redirect(route('branchs.index'));
+        return redirect(route('branchs.index', ['corpID' => $branch->corp_id]));
     }
 
     public function edit(Branch $branch)
     {
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E")) {
+        if(!\Auth::user()->checkAccessById(1, "E")) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home");
         }
+
 
         $lcUid = Branch::select(\DB::raw("AES_DECRYPT(lc_uid, '" . env("LOADCENTRAL_PWDKEY") .  "') as lc_uid"))->where("Branch", "=", $branch->Branch)->first();
 
@@ -138,7 +166,7 @@ class BranchsController extends Controller
     public function update(Request $request, Branch $branch)
     {
 
-        if(!\Auth::user()->checkAccess("Branch Setup & Details", "E"))
+        if(!\Auth::user()->checkAccessById(1, "E"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -193,7 +221,7 @@ class BranchsController extends Controller
 
         $this->validate($request, [
             'receiving_mobile_number' => 'max:11',
-            'MAC_Address' => 'required|unique:t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
+            'MAC_Address' => 'required|unique:mysql2.t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
             'cashier_ip' => 'required|regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/'
         ]);
 

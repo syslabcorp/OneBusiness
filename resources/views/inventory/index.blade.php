@@ -46,7 +46,7 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
@@ -138,7 +138,7 @@
                 <form action="" method="POST" >
                     <div class="modal-body">
                         <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
-                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="brandToDelete"></span>-
+                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="brandToDelete"></span> -
                             <span style="font-weight:bold" class="descriptionOfBrand"></span> ?</p>
                         <p class="debug-url"></p>
                     </div>
@@ -173,11 +173,10 @@
                 e.preventDefault();
 
                 var id  = $(this).closest('td').find('span').text();
-                var itemCode  = $(this).closest('tr').find('td:nth-child(4)').text();
-                var description  = $(this).closest('tr').find('td:nth-child(5)').text();
+                var itemCode  = $(this).closest('tr').find('td:nth-child(2)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
-                $('#confirm-delete .brandToDelete').text(itemCode);
-                $('#confirm-delete .descriptionOfBrand').text(description);
+                $('#confirm-delete .brandToDelete').text(id);
+                $('#confirm-delete .descriptionOfBrand').text(itemCode);
                 $('#confirm-delete form').attr('action', 'inventory/'+id);
                 $('#confirm-delete').modal("show");
             });

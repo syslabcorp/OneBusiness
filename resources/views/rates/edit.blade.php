@@ -9,7 +9,7 @@
     <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;"
       value="{{ $rate->tmplate_name }}">
     @if($errors->has('tmplate_name'))
-      <span class="help-block">Template Name can't blank.</span>
+      <span class="help-block">{{ preg_replace("/tmplate/", "template", $errors->first('tmplate_name')) }}</span>
     @endif
   </div>
   <div class="form-group" style="display:inline-block;vertical-align: top;">
@@ -50,36 +50,45 @@
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('ZoneStart1') ? 'has-error' : '' }}">
         <label for="">Timezone 1:</label>
         <input type="time" class="form-control" name="ZoneStart1" value="{{ $rate->ZoneStart1 }}">
+        @if($errors->has('ZoneStart1'))
+          <span class="help-block">{{ $errors->first('ZoneStart1') }}</span>
+        @endif
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 1:</label>
+        <label for="">Discount 1: (%)</label>
         <input type="number" class="form-control" name="Discount1" value="{{ $rate->Discount1 }}">
       </div>
     </div>
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('ZoneStart2') ? 'has-error' : '' }}">
         <label for="">Timezone 2:</label>
         <input type="time" class="form-control" name="ZoneStart2" value="{{ $rate->ZoneStart2 }}">
+        @if($errors->has('ZoneStart2'))
+          <span class="help-block">{{ $errors->first('ZoneStart2') }}</span>
+        @endif
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 2:</label>
+        <label for="">Discount 2: (%)</label>
         <input type="number" class="form-control" name="Discount2" value="{{ $rate->Discount2 }}">
       </div>
     </div>
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('ZoneStart3') ? 'has-error' : '' }}">
         <label for="">Timezone 3:</label>
         <input type="time" class="form-control" name="ZoneStart3" value="{{ $rate->ZoneStart3 }}">
+        @if($errors->has('ZoneStart3'))
+          <span class="help-block">{{ $errors->first('ZoneStart3') }}</span>
+        @endif
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 3:</label>
+        <label for="">Discount 3: (%)</label>
         <input type="number" class="form-control" name="Discount3" value="{{ $rate->Discount3 }}">
       </div>
     </div>

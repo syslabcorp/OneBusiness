@@ -24,10 +24,14 @@
             z-index: 10001 !important;;
         }
 
-        #example_ddl > select {
-            margin: 2px 0 2px 0;
-            width: 176px;
-            height: 30px;
+
+        #example_ddl label {
+            position: relative;
+            top: 8px;
+        }
+
+        .edit {
+            margin-right: 2px;
         }
 
     </style>
@@ -62,7 +66,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="{{ route('satellite-branch.create') }}" class="pull-right @if(!\Auth::user()->checkAccessById(23, "A")) disabled @endif" >Add Satellite Branch</a>
+                                            <a href="{{ route('satellite-branch.create') }}" class="pull-right @if(!\Auth::user()->checkAccessById(26, "A")) disabled @endif" >Add Satellite Branch</a>
                                         </div>
                                     </div>
 
@@ -74,27 +78,10 @@
                                             <th>ID</th>
                                             <th>Satellite Branch</th>
                                             <th>Description</th>
-                                            <th>Active</th>
                                             <th>Notes</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        @foreach($satelliteBranches as $branch)
-                                            <tr>
-                                                <td>{{ $branch->sat_branch }}</td>
-                                                <td>{{ $branch->short_name }}</td>
-                                                <td>{{ $branch->description }}</td>
-                                                <td>{{ $branch->active }}</td>
-                                                <td>{{ $branch->notes }}</td>
-                                                <td>
-                                                    <a href="satellite-branch/{{ $branch->sat_branch }}/edit" name="edit" class="btn btn-primary btn-sm edit  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $branch->sat_branch }}</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -105,47 +92,129 @@
         </div>
     </div>
 
+    <!-- Modal delete satellite branch -->
+    <div class="modal fade" id="confirm-delete" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <form action="" method="POST" >
+                    <div class="modal-body">
+                        <p class="text-center">You are about to delete one track, this procedure is irreversible.</p>
+                        <p class="text-center">Do you want to proceed deleting <span style="font-weight: bold" class="brandToDelete"></span> -
+                            <span style="font-weight:bold" class="descriptionOfBrand"></span> ?</p>
+                        <p class="debug-url"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input style="display: none" class="serviceId" >
+                        {!! csrf_field() !!}
+                        {{ method_field('Delete') }}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end Modal -->
+
 @endsection
 
 @section('footer-scripts')
     <script>
         (function($){
-            $('#myTable').DataTable({
+
+            var table = $('#myTable').DataTable({
                 initComplete: function () {
-                    this.api().columns(3).every( function () {
-                        var column = this;
-                        var select = $('<select><option value="">All</option></select>')
-                            .appendTo( '#example_ddl' )
-                            .on( 'change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
+                    $('<label for="">Filters:</label>').appendTo("#example_ddl");
+                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}" selected>{{ $corporations[0]->corp_name }}</option></select>')
+                        .appendTo('#example_ddl2');
+                    var cntCorp = 0;
+                    @foreach($corporations as $key => $val)
+                            if(cntCorp != 0) {
+                        corporationID.append('<option value="{{ $val->corp_id }}" >{{ $val->corp_name }}</option>');
 
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false )
-                                    .draw();
-                            } );
-
-                        column.data().unique().sort().each( function ( d, j ) {
-                            var activeName = "";
-                            if(d == 1) { activeName = 'Active'; } else { activeName = 'Inactive'; };
-                            select.append( '<option value="'+d+'">'+activeName+'</option>' )
-                        } );
-                    } );
+                    }
+                    cntCorp++;
+                    @endforeach
+                    var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
+                        .appendTo('#example_ddl3');
+                    branchStatus.append('<option value="0">Inactive</option>');
+                },
+                "processing": true,
+                "serverSide": true,
+                "order": [[ 0, "asc" ]],
+                "ajax" : {
+                    type: "POST",
+                    url: "satellite-branch/get-branch-list",
+                    data: function ( d ) {
+                        d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val(),
+                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val()
+                        // d.custom = $('#myInput').val();
+                        // etc
+                    }
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                    "<'row'<'col-sm-12'<'#example_ddl.pull-right'>>>" +
+                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-5.pull-left'<'#example_ddl2'>><'col-sm-5'<'#example_ddl3'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.sat_branch;
+                        },
+                        "targets": 0
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.short_name;
+                        },
+                        "targets": 1
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.description;
+                        },
+                        "targets": 2
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.notes;
+                        },
+                        "targets": 3
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var optionClass = "";
+                            if(checkAccess == 0) { optionClass = 'disabled' };
+                            return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
+                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClass+'">'+
+                                '<i class="glyphicon glyphicon-trash"></i></a>';
+
+                        },
+                        "targets": 4
+                    },
                     { "width": "5%", "targets": 0},
-                    { "visible": false, "searchable": true, "targets": 3 },
-                    { "orderable": false, "width": "9%", "targets": 5 },
-                    {"className": "dt-center", "targets": 5}
-                ]
+                    { "orderable": false, "width": "9%", "targets": 4 },
+                    {"className": "dt-center", "targets": 4},
+                    {"className": "dt-center", "targets": 0}
+                ],
+                "columns": [
+                    { "data": "sat_branch" },
+                    { "data": "short_name" },
+                    { "data": "description" },
+                    { "data": "notes" }
+                ],
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
@@ -157,6 +226,27 @@
                 $('#confirm-delete form').attr('action', 'brands/'+id);
                 $('#confirm-delete').modal("show");
             });
+
+            $('#example_ddl3').on('change', function () {
+                table.ajax.reload();
+            });
+
+            $('#example_ddl2').on('change', function () {
+                table.ajax.reload();
+            });
+
+            $(document).on('click', '.delete', function (e) {
+                e.preventDefault();
+
+                var id  = $(this).closest('td').find('span').text();
+                var description  = $(this).closest('tr').find('td:nth-child(2)').text();
+                $('#confirm-delete').find('.serviceId').val(id);
+                $('#confirm-delete .brandToDelete').text(id);
+                $('#confirm-delete .descriptionOfBrand').text(description);
+                $('#confirm-delete form').attr('action', 'satellite-branch/'+id);
+                $('#confirm-delete').modal("show");
+            });
+
 
         })(jQuery);
     </script>

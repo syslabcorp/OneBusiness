@@ -59,7 +59,7 @@ class ProductLineController extends Controller
         //if validator passed store service item
         $product = new ProductLine;
         $product->Product = $request->input('prodcutLineName');
-        $product->Active = 1;
+        $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
 
         \Session::flash('success', "Product Line added successfully");
@@ -109,6 +109,7 @@ class ProductLineController extends Controller
         //if validator passed store service item
         $product = ProductLine::where('ProdLine_ID', $id)->first();
         $product->Product = $request->input('editProductLineName');
+        $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
 
         \Session::flash('success', "Product Line updated successfully");

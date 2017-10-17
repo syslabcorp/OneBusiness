@@ -9,15 +9,11 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-/*
-	protected $table = 'sysusers';
-*/
-	
-
 	protected $table = 't_users';
 
 	protected $primaryKey = 'UserID';
-	private $permissions;
+    private $permissions;
+    protected $connection = 'mysql';
     /**
      * The attributes that are mass assignable.
      *
@@ -43,6 +39,10 @@ class User extends Authenticatable
     public function branchs()
     {
         return $this->hasMany(\App\Branch::class);
+    }
+
+    public function area() {
+        return $this->belongsTo(\App\UserArea::class, 'UserID', 'user_ID');
     }
 
 	/*

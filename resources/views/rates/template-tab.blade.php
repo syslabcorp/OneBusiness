@@ -16,7 +16,9 @@
   <label for="">Color:</label>
   <div class="color-picker" style="background: {{ $rate->Color }};pointer-events: none;"></div>
   @endif
+  <button class="btn btn-danger cancel-selection" style="float:right;margin-top:5px;display:none;">Cancel Selection</button>
   <hr style="margin: 10px 0px 0px 0px;">
+  
 </div>
 
 <div class="col-md-4">
@@ -53,7 +55,7 @@
         <input type="time" class="form-control" disabled="true" value="{{ $rate->ZoneStart1 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 2:</label>
+        <label for="">Discount 1: (%)</label>
         <input type="number" class="form-control" disabled="true" value="{{ $rate->Discount1 }}">
       </div>
     </div>
@@ -65,7 +67,7 @@
         <input type="time" class="form-control" disabled="true" value="{{ $rate->ZoneStart2 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 2:</label>
+        <label for="">Discount 2: (%)</label>
         <input type="number" class="form-control" disabled="true" value="{{ $rate->Discount2 }}">
       </div>
     </div>
@@ -77,7 +79,7 @@
         <input type="time" class="form-control" disabled="true" value="{{ $rate->ZoneStart3 }}">
       </div>
       <div class="col-xs-6">
-        <label for="">Discount 3:</label>
+        <label for="">Discount 3: (%)</label>
         <input type="number" class="form-control" disabled="true" value="{{ $rate->Discount3 }}">
       </div>
     </div>
@@ -104,12 +106,12 @@
   </div>
   <hr style="margin: 0px 0px 10px 0px;">
   <div class="form-group text-center">
-    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "A"))
+    @if(\Auth::user()->checkAccessById(2, "A"))
     <a class="btn btn-sm btn-success" href="{{ route('branchs.rates.index', [$branch, 'action' => 'new']) }}">
       <i class="fa fa-plus"></i> New
     </a>
     @endif
-    @if($rate && \Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    @if($rate && \Auth::user()->checkAccessById(2, "E"))
     <a class="btn btn-sm btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'tmplate_id' => $rate->tmplate_id]) }}">
       <i class="fa fa-pencil"></i> Edit
     </a>
@@ -120,7 +122,7 @@
   </div>
 </div>
 <div class="col-md-8" style="border-left: 1px solid #d2d2d2;padding: 0px;">
-  @if($rate->charge_mode == 1)
+  @if($rate->charge_mode == 1 || empty($rate->charge_mode))
   <form action="{{ route('branchs.rates.details', [$branch, $rate]) }}" method="POST">
     <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
@@ -145,31 +147,81 @@
       <tbody>
         @foreach($rate->details()->orderBy('nKey', 'ASC')->get() as $detail)
         <tr>
-          <td style="vertical-align: middle;">{{ $detail->nKey }}</td>
+          <td style="vertical-align: middle;">{{ $detail->PC_No }}</td>
           <td>
-            <input type="number" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]">
+            <input type="text" step="any" class="form-control" value="{{ $detail->MinAmt1 }}" name="detail[{{ $detail->nKey }}][MinAmt1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_1]">
+            <input type="text" class="form-control" value="{{ $detail->Net_1 }}" name="detail[{{ $detail->nKey }}][Net_1]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]">
+            <input type="text" class="form-control" value="{{ $detail->MinAmt2 }}" name="detail[{{ $detail->nKey }}][MinAmt2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]">
+            <input type="text" class="form-control" value="{{ $detail->Net_2 }}" name="detail[{{ $detail->nKey }}][Net_2]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]">
+            <input type="text" class="form-control" value="{{ $detail->MinAmt3 }}" name="detail[{{ $detail->nKey }}][MinAmt3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
           <td>
-            <input type="number" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]">
+            <input type="text" class="form-control" value="{{ $detail->Net_3 }}" name="detail[{{ $detail->nKey }}][Net_3]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
           </td>
         </tr>
         @endforeach
+        @if($rate->details()->count() == 0)
+        <tr>
+          <td colspan="7"><strong>No data to display</strong></td>
+        </tr>
+        @endif
       </tbody>
     </table>
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
+    <div class="box-assign nohide">
+      <hr>
+      <table class="table borderred">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Min Change</th>
+            <th>Per Minute</th>
+            <th>Min Change</th>
+            <th>Per Minute</th>
+            <th>Min Change</th>
+            <th>Per Minute</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <button class="btn btn-sm btn-success" type="button">
+                <i class="fa fa-magic"></i>
+              </button>
+            </td>
+            <td>
+              <input type="text" step="any" class="form-control" placeholder="0.00">
+            </td>
+            <td>
+              <input type="text" step="any" class="form-control" placeholder="0.00">
+            </td>
+            <td>
+              <input type="text" step="any" class="form-control" placeholder="0.00">
+            </td>
+            <td>
+              <input type="text" step="any" class="form-control" placeholder="0.00">
+            </td>
+            <td>
+              <input type="text" step="any" class="form-control" placeholder="0.00">
+            </td>
+            <td>
+              <input type="text" step="any" class="form-control" placeholder="0.00">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    @endif
     <hr>
-    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
@@ -177,7 +229,7 @@
     </div>
     @endif
   </form>
-  @else
+  @elseif($rate->charge_mode == 5)
   <form action="{{ route('branchs.rates.details', [$branch, $rate]) }}" method="POST">
     <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
@@ -206,69 +258,152 @@
               <th>50 mins</th>
               <th>55 mins</th>
               <th>60 mins</th>
+              <th>Min Charge</th>
             </tr>
           </thead>
           <tbody>
             @foreach($rate->details()->orderBy('nKey', 'ASC')->get() as $detail)
             <tr>
-              <td>{{ $detail->nKey }}</td>
+              <td>{{ $detail->pcNo }}</td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_5"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_5]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_5]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_10"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_10]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_10]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_15"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_15]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_15]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_20"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_20]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_20]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_25"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_25]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_25]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_30"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_30]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_30]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_35"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_35]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_35]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_40"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_40]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_40]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_45"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_45]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_45]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_50"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_50]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_50]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_55"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_55]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_55]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
               <td>
                 <input type="text" class="form-control" value="{{ $detail["Z{$i}min_60"] }}" 
-                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_60]">
+                  name="detail[{{ $detail->nKey }}][Z{{$i}}min_60]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
+              </td>
+              <td>
+                <input type="text" class="form-control" value="{{ $detail["MinAmt{$i}"] }}" 
+                  name="detail[{{ $detail->nKey }}][MinAmt{{$i}}]" {{ \Auth::user()->checkAccessById(2, "E") ? "" : "disabled" }} readonly="true">
               </td>
             </tr>
             @endforeach
+            @if($rate->details()->count() == 0)
+              <tr>
+                <td colspan="14"><strong>No data to display</strong></td>
+              </tr>
+            @endif
           </tbody>
         </table>
       </div>
       @endfor
+      @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
+      <div class="box-assign nohide">
+        <hr>
+        <table class="table borderred">
+          <thead>
+            <tr>
+              <th></th>
+              <th>5 mins</th>
+              <th>10 mins</th>
+              <th>15 mins</th>
+              <th>20 mins</th>
+              <th>25 mins</th>
+              <th>30 mins</th>
+              <th>35 mins</th>
+              <th>40 mins</th>
+              <th>45 mins</th>
+              <th>50 mins</th>
+              <th>55 mins</th>
+              <th>60 mins</th>
+              <th>Min Charge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <button class="btn btn-sm btn-success" type="button">
+                  <i class="fa fa-magic"></i>
+                </button>
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+              <td>
+                <input type="text" class="form-control" placeholder="0.00">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      @endif
     </div>
     <hr>
-    @if(\Auth::user()->checkAccess("Rates & Schedule Assignment", "E"))
+    @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
       <button class="btn btn-sm btn-success">
         <i class="fa fa-save"></i> Save
