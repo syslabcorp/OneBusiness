@@ -54,7 +54,7 @@ class BankController extends Controller
 
         //get banks from db
         $selectBank = Bank::orderBy('bank_id', 'ASC')->get();
-        $selectCorp = DB::table('corporation_master')->orderBy('corp_name', 'ASC')->get();
+        $selectCorp = DB::table('corporation_masters')->orderBy('corp_name', 'ASC')->get();
 
 
         return view('banks.index')
