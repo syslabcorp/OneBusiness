@@ -116,7 +116,7 @@ class BankController extends Controller
             "data" => ($banks != null) ? $banks : 0
         );
 
-        return response()->json(utf8_encode($columns), 200);
+        return response()->json($columns, 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
     /**
