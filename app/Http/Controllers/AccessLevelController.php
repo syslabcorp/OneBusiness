@@ -78,7 +78,7 @@ class AccessLevelController extends Controller
                 $tid_is_admin = DB::table('rights_template')->select('template_id')->where('is_super_admin', 1)->get();
                 if(isset($tid_is_admin)){
                     foreach ($tid_is_admin as $key => $value) {
-                            DB::table('rights_mstr')->insertGetId(array('template_id' => $value->template_id,'module_id'   =>$id_module,));
+                            DB::table('rights_mstr')->insertGetId(array('template_id' => $value->template_id,'module_id'   =>$id_module));
                     }
                 }
                 Request::session()->flash('flash_message', 'Module has been added.');
@@ -347,7 +347,16 @@ class AccessLevelController extends Controller
             $created_at   = date("Y-m-d H:i:s");
             $data = array('parent_id' => $parent_id,'title' => $formData["title"],'icon' => $formData["icon"],'url' => $formData["url"],"created_at" => date("Y-m-d H:i:s"));
             if ($id == NULL) {
-                DB::table('menus')->insertGetId($data);
+                $id_menu = DB::table('menus')->insertGetId($data);
+                $tid_is_admin = DB::table('rights_template')->select('template_id','template_menus')->where('is_super_admin', 1)->get();
+                if(isset($tid_is_admin)){
+                    foreach ($tid_is_admin as $key => $value) {
+                        $menu_id_temp = explode(",", $value->template_menus);
+                        array_push($menu_id_temp, $id_menu);
+                        $menu_implode = implode(',', $menu_id_temp);
+                        DB::table('rights_template')->where('template_id', $value->template_id)->update(array('template_menus' => $menu_implode));
+                    }
+                }
                 Request::session()->flash('flash_message', 'Menu has been added.');
             }else{
                 DB::table('menus')->where('id', $id)->update($data);
@@ -365,7 +374,44 @@ class AccessLevelController extends Controller
         return view('accesslevel.add_menu',$data);
     }
 
-    public function get_child_menu(){
+    
+	// Vineet function Start
+	public function get_child_menu_call(){
+		$menu_arr = [];
+		$formData = Request::all();
+		$menu_ids = isset($formData['new_menu_ids']) ? $formData['new_menu_ids'] : [0];
+		foreach($menu_ids AS $menu_id){
+			$formData = [
+				'id' => $menu_id,
+				'menu_ids' => $menu_ids
+			];
+			$response = $this->get_child_menu_new($formData);
+			if($response){
+				$menu_arr[$menu_id] = $response;
+			}
+		}
+		echo json_encode($menu_arr);
+		die;
+	}
+
+	public function get_child_menu_new($formData){
+		$menus = DB::table('menus')->where('parent_id', $formData['id'])->get();
+		if(!empty($menus) && count($menus)){
+			$temp_menu = isset($formData['menu_ids']) ? $formData['menu_ids'] : array();
+			$child_menu = '<ul class="remove-append-'.$formData['id'].'">';
+			foreach ($menus as $key => $menu) {
+				$child_menu .=  '<li class="appen-sub-'.$menu->id.'"><input type="checkbox" '.(in_array($menu->id, $temp_menu) ? "checked" : '').' name="menu[]" id="click-by-'.$menu->id.'" class="append-child-menu" value="'.$menu->id.'" style="margin-right: 10px;" />'.$menu->title.'</li>';
+			}
+			$child_menu .= '</ul>';
+			return $child_menu;
+		}else{
+			return 0;
+		}
+    }
+	// Vineet function End
+	
+	
+	public function get_child_menu(){
         $formData = Request::all();
         $menus = DB::table('menus')->where('parent_id', $formData['id'])->get();
 		$temp_menu = isset($formData['menu_ids']) ? $formData['menu_ids'] : array();
