@@ -464,7 +464,7 @@
                         if(data.active){
                             $('input[name="editActiveAccount').attr("checked", true);
                         }
-                        $('#editAccount form').attr('action', '/vendor-management/'+id);
+                        $('#editAccount form').attr('action', '/OneBusiness/vendor-management/'+id);
                         $('#editAccount').modal("show");
                     }
                 })
