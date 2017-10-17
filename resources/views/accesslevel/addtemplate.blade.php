@@ -117,11 +117,30 @@ $(function(){
 			get_template_module(0);
 		<?php }
     ?>
-	get_child_menus(0, menu_ids);
+	var new_menu_ids = menu_ids;
+    if(!$.isEmptyObject(menu_ids)){
+    	new_menu_ids.unshift("0");
+    }
+
+	var _token = $("meta[name='csrf-token']").attr('content');
+	$.ajax({
+		url: ajax_url+'/get_child_menu_call',
+		data: {_token, new_menu_ids},
+		type: "POST",
+		dataType: "JSON",
+        async: false,
+		success: function(response){
+		   $.each(response, function(k,v){
+			   $(".appen-sub-"+k).append(v);
+		   });
+		}
+	});
+	
+	/* get_child_menus(0, menu_ids);
     
 	$.each(menu_ids, function(k,v){
 		get_child_menus(v, menu_ids);
-	});
+	}); */
 	$.each(menu_ids, function(k,v){
 		$("#menus input#click-by-"+v).prop( "checked", true );
 	});
@@ -181,8 +200,19 @@ $(function () {
         if($(this).is(":checked")){
             $(this).val(1);
             <?php if(!isset($detail_edit_template->is_super_admin)){ ?>
-            $.each(all_menu_ids, function(k,v){
-                get_child_menus(v, all_menu_ids);
+            new_menu_ids = all_menu_ids;
+            var _token = $("meta[name='csrf-token']").attr('content');
+            $.ajax({
+                url: ajax_url+'/get_child_menu_call',
+                data: {_token, new_menu_ids},
+                type: "POST",
+                dataType: "JSON",
+                async: false,
+                success: function(response){
+                   $.each(response, function(k,v){
+                       $(".appen-sub-"+k).append(v);
+                   });
+                }
             });
             <?php }else if ($detail_edit_template->is_super_admin == 0) {?>  
                 var _thisClass = '';
@@ -192,8 +222,19 @@ $(function () {
                         $("#menus ul."+_thisClass).html('');
                     }
                 });
-                    $.each(all_menu_ids, function(k,v){
-                    get_child_menus(v, all_menu_ids);
+                new_menu_ids = all_menu_ids;
+                var _token = $("meta[name='csrf-token']").attr('content');
+                $.ajax({
+                    url: ajax_url+'/get_child_menu_call',
+                    data: {_token, new_menu_ids},
+                    type: "POST",
+                    dataType: "JSON",
+                    async: false,
+                    success: function(response){
+                       $.each(response, function(k,v){
+                           $(".appen-sub-"+k).append(v);
+                       });
+                    }
                 });
              <?php } ?>
             $("input.checkboxclick:checked").each(function (){  
