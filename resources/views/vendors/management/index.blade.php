@@ -446,7 +446,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/vendor-management/get-account-for-vendor",
+                    url: "/OneBusiness/vendor-management/get-account-for-vendor",
                     data: { id : id },
                     success: function (data) {
                         if(data.nx_branch == -1){
