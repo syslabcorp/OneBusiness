@@ -100,6 +100,7 @@
                                             <th>Cycle(days)</th>
                                             <th>Offset</th>
                                             <th>Active</th>
+                                            <th>Hiden</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -112,6 +113,8 @@
                                                 <td>{{ $vendormgm->description }}</td>
                                                 <td>{{ $vendormgm->days_offset }}</td>
                                                 <td>{{ $vendormgm->firstday_offset }}</td>
+                                                <td>@if($vendormgm->active) <input type="checkbox" disabled checked> @else
+                                                        <input type="checkbox" disabled>@endif</td>
                                                 <td>{{ $vendormgm->active }}</td>
                                                 <td>
                                                     <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
@@ -215,7 +218,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="suppId" value="">
+                                <input type="hidden" name="suppId" value="{{ $vendors[0]->supp_id }}">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -311,7 +314,7 @@
                                 {!! csrf_field() !!}
                                 {{ method_field('PUT') }}
                                 <input type="hidden" name="suppId" value="@if($vendors->count() > 0 ){{ $vendors[0]->supp_id }} @endif">
-                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                                <button type="submit" class="btn btn-success pull-right">Update</button>
                             </div>
                         </div>
                     </div>
@@ -404,8 +407,9 @@
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
                     { "width": "5%", "targets": 0},
+                    { "orderable": false, 'visible': false, "targets": 7},
                     { "orderable": false, "width": "9%", "targets": 5 },
-                    {"className": "dt-center", "targets": 5}
+                    {"className": "dt-center", "targets": [5, 6]}
                 ]
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
