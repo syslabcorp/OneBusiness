@@ -38,6 +38,7 @@ class VendorManagementController extends Controller
      */
     public function store(Request $request)
     {
+
         //retrieve input
         $suppId = $request->input('suppId');
         $branchId = $request->input('branchName');
@@ -48,7 +49,6 @@ class VendorManagementController extends Controller
         $offsetDays = $request->input('offsetDays');
         $activeAccount = $request->input('activeAccount');
         $corpId = $request->input('corporationId');
-
         //create new instance
         $vendorMgm = new VendorManagement;
         $vendorMgm->supp_id = $suppId;

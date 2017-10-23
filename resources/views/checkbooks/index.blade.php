@@ -460,20 +460,127 @@
             })
 
             $('#example_ddl5').on("click", function() {
+                if($('#example_ddl5 input').is(':checked')){
+                    $('#example_ddl4 select').attr('disabled', true).css({"background-color":"#FFF", "color":"#FFF"});
+                }else{
+                    $('#example_ddl4 select').attr('disabled', false).css("color", "#333");
+                }
                 mainTable.ajax.reload();
             });
 
             $('#example_ddl2').on('change', function () {
+                var dataStatus = $('#example_ddl3 select option:selected').val();
+                var corpId = $('#example_ddl2 select option:selected').val();
+
+                var options = $('#example_ddl1 select');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: 'checkbooks/get-branches',
+                    data: { status : dataStatus, corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+                        if(cnt != 0){
+                            lastColumnReload();
+                        }
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
                 mainTable.ajax.reload();
             })
 
             $('#example_ddl3').on('change', function () {
+                var dataStatus = $('#example_ddl3 select option:selected').val();
+                var corpId = $('#example_ddl2 select option:selected').val();
+
+                var options = $('#example_ddl1 select');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: 'checkbooks/get-branches',
+                    data: { status : dataStatus, corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+                        if(cnt != 0){
+                            lastColumnReload();
+                        }
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
                 mainTable.ajax.reload();
             })
 
             $('#example_ddl1').on('change', function () {
+                var branchId = $('#example_ddl1 select option:selected').val();
+
+                var options = $('#example_ddl4 select');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: 'checkbooks/get-banks',
+                    data: { branchId : branchId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.bank_acct_id+'">'+val.account_info+'</option>');
+                        })
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
                 mainTable.ajax.reload();
             })
+
+            //reload
+            function lastColumnReload(){
+
+                    var branchId = $('#example_ddl1 select option:selected').val();
+
+                    var options = $('#example_ddl4 select');
+                    options.empty();
+                    //get branches
+                    var cnt = 0;
+                    $.ajax({
+                        method: 'POST',
+                        url: 'checkbooks/get-banks',
+                        data: { branchId : branchId },
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            $.each(data, function (key, val) {
+                                cnt++;
+                                options.append('<option value="'+val.bank_acct_id+'">'+val.account_info+'</option>');
+                            })
+                            if(cnt == 0){
+                                options.append('<option value="">No options</option>');
+                            }
+                        }
+
+                    })
+                    mainTable.ajax.reload();
+            }
 
 
             $('#example_ddl4').on('change', function () {
@@ -514,7 +621,7 @@
                             $('#confirm-delete-account').modal("toggle");
 
                             $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
-                                '</span><em>&nbspAccount deleted successfully!</em></div></div>');
+                                '</span><em>&nbspCheck book series deleted successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
@@ -558,7 +665,6 @@
                 var accountID  = $('input[name="editAccountId"]').val();
                 var editStart = $('#editStartingNum').val();
                 var editEnd = $('#editEndingNum').val();
-                console.log(accountID+' '+editStart+' '+editEnd)
 
                 $.ajax({
                     method: 'POST',

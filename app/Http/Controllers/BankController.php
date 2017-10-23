@@ -31,8 +31,8 @@ class BankController extends Controller
             ->where('user_ID', \Auth::user()->UserID)
             ->pluck('branch');
 
+        //todo check if this exists
         $branch = explode(",", $branches[0]);
-
 
 
         //dd($branch);
@@ -44,11 +44,14 @@ class BankController extends Controller
             ->distinct()
             ->get();
 
+        //todo 1 maybe some corporations don't exists need to be checked
+
         //get records from t_sysdata
         $tSysdata = DB::table('t_sysdata')
             ->orderBy('Branch', 'ASC')
             ->where('Active', 1)
             ->where('corp_id', $corporations[0]->corp_id)
+            ->select('t_sysdata.ShortName', 't_sysData.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
             ->get();
 
 
@@ -116,7 +119,7 @@ class BankController extends Controller
             "data" => ($banks != null) ? $banks : 0
         );
 
-        return response()->json($columns, 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
+        return response()->json($columns, 200);
     }
 
     /**

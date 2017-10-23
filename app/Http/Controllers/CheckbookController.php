@@ -25,21 +25,12 @@ class CheckbookController extends Controller
         }
 
 
-
         //get user data
         $branches = DB::table('user_area')
             ->where('user_ID', \Auth::user()->UserID)
             ->pluck('branch');
 
         $branch = explode(",", $branches[0]);
-
-
-        $banks = DB::table('cv_banks')
-            ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
-            ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
-                'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
-            ->orderBy('cv_banks.bank_code', 'ASC')
-            ->get();
 
 
         //dd($branch);
@@ -61,6 +52,17 @@ class CheckbookController extends Controller
         //get records
         $checkbooks = Checkbook::orderBy('used', 'ASC')
             ->orderBy('order_num', 'ASC')
+            ->get();
+
+        $banks = DB::table('cv_banks')
+            ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
+            ->join('t_sysdata', 't_sysdata.Branch', '=', 'cv_bank_acct.branch')
+            ->where('cv_bank_acct.corp_id', $corporations[0]->corp_id)
+            ->where('cv_bank_acct.branch', $tSysdata[0]->Branch)
+            ->where('t_sysdata.Active', 1)
+            ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
+                'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
+            ->orderBy('cv_banks.bank_code', 'ASC')
             ->get();
 
 
@@ -237,11 +239,14 @@ class CheckbookController extends Controller
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->join('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
                 ->where('t_sysdata.Active', $dataStatus)
                 ->where('cv_bank_acct.corp_id', $corpID)
-                ->where('cv_bank_acct.Branch', $sysBranch)
+                ->where('cv_bank_acct.branch', $sysBranch)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
+                ->select('cv_bank_acct.bank_acct_id', 'cv_bank_acct.branch', 'cv_bank_acct.bank_id', 'cv_bank_acct.acct_no', 'cv_bank_acct.default_acct',
+                    'cv_bank_acct.corp_id', 'cv_chkbk_series.txn_no', 'cv_chkbk_series.bank_acct_id', 'cv_chkbk_series.order_num', 'cv_chkbk_series.chknum_start',
+                    'cv_chkbk_series.chknum_end', 'cv_chkbk_series.lastchknum', 'cv_chkbk_series.used', 'cv_chkbk_series.bank_code', 't_sysdata.ShortName')
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
                 ->orderBy('cv_chkbk_series.'.$columnName, $orderDirection)
@@ -251,18 +256,18 @@ class CheckbookController extends Controller
 
             $pagination = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->join('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
                 ->where('t_sysdata.Active', $dataStatus)
                 ->where('cv_bank_acct.corp_id', $corpID)
-                ->where('cv_bank_acct.Branch', $sysBranch)
+                ->where('cv_bank_acct.branch', $sysBranch)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
                 ->count();
+
 
         }else if($mainStatus == "true" && $search['value'] == ""){
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->leftjoin('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
                 ->where('cv_bank_acct.branch', -1)
@@ -273,14 +278,13 @@ class CheckbookController extends Controller
 
             $pagination = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->leftjoin('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
                 ->where('cv_bank_acct.branch', -1)
                 ->count();
         }else if($dataStatus != "" && $corpID != "" && $branch != "" && $sysBranch != "" && $mainStatus == "false" && $search['value'] != ""){
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
-                ->join('t_sysdata', 'cv_bank_acct.Branch', '=', 't_sysdata.Branch')
+                ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
                 ->where(function ($q) use ($search, $columns){
                     for($i = 0;  $i<2; $i++){
                         $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
@@ -290,6 +294,9 @@ class CheckbookController extends Controller
                 ->where('cv_bank_acct.corp_id', $corpID)
                 ->where('cv_bank_acct.bank_acct_id', $branch)
                 ->where('cv_bank_acct.Branch', $sysBranch)
+                ->select('cv_bank_acct.bank_acct_id', 'cv_bank_acct.branch', 'cv_bank_acct.bank_id', 'cv_bank_acct.acct_no', 'cv_bank_acct.default_acct',
+                    'cv_bank_acct.corp_id', 'cv_chkbk_series.txn_no', 'cv_chkbk_series.bank_acct_id', 'cv_chkbk_series.order_num', 'cv_chkbk_series.chknum_start',
+                    'cv_chkbk_series.chknum_end', 'cv_chkbk_series.lastchknum', 'cv_chkbk_series.used', 'cv_chkbk_series.bank_code', 't_sysdata.ShortName')
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
                 ->orderBy('cv_chkbk_series.'.$columnName, $orderDirection)
@@ -321,9 +328,12 @@ class CheckbookController extends Controller
                         $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
                     }
                 })
+                ->where('cv_bank_acct.branch', -1)
+                ->select('cv_bank_acct.bank_acct_id', 'cv_bank_acct.branch', 'cv_bank_acct.bank_id', 'cv_bank_acct.acct_no', 'cv_bank_acct.default_acct',
+                    'cv_bank_acct.corp_id', 'cv_chkbk_series.txn_no', 'cv_chkbk_series.bank_acct_id', 'cv_chkbk_series.order_num', 'cv_chkbk_series.chknum_start',
+                    'cv_chkbk_series.chknum_end', 'cv_chkbk_series.lastchknum', 'cv_chkbk_series.used', 'cv_chkbk_series.bank_code', 't_sysdata.ShortName')
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
-                ->where('cv_bank_acct.branch', -1)
                 ->orderBy('cv_chkbk_series.'.$columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
@@ -342,14 +352,11 @@ class CheckbookController extends Controller
         }
 
 
-        //->orderBy($columnName, $orderDirection)
-
-
         $columns = array(
             "draw" => $draw,
             "recordsTotal" => $recordsTotal,
-            "recordsFiltered" => $pagination,
-            "data" => ($checkbooks != null) ? $checkbooks : 0
+            "recordsFiltered" => isset($pagination) && ($pagination != "") ? $pagination : 0,
+            "data" => isset($checkbooks) && ($checkbooks != "") ? $checkbooks : ''
         );
 
         return response()->json($columns, 200);
@@ -366,5 +373,45 @@ class CheckbookController extends Controller
 
 
         return response()->json("success", 200);
+    }
+
+    /**
+     * Return branches for corporation and status
+     * @param Request $request
+     * @return collection of branches in json format
+     */
+    public function getBranches(Request $request){
+        $corpId  = $request->input('corpId');
+        $status  = $request->input('status');
+
+        //get records from t_sysdata
+        $tSysdata = DB::table('t_sysdata')
+            ->orderBy('Branch', 'ASC')
+            ->where('Active', intval($status))
+            ->where('corp_id', intval($corpId))
+            ->select('Branch', 'ShortName')
+            ->get();
+
+        return response()->json(json_encode($tSysdata), 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return collection of banks with accounts
+     * for a specific branch
+     */
+    public function getBanks(Request $request){
+
+        $branchId = $request->input('branchId');
+
+        $banks = DB::table('cv_banks')
+            ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
+            ->where('cv_bank_acct.branch', $branchId)
+            ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
+                'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
+            ->orderBy('cv_banks.bank_code', 'ASC')
+            ->get();
+
+        return response()->json(json_encode($banks), 200);
     }
 }
