@@ -51,7 +51,7 @@ class BankController extends Controller
             ->orderBy('Branch', 'ASC')
             ->where('Active', 1)
             ->where('corp_id', $corporations[0]->corp_id)
-            ->select('t_sysdata.ShortName', 't_sysData.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
+            ->select('t_sysdata.ShortName', 't_sysdata.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
             ->get();
 
 
