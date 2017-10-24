@@ -264,13 +264,14 @@ class CheckbookController extends Controller
                 ->count();
 
 
-        }else if($mainStatus == "true" && $search['value'] == ""){
+        }else if($mainStatus == "true" && $search['value'] == "" && $sysBranch != ""){
             //get records
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
                 ->orderBy('cv_chkbk_series.used', 'ASC')
                 ->orderBy('cv_chkbk_series.order_num', 'ASC')
                 ->where('cv_bank_acct.branch', -1)
+                ->where('cv_bank_acct.bank_acct_id', $branch)
                 ->orderBy('cv_chkbk_series.'.$columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
@@ -278,6 +279,7 @@ class CheckbookController extends Controller
 
             $pagination = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
+                ->where('cv_bank_acct.bank_acct_id', $branch)
                 ->where('cv_bank_acct.branch', -1)
                 ->count();
         }else if($dataStatus != "" && $corpID != "" && $branch != "" && $sysBranch != "" && $mainStatus == "false" && $search['value'] != ""){
@@ -407,6 +409,18 @@ class CheckbookController extends Controller
         $banks = DB::table('cv_banks')
             ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
             ->where('cv_bank_acct.branch', $branchId)
+            ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
+                'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
+            ->orderBy('cv_banks.bank_code', 'ASC')
+            ->get();
+
+        return response()->json(json_encode($banks), 200);
+    }
+
+    public function getAccountsForMain(){
+        $banks = DB::table('cv_banks')
+            ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
+            ->where('cv_bank_acct.branch', -1)
             ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
                 'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
             ->orderBy('cv_banks.bank_code', 'ASC')

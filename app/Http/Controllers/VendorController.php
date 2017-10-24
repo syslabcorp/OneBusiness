@@ -128,6 +128,7 @@ class VendorController extends Controller
 
 
 
+
         if($url == null)
         {
             $vendors = DB::table('cv_vendacct')
@@ -149,7 +150,6 @@ class VendorController extends Controller
                 ->where('cv_vendacct.corp_id', $url)
                 ->orderBy('VendorName', 'ASC')
                 ->get();
-
         }
 
         $branches = DB::table('t_sysdata')
@@ -249,5 +249,23 @@ class VendorController extends Controller
         }
         \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('vendors.index');
+    }
+
+    /**
+     * Return branches for corporation and status
+     * @param Request $request
+     * @return collection of branches in json format
+     */
+    public function getBranches(Request $request){
+        $corpId  = $request->input('corpId');
+
+        //get records from t_sysdata
+        $tSysdata = DB::table('t_sysdata')
+            ->orderBy('Branch', 'ASC')
+            ->where('corp_id', intval($corpId))
+            ->select('Branch', 'ShortName')
+            ->get();
+
+        return response()->json(json_encode($tSysdata), 200);
     }
 }

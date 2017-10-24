@@ -112,6 +112,7 @@ class VendorManagementController extends Controller
         $activeAccount = $request->input('editActiveAccount');
         $corp_id = $request->input('editCorporationId');
 
+
         //create new instance
         $success = $vendorManagement->update([
             'supp_id' => $suppId,
