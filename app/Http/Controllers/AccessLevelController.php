@@ -867,6 +867,121 @@ class AccessLevelController extends Controller
             echo json_encode($matched_groups);
         }
     }
+    public function purchase_order($id = NULL){
+        $data =array();
+        if (Request::isMethod('post')) {
+            $formData = Request::all();
+            $active = isset($formData['active']) ? 1 : 0; 
+            $temp_hdr = array(
+                'po_tmpl8_desc' => $formData['po_tmpl8_desc'],
+                'city_id'       => $formData['city_id'],
+                'po_avg_cycle'  => $formData['po_avg_cycle'],
+                'active'        => $active,
+            );
+            $branches = isset($formData['branch']) ? $formData['branch'] : array();
+            $itemIds = isset($formData['item_id']) ? $formData['item_id'] :array();
+            if(empty($branches) || empty($itemIds)){
+                Request::session()->flash('flash_message', 'Select Branch or retail item before you can create this Purchase Order Template');
+                return redirect('purchase_order/'.$id);
+            }else{
+                if ($id == NULL) {
+                $po_tmpl8_hdr = DB::table('s_po_tmpl8_hdr')->insertGetId($temp_hdr);
+                Request::session()->flash('flash_message', 'Product Template has been added.');
+                Request::Session()->flash('alert-class', 'alert-success');
+                }else{
+                    DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id', $id)->delete();
+                    DB::table('s_po_tmpl8_hdr')->where('po_tmpl8_id', $id)->update($temp_hdr);
+                    Request::session()->flash('flash_message', 'Product Template has been Updated.');
+                    Request::Session()->flash('alert-class', 'alert-success');
+                    $po_tmpl8_hdr = $id;
+                }
+                
+                foreach($branches as $branch){
+                    foreach($itemIds as $itemId){
+                        $temp_hdr_detail = array(
+                            'po_tmpl8_id'     => $po_tmpl8_hdr,
+                            'po_tmpl8_branch' => $branch,
+                            'po_tmpl8_item'   => $itemId,
+                        );
+                        DB::table('s_po_tmpl8_detail')->insert($temp_hdr_detail);
+                    }
+                }
+            }
+            return redirect('list_purchase_order');
+        }
+        if ($id != NULL) {
+            $detail_edit_temp_hdr =  DB::table('s_po_tmpl8_hdr')->where('po_tmpl8_id',$id)->first();
+            $data['detail_edit_temp_hdr'] = $detail_edit_temp_hdr;  
+            $proitemsSelected = DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id',$id)->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
+            $proretailitems_ids = array();
+            foreach ($proitemsSelected as $proitemSelected) {
+                array_push($proretailitems_ids, $proitemSelected->po_tmpl8_item);
+            }
+            $prolines  =  DB::table('s_invtry_hdr')->whereIn('item_id', $proretailitems_ids)->select('Prod_Line')->groupBy('Prod_Line')->get(); 
+            $proline_ids = array();
+            foreach ($prolines as $proline) {
+                array_push($proline_ids, $proline->Prod_Line);
+            }
+            $data['proline_ids'] = $proline_ids;
+        }
+        $cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
+        $data['product_line'] = DB::table('s_prodline')->where('Active',1)->get();
+        $data['cities'] = $cities;
+        return view('accesslevel.purchase_order',$data);
+    }
+
+    public function product_branch(){
+        $data =array();
+        if (Request::isMethod('post')) {
+            $formData = Request::all();
+            $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
+            $data['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
+            $branchesSelected = DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
+            $probranch_ids = array();
+            foreach ($branchesSelected as $branchSelected) {
+                array_push($probranch_ids, $branchSelected->po_tmpl8_branch);
+            }
+            $data['probranch_ids'] = $probranch_ids;
+        }
+        return view('accesslevel.product_branches',$data);
+    }
+
+    public function retail_items(){
+        $data =array();
+        if (Request::isMethod('post')) {
+            $formData = Request::all();
+            $p_id = isset($formData['ids']) ? $formData['ids'] : array();
+            $s_invtry_hdr = DB::table('s_invtry_hdr')->whereIn('Prod_Line',$p_id)->where('Active',1)->get();
+            $brand_name = DB::table('s_brands')->get();
+            foreach($brand_name as $key=>$det){
+                $b_name[$det->Brand_ID] =$det->Brand;  
+            }
+            $data['brandname'] = $b_name;
+            $data['s_invtry_hdr']=$s_invtry_hdr;
+            $retailsSelected = DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
+            $proitems_ids = array();
+            foreach ($retailsSelected as $retailSelected) {
+                array_push($proitems_ids, $retailSelected->po_tmpl8_item);
+            }
+            $data['proitems_ids'] = $proitems_ids;
+        }
+        return view('accesslevel.retail_items',$data);
+    }
+    
+    public function list_purchase_order(){
+        $data = array();
+         if (Request::isMethod('post')) {
+            $formData = Request::all();
+            $city_id = isset($formData['city_id']) ? $formData['city_id'] :'';
+            $active = isset($formData['active']) ? $formData['active'] :'';
+            $s_po_tmpl8 = DB::table('s_po_tmpl8_hdr')->where('city_id',$city_id)->where('Active',$active)->get();
+            $data['s_po_tmpl8'] = $s_po_tmpl8; 
+            return view('accesslevel.list_data_purchase_order',$data);
+        }
+        $cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
+        $data['cities'] = $cities;
+        return view('accesslevel.list_purchase_order',$data);
+    }
 }
 
 
