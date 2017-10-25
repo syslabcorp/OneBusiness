@@ -31,7 +31,7 @@
                 </form>
             </td>
             <td>
-                @if($loop->index == 0 && \Auth::user()->checkAccess("Stub Footer", "E"))
+                @if($loop->index == 0 && !\Auth::user()->checkAccess("Stub Footer", "E"))
                 <form action="{{ route('branchs.footers.copy', [$branch, $footer, '#stub-footer']) }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="PUT">
@@ -80,7 +80,7 @@
 
 <div class="col-md-12" style="margin-bottom: 15px;">
     <hr>
-    <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+    <a href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}" class="btn btn-default pull-left">
         <i class="fa fa-reply"></i> Back
     </a>
 </div>

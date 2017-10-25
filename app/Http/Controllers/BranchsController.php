@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Branch;
 use App\Company;
+use App\Template;
+use App\UserArea;
 use Illuminate\Http\Request;
 
 class BranchsController extends Controller
@@ -14,6 +16,10 @@ class BranchsController extends Controller
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
+        }
+
+        if(empty($request->get('corpID'))) {
+          return abort(404);
         }
 
         $status = !empty($request->get('status')) ? $request->get('status') : "active";
@@ -139,6 +145,17 @@ class BranchsController extends Controller
             'Branch' => $branch->Branch
         ]);
 
+        $adminUsers = Template::where('template_id', '=', 18)->get();
+        foreach($adminUsers as $user) {
+          $userArea = UserArea::where("user_ID", '=', $user->UserID)->first();
+          if($userArea) {
+            $branchIds = empty($userArea->branch) ? $branch->Branch : $userArea->branch . "," . $branch->Branch;
+            $userArea->update(['branch' => $branchIds]);
+          }else {
+            UserArea::create(['branch' => $branch->Branch, 'user_ID' => $user->UserID]);
+          }
+        }
+
         $branch->update(['Modified' => 1]);
 
         \Session::flash('success', "New branch has been created.");
@@ -158,7 +175,7 @@ class BranchsController extends Controller
 
         return view('branchs.edit', [
             'branch' => $branch,
-            'branchs' => Branch::orderBy('Branch', 'ASC')->get(),
+            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)->orderBy('Branch', 'ASC')->get(),
             'lc_uid' => $lcUid->lc_uid
         ]);
     }
