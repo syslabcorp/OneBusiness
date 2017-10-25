@@ -88,7 +88,7 @@
     <hr>
     <div class="form-group">
         <div class="col-md-12">
-            <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+            <a href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}" class="btn btn-default pull-left">
                 <i class="fa fa-reply"></i> Back
             </a>
             @if(\Auth::user()->checkAccessById(3, "E"))
