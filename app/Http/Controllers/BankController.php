@@ -95,6 +95,8 @@ class BankController extends Controller
                 ->where('cv_bank_acct.Branch', $branch)
                 ->where('t_sysdata.Active', $statusData)
                 ->where('t_sysdata.corp_id', $corpID)
+                ->select('cv_bank_acct.default_acct', 'cv_bank_acct.date_created', 'cv_banks.bank_code', 'cv_bank_acct.acct_no',
+                    'cv_bank_acct.corp_id')
                 ->orderBy($columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
@@ -104,6 +106,8 @@ class BankController extends Controller
             $banks = DB::table('cv_bank_acct')
                 ->join('cv_banks', 'cv_bank_acct.bank_id', '=', 'cv_banks.bank_id')
                 ->where('cv_bank_acct.branch', -1)
+                ->select('cv_bank_acct.default_acct', 'cv_bank_acct.date_created', 'cv_banks.bank_code', 'cv_bank_acct.acct_no',
+                    'cv_bank_acct.corp_id')
                 ->orderBy($columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
