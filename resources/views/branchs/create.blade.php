@@ -88,7 +88,7 @@
                     <hr>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <a href="{{ route('branchs.index') }}" class="btn btn-default pull-left">
+                            <a href="{{ route('branchs.index', ['corpID' => $corpId]) }}" class="btn btn-default pull-left">
                                 <i class="fa fa-reply"></i> Back
                             </a>
                             <button type="submit" class="btn btn-success pull-right">Create</button>
