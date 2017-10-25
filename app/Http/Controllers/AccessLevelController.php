@@ -867,14 +867,14 @@ class AccessLevelController extends Controller
             echo json_encode($matched_groups);
         }
     }
-    public function purchase_order($id = NULL){
+    public function purchase_order($city_id, $id = NULL){
         $data =array();
         if (Request::isMethod('post')) {
             $formData = Request::all();
             $active = isset($formData['active']) ? 1 : 0; 
             $temp_hdr = array(
                 'po_tmpl8_desc' => $formData['po_tmpl8_desc'],
-                'city_id'       => $formData['city_id'],
+                'city_id'       => $city_id,
                 'po_avg_cycle'  => $formData['po_avg_cycle'],
                 'active'        => $active,
             );
@@ -907,15 +907,17 @@ class AccessLevelController extends Controller
                     }
                 }
             }
-            return redirect('list_purchase_order');
+            return redirect('list_purchase_order/'.$city_id);
         }
         if ($id != NULL) {
             $detail_edit_temp_hdr =  DB::table('s_po_tmpl8_hdr')->where('po_tmpl8_id',$id)->first();
             $data['detail_edit_temp_hdr'] = $detail_edit_temp_hdr;  
-            $proitemsSelected = DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id',$id)->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
+            $proitemsSelected = DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
             $proretailitems_ids = array();
+            $probranch_ids = array();
             foreach ($proitemsSelected as $proitemSelected) {
                 array_push($proretailitems_ids, $proitemSelected->po_tmpl8_item);
+				array_push($probranch_ids, $proitemSelected->po_tmpl8_branch);
             }
             $prolines  =  DB::table('s_invtry_hdr')->whereIn('item_id', $proretailitems_ids)->select('Prod_Line')->groupBy('Prod_Line')->get(); 
             $proline_ids = array();
@@ -923,11 +925,13 @@ class AccessLevelController extends Controller
                 array_push($proline_ids, $proline->Prod_Line);
             }
             $data['proline_ids'] = $proline_ids;
+            $branchdata['probranch_ids'] = $probranch_ids;
         }
-        $cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
-        $data['product_line'] = DB::table('s_prodline')->where('Active',1)->get();
+		$branchdata['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
+        $cities = DB::table('t_cities')->select('City_ID','City')->where('City_ID',$city_id)->orderBy('t_cities.City', 'asc')->first();
+        $data['product_line'] = DB::table('s_prodline')->where('Active',1)->orderBy('Product')->get();
         $data['cities'] = $cities;
-        return view('accesslevel.purchase_order',$data);
+        return view('accesslevel.purchase_order',$data)->nest('branchList', 'accesslevel.product_branches', $branchdata);
     }
 
     public function product_branch(){
@@ -951,13 +955,20 @@ class AccessLevelController extends Controller
         if (Request::isMethod('post')) {
             $formData = Request::all();
             $p_id = isset($formData['ids']) ? $formData['ids'] : array();
-            $s_invtry_hdr = DB::table('s_invtry_hdr')->whereIn('Prod_Line',$p_id)->where('Active',1)->get();
+			$inventory = array();
+			foreach($p_id AS $pid){
+				$s_invtry_hdr = DB::table('s_invtry_hdr')->where('Prod_Line',$pid)->where('Active',1)->orderBy('ItemCode')->get();
+				foreach($s_invtry_hdr AS $s_invtry_hd){
+					array_push($inventory, $s_invtry_hd);
+				}
+			}
+            
             $brand_name = DB::table('s_brands')->get();
             foreach($brand_name as $key=>$det){
                 $b_name[$det->Brand_ID] =$det->Brand;  
             }
             $data['brandname'] = $b_name;
-            $data['s_invtry_hdr']=$s_invtry_hdr;
+            $data['s_invtry_hdr']=$inventory;
             $retailsSelected = DB::table('s_po_tmpl8_detail')->where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
             $proitems_ids = array();
             foreach ($retailsSelected as $retailSelected) {
@@ -968,7 +979,7 @@ class AccessLevelController extends Controller
         return view('accesslevel.retail_items',$data);
     }
     
-    public function list_purchase_order(){
+    public function list_purchase_order($city_id = NULL){
         $data = array();
          if (Request::isMethod('post')) {
             $formData = Request::all();
@@ -980,6 +991,7 @@ class AccessLevelController extends Controller
         }
         $cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
         $data['cities'] = $cities;
+        $data['city_id'] = $city_id;
         return view('accesslevel.list_purchase_order',$data);
     }
 }

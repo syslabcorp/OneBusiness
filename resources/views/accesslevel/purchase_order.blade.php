@@ -30,27 +30,16 @@
                 <div class="col-md-12 col-xs-12">
                     <h3 class="text-center">Manage Purchase Order Templates</h3>
                     <div class="panel panel-default">
-						<div class="panel-heading">{{isset($detail_edit_template->template_id) ? "Edit " : "New " }} PO Template</div>
+						<div class="panel-heading">{{isset($detail_edit_template->template_id) ? "Edit " : "New " }} PO Template: <b>{{ $cities->City }}</b></div>
                         <div class="panel-body">
                             <form class="form-horizontal form" role="form" method="POST" action="" id ="potemplateform">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="proid" id="proid" value="{{isset($detail_edit_temp_hdr->po_tmpl8_id) ? $detail_edit_temp_hdr->po_tmpl8_id : '' }}">
                                 <div class="form-group row">
-                                    <div class="col-md-3">
-                                        <label for="city_nam" class="col-md-3 control-label">City</label>
-                                        <div class="col-md-9">
-                                            <select class="form-control required city_name" id="city_name" name="city_id">
-                                            <option value="">Select a City</option>
-                                            @foreach ($cities as $city) 
-                                                <option value="{{ $city->City_ID }}" {{ (isset($detail_edit_temp_hdr->city_id) && ($detail_edit_temp_hdr->city_id == $city->City_ID)) ? "selected" : "" }}>{{ $city->City }} </option> 
-                                            @endforeach    
-                                        </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="temp_nam" class="col-md-5 control-label">Template Name</label>
-                                        <div class="col-md-7">
-                                            <input id="temp_name" type="text" class="form-control required" name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : "" }}"autofocus>
+                                    <div class="col-md-6">
+                                        <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
+                                        <div class="col-md-8">
+                                            <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : "" }}"autofocus>
                                             @if ($errors->has('temp_name'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('temp_name') }}</strong>
@@ -66,10 +55,10 @@
 									</label>
 									</div>
 									<div class="col-md-4">
-										<label for="temp_nam" class="col-md-6 control-label">Area City Cycle</label>
+										<label for="temp_nam" class="col-md-6 control-label">Ave. Qty Cycle</label>
 										<div class="col-md-6">
 										<div class="input-group" id="requestorPhoneLast">
-											<input id="area_cycle" type="text" class="form-control required" name="po_avg_cycle"  value="{{isset($detail_edit_temp_hdr->po_avg_cycle) ? $detail_edit_temp_hdr->po_avg_cycle : "" }}" autofocus>
+											<input id="area_cycle" type="text" class="form-control required number" name="po_avg_cycle"  value="{{isset($detail_edit_temp_hdr->po_avg_cycle) ? $detail_edit_temp_hdr->po_avg_cycle : 30 }}" autofocus>
 											<span class="input-group-addon">
 												Days
 											</span>
@@ -79,7 +68,7 @@
 									</div>
                                 <div class="row">
                                     <!-- start product branch -->
-                                    <div class="col-md-3 pogroup product-branch"></div>
+                                    <div class="col-md-3 pogroup product-branch"><?php echo $branchList; ?></div>
                                     <!-- end product branch -->
                                     <!-- start product line -->
                                     <div class="col-md-3 pogroup">
@@ -138,15 +127,6 @@
 <script src="{{ URL('/js/product-order.js') }}"></script>
 <script>
 $(function(){
-    <?php if(isset($detail_edit_temp_hdr)){ ?>
-        var city_id = $('#city_name option:selected').val();
-        get_pro_branch(city_id);
-    <?php }else{ ?>
-        var city_id = $("#city_name option:eq(1)").val();
-        $("#city_name option:eq(1)").prop("selected", "selected");
-        get_pro_branch(city_id);
-    <?php }
-        ?>  
     <?php if(isset($proline_ids)){ ?>
         GetSelectedproduct();
     <?php } ?>  
