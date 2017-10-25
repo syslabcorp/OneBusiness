@@ -6,6 +6,7 @@ use App\Branch;
 use App\Company;
 use App\Template;
 use App\UserArea;
+use App\User;
 use Illuminate\Http\Request;
 
 class BranchsController extends Controller
@@ -95,7 +96,7 @@ class BranchsController extends Controller
         }
 
         $this->validate($request,[
-            'branch_name' => 'required',
+            'branch_name' => 'required|max:15',
             'operator' => 'required',
             'street' => 'required',
             'Prov_ID' => 'required',
@@ -145,7 +146,10 @@ class BranchsController extends Controller
             'Branch' => $branch->Branch
         ]);
 
-        $adminUsers = Template::where('template_id', '=', 18)->get();
+        $adminUsers = User::leftJoin("rights_template", "rights_template.template_id", "=", "t_users.rights_template_id")
+                            ->where('rights_template.is_super_admin', '=', 1)
+                            ->get();
+
         foreach($adminUsers as $user) {
           $userArea = UserArea::where("user_ID", '=', $user->UserID)->first();
           if($userArea) {
@@ -190,7 +194,7 @@ class BranchsController extends Controller
         }
 
         $this->validate($request,[
-            'branch_name' => 'required',
+            'branch_name' => 'required|max:15',
             'operator' => 'required',
             'street' => 'required',
             'province' => 'required',
