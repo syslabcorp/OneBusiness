@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('header-scripts')
     <link href="/css/parsley.css" rel="stylesheet" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }
@@ -85,8 +86,7 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(28, "A")) disabled @endif"
-                                               data-toggle="modal" data-target="#addNewCheckbook" >Add Checkbook</a>
+                                            <a href="#" class="pull-right  addCheckbook @if(!\Auth::user()->checkAccessById(28, "A")) disabled @endif">Add Checkbook</a>
                                         </div>
                                     </div>
 
@@ -248,9 +248,11 @@
 
 @section('footer-scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
     <script>
         (function($){
 
+            var __previous = "";
             $('#checkbookForm, #editCheckbookForm').parsley();
 
             var mainTable = $('#myTable').DataTable({
@@ -308,7 +310,6 @@
                         d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
                         d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
-
                     }
                 },
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
@@ -461,71 +462,118 @@
 
             $('#example_ddl5').on("click", function() {
                 if($('#example_ddl5 input').is(':checked')){
-                    $('#example_ddl4 select').attr('disabled', true).css({"background-color":"#FFF", "color":"#FFF"});
+                    $('#example_ddl1 select').attr('disabled', true).css({"background-color":"#FFF", "color":"#FFF"});
+
+                    var options = $('#example_ddl4 select');
+                    options.empty();
+                    var cnt = 0;
+
+                    $.ajax({
+                        method: 'POST',
+                        url: 'checkbooks/get-accounts-for-main',
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            $.each(data, function (key, val) {
+                                options.append('<option value="'+val.bank_acct_id+'">'+val.account_info+'</option>');
+                                cnt++;
+                            });
+
+                            if(cnt > 0){
+                                var code = $('#example_ddl4 option:selected').text();
+                                var id = $('#example_ddl4 option:selected').val();
+
+                                var splitted = code.split(/-(.+)/);
+                                $('.bankCO').text(splitted[0]);
+                                $('.accNO').text(splitted[1]);
+                                $('input[name="accountId"]').val(id);
+                            }
+
+                            if(cnt == 0){
+                                options.append('<option value="">No options</option>');
+                            }
+                        }
+                    })
                 }else{
-                    $('#example_ddl4 select').attr('disabled', false).css("color", "#333");
+                    $('#example_ddl1 select').attr('disabled', false).css("color", "#333");
+                    lastColumnReload();
                 }
-                mainTable.ajax.reload();
+                
+                function loadTable() {
+                    mainTable.ajax.reload();
+                }
+                setTimeout(loadTable, 200);
             });
 
-            $('#example_ddl2').on('change', function () {
-                var dataStatus = $('#example_ddl3 select option:selected').val();
-                var corpId = $('#example_ddl2 select option:selected').val();
+            $('#example_ddl2').on('click', function () {
+                    __previous = $('#example_ddl2 select option:selected').val();
+            }).change(function () {
+                if(!$('#example_ddl5 input').is(':checked')){
+                    var dataStatus = $('#example_ddl3 select option:selected').val();
+                    var corpId = $('#example_ddl2 select option:selected').val();
 
-                var options = $('#example_ddl1 select');
-                options.empty();
-                //get branches
-                var cnt = 0;
-                $.ajax({
-                    method: 'POST',
-                    url: 'checkbooks/get-branches',
-                    data: { status : dataStatus, corpId : corpId },
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        $.each(data, function (key, val) {
-                            cnt++;
-                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
-                        })
-                        if(cnt != 0){
-                            lastColumnReload();
+                    var options = $('#example_ddl1 select');
+                    options.empty();
+                    //get branches
+                    var cnt = 0;
+                    $.ajax({
+                        method: 'POST',
+                        url: 'checkbooks/get-branches',
+                        data: { status : dataStatus, corpId : corpId },
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            $.each(data, function (key, val) {
+                                cnt++;
+                                options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                            })
+                            if(cnt != 0){
+                                lastColumnReload();
+                            }
+                            if(cnt == 0){
+                                options.append('<option value="">No options</option>');
+                            }
                         }
-                        if(cnt == 0){
-                            options.append('<option value="">No options</option>');
+
+                    })
+                    mainTable.ajax.reload();
+                }else{
+                    $('#example_ddl2 select').val(__previous);
+                }
+            });
+
+            $('#example_ddl3').on('click', function () {
+                __previous = $('#example_ddl3 select option:selected').val();
+            }).change(function () {
+                if(!$('#example_ddl5 input').is(':checked')){
+                    var dataStatus = $('#example_ddl3 select option:selected').val();
+                    var corpId = $('#example_ddl2 select option:selected').val();
+
+                    var options = $('#example_ddl1 select');
+                    options.empty();
+                    //get branches
+                    var cnt = 0;
+                    $.ajax({
+                        method: 'POST',
+                        url: 'checkbooks/get-branches',
+                        data: { status : dataStatus, corpId : corpId },
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            $.each(data, function (key, val) {
+                                cnt++;
+                                options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                            })
+                            if(cnt != 0){
+                                lastColumnReload();
+                            }
+                            if(cnt == 0){
+                                options.append('<option value="">No options</option>');
+                            }
                         }
-                    }
 
-                })
-                mainTable.ajax.reload();
-            })
-
-            $('#example_ddl3').on('change', function () {
-                var dataStatus = $('#example_ddl3 select option:selected').val();
-                var corpId = $('#example_ddl2 select option:selected').val();
-
-                var options = $('#example_ddl1 select');
-                options.empty();
-                //get branches
-                var cnt = 0;
-                $.ajax({
-                    method: 'POST',
-                    url: 'checkbooks/get-branches',
-                    data: { status : dataStatus, corpId : corpId },
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        $.each(data, function (key, val) {
-                            cnt++;
-                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
-                        })
-                        if(cnt != 0){
-                            lastColumnReload();
-                        }
-                        if(cnt == 0){
-                            options.append('<option value="">No options</option>');
-                        }
-                    }
-
-                })
-                mainTable.ajax.reload();
+                    })
+                    mainTable.ajax.reload();
+                }else{
+                    $('#example_ddl3 select').val(__previous);
+                }
             })
 
             $('#example_ddl1').on('change', function () {
@@ -545,6 +593,17 @@
                             cnt++;
                             options.append('<option value="'+val.bank_acct_id+'">'+val.account_info+'</option>');
                         })
+
+                        if(cnt > 0){
+                            var code = $('#example_ddl4 option:selected').text();
+                            var id = $('#example_ddl4 option:selected').val();
+
+                            var splitted = code.split(/-(.+)/);
+                            $('.bankCO').text(splitted[0]);
+                            $('.accNO').text(splitted[1]);
+                            $('input[name="accountId"]').val(id);
+                        }
+
                         if(cnt == 0){
                             options.append('<option value="">No options</option>');
                         }
@@ -573,6 +632,16 @@
                                 cnt++;
                                 options.append('<option value="'+val.bank_acct_id+'">'+val.account_info+'</option>');
                             })
+
+                            if(cnt > 0){
+                                var code = $('#example_ddl4 option:selected').text();
+                                var id = $('#example_ddl4 option:selected').val();
+
+                                var splitted = code.split(/-(.+)/);
+                                $('.bankCO').text(splitted[0]);
+                                $('.accNO').text(splitted[1]);
+                                $('input[name="accountId"]').val(id);
+                            }
                             if(cnt == 0){
                                 options.append('<option value="">No options</option>');
                             }
@@ -587,9 +656,9 @@
                 var id = $('#example_ddl4 option:selected').val();
                 var code = $('#example_ddl4 option:selected').text();
 
-                var splitted = code.split('-');
+                var splitted = code.split(/-(.+)/);
                 $('.bankCO').text(splitted[0]);
-                $('.accNO').text(splitted[1]+'***');
+                $('.accNO').text(splitted[1]);
                 $('input[name="accountId"]').val(id);
 
                 mainTable.ajax.reload();
@@ -695,6 +764,26 @@
                         $("#result").delay(3000).fadeOut("slow");
                     }
                 })
+            })
+
+            $(document).on('click', '.addCheckbook', function (e) {
+                e.preventDefault();
+                var id = $('#example_ddl4 option:selected').val();
+                if(id == ""){
+                    $.confirm({
+                        icon: 'glyphicon glyphicon-exclamation-sign',
+                        title: 'Invalid selection!',
+                        content: 'There is not an account number where a checkboox will be added!',
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            close: function () {
+                            }
+                        }
+                    });
+                }else{
+                    $('#addNewCheckbook').modal("toggle");
+                }
             })
 
         })(jQuery);
