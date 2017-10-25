@@ -116,7 +116,7 @@
       <i class="fa fa-pencil"></i> Edit
     </a>
     @endif
-    <a class="btn btn-sm btn-default" href="{{ route('branchs.index') }}">
+    <a class="btn btn-sm btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
       <i class="fa fa-reply"></i> Back
     </a>
   </div>

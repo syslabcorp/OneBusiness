@@ -31,7 +31,7 @@
                 </form>
             </td>
             <td>
-                @if($loop->index == 0 && !\Auth::user()->checkAccess("Stub Footer", "E"))
+                @if($loop->index == 0 && \Auth::user()->checkAccess("Stub Footer", "E"))
                 <form action="{{ route('branchs.footers.copy', [$branch, $footer, '#stub-footer']) }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="PUT">
