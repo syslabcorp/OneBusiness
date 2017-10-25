@@ -32,7 +32,7 @@
         Assign Template
       </button>
       @endif
-      <a class="btn btn-sm btn-default" href="{{ route('branchs.index') }}">
+      <a class="btn btn-sm btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
         Back
       </a>
     </div>
