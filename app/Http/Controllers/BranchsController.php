@@ -25,7 +25,7 @@ class BranchsController extends Controller
 
         $status = !empty($request->get('status')) ? $request->get('status') : "active";
 
-        $branchs = Branch::orderBy('Branch', 'ASC');
+        $branchs = Branch::orderBy('ShortName', 'ASC');
 
         $branchIds = [];
         $cityIds = [];
@@ -179,7 +179,7 @@ class BranchsController extends Controller
 
         return view('branchs.edit', [
             'branch' => $branch,
-            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)->orderBy('Branch', 'ASC')->get(),
+            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)->orderBy('ShortName', 'ASC')->get(),
             'lc_uid' => $lcUid->lc_uid
         ]);
     }
@@ -241,6 +241,7 @@ class BranchsController extends Controller
         }
 
         $this->validate($request, [
+            'StubHdr' => 'max:50',
             'receiving_mobile_number' => 'max:11',
             'MAC_Address' => 'required|unique:mysql2.t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
             'cashier_ip' => 'required|regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/'
