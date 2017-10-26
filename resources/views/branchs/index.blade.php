@@ -49,7 +49,7 @@
                                     @endif
                                     <td class="text-center">
                                         <div class="control-checkbox">
-                                            <input type="checkbox" {{ $branch->Active == 1 ? 'checked' : ''}}>
+                                            <input type="checkbox" {{ $branch->Active == 1 ? 'checked' : ''}} style="pointer-events: none;">
                                             <label>&nbsp;</label>
                                         </div>
                                     </td>
