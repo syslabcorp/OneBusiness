@@ -1,5 +1,6 @@
 function get_list_data(){
 	var city_id = $('#city option:selected').val();
+	$(".update-add-url").attr("href", ajax_url+'/purchase_order/'+city_id);
 	var active = $('#active option:selected').val();
     var _token = $("meta[name='csrf-token']").attr("content");
     $.ajax({
@@ -13,7 +14,7 @@ function get_list_data(){
 }
 
 $(document).ready(function(){
-	$("#city option:first").prop("selected", "selected");
+	//$("#city option:first").prop("selected", "selected");
 	get_list_data();
 });
 $(".listcity").change(function(){ 

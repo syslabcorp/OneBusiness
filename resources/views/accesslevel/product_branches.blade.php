@@ -13,7 +13,7 @@
 		    		@foreach ($branches as $branch) 
 			        <tr>
 			            <td><input class="branchselect" type="checkbox" name="branch[]" id="branchselect" value="{{ $branch->Branch }}" {{ (isset($probranch_ids) && in_array($branch->Branch, $probranch_ids)) ? "checked" : "" }}></td>
-			            <td>{{ $branch->Description }}</td>
+			            <td>{{ $branch->ShortName }}</td>
 			        </tr> 
 			        @endforeach  
 		        @endif

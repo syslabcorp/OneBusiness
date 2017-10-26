@@ -25,7 +25,7 @@
                     <h3 class="text-center">Manage Purchase Order Templates</h3>
                     <div class="row">  
                         <div class="panel panel-default">
-                            <div class="panel-heading">Auto Ordering Template<a href="{{ URL('purchase_order') }}" class="pull-right">Add Template</a></div>
+                            <div class="panel-heading">Auto Ordering Template<a href="{{ URL('purchase_order/'.(isset($cities[0]->City_ID) ? $cities[0]->City_ID : 0)) }}" class="pull-right update-add-url">Add Template</a></div>
                             <div class="panel-body">
                                 <div class="form-group row">
                                     <div class="col-md-5">
@@ -34,7 +34,7 @@
                                         <div class="col-md-9">
                                             <select class="form-control required listcity" id="city" name="city_id">
                                             @foreach ($cities as $city) 
-                                                <option value="{{ $city ->City_ID }}" >{{ $city->City }} </option> 
+                                                <option {{ ($city ->City_ID == $city_id) ? "selected" : "" }} value="{{ $city ->City_ID }}" >{{ $city->City }} </option> 
                                                 @endforeach    
                                         </select>
                                         </div>
@@ -73,8 +73,3 @@
 </div>
 <script src="{{ URL('/js/list-product-order.js') }}"></script>
 @endsection
-
-
-
-
-

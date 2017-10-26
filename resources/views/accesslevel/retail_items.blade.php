@@ -1,16 +1,16 @@
 <table id="pro_line" class="table table-striped table-bordered" cellspacing="0" width="100%">
 	<thead>
 		<tr>
-	        <td><input class="retail-all" type="checkbox" name="retailall" id="retailall"></td>
-	        <td>Item Code</td>
-	        <td>Brand</td>
-	        <td>Pkg</td>
-	        <td>Thresh</td>
-	        <td>Mult</td>
+	        <th><input class="retail-all" type="checkbox" name="retailall" id="retailall"></th>
+	        <th>Item Code</th>
+	        <th>Brand</th>
+	        <th>Pkg</th>
+	        <th>Thresh</th>
+	        <th>Mult</th>
 	    </tr> 
 	</thead>
 	<tbody>
-		@if($s_invtry_hdr->isEmpty())
+		@if(empty($s_invtry_hdr))
 		<tr><td colspan="6">No Retail Item Exists !!</td></tr> 
 		@else
 			@foreach ($s_invtry_hdr as $s_invtry) 
