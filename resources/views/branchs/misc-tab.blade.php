@@ -4,10 +4,13 @@
     <div class="row">
         <div class="col-md-6">
             <h3>STUB SETTINGS</h3>
-            <div class="form-group">
+            <div class="form-group {{ $errors->has('StubHdr') ? 'has-error' : '' }}">
                 <label class="control-label">Stub Header:</label>
-                <input type="text" class="form-control"  name="StubHdr" value="{{ $branch->StubHdr }}"
+                <input type="text" class="form-control"  name="StubHdr" value="{{ !empty(old("StubHdr")) ? old("StubHdr") : $branch->StubHdr }}"
                     {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                @if($errors->has('StubHdr'))
+                    <span class="help-block">{{ preg_replace("/stub hdr/", "Stub Header",$errors->first("StubHdr")) }}</span>
+                @endif
             </div>
             <div class="form-group">
                 <label class="control-label">Stub Message:</label>
