@@ -501,7 +501,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '/OpenBusiness/vendors/get-branches',
+                    url: '/OneBusiness/vendors/get-branches',
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);

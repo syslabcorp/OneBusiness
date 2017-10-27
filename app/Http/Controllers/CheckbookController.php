@@ -374,8 +374,8 @@ class CheckbookController extends Controller
         $row1 = $request->input('order_num');
         $row2 = $request->input('order_num2');
 
-        DB::table('cv_chkbk_series')->where('txn_no', $rowId)->update(['order_num' => $row1]);
-        DB::table('cv_chkbk_series')->where('txn_no', $rowId2)->update(['order_num' => $row2]);
+        DB::table('cv_chkbk_series')->where('txn_no', $rowId)->update(['order_num' => $row2]);
+        DB::table('cv_chkbk_series')->where('txn_no', $rowId2)->update(['order_num' => $row1]);
 
 
         return response()->json("success", 200);

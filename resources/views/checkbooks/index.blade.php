@@ -383,7 +383,7 @@
                 'drawCallback': function (settings) {
 
                     var info = mainTable.page.info();
-                    if(info.page == info.pages) $('#myTable tr:last .dtMoveDown').remove();
+                    $('#myTable tr:last .dtMoveDown').remove();
 
                     // Remove previous binding before adding it
                     $('.dtMoveUp').unbind('click');
@@ -420,13 +420,13 @@
                 }
 
                 var data1 = mainTable.row(index).data();
-                data1.order_num += order;
+                //data1.order_num += order;
 
                 var rowId = data1.txn_no;
                 var order_num = data1.order_num;
 
                 var data2 = mainTable.row(index + order).data();
-                data2.order_num -= order;
+                //data2.order_num -= order;
 
                 var rowId2 = data2.txn_no;
                 var order_num2 = data2.order_num;

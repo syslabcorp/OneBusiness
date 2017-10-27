@@ -49,7 +49,7 @@ Route::post('/checkbooks/edit-checkbook', 'CheckbookController@update')->middlew
 Route::post('/checkbooks/get-branches', 'CheckbookController@getBranches')->middleware('auth');
 Route::post('/checkbooks/get-banks', 'CheckbookController@getBanks')->middleware('auth');
 Route::post('/checkbooks/get-accounts-for-main', 'CheckbookController@getAccountsForMain')->middleware('auth');
-Route::post('vendors/get-branches', 'VendorController@getBranches')->middleware('auth');
+Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware('auth');
 #End of MasterFile Module
 
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
