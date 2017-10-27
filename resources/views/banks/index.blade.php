@@ -193,6 +193,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="branchName">Branch:</label>
+                                    <div class="col-md-7">
+                                        <select name="branchName" class="form-control input-md branchName" id="">
+                                            <option value="">Select Branch:</option>
+                                            @foreach($satelliteBranch as $branch)
+                                                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
+                                    <input type="checkbox" name="mainStatus" class="pull-left mainStatus" name="" id="">
+                                    <label for="mainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
@@ -612,6 +631,14 @@
 
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
 
+            $(document).on('click', '.mainStatus', function () {
+                if($('.mainStatus').is(':checked')){
+                    $('.branchName').attr('disabled', true).css({"background-color":"#dddddd", "color":"#dddddd"});
+                }else{
+                    $('.branchName').attr('disabled', false).css({"background-color":"#FFF", "color":"#333"});
+                }
+            });
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
@@ -845,6 +872,32 @@
             $(document).on('change', '.bankCode', function () {
                 var id = $('.bankCode option:selected').val();
                 $('.pcBranchId').val(id);
+            })
+
+            $(document).on('change', '.corpName', function () {
+                var corpId = $('.corpName option:selected').val();
+                var options = $('.branchName');
+
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: '/OneBusiness/vendors/get-branches',
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
             })
 
             })(jQuery);
