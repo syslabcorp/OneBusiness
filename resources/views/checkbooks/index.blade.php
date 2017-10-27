@@ -426,7 +426,7 @@
                 var order_num = data1.order_num;
 
                 var data2 = mainTable.row(index + order).data();
-                data2.order_num += -order;
+                data2.order_num -= order;
 
                 var rowId2 = data2.txn_no;
                 var order_num2 = data2.order_num;
