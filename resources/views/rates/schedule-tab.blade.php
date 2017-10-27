@@ -96,13 +96,13 @@
             <div class="col-xs-6">
               <div class="form-group">
                 <label for="" style="font-weight: 500;">Date From:</label>
-                <input type="date" class="form-control" name="start_date">
+                <input type="date" class="form-control" name="start_date" value="{{ date('Y-m-d') }}">
               </div>
             </div>
             <div class="col-xs-6">
               <div class="form-group">
                 <label for="" style="font-weight: 500;">Date To:</label>
-                <input type="date" class="form-control" name="end_date">
+                <input type="date" class="form-control" name="end_date" value="{{ date('Y-12-31') }}">
               </div>
             </div>
           </div>
