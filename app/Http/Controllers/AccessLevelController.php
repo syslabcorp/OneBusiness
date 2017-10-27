@@ -928,6 +928,7 @@ class AccessLevelController extends Controller
             $branchdata['probranch_ids'] = $probranch_ids;
         }
 		$branchdata['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
+		$data['is_branch_exist'] = count($branchdata['branches']);
         $cities = DB::table('t_cities')->select('City_ID','City')->where('City_ID',$city_id)->orderBy('t_cities.City', 'asc')->first();
         $data['product_line'] = DB::table('s_prodline')->where('Active',1)->orderBy('Product')->get();
         $data['cities'] = $cities;
