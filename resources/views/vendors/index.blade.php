@@ -176,8 +176,7 @@
                 e.preventDefault();
 
                 var id  = $(this).closest('td').find('span').text();
-                var itemCode  = $(this).closest('tr').find('td:nth-child(1)').text();
-                var description  = $(this).closest('tr').find('td:nth-child(3)').text();
+                var description  = $(this).closest('tr').find('td:nth-child(1)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
                 $('#confirm-delete .brandToDelete').text(id);
                 $('#confirm-delete .descriptionOfBrand').text(description);

@@ -94,6 +94,7 @@
                                         <thead>
                                         <tr>
                                             <th>Corporation</th>
+                                            <th>Corp Id</th>
                                             <th>Branch</th>
                                             <th>Account Number</th>
                                             <th>Description</th>
@@ -107,7 +108,9 @@
                                         <tbody>
                                         @foreach($vendors as $vendormgm)
                                             <tr>
+                                                <td>{{ $vendormgm->corp_id }}</td>
                                                 <td>{{ $vendormgm->corp_name }}</td>
+
                                                 <td>{{ $vendormgm->ShortName }}</td>
                                                 <td>{{ $vendormgm->acct_num }}</td>
                                                 <td>{{ $vendormgm->description }}</td>
@@ -365,25 +368,8 @@
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
 
-                            @if(!Session::has('corpUrl'))
-                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
-                            .appendTo('#example_ddl2');
-                    var cntCorp = 0;
-                    @foreach($corporations as $key => $val)
-                    if(cntCorp != 0){
-                        corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
-                    }
-                    cntCorp++;
-                            @endforeach
-                            @else
-                    var corporationID = $('<select class="form-control"></select>')
-                            .appendTo('#example_ddl2');
-                    @foreach($corporations as $key => $val)
-                    corporationID.append('<option value="{{ $val->corp_id }}" @if(session('corpUrl') == $val->corp_id)  selected @endif>{{ $val->corp_name }}</option>');
-                    @endforeach
-                            @endif
 
-                    this.api().columns(7).every( function () {
+                    this.api().columns(8).every( function () {
                         var column = this;
                         var select = $('<select class="form-control"><option value="">All</option></select>')
                             .appendTo( '#example_ddl3' )
@@ -401,6 +387,32 @@
                         select.append( '<option value="0">Inactive</option>' )
 
                     } );
+
+                    this.api().columns(1).every( function () {
+                        var column = this;
+                        var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
+                            .appendTo('#example_ddl2')
+                            .on( 'change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+                        <?php $cnt = 0 ?>
+                        @foreach($corporations as $key => $val)
+                            @if($cnt == 0){
+                                <?php $key ?>
+                            }@else{
+                            corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            }
+                            @endif
+
+                        <?php $cnt++; ?>
+                            @endforeach
+                    });
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
@@ -408,10 +420,10 @@
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
-                    { "width": "5%", "targets": 0},
-                    { "orderable": false, 'visible': false, "targets": 7},
+                    { "orderable": false, "width": "5%", "targets": 0},
+                    { "orderable": false, 'visible': false, "targets": [1,8]},
                     { "orderable": false, "width": "9%", "targets": 5 },
-                    {"className": "dt-center", "targets": [5, 6]}
+                    {"className": "dt-center", "targets": [5, 7]}
                 ]
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
@@ -449,10 +461,10 @@
                 e.preventDefault();
 
                 var id  = $(this).closest('td').find('span').text();
-
+                //todo insert openbusiness again to the url
                 $.ajax({
                     type: "POST",
-                    url: "/OneBusiness/vendor-management/get-account-for-vendor",
+                    url: "/vendor-management/get-account-for-vendor",
                     data: { id : id },
                     success: function (data) {
                         if(data.nx_branch == -1){
@@ -470,16 +482,16 @@
                         if(data.active){
                             $('input[name="editActiveAccount').attr("checked", true);
                         }
-                        $('#editAccount form').attr('action', '/OneBusiness/vendor-management/'+id);
+                        $('#editAccount form').attr('action', '/vendor-management/'+id);
                         $('#editAccount').modal("show");
                     }
                 })
             });
 
-            $(document).on('change', '#example_ddl2', function () {
+           /* $(document).on('change', '#example_ddl2', function () {
                 var location = $('#example_ddl2 option:selected').val();
                 window.location.href = '?corp='+location;
-            })
+            })*/
 
             $(document).on('change', '.corporationId', function () {
                 var corpId = $('.corporationId option:selected').val();
@@ -489,7 +501,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '/vendors/get-branches',
+                    url: '/OpenBusiness/vendors/get-branches',
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);

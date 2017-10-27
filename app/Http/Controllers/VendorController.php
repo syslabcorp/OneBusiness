@@ -107,7 +107,7 @@ class VendorController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Vendor $vendor, Request $request)
+    public function show(Vendor $vendor)
     {
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
@@ -119,25 +119,25 @@ class VendorController extends Controller
        $vendors->setConnection('openbus');*/
         //get records
 
-        $url = $request->input('corp');
-        $url != null ? session(['corpUrl' => $url]) : null;
+        //$url = $request->input('corp');
+        //$url != null ? session(['corpUrl' => $url]) : null;
 
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
             ->get();
 
 
+        $vendors = DB::table('cv_vendacct')
+            ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+            ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
+            ->join('t_sysdata', 'cv_vendacct.nx_branch', '=', 't_sysdata.Branch')
+            ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
+            ->orderBy('VendorName', 'ASC')
+            ->get();
 
-
-        if($url == null)
+      /*  if($url == null)
         {
-            $vendors = DB::table('cv_vendacct')
-                ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
-                ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
-                ->join('t_sysdata', 'cv_vendacct.nx_branch', '=', 't_sysdata.Branch')
-                ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
-                ->orderBy('VendorName', 'ASC')
-                ->get();
+
 
 
             session(['corpUrl' => $vendors[0]->corp_id]);
@@ -150,7 +150,7 @@ class VendorController extends Controller
                 ->where('cv_vendacct.corp_id', $url)
                 ->orderBy('VendorName', 'ASC')
                 ->get();
-        }
+        }*/
 
         $branches = DB::table('t_sysdata')
             ->orderBy('Description', 'ASC')

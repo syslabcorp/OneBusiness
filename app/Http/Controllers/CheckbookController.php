@@ -109,8 +109,11 @@ class CheckbookController extends Controller
 
         $bankCode = BankAccount::where('bank_acct_id', $acctId)->first();
 
+        $numRow = DB::table('cv_chkbk_series')->select(DB::raw('MAX(order_num) as num_row'))->first();
+
         //create new instance
         $checkbook = new Checkbook;
+        $checkbook->order_num =  $numRow->num_row+1;
         $checkbook->bank_acct_id = $acctId;
         $checkbook->chknum_start = $starting;
         $checkbook->chknum_end = $ending;
@@ -237,6 +240,7 @@ class CheckbookController extends Controller
 
         if($dataStatus != "" && $corpID != "" && $branch != "" && $sysBranch != "" && $mainStatus == "false" && $search['value'] == ""){
             //get records
+
             $checkbooks = DB::table('cv_chkbk_series')
                 ->join('cv_bank_acct', 'cv_chkbk_series.bank_acct_id', '=', 'cv_bank_acct.bank_acct_id')
                 ->join('t_sysdata', 'cv_bank_acct.branch', '=', 't_sysdata.Branch')
