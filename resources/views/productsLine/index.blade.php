@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link href="/css/parsley.css" rel="stylesheet" >
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }
@@ -111,12 +112,15 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h5 class="modal-title">Add New Product Line</h5>
                     </div>
-                    <form class="form-horizontal" action="{{ url('/productlines') }}" METHOD="POST">
+                    <form class="form-horizontal" action="{{ url('/productlines') }}" id="form1" METHOD="POST">
                         <div class="modal-body">
                             <div class="form-group">
                                 <label class="col-md-3 control-label" for="prodcutLineName">Product Line</label>
                                 <div class="col-md-8">
-                                    <input id="prodcutLineName" name="prodcutLineName" type="text" class="form-control input-md" required="">
+                                    <input id="prodcutLineName" name="prodcutLineName" type="text" class="form-control input-md"
+                                           data-parsley-required-message="Product Line is required"
+                                           data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                           data-parsley-maxlength="50" required="">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -152,12 +156,15 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Edit Product Line</h5>
                 </div>
-                <form class="form-horizontal" action="" METHOD="post">
+                <form class="form-horizontal" action="" id="form2" METHOD="post">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="editProductLineName">Product Line</label>
                             <div class="col-md-8">
-                                <input id="editProductLineName" name="editProductLineName" type="text" class="form-control input-md editProductLineName" required="">
+                                <input id="editProductLineName" name="editProductLineName" type="text" class="form-control input-md editProductLineName"
+                                       data-parsley-required-message="Product Line is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50"  required="">
                             </div>
                         </div>
                         <div class="form-group">
@@ -217,8 +224,12 @@
 @endsection
 
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
         (function($){
+
+            $('#form1, #form2').parsley();
+
             $('#myTable').DataTable({
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +

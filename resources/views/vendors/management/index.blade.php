@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link href="/css/parsley.css" rel="stylesheet" >
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }
@@ -146,7 +147,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add Vendor Account</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/vendor-management') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/vendor-management') }}" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
@@ -154,7 +155,8 @@
                                     <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                         <label class="col-md-3 control-label" for="corporationId">Corporation:</label>
                                         <div class="col-md-7">
-                                            <select name="corporationId" class="form-control input-md corporationId" id="">
+                                            <select name="corporationId" class="form-control input-md corporationId" id=""
+                                                    data-parsley-required-message="Corporation person is required" required>
                                                 <option value="">Select Corporation:</option>
                                                 @foreach($corporations as $corporation)
                                                     <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
@@ -187,13 +189,16 @@
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="vendorAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="vendorAccountNumber" name="vendorAccountNumber" type="text" class="form-control input-md" required="">
+                                <input id="vendorAccountNumber" name="vendorAccountNumber" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
                         </div>
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="description">Description:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="description" name="description" type="text" class="form-control input-md" required="">
+                                <input id="description" name="description" type="text" class="form-control input-md">
                             </div>
                         </div>
                         <div class="form-group acctNumRw">
@@ -242,7 +247,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Edit Vendor Account</h5>
                 </div>
-                <form class="form-horizontal" action="" METHOD="POST">
+                <form class="form-horizontal" action="" id="form2" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
@@ -268,7 +273,8 @@
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
                                     <div class="col-md-7">
-                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id="">
+                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
+                                                data-parsley-required-message="Corporation person is required" required>
                                             <option value="">Select Corporation:</option>
                                             @foreach($corporations as $corporation)
                                                 <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
@@ -281,13 +287,16 @@
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="editVendorAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="editVendorAccountNumber" name="editVendorAccountNumber" type="text" class="form-control input-md" required="">
+                                <input id="editVendorAccountNumber" name="editVendorAccountNumber" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50" data-parsley-pattern="^[\d+\-\?]+\d+$"  required="">
                             </div>
                         </div>
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="editDescription">Description:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="editDescription" name="editDescription" type="text" class="form-control input-md" required="">
+                                <input id="editDescription" name="editDescription" type="text" class="form-control input-md">
                             </div>
                         </div>
                         <div class="form-group acctNumRw">
@@ -361,8 +370,12 @@
 @endsection
 
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
         (function($){
+
+            $('#form1, #form2').parsley();
+
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");

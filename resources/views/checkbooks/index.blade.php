@@ -135,13 +135,19 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="startingNum">Starting Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="startingNum" name="startingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="startingNum" name="startingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Starting Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="endingNum">Ending Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="endingNum" name="endingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="endingNum" name="endingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Ending Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                     </div>
@@ -188,13 +194,19 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="editStartingNum">Starting Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="editStartingNum" name="editStartingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="editStartingNum" name="editStartingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Starting Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="editEndingNum">Ending Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="editEndingNum" name="editEndingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="editEndingNum" name="editEndingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Ending Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                     </div>
