@@ -71,21 +71,24 @@ class RatesController extends Controller
       'ZoneStart1' => 'required',
       'ZoneStart2' => 'required',
       'ZoneStart3' => 'required',
+      'Discount1' => 'numeric',
+      'Discount2' => 'numeric',
+      'Discount3' => 'numeric'
     ], $messages);
 
     $validator = \Validator::make(
       $request->all(), []
     );
   
-    if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart2'))) {
+    if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) > strtotime($request->get('ZoneStart2'))) {
       $validator->getMessageBag()->add('ZoneStart2', 'Timezone 2 must be greater than Timezone 1');
     }
 
-    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) >= strtotime($request->get('ZoneStart3'))) {
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) > strtotime($request->get('ZoneStart3'))) {
       $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 2');
     }
 
-    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart3'))) {
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) > strtotime($request->get('ZoneStart3'))) {
       $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 1');
     }
     
@@ -124,22 +127,25 @@ class RatesController extends Controller
       'tmplate_name' => 'required|max:20',
       'ZoneStart1' => 'required',
       'ZoneStart2' => 'required',
-      'ZoneStart3' => 'required'
+      'ZoneStart3' => 'required',
+      'Discount1' => 'numeric',
+      'Discount2' => 'numeric',
+      'Discount3' => 'numeric'
     ], $messages);
 
     $validator = \Validator::make(
       $request->all(), []
     );
   
-    if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart2'))) {
+    if(!empty($request->get('ZoneStart2')) && strtotime($request->get('ZoneStart1')) > strtotime($request->get('ZoneStart2'))) {
       $validator->getMessageBag()->add('ZoneStart2', 'Timezone 2 must be greater than Timezone 1');
     }
 
-    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) >= strtotime($request->get('ZoneStart3'))) {
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart2')) > strtotime($request->get('ZoneStart3'))) {
       $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 2');
     }
 
-    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) >= strtotime($request->get('ZoneStart3'))) {
+    if(!empty($request->get('ZoneStart3')) && strtotime($request->get('ZoneStart1')) > strtotime($request->get('ZoneStart3'))) {
       $validator->getMessageBag()->add('ZoneStart3', 'Timezone 3 must be greater than Timezone 1');
     }
     

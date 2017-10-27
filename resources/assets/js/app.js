@@ -331,6 +331,7 @@ $(document).ready(function()
     });
 
     $('.rate-page .box-assign .btn').click(function(event) {
+      $('.rate-page .btn-save').removeClass("not-apply");
       $('.rate-page .table tr.selected').each(function(index) {
         $(this).find('.form-control').each(function(key, element) {
           if($('.rate-page .box-assign td:eq(' + (key + 1) + ') .form-control').val()) {
@@ -339,6 +340,17 @@ $(document).ready(function()
         });
       });
     });
+
+    $('.rate-page .box-assign .form-control').on("change", function(event) {
+      $('.rate-page .btn-save').addClass("not-apply");
+    });
+
+    $('.rate-page .btn-save').click(function(event) {
+      if($(this).hasClass('not-apply')) {
+        toastr.error("Please apply values first before saving");
+        event.preventDefault();
+      }
+    })
 
 
     toastr.options = {
