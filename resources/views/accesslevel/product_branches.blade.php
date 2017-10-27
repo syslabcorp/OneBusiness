@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<label class="control-label mt-checkbox">
-		<input class="branch-all" type="checkbox" name="branchall" id="branchall">Branch
+		<input class="branch-all" type="checkbox" name="branchall" id="branchall"> Branch
 		</label>
 	</div>
 	<div class="panel-body puchase-panel">

@@ -75,7 +75,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <label class="control-label mt-checkbox">
-                                                    <input class="purchase-all" type="checkbox" id="purchaseall">Product Line
+                                                    <input class="purchase-all" type="checkbox" id="purchaseall"> Product Line
                                                 </label>
                                             </div>
                                             <div class="panel-body puchase-panel">
@@ -108,7 +108,7 @@
                                       </a>
                                   </div>
                                   <div class="col-md-6">
-                                      <button type="submit" class="btn btn-primary pull-right save_button">
+                                      <button type="submit" {{ ($is_branch_exist) ? '' : 'disabled' }} class="btn btn-primary pull-right save_button">
                                         {{isset($detail_edit_temp_hdr->po_tmpl8_id) ? "Save " : "Create " }}
                                         </button>
                                   </div>
