@@ -108,9 +108,8 @@
                                         <tbody>
                                         @foreach($vendors as $vendormgm)
                                             <tr>
-                                                <td>{{ $vendormgm->corp_id }}</td>
                                                 <td>{{ $vendormgm->corp_name }}</td>
-
+                                                <td>{{ $vendormgm->corp_id }}</td>
                                                 <td>{{ $vendormgm->ShortName }}</td>
                                                 <td>{{ $vendormgm->acct_num }}</td>
                                                 <td>{{ $vendormgm->description }}</td>
@@ -364,10 +363,9 @@
 @section('footer-scripts')
     <script>
         (function($){
-            $('#myTable').DataTable({
+            var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-
 
                     this.api().columns(8).every( function () {
                         var column = this;
@@ -396,31 +394,39 @@
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
+                                mainTable.search('')
 
                                 column
                                     .search( val ? '^'+val+'$' : '', true, false )
                                     .draw();
                             } );
-                        <?php $cnt = 0 ?>
-                        @foreach($corporations as $key => $val)
+
+
+                            <?php $cnt = 0 ?>
+                            @foreach($corporations as $key => $val)
                             @if($cnt == 0){
-                                <?php $key ?>
-                            }@else{
+                            <?php $key ?>
+                        }@else{
                             corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
-                            }
-                            @endif
+                        }
+                        @endif
 
                         <?php $cnt++; ?>
-                            @endforeach
+                        @endforeach
+
                     });
+
+
+
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
                 "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
+                order: [[ 2, 'asc' ]],
                 "columnDefs": [
-                    { "orderable": false, "width": "5%", "targets": 0},
+                    { "orderable": false, "targets": [0, 2]},
                     { "orderable": false, 'visible': false, "targets": [1,8]},
                     { "orderable": false, "width": "9%", "targets": 5 },
                     {"className": "dt-center", "targets": [5, 7]}
@@ -517,6 +523,10 @@
 
                 })
             })
+
+            mainTable.search( $('#example_ddl2 option:selected').text() );
+            mainTable.draw();
+
 
         })(jQuery);
     </script>
