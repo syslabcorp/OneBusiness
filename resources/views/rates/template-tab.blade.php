@@ -29,7 +29,7 @@
       <label>Per Min</label>
     </div>
     <div class="control-radio col-xs-6">
-      <input type="radio" disabled="true" {{ $rate->charge_mode == 5 ? "checked" : ""}}>
+      <input type="radio" disabled="true" {{ $rate->charge_mode == 2 ? "checked" : ""}}>
       <label >Per 5 Mins</label>
     </div>
   </div>
@@ -223,13 +223,13 @@
     <hr>
     @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
-      <button class="btn btn-sm btn-success">
+      <button class="btn btn-sm btn-success btn-save">
         <i class="fa fa-save"></i> Save
       </button>
     </div>
     @endif
   </form>
-  @elseif($rate->charge_mode == 5)
+  @elseif($rate->charge_mode == 2)
   <form action="{{ route('branchs.rates.details', [$branch, $rate]) }}" method="POST">
     <input type="hidden" name="_method" value="PUT">
     {{ csrf_field() }}
@@ -405,7 +405,7 @@
     <hr>
     @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
-      <button class="btn btn-sm btn-success">
+      <button class="btn btn-sm btn-success btn-save">
         <i class="fa fa-save"></i> Save
       </button>
     </div>

@@ -26,7 +26,7 @@
       <label for="per_min">Per Min</label>
     </div>
     <div class="control-radio col-xs-6">
-      <input type="radio" name="charge_mode" id="per_5_min" value="5" {{ old('charge_mode') == 5 ? "checked" : ""}}>
+      <input type="radio" name="charge_mode" id="per_5_min" value="2" {{ old('charge_mode') == 2 ? "checked" : ""}}>
       <label for="per_5_min">Per 5 Mins</label>
     </div>
   </div>
@@ -55,9 +55,12 @@
           <span class="help-block">{{ $errors->first('ZoneStart1') }}</span>
         @endif
       </div>
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('Discount1') ? 'has-error' : '' }}">
         <label for="">Discount 1: (%)</label>
-        <input type="number" class="form-control" name="Discount1">
+        <input type="number" class="form-control" name="Discount1" value="{{ old('Discount1') }}">
+        @if($errors->has('Discount1'))
+          <span class="help-block">{{ $errors->first('Discount1') }}</span>
+        @endif
       </div>
     </div>
   </div>
@@ -70,9 +73,12 @@
           <span class="help-block">{{ $errors->first('ZoneStart2') }}</span>
         @endif
       </div>
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('Discount2') ? 'has-error' : '' }}">
         <label for="">Discount 2: (%)</label>
-        <input type="number" class="form-control" name="Discount2">
+        <input type="number" class="form-control" name="Discount2" value="{{ old('Discount2') }}">
+        @if($errors->has('Discount2'))
+          <span class="help-block">{{ $errors->first('Discount2') }}</span>
+        @endif
       </div>
     </div>
   </div>
@@ -85,9 +91,12 @@
           <span class="help-block">{{ $errors->first('ZoneStart3') }}</span>
         @endif
       </div>
-      <div class="col-xs-6">
+      <div class="col-xs-6 {{ $errors->has('Discount3') ? 'has-error' : '' }}">
         <label for="">Discount 3: (%)</label>
-        <input type="number" class="form-control" name="Discount3">
+        <input type="number" class="form-control" name="Discount3" value="{{ old('Discount3') }}">
+        @if($errors->has('Discount3'))
+          <span class="help-block">{{ $errors->first('Discount3') }}</span>
+        @endif
       </div>
     </div>
   </div>
