@@ -92,7 +92,9 @@
                                                     <label class="col-md-3 control-label" for="vendorName">Vendor Name:</label>
                                                     <div class="col-md-7">
                                                         <input id="vendorName" name="vendorName" type="text" value="{{ $vendor->VendorName }}"
-                                                               data-parsley-required-message="Vendor name is required" class="form-control input-md" required>
+                                                               data-parsley-required-message="Vendor name is required"
+                                                               data-parsley-maxlength-message="The template name may not be greater than 80 characters"
+                                                               data-parsley-maxlength="80" class="form-control input-md" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -113,7 +115,9 @@
                                                     <label class="col-md-3 control-label" for="contactPerson">Contact Person:</label>
                                                     <div class="col-md-5">
                                                         <input id="contactPerson" name="contactPerson" type="text" value="{{ $vendor->ContactPerson }}"
-                                                               data-parsley-required-message="Contact person is required" class="form-control input-md" required>
+                                                               data-parsley-required-message="Contact person is required" class="form-control input-md"
+                                                               data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                                               data-parsley-maxlength="50" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
