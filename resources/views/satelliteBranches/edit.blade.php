@@ -77,7 +77,9 @@
                                                     <label class="col-md-3 control-label" for="branchName">Satellite Branch:</label>
                                                     <div class="col-md-5">
                                                         <input id="branchName" name="branchName" type="text" value="{{ $satelliteBranch->short_name }}"
-                                                               data-parsley-required-message="Branch name is required" class="form-control input-md" required>
+                                                               data-parsley-required-message="Branch name is required" class="form-control input-md"
+                                                               data-parsley-maxlength-message="The template name may not be greater than 30 characters"
+                                                               data-parsley-maxlength="30"  required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">

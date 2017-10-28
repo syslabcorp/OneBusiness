@@ -160,7 +160,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">New Bank Account Number</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/bank-accounts') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/bank-accounts') }}" id="form2" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
@@ -215,7 +215,10 @@
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankAccountNumber" name="bankAccountNumber" type="text" class="form-control input-md" required="">
+                                <input id="bankAccountNumber" name="bankAccountNumber" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
                         </div>
                     </div>
@@ -245,18 +248,24 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add Bank</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/banks') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/banks') }}" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankName">Bank Name:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankName" name="bankName" type="text" class="form-control input-md" required="">
+                                <input id="bankName" name="bankName" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Bank Name is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 20 characters"
+                                       data-parsley-maxlength="20" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankName">Description:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankDescription" name="bankDescription" type="text" class="form-control input-md" required="">
+                                <input id="bankDescription" name="bankDescription" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Description is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 100 characters"
+                                       data-parsley-maxlength="100" required="">
                             </div>
                         </div>
                         <hr class="wide">
@@ -355,13 +364,19 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankDescriptionEdit">Bank Name:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankNameEdit" name="bankNameEdit" type="text" class="form-control input-md" required="">
+                                <input id="bankNameEdit" name="bankNameEdit" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Bank Name is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 20 characters"
+                                       data-parsley-maxlength="20" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankDescriptionEdit">Description:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankDescriptionEdit" name="bankDescriptionEdit" type="text" class="form-control input-md" required="">
+                                <input id="bankDescriptionEdit" name="bankDescriptionEdit" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Description is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 100 characters"
+                                       data-parsley-maxlength="100" required="">
                             </div>
                         </div>
                     </div>
@@ -422,7 +437,9 @@
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumberEdit">Account Number:</label>
                             <div class="col-md-7 col-xs-12">
                                 <input id="bankAccountNumberEdit" name="bankAccountNumberEdit" type="text" class="form-control input-md"
-                                       data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
+                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
                         </div>
                     </div>
@@ -498,7 +515,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
     <script>
-        $('#editAccountModalForm').parsley();
+        $('#editAccountModalForm, #editBankModalForm, #form1, #form2').parsley();
         (function($){
             var __data = "";
             var mainTable = $('#myTable').DataTable({
@@ -787,7 +804,6 @@
                 var accountNum = $('#bankAccountNumberEdit').val();
                 var accountID = $('.accountID').val();
                 var corpId = $('.editCorpName option:selected').val();
-                alert(corpId+'test');
 
                 $.ajax({
                     url: "/OneBusiness/bank-accounts/update",

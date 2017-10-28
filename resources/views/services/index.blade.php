@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link href="/css/parsley.css" rel="stylesheet" >
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }
@@ -104,18 +105,24 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add New Service</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/services') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/services') }}" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="serviceCode">Item Code</label>
                             <div class="col-md-8">
-                                <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md" required="">
+                                <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Item Code person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 30 characters"
+                                       data-parsley-maxlength="30" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="serviceDescription">Description</label>
                             <div class="col-md-8">
-                                <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md" required="">
+                                <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Description person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 40 characters"
+                                       data-parsley-maxlength="40" required="">
                             </div>
                         </div>
 
@@ -145,18 +152,24 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Edit Service: <span style="font-weight: bold" class="serviceToEdit"></span></h5>
                 </div>
-                <form class="form-horizontal" action="" METHOD="post">
+                <form class="form-horizontal" action="" id="form2" METHOD="post">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="serviceCode">Item Code</label>
                             <div class="col-md-8">
-                                <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md serviceCode" required="">
+                                <input id="serviceCode" name="serviceCode" type="text" class="form-control input-md serviceCode"
+                                       data-parsley-required-message="Item Code person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 30 characters"
+                                       data-parsley-maxlength="30" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="serviceDescription">Description</label>
                             <div class="col-md-8">
-                                <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md serviceDescription" required="">
+                                <input id="serviceDescription" name="serviceDescription" type="text" class="form-control input-md serviceDescription"
+                                       data-parsley-required-message="Description is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 40 characters"
+                                       data-parsley-maxlength="40" required="">
                             </div>
                         </div>
 
@@ -211,8 +224,10 @@
 @endsection
 
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
         (function($){
+            $('#form1, #form2').parsley();
             $('#myTable').DataTable({
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
