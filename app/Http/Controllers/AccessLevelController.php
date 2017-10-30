@@ -882,7 +882,7 @@ class AccessLevelController extends Controller
             $itemIds = isset($formData['item_id']) ? $formData['item_id'] :array();
             if(empty($branches) || empty($itemIds)){
                 Request::session()->flash('flash_message', 'Select Branch or retail item before you can create this Purchase Order Template');
-                return redirect('purchase_order/'.$city_id);
+                return redirect('purchase_order/'.$city_id)->withInput();;
             }else{
                 if ($id == NULL) {
                 $po_tmpl8_hdr = DB::table('s_po_tmpl8_hdr')->insertGetId($temp_hdr);
@@ -927,7 +927,7 @@ class AccessLevelController extends Controller
             $data['proline_ids'] = $proline_ids;
             $branchdata['probranch_ids'] = $probranch_ids;
         }
-		$branchdata['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
+		$branchdata['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->orderBy('ShortName')->get();
 		$data['is_branch_exist'] = count($branchdata['branches']);
         $cities = DB::table('t_cities')->select('City_ID','City')->where('City_ID',$city_id)->orderBy('t_cities.City', 'asc')->first();
         $data['product_line'] = DB::table('s_prodline')->where('Active',1)->orderBy('Product')->get();
