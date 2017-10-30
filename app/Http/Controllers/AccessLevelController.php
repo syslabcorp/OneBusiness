@@ -882,7 +882,7 @@ class AccessLevelController extends Controller
             $itemIds = isset($formData['item_id']) ? $formData['item_id'] :array();
             if(empty($branches) || empty($itemIds)){
                 Request::session()->flash('flash_message', 'Select Branch or retail item before you can create this Purchase Order Template');
-                return redirect('purchase_order/'.$id);
+                return redirect('purchase_order/'.$city_id);
             }else{
                 if ($id == NULL) {
                 $po_tmpl8_hdr = DB::table('s_po_tmpl8_hdr')->insertGetId($temp_hdr);
