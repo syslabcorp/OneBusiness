@@ -167,7 +167,8 @@
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="bankCode">Bank Code:</label>
                                     <div class="col-md-9">
-                                        <select name="bankCode" class="form-control input-md bankCode" id="">
+                                        <select name="bankCode" class="form-control input-md bankCode" id=""
+                                                data-parsley-required-message="Bank Code is required" required>
                                             <option value="">Select Bank:</option>
                                             @foreach($selectBank as $bank)
                                                 <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
@@ -184,7 +185,8 @@
                             <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                 <label class="col-md-3 control-label" for="corpName">Corporation:</label>
                                 <div class="col-md-9">
-                                    <select name="corpName" class="form-control input-md corpName" id="">
+                                    <select name="corpName" class="form-control input-md corpName" id=""
+                                            data-parsley-required-message="Corporation is required" required>
                                         <option value="">Select Corporation:</option>
                                         @foreach($selectCorp as $corp)
                                             <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
@@ -216,7 +218,7 @@
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
                                 <input id="bankAccountNumber" name="bankAccountNumber" type="text" class="form-control input-md"
-                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-required-message="Account number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 50 characters"
                                        data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
@@ -412,7 +414,8 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
                             <div class="col-md-7 col-xs-12">
-                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id="" required>
+                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id=""
+                                        data-parsley-required-message="Bank Code is required" required>
                                     <option value="">Select Bank:</option>
                                     @foreach($selectBank as $bank)
                                         <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
@@ -424,7 +427,8 @@
                             <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                 <label class="col-md-3 control-label" for="editCorpName">Corporation:</label>
                                 <div class="col-md-9">
-                                    <select name="editCorpName" class="form-control input-md editCorpName" id="">
+                                    <select name="editCorpName" class="form-control input-md editCorpName" id=""
+                                            data-parsley-required-message="Corporation is required" required>
                                         <option value="">Select Corporation:</option>
                                         @foreach($selectCorp as $corp)
                                             <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
@@ -437,7 +441,7 @@
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumberEdit">Account Number:</label>
                             <div class="col-md-7 col-xs-12">
                                 <input id="bankAccountNumberEdit" name="bankAccountNumberEdit" type="text" class="form-control input-md"
-                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-required-message="Account number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 50 characters"
                                        data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
