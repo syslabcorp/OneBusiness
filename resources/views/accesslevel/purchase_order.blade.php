@@ -39,7 +39,7 @@
                                     <div class="col-md-6">
                                         <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
                                         <div class="col-md-8">
-                                            <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : "" }}"autofocus>
+                                            <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : old('po_tmpl8_desc') }}"autofocus>
                                             @if ($errors->has('temp_name'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('temp_name') }}</strong>
