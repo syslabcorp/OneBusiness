@@ -26,17 +26,7 @@ class InventoryController extends Controller
             return redirect("/home");
         }
 
-        //user access rights
-        $articles = DB::table('s_invtry_hdr')
-            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
-            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
-            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
-            ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
-                's_invtry_type.type_desc')
-            ->orderBy('s_invtry_hdr.item_id', 'DESC')
-            ->get();
-
-        return view('inventory.index', ['articles' => $articles]);
+        return view('inventory.index');
     }
 
     /**
@@ -249,5 +239,52 @@ class InventoryController extends Controller
             \Session::flash('alert-class', "Item deleted successfully");
             return redirect()->route('inventory.index');
         }
+    }
+
+    public function getInventoryList(Request $request){
+
+        $draw = $request->input('draw');
+        $start = $request->input('start');
+        $length = $request->input('length');
+        $columns = $request->input('columns');
+        $orderable = $request->input('order');
+        $orderNumColumn = $orderable[0]['column'];
+        $orderDirection = $orderable[0]['dir'];
+        $columnName = $columns[$orderNumColumn]['data'];
+        $search = $request->input('search');
+
+        $articlesCount = DB::table('s_invtry_hdr')
+            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+            ->count();
+
+        //user access rights
+        $articles = DB::table('s_invtry_hdr')
+            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+            ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
+                's_invtry_type.type_desc')
+            ->orderBy('s_invtry_hdr.item_id', 'ASC')
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        $pagination = DB::table('s_invtry_hdr')
+            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+            ->count();
+
+
+        $columns = array(
+            "draw" => $draw,
+            "recordsTotal" => $articlesCount,
+            "recordsFiltered" =>  isset($pagination) && ($pagination != "") ? $pagination : 0,
+            "data" => ($articles != null) ? $articles : 0
+        );
+
+        return response()->json($columns, 200);
     }
 }

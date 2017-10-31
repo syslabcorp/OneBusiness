@@ -86,37 +86,6 @@
                                             <th>Action</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        @foreach($articles as $article)
-                                            <tr>
-                                                <td>{{ $article->item_id }}</td>
-                                                <td>{{ $article->ItemCode }}</td>
-                                                <td>{{ $article->Product }}</td>
-                                                <td>{{ $article->Brand }}</td>
-                                                <td>{{ $article->Description }}</td>
-                                                <td>{{ $article->Unit }}</td>
-                                                <td>{{ $article->Min_Level }}</td>
-                                                <td>{{ $article->Packaging }}</td>
-                                                <td>{{ $article->Threshold }}</td>
-                                                <td>{{ $article->Multiplier }}</td>
-                                                <td>{{ $article->barcode }}</td>
-                                                <td>{{ $article->type_desc }}</td>
-                                                <td>
-                                                    <input type="checkbox" name="trackThis" @if($article->TrackThis == 1) checked @endif disabled>
-                                                </td>
-                                                <td><input type="checkbox" name="printThis" @if($article->Print_This == 1) checked @endif disabled></td>
-                                                <td><input type="checkbox" name="prodActive" @if($article->Active == 1) checked @endif disabled></td>
-                                                <td>
-                                                    <a href="inventory/{{ $article->item_id }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(19, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i>
-                                                    </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(19, "D")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $article->item_id }}</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -160,18 +129,143 @@
     <script>
         (function($){
             var table = $('#myTable').DataTable({
-                deferRender:    true,
+                "processing": true,
+                "serverSide": true,
+                "ajax" : {
+                    type: "POST",
+                    url: "inventory/get-inventory-list",
+                },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
+                "columnDefs": [
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.item_id;
+                        },
+                        "targets": 0
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.ItemCode;
+                        },
+                        "targets": 1
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Product;
+                        },
+                        "targets": 2
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Brand;
+                        },
+                        "targets": 3
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Description;
+                        },
+                        "targets": 4
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Unit;
+                        },
+                        "targets": 5
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Min_Level;
+                        },
+                        "targets": 6
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Packaging;
+                        },
+                        "targets": 7
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Threshold;
+                        },
+                        "targets": 8
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.Multiplier;
+                        },
+                        "targets": 9
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.barcode;
+                        },
+                        "targets": 10
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.type_desc;
+                        },
+                        "targets": 11
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            var checked = "";
+                            if(row.TrackThis == 1) checked = "checked";
+                            return '<input type="checkbox" '+ checked +' disabled >';
+                        },
+                        "targets": 12
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            var checked = "";
+                            if(row.Print_This == 1) checked = "checked";
+                            return '<input type="checkbox" '+ checked +' disabled >';
+                        },
+                        "targets": 13
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            var checked = "";
+                            if(row.Active == 1) checked = "checked";
+                            return '<input type="checkbox" '+ checked +' disabled >';
+                        },
+                        "targets": 14
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(19, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var optionClass = "";
+                            if(checkAccess == 0) { optionClass = 'disabled' };
+
+                            var checkDelete = '<?php  if(\Auth::user()->checkAccessById(19, "D")) {  echo 1; }else{ echo 0; } ?>';
+                            var optionClassDel = "";
+                            if(checkDelete == 0) { optionClassDel = 'disabled' };
+
+                            return '<a href="inventory/'+row.item_id+'/edit" name="edit" class="btn btn-primary btn-sm" '+optionClass+'>' +
+                                    '<i class="glyphicon glyphicon-pencil"></i></a>' +
+                                    '<a href="#" name="delete" style="margin-left: 2px" class="btn btn-danger btn-sm delete" '+optionClassDel+'>' +
+                                    '<i class="glyphicon glyphicon-trash"></i><span style="display: none;">'+row.item_id+'</span></a>';
+
+
+                        },
+                        "targets": 15
+                    },
+                    { "orderable": false, "width": "5%", "targets": 0},
+                    { "orderable": false, "width": "8%", "targets": 4 },
+                    { "orderable": false, "visible" : "4%", "targets": 15 }
+
+                ],
             });
             $('#myTable').wrap('<div class="dataTables_scroll" />');
 
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
-
                 var id  = $(this).closest('td').find('span').text();
                 var itemCode  = $(this).closest('tr').find('td:nth-child(2)').text();
                 $('#confirm-delete').find('.serviceId').val(id);

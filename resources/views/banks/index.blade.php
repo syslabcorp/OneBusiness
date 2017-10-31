@@ -519,8 +519,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
     <script>
-        $('#editAccountModalForm, #editBankModalForm, #form1, #form2').parsley();
         (function($){
+            $('#editAccountModalForm, #editBankModalForm, #form1, #form2').parsley();
             var __data = "";
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
