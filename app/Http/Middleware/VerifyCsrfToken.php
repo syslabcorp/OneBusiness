@@ -15,6 +15,7 @@ class VerifyCsrfToken extends BaseVerifier
         'banks/get-banks-list',
         'banks/get-branches',
         '/satellite-branch/get-branch-list',
-        'checkbooks/get-checkbooks'
+        'checkbooks/get-checkbooks',
+        'inventory/get-inventory-list'
     ];
 }

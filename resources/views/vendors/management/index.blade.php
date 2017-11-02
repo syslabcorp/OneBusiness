@@ -81,7 +81,7 @@
                                     <div class="row">
                                         <div class="col-xs-6">
                                             @if($vendors->count() > 0 )
-                                                {{ $vendors[0]->VendorName }}
+                                                <a href="/vendors">  {{ $vendors[0]->VendorName }} </a>
                                             @endif
                                         </div>
                                         <div class="col-xs-6 text-right">
@@ -480,10 +480,10 @@
                 e.preventDefault();
 
                 var id  = $(this).closest('td').find('span').text();
-                //todo insert openbusiness again to the url
+
                 $.ajax({
                     type: "POST",
-                    url: "/vendor-management/get-account-for-vendor",
+                    url: "/OneBusiness/vendor-management/get-account-for-vendor",
                     data: { id : id },
                     success: function (data) {
                         if(data.nx_branch == -1){
@@ -502,7 +502,7 @@
                             $('input[name="editActiveAccount').attr("checked", true);
                         }
                         $('#editAccount form').attr('action', '/vendor-management/'+id);
-                        $('#editAccount').modal("show");
+                        $('#editAccount').modal("toggle");
                     }
                 })
             });

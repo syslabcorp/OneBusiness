@@ -48,6 +48,7 @@ Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middlewa
 Route::post('/banks/get-branches', 'BankController@getBranches')->middleware('auth');
 
 Route::post('/vendor-management/get-account-for-vendor', 'VendorManagementController@getVendorAccount')->middleware('auth');
+Route::post('/inventory/get-inventory-list', 'InventoryController@getInventoryList')->middleware('auth');
 Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
 Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getBranches')->middleware('auth');
 Route::post('banks/get-banks-list', 'BankController@getBanksList')->middleware('auth');
