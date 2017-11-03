@@ -255,10 +255,18 @@
                         },
                         "targets": 15
                     },
-                    { "orderable": false, "width": "5%", "targets": 0},
-                    { "orderable": false, "width": "8%", "targets": 4 },
-                    { "orderable": false, "visible" : "4%", "targets": 15 }
-
+                    { "orderable": true, "width": "5%", "targets": 0},
+                    { "orderable": true, "width": "2%", "targets": 2 },
+                    { "orderable": true, "width": "3%", "targets": 3 },
+                    { "orderable": false, "width" : "4%", "targets": 5 },
+                    { "orderable": true, "width" : "4%", "targets": 10 }
+                ],
+                "columns": [
+                    { "data": "item_id" },
+                    { "data": "ItemCode" },
+                    { "data": "Description" },
+                    { "data": "Unit" },
+                    { "data": "barcode" },
                 ],
             });
             $('#myTable').wrap('<div class="dataTables_scroll" />');

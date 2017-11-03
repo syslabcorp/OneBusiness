@@ -259,23 +259,53 @@ class InventoryController extends Controller
             ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
             ->count();
 
-        //user access rights
-        $articles = DB::table('s_invtry_hdr')
-            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
-            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
-            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
-            ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
-                's_invtry_type.type_desc')
-            ->orderBy('s_invtry_hdr.item_id', 'ASC')
-            ->skip($start)
-            ->take($length)
-            ->get();
+        if($search['value'] == ""){
+            //user access rights
+            $articles = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
+                    's_invtry_type.type_desc')
+                ->orderBy('s_invtry_hdr.'.$columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
 
-        $pagination = DB::table('s_invtry_hdr')
-            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
-            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
-            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
-            ->count();
+            $pagination = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->count();
+        }else if($search['value'] != ""){
+            //user access rights
+            $articles = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<2; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
+                    's_invtry_type.type_desc')
+                ->orderBy('s_invtry_hdr.'.$columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $pagination = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<2; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->count();
+        }
 
 
         $columns = array(
