@@ -62,11 +62,19 @@
                                             title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
+                                        @if($branch->company->corp_type == 'INN')
+                                        <a href="{{ route('branchs.krates.index', [$branch]) }}" style="margin-right: 10px;" 
+                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
+                                            title="Rates template and scheduling">
+                                            <i class="fa fa-star"></i>
+                                        </a>
+                                        @else
                                         <a href="{{ route('branchs.rates.index', [$branch]) }}" style="margin-right: 10px;" 
                                             class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @php $index++; @endphp
