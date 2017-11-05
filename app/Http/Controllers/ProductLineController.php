@@ -16,7 +16,7 @@ class ProductLineController extends Controller
     {
         if(!\Auth::user()->checkAccessById(24, "V"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -47,7 +47,7 @@ class ProductLineController extends Controller
     {
         if(!\Auth::user()->checkAccessById(24, "A"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -62,7 +62,7 @@ class ProductLineController extends Controller
         $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
 
-        \Session::flash('success', "Product Line added successfully");
+        \Session::flash('alert-class', "Product Line added successfully");
         return back()->withInput();
     }
 
@@ -97,7 +97,7 @@ class ProductLineController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(24, "E")) {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
@@ -112,7 +112,7 @@ class ProductLineController extends Controller
         $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
 
-        \Session::flash('success', "Product Line updated successfully");
+        \Session::flash('alert-class', "Product Line updated successfully");
         return redirect()->route('productlines.index');
     }
 
@@ -125,13 +125,13 @@ class ProductLineController extends Controller
     {
         if(!\Auth::user()->checkAccessById(24, "D"))
         {
-            \Session::flash('error', "You don't have permission");
+            \Session::flash('flash_message', "You don't have permission");
             return redirect("/home");
         }
 
         $success = ProductLine::where('ProdLine_ID', $id)->delete();
         if($success){
-            \Session::flash('success', "Product Line deleted successfully");
+            \Session::flash('alert-class', "Product Line deleted successfully");
             return redirect()->route('productlines.index');
         }
     }

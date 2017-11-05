@@ -110,9 +110,9 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
                     <div id="result" style="display: none;"></div>
                     <div class="col-md-12 col-xs-12">
@@ -227,7 +227,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -309,7 +309,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  data-toggle="modal"
-                                        data-target="#addNewAccount"><i class="fa fa-reply"></i>&nbspBack</button>
+                                        data-target="#addNewAccount"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -385,7 +385,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -450,7 +450,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 <input type="hidden" class="accountID" name="accountID">
@@ -817,14 +817,14 @@
                         if(data == "success"){
                             $('#editAccountModal').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspAccount updated successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#editAccountModal').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -832,7 +832,7 @@
                     },
                     error: function () {
                         $('#editAccountModal').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
@@ -865,14 +865,14 @@
                         if(data == "success"){
                             $('#confirm-delete-account').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspAccount deleted successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#confirm-delete-account').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -880,7 +880,7 @@
                     },
                     error: function () {
                         $('#confirm-delete-account').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
