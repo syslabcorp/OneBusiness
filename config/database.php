@@ -68,6 +68,20 @@ return [
             'strict' => true,
             'engine' => null,
         ),
+        'k_master' => array(
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_OG_DATABASE', 'forge'),
+            'username' => env('DB_OG_USERNAME', 'forge'),
+            'password' => env('DB_OG_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ),
 
         'pgsql' => [
             'driver' => 'pgsql',

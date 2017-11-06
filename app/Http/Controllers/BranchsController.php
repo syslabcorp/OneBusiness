@@ -177,6 +177,21 @@ class BranchsController extends Controller
 
         $lcUid = Branch::select(\DB::raw("AES_DECRYPT(lc_uid, '" . env("LOADCENTRAL_PWDKEY") .  "') as lc_uid"))->where("Branch", "=", $branch->Branch)->first();
 
+        if($branch->company->corp_type == 'INN') {
+          $totalDetails = $branch->rooms()->count();
+          if($branch->MaxUnits > $totalDetails) {
+            for($i = 1; $i <= $branch->MaxUnits - $totalDetails; $i++) {
+              $branch->rooms()->create(["RmIndex" => $i]);
+            }
+          }else if($branch->MaxUnits < $totalDetails) {
+            for($i = 0; $i < $totalDetails - $branch->MaxUnits; $i++)
+            {
+              $branch->rooms()->orderBy("RmIndex", "DESC")->first()->delete();
+            }
+          }
+        }
+        
+
         return view('branchs.edit', [
             'branch' => $branch,
             'branchs' => Branch::where("corp_id", "=", $branch->corp_id)->orderBy('ShortName', 'ASC')->get(),
@@ -240,26 +255,40 @@ class BranchsController extends Controller
             return redirect(route('branchs.index')); 
         }
 
-        $this->validate($request, [
+        $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
+          'RollOver', 'TxfrRollOver', 'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt',
+          'lc_uid', 'lc_pwd', 'StubPrint', 'MinimumChrg_Mins', 'CarryOverMins', 'RmTimeAlert',
+          'RmOffAllowance', 'ChkInOveride', 'ChkOutOveride', 'CancelAllowance', 'TrnsfrAllowance');
+
+        if($branch->company->corp_type == 'INN') {
+          $this->validate($request, [
+            'StubHdr' => 'max:50',
+            'MinimumChrg_Mins' => 'nullable|numeric',
+            'CarryOverMins' => 'nullable|numeric',
+            'RmTimeAlert' => 'nullable|numeric',
+            'RmOffAllowance' => 'nullable|numeric',
+            'CancelAllowance' => 'nullable|numeric',
+            'TrnsfrAllowance' => 'nullable|numeric'
+          ]);
+        }else {
+          $this->validate($request, [
             'StubHdr' => 'max:50',
             'receiving_mobile_number' => 'max:11',
             'MAC_Address' => 'required|unique:mysql2.t_rates,Mac_Address,*,nKey|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
             'cashier_ip' => 'required|regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/'
-        ]);
+          ]);
 
-        $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
-            'RollOver', 'TxfrRollOver', 'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt',
-            'lc_uid', 'lc_pwd', 'StubPrint');
-
-        $params['to_mobile_num'] = $request->get('receiving_mobile_number');
-        $params['StubPrint'] = empty($params['StubPrint']) ? 0 : 1;
-        if(!empty($params['lc_pwd'])) {
-            $params['lc_pwd'] = \DB::raw("AES_ENCRYPT('{$params['lc_pwd']}', '" . env("LOADCENTRAL_PWDKEY") .  "')");
-        } else {
-            unset($params['lc_pwd']);
+          $params['to_mobile_num'] = $request->get('receiving_mobile_number');
+          if(!empty($params['lc_pwd'])) {
+              $params['lc_pwd'] = \DB::raw("AES_ENCRYPT('{$params['lc_pwd']}', '" . env("LOADCENTRAL_PWDKEY") .  "')");
+          } else {
+              unset($params['lc_pwd']);
+          }
+  
+          $params['lc_uid'] = \DB::raw("AES_ENCRYPT('{$params['lc_uid']}', '" . env("LOADCENTRAL_PWDKEY") .  "')");
         }
 
-        $params['lc_uid'] = \DB::raw("AES_ENCRYPT('{$params['lc_uid']}', '" . env("LOADCENTRAL_PWDKEY") .  "')");
+        $params['StubPrint'] = empty($params['StubPrint']) ? 0 : 1;
 
         $branch->update($params);
         \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
