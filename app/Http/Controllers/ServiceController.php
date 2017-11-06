@@ -17,7 +17,7 @@ class ServiceController extends Controller
     {
         if(!\Auth::user()->checkAccessById(20, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -48,7 +48,7 @@ class ServiceController extends Controller
     {
         if(!\Auth::user()->checkAccessById(20, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -64,7 +64,7 @@ class ServiceController extends Controller
         $service->Description = $request->input('serviceDescription');
         $service->save();
 
-        \Session::flash('alert-class', "Service added successfully");
+        \Session::flash('success', "Service added successfully");
         return redirect()->route('services.index');
     }
 
@@ -100,7 +100,7 @@ class ServiceController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(20, "E")) {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -119,7 +119,7 @@ class ServiceController extends Controller
         //updates s_changes table
         DB::table('s_changes')->update(['services' => 1]);
 
-        \Session::flash('alert-class', "Service updated successfully");
+        \Session::flash('success', "Service updated successfully");
         return redirect()->route('services.index');
     }
 
@@ -133,7 +133,7 @@ class ServiceController extends Controller
     {
         if(!\Auth::user()->checkAccessById(20, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -141,7 +141,7 @@ class ServiceController extends Controller
         $service = Service::where('Serv_ID', $id)->first();
         $service->delete();
 
-        \Session::flash('alert-class', "Service deleted successfully");
+        \Session::flash('success', "Service deleted successfully");
         return redirect()->route('services.index');
     }
 }

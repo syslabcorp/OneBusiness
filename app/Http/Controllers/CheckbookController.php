@@ -20,7 +20,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -98,7 +98,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -122,10 +122,10 @@ class CheckbookController extends Controller
         $success = $checkbook->save();
 
         if($success) {
-            \Session::flash('alert-class', "Checkbook added successfully");
+            \Session::flash('success', "Checkbook added successfully");
             return redirect()->route('checkbooks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('checkbooks.index');
     }
 
@@ -161,7 +161,7 @@ class CheckbookController extends Controller
     {
         if(!\Auth::user()->checkAccessById(28, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -192,7 +192,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 

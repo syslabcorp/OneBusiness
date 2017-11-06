@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ProductLine;
 use Illuminate\Http\Request;
-
+use DB;
 class ProductLineController extends Controller
 {
     /**
@@ -16,7 +16,7 @@ class ProductLineController extends Controller
     {
         if(!\Auth::user()->checkAccessById(24, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -47,7 +47,7 @@ class ProductLineController extends Controller
     {
         if(!\Auth::user()->checkAccessById(24, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -97,7 +97,7 @@ class ProductLineController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(24, "E")) {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -109,7 +109,7 @@ class ProductLineController extends Controller
 
         DB::table('s_changes')->update(['prodline' => 1]);
 
-        \Session::flash('alert-class', "Product Line updated successfully");
+        \Session::flash('success', "Product Line updated successfully");
         return redirect()->route('productlines.index');
     }
 
@@ -122,13 +122,13 @@ class ProductLineController extends Controller
     {
         if(!\Auth::user()->checkAccessById(24, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
         $success = ProductLine::where('ProdLine_ID', $id)->delete();
         if($success){
-            \Session::flash('alert-class', "Product Line deleted successfully");
+            \Session::flash('success', "Product Line deleted successfully");
             return redirect()->route('productlines.index');
         }
     }

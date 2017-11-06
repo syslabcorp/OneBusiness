@@ -17,7 +17,7 @@ class BrandController extends Controller
     {
         if(!\Auth::user()->checkAccessById(23, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
         //retrieve brands
@@ -47,7 +47,7 @@ class BrandController extends Controller
     {
         if(!\Auth::user()->checkAccessById(23, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -61,7 +61,7 @@ class BrandController extends Controller
         $brand->Brand = $request->input('brandName');
         $brand->save();
 
-        \Session::flash('alert-class', "Brand added successfully");
+        \Session::flash('success', "Brand added successfully");
         return back()->withInput();
     }
 
@@ -97,7 +97,7 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         if(!\Auth::user()->checkAccessById(23, "E")) {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -109,7 +109,7 @@ class BrandController extends Controller
         //updates s_changes table
         DB::table('s_changes')->update(['brands' => 1]);
 
-        \Session::flash('alert-class', "Brand updated successfully");
+        \Session::flash('success', "Brand updated successfully");
         return redirect()->route('brands.index');
     }
 
@@ -123,14 +123,14 @@ class BrandController extends Controller
     {
         if(!\Auth::user()->checkAccessById(23, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
 
         $success = $brand->delete();
         if($success){
-            \Session::flash('alert-class', "Brand deleted successfully");
+            \Session::flash('success', "Brand deleted successfully");
             return redirect()->route('brands.index');
         }
     }
