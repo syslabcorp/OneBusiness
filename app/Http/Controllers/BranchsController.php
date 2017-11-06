@@ -143,7 +143,8 @@ class BranchsController extends Controller
             'prodline' => 1,
             'brands' => 1,
             'item_cfg' => 1,
-            'Branch' => $branch->Branch
+            'Branch' => $branch->Branch,
+            'services' => 1
         ]);
 
         $adminUsers = User::leftJoin("rights_template", "rights_template.template_id", "=", "t_users.rights_template_id")
@@ -257,15 +258,16 @@ class BranchsController extends Controller
 
         $params = $request->only('StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip',
           'RollOver', 'TxfrRollOver', 'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt',
-          'lc_uid', 'lc_pwd', 'StubPrint', 'MinimumChrg_Mins', 'CarryOverMins', 'RmTimeAlert',
-          'RmOffAllowance', 'ChkInOveride', 'ChkOutOveride', 'CancelAllowance', 'TrnsfrAllowance');
+          'lc_uid', 'lc_pwd', 'StubPrint', 'MinimumChrg_Mins', 'CarryOverMins', 'RmTimerAlert',
+          'RmOffAllowance', 'ChkInOveride', 'ChkOutOveride', 'CancelAllowance', 'TrnsfrAllowance',
+          'Chrg_Min');
 
         if($branch->company->corp_type == 'INN') {
           $this->validate($request, [
             'StubHdr' => 'max:50',
             'MinimumChrg_Mins' => 'nullable|numeric',
             'CarryOverMins' => 'nullable|numeric',
-            'RmTimeAlert' => 'nullable|numeric',
+            'RmTimerAlert' => 'nullable|numeric',
             'RmOffAllowance' => 'nullable|numeric',
             'CancelAllowance' => 'nullable|numeric',
             'TrnsfrAllowance' => 'nullable|numeric'

@@ -18,4 +18,12 @@ class RoomStatus extends Model
   protected $dates = [
     'last_update'
   ];
+
+  protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
+  {
+      $query
+      ->where('Branch', '=', $this->Branch)
+      ->where('RmIndex', '=', $this->RmIndex);
+      return $query;
+  }
 }

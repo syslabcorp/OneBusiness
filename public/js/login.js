@@ -222,3 +222,7 @@ function user_register_admin(user_id, user_name) {
 		ct++;
 	});
 }
+
+$('#assign-rate-template input[value!="all"]').click(function(event) {
+  $('#assign-rate-template input[value="all"]').prop("checked", false);
+});
