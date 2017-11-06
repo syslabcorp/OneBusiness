@@ -101,16 +101,13 @@ class ProductLineController extends Controller
             return redirect("/home");
         }
 
-        //validate request
-        $this->validate($request, [
-            'editProductLineName' => 'required',
-        ]);
-
         //if validator passed store service item
         $product = ProductLine::where('ProdLine_ID', $id)->first();
         $product->Product = $request->input('editProductLineName');
         $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
+
+        DB::table('s_changes')->update(['prodline' => 1]);
 
         \Session::flash('alert-class', "Product Line updated successfully");
         return redirect()->route('productlines.index');

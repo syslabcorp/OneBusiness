@@ -195,21 +195,11 @@ class InventoryController extends Controller
         $inventory->TrackThis = ($request->itemTrackIventory) ? 1 : 0;
         $inventory->Print_This = ($request->itemPrintStub) ? 1 : 0;
         $inventory->Active = ($request->itemActive) ? 1 : 0;
-        $inventory->save();
+        $success = $inventory->save();
 
 
-        //check if item exists in the s_changes table
-        $inventoryItem = InventoryChange::where('invtry_hdr', $inventory->id)->first();
-        if($inventoryItem){
-            $inventoryItem->invtry_hdr = 1;
-           $success = $inventoryItem->save();
-
-        }else{
-            $inventoryChange = new InventoryChange;
-            $inventoryChange->invtry_hdr = 1;
-            $success = $inventoryChange->save();
-
-        }
+        //update inventory table
+        DB::table('s_changes')->update(['invtry_hdr' => 1]);
 
         if($success){
             \Session::flash('alert-class', "Item updated successfully");

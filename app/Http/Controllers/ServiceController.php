@@ -115,6 +115,9 @@ class ServiceController extends Controller
         $service->Description = $request->input('serviceDescription');
         $service->save();
 
+        //updates s_changes table
+        DB::table('s_changes')->update(['services' => 1]);
+
         \Session::flash('alert-class', "Service updated successfully");
         return redirect()->route('services.index');
     }
