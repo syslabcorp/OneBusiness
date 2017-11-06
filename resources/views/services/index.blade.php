@@ -44,9 +44,9 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Services</h3>
@@ -130,7 +130,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -177,7 +177,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}

@@ -333,7 +333,7 @@
                         "render": function ( data, type, row ) {
                             var checked = "";
                             if(row.used == 1) checked = "checked";
-                            return '<input type="checkbox" '+ checked +'>';
+                            return '<input type="checkbox" '+ checked +' disabled>';
                         },
                         "targets": 0
                     },

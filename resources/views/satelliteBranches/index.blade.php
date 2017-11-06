@@ -53,9 +53,9 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('alert-class') !!}</em></div>
                     @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('flash_message') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Satellite Branches</h3>
@@ -191,11 +191,14 @@
                     {
                         "render": function ( data, type, row ) {
                             var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
+                            var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccessDel == 0) { optionClassDel = 'disabled' };
                             return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClass+'">'+
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'">'+
                                 '<i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
