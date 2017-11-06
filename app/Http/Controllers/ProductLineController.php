@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ProductLine;
 use Illuminate\Http\Request;
-
+use DB;
 class ProductLineController extends Controller
 {
     /**
