@@ -135,7 +135,7 @@
                                                     <label class="col-md-4 control-label" for="itemDescription">Description:</label>
                                                     <div class="col-md-8">
                                             <textarea class="form-control" rows="3" id="itemDescription"
-                                                      name="itemDescription" value="{{ $inventory->Description }}" placeholder="{{ $inventory->Description }}"></textarea>
+                                                      name="itemDescription" value="{{ $inventory->Description }}">{{ $inventory->Description }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
