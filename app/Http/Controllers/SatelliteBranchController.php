@@ -18,7 +18,7 @@ class SatelliteBranchController extends Controller
     {
         if(!\Auth::user()->checkAccessById(26, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -55,7 +55,7 @@ class SatelliteBranchController extends Controller
     {
         if(!\Auth::user()->checkAccessById(26, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
        //get user data
@@ -88,7 +88,7 @@ class SatelliteBranchController extends Controller
     {
         if(!\Auth::user()->checkAccessById(26, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -110,10 +110,10 @@ class SatelliteBranchController extends Controller
         $success = $satelliteBranch->save();
 
         if($success) {
-            \Session::flash('alert-class', "Item added successfully");
+            \Session::flash('success', "Item added successfully");
             return redirect()->route('satellite-branch.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('satellite-branch.index');
 
     }
@@ -138,7 +138,7 @@ class SatelliteBranchController extends Controller
     {
         if(!\Auth::user()->checkAccessById(26, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -175,7 +175,7 @@ class SatelliteBranchController extends Controller
     {
         if(!\Auth::user()->checkAccessById(26, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -198,7 +198,7 @@ class SatelliteBranchController extends Controller
             'corp_id' => $corporations != null ? $corporations : ""
         ]);
 
-        \Session::flash('alert-class', "Satellite branch updated successfully");
+        \Session::flash('success', "Satellite branch updated successfully");
         return redirect()->route('satellite-branch.index');
     }
 
@@ -212,17 +212,17 @@ class SatelliteBranchController extends Controller
     {
         if(!\Auth::user()->checkAccessById(26, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
 
         $success = $satelliteBranch->delete();
         if($success){
-            \Session::flash('alert-class', "Satellite branch deleted successfully");
+            \Session::flash('success', "Satellite branch deleted successfully");
             return redirect()->route('satellite-branch.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('satellite-branch.index');
     }
 

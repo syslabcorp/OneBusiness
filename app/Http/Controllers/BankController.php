@@ -20,7 +20,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -147,7 +147,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -162,10 +162,10 @@ class BankController extends Controller
         $success = $bank->save();
 
         if($success){
-            \Session::flash('alert-class', "Bank created successfully");
+            \Session::flash('success', "Bank created successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('banks.index');
     }
 
@@ -202,7 +202,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -217,10 +217,10 @@ class BankController extends Controller
         ]);
 
         if($success){
-            \Session::flash('alert-class', "Bank updated successfully");
+            \Session::flash('success', "Bank updated successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('banks.index');
 
     }
@@ -235,7 +235,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -243,10 +243,10 @@ class BankController extends Controller
         $success = Bank::where('bank_id', $id)->delete();
 
         if($success){
-            \Session::flash('alert-class', "Bank deleted successfully");
+            \Session::flash('success', "Bank deleted successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('banks.index');
     }
 

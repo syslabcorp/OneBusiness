@@ -63,10 +63,10 @@ class VendorManagementController extends Controller
         $success = $vendorMgm->save();
 
         if($success){
-            \Session::flash('alert-class', "Vendor account created successfully");
+            \Session::flash('success', "Vendor account created successfully");
             return redirect()->route('vendors.show', $suppId);
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
     }
 
@@ -126,10 +126,10 @@ class VendorManagementController extends Controller
         ]);
 
         if($success){
-            \Session::flash('alert-class', "Vendor account updated successfully");
+            \Session::flash('success', "Vendor account updated successfully");
             return redirect()->route('vendors.show', $suppId);
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
     }
 
@@ -143,17 +143,17 @@ class VendorManagementController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
 
         $success = $vendorManagement->delete();
         if($success){
-            \Session::flash('alert-class', "Vendor deleted successfully");
+            \Session::flash('success', "Vendor deleted successfully");
             return redirect()->route('vendors.show', $vendorManagement->supp_id);
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $vendorManagement->supp_id);
     }
 

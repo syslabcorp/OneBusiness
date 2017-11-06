@@ -71,10 +71,10 @@
 
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
-                    @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
-                    @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @if(Session::has('success'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                    @elseif(Session::has('error'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
                         <div id="result" style="display: none;"></div>
                     <div class="col-md-12 col-xs-12">
@@ -154,7 +154,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -213,7 +213,7 @@
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -701,14 +701,14 @@
                         if(data == "success"){
                             $('#confirm-delete-account').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspCheck book series deleted successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#confirm-delete-account').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -716,7 +716,7 @@
                     },
                     error: function () {
                         $('#confirm-delete-account').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
@@ -755,14 +755,14 @@
                         if(data == "success"){
                             $('#editCheckbook').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspAccount updated successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#editCheckbook').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -770,7 +770,7 @@
                     },
                     error: function () {
                         $('#editCheckbook').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
