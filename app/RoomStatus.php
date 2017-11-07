@@ -12,7 +12,7 @@ class RoomStatus extends Model
   protected $connection = 'k_master';
 
   protected $fillable = [
-    'RmIndex', 'RmTag', 'Branch'
+    'RmIndex', 'RmTag', 'Branch', 'last_updated_by'
   ];
 
   protected $dates = [
@@ -25,5 +25,9 @@ class RoomStatus extends Model
       ->where('Branch', '=', $this->Branch)
       ->where('RmIndex', '=', $this->RmIndex);
       return $query;
+  }
+
+  public function updatedBy() {
+    return $this->belongsTo(\App\User::class, 'last_updated_by', 'UserID');
   }
 }

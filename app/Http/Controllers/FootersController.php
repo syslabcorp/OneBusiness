@@ -47,12 +47,14 @@ class FootersController extends Controller
         ]);
     }
 
-    public function update(Request $request, Branch $branch, Footer $footer)
+    public function update(Request $request, Branch $branch, $id)
     {
         if(!\Auth::user()->checkAccess("Stub Footer", "E")) {
             \Session::flash('error', "You don't have permission"); 
             return redirect(route('branchs.index')); 
         }
+
+        $footer = $branch->footers()->find($id);
 
         if($request->get('sort'))
         {
@@ -89,12 +91,14 @@ class FootersController extends Controller
         return redirect(route('branchs.edit', [$branch, '#stub-footer']));
     }
 
-    public function destroy(Request $request, Branch $branch, Footer $footer)
+    public function destroy(Request $request, Branch $branch, $id)
     {
         if(!\Auth::user()->checkAccess("Stub Footer", "D")) {
             \Session::flash('error', "You don't have permission"); 
             return redirect(route('branchs.index')); 
         }
+
+        $footer = $branch->footers()->find($id);
 
         if($footer->delete())
         {
@@ -107,7 +111,7 @@ class FootersController extends Controller
         return redirect(route('branchs.edit', [$branch, '#stub-footer'])); 
     }
 
-    public function copy(Request $request, Branch $branch, Footer $footer)
+    public function copy(Request $request, Branch $branch, $id)
     {
         if(!\Auth::user()->checkAccess("Stub Footer", "E")) {
             \Session::flash('error', "You don't have permission"); 
@@ -115,6 +119,8 @@ class FootersController extends Controller
         }
 
         $targetBranch = Branch::find($request->get('target'));
+
+        $footer = $branch->footers()->find($id);
         
         if(!$targetBranch) {
             \Session::flash('error', "Branch can't be blank"); 
