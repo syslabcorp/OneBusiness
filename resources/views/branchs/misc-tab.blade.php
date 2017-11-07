@@ -35,18 +35,18 @@
                   <span class="help-block">{{ $errors->first("TrnsfrAllowance") }}</span>
                 @endif
               </div>
-              <div class="form-group {{ $errors->has('RmTimeAlert') ? 'has-error' : '' }}">
+              <div class="form-group {{ $errors->has('RmTimerAlert') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-9">
                     <label class=" control-label">Alert Room Time Expires Before:</label>
                   </div>
                   <div class="col-xs-3">
-                    <input type="text" class="form-control"  name="RmTimeAlert" value="{{ !empty(old("RmTimeAlert")) ? old("RmTimeAlert") : $branch->RmTimeAlert }}"
+                    <input type="text" class="form-control"  name="RmTimerAlert" value="{{ !empty(old("RmTimerAlert")) ? old("RmTimerAlert") : $branch->RmTimerAlert }}"
                       {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
                   </div>
                 </div>
-                @if($errors->has('RmTimeAlert'))
-                  <span class="help-block">{{ $errors->first("RmTimeAlert") }}</span>
+                @if($errors->has('RmTimerAlert'))
+                  <span class="help-block">{{ $errors->first("RmTimerAlert") }}</span>
                 @endif
               </div>
               <div class="form-group {{ $errors->has('RmOffAllowance') ? 'has-error' : '' }}">
@@ -82,11 +82,11 @@
             <div class="col-md-6">
               <div class="form-group {{ $errors->has('MinimumChrg_Mins') ? 'has-error' : '' }}">
                 <div class="row">
-                  <div class="col-xs-9">
-                    <label class=" control-label">Charge Minimum (mins):</label>
-                  </div>
-                  <div class="col-xs-3">
-                    <input type="text" class="form-control"  name="MinimumChrg_Mins" value="{{ !empty(old("MinimumChrg_Mins")) ? old("MinimumChrg_Mins") : $branch->MinimumChrg_Mins }}"
+                  <div class="col-xs-12">
+                    <input id="Chrg_Min" type="checkbox" name="Chrg_Min" {{ $branch->Chrg_Min == 1 ? "checked" : "" }} value="1"/>
+                    <label class="control-label" for="Chrg_Min">Charge Minimum (mins):</label>
+
+                    <input type="text" style="width: 80px;display:inline-block;" class="form-control"  name="MinimumChrg_Mins" value="{{ !empty(old("MinimumChrg_Mins")) ? old("MinimumChrg_Mins") : $branch->MinimumChrg_Mins }}"
                       {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
                   </div>
                 </div>

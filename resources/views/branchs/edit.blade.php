@@ -22,7 +22,7 @@
                     @else
                         <li role="presentation"><a href="#mac" aria-controls="mac" role="tab" data-toggle="tab">MAC Addresses</a></li>
                     @endif
-                    <li role="presentation"><a href="#stub-footer" aria-controls="stub-footer" role="tab" data-toggle="tab">Stub Footer</a></li>
+                    <li role="presentation"><a href="#stub-footer" aria-controls="stub-footer" role="tab" data-toggle="tab">Remittance Stub Footer</a></li>
                 </ul>
 
                 <div class="tab-content">
