@@ -10,7 +10,7 @@
               <div class="form-group {{ $errors->has('CancelAllowance') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-9">
-                    <label class=" control-label">Cancel Check-in Allowance:</label>
+                    <label class=" control-label">Cancel Check-in Allowance: (mins)</label>
                   </div>
                   <div class="col-xs-3">
                     <input type="text" class="form-control"  name="CancelAllowance" value="{{ !empty(old("CancelAllowance")) ? old("CancelAllowance") : $branch->CancelAllowance }}"
@@ -24,7 +24,7 @@
               <div class="form-group {{ $errors->has('TrnsfrAllowance') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-9">
-                    <label class=" control-label">Transfer Room Allowance:</label>
+                    <label class=" control-label">Transfer Room Allowance: (mins)</label>
                   </div>
                   <div class="col-xs-3">
                     <input type="text" class="form-control"  name="TrnsfrAllowance" value="{{ !empty(old("TrnsfrAllowance")) ? old("TrnsfrAllowance") : $branch->TrnsfrAllowance }}"
@@ -38,7 +38,7 @@
               <div class="form-group {{ $errors->has('RmTimerAlert') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-9">
-                    <label class=" control-label">Alert Room Time Expires Before:</label>
+                    <label class=" control-label">Alert Room Time Expires Before: (mins)</label>
                   </div>
                   <div class="col-xs-3">
                     <input type="text" class="form-control"  name="RmTimerAlert" value="{{ !empty(old("RmTimerAlert")) ? old("RmTimerAlert") : $branch->RmTimerAlert }}"
@@ -52,7 +52,7 @@
               <div class="form-group {{ $errors->has('RmOffAllowance') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-9">
-                    <label class=" control-label">Room Power Off Delay:</label>
+                    <label class=" control-label">Room Power Off Delay: (mins)</label>
                   </div>
                   <div class="col-xs-3">
                     <input type="text" class="form-control"  name="RmOffAllowance" value="{{ !empty(old("RmOffAllowance")) ? old("RmOffAllowance") : $branch->RmOffAllowance }}"
@@ -67,7 +67,7 @@
               <div class="form-group {{ $errors->has('CarryOverMins') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-9">
-                    <label class=" control-label">Charge Next Hour Allowance:</label>
+                    <label class=" control-label">Charge Next Hour Allowance: (mins)</label>
                   </div>
                   <div class="col-xs-3">
                     <input type="text" class="form-control"  name="CarryOverMins" value="{{ !empty(old("CarryOverMins")) ? old("CarryOverMins") : $branch->CarryOverMins }}"
@@ -123,7 +123,12 @@
           </div>
           <div class="form-group">
             <div class="control-checkbox">
-                <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E") )
+                <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}} >
+                @else
+                <input type="checkbox" onclick="return false;" name="StubPrint" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                @endif
+
                 <label for="{{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "print-active" : "" }}">Enable Stub Printing</label>
             </div>
           </div>
@@ -162,7 +167,11 @@
             </div>
             <div class="form-group">
                 <div class="control-checkbox">
-                    <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                     @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E") )
+                    <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}} >
+                    @else
+                    <input type="checkbox" onclick="return false;" name="StubPrint" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                    @endif
                     <label for="{{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "print-active" : "" }}">Enable Stub Printing</label>
                 </div>
             </div>

@@ -25,8 +25,11 @@ class RoomsController extends Controller
     foreach($roomParams as $key => $roomParam) {
       $room = $branch->rooms()
                      ->where('RmIndex', '=', $key)->first();
-      $room->RmTag = $roomParam['RmTag'];
-      $room->save();
+      if($room->RmTag != $roomParam['RmTag']) {
+        $room->last_updated_by = \Auth::user()->UserID;
+        $room->RmTag = $roomParam['RmTag'];
+        $room->save();
+      }
     }
 
     \Session::flash('success', "Room Staus has been updated.");

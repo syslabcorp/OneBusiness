@@ -40,7 +40,7 @@
                 @endforeach
               </select>
               <div class="form-group" style="display:inline-block;margin-left: 10px;">
-                <input type="checkbox" name="active" {{ $rate->active == 1 ? 'checked' : ''}}/>
+                <input type="checkbox" name="active" {{ $rate->active == 1 ? 'checked' : ''}}  onclick="return false;"/>
                 <label>Active</label>
               </div>
             </div>

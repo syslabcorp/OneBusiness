@@ -24,6 +24,10 @@
               @endif
           </td>
           <td>
+
+            @if($room->updatedBy)
+                  {{ $room->updatedBy->UserName }}
+              @endif
           </td>
           <td>
               @if($room->last_update)

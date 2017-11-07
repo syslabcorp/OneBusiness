@@ -1,7 +1,9 @@
 <table class="table">
     <thead>
         <th>Content</th>
+        @if(\Auth::user()->checkAccess("Stub Footer", "E"))
         <th>Copy To</th>
+        @endif
     </thead>
     <tbody>
         @foreach($branch->footers()->orderBy('sort', 'ASC')->get() as $footer)
@@ -30,6 +32,7 @@
                     </div>
                 </form>
             </td>
+            @if(\Auth::user()->checkAccess("Stub Footer", "E"))
             <td>
                 @if($loop->index == 0 && \Auth::user()->checkAccess("Stub Footer", "E"))
                 <form action="{{ route('branchs.footers.copy', [$branch, $footer, '#stub-footer']) }}" method="POST">
@@ -51,6 +54,7 @@
                 </form>
                 @endif
             </td>
+            @endif
         </tr>
         @endforeach
         @if(\Auth::user()->checkAccess("Stub Footer", "A"))
