@@ -5,7 +5,10 @@
     <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-            <h4>Branch: {{ $branch->ShortName }}</h4>
+            <h4>
+              Branch: {{ $branch->ShortName }}
+              <button class="btn btn-danger cancel-selection" style="float:right;margin-top:0px;display:none;">Cancel Selection</button>
+            </h4>
         </div>
         <div class="panel-body edit-branch">
             <ul class="nav nav-tabs" role="tablist">
@@ -67,13 +70,10 @@
                         @endforeach
                       </tbody>
                     </table>
-                  </div>
-                </div>
-                @if(\Auth::user()->checkAccessById(2, "E"))
-                  <div class="box-assign nohide">
-                    <hr>
-                    <div class="col-md-12">
-                      <div class="table-responsive">
+                    @if(\Auth::user()->checkAccessById(2, "E"))
+                    <div class="box-assign nohide">
+                      <hr>
+                      <div class="col-md-12">
                         <table class="table borderred">
                           <thead>
                             <tr>
@@ -94,7 +94,7 @@
                               </td>
                               @for($i = 1; $i <= 25; $i++)
                               <td>
-                                <input style="width: 60px" type="text" step="any" class="form-control" placeholder="0.00">
+                                <input style="width: 55px" type="text" step="any" class="form-control" placeholder="0.00">
                               </td>
                               @endfor
                             </tr>
@@ -102,11 +102,15 @@
                         </table>
                       </div>
                     </div>
+                    @endif
                   </div>
-                  @endif
-                  <hr class="col-md-12">
-                  @if(\Auth::user()->checkAccessById(2, "E"))
+                </div>
+                <hr class="col-md-12">
+                 @if(\Auth::user()->checkAccessById(2, "E"))
                   <div class="col-md-12 text-right">
+                    <a class="btn btn-sm btn-default pull-left" href="{{ route('branchs.krates.index', [$branch]) }}">
+                      <i class="fa fa-reply"></i> Back
+                    </a>
                     <button class="btn btn-sm btn-success btn-save">
                       <i class="fa fa-save"></i> Create
                     </button>

@@ -14,7 +14,7 @@
                   </div>
                   <div class="col-xs-3">
                     <input type="text" class="form-control"  name="CancelAllowance" value="{{ !empty(old("CancelAllowance")) ? old("CancelAllowance") : $branch->CancelAllowance }}"
-                      {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                      {{ \Auth::user()->checkAccessById(4, "E") ? "" : "readonly" }}>
                   </div>
                 </div>
                 @if($errors->has('CancelAllowance'))
@@ -83,7 +83,8 @@
               <div class="form-group {{ $errors->has('MinimumChrg_Mins') ? 'has-error' : '' }}">
                 <div class="row">
                   <div class="col-xs-12">
-                    <input id="Chrg_Min" type="checkbox" name="Chrg_Min" {{ $branch->Chrg_Min == 1 ? "checked" : "" }} value="1"/>
+                    <input id="Chrg_Min" type="checkbox" name="Chrg_Min" {{ $branch->Chrg_Min == 1 ? "checked" : "" }} value="1"
+                        {{ \Auth::user()->checkAccessById(4, "E") ? "" : "disabled" }}/>
                     <label class="control-label" for="Chrg_Min">Charge Minimum (mins):</label>
 
                     <input type="text" style="width: 80px;display:inline-block;" class="form-control"  name="MinimumChrg_Mins" value="{{ !empty(old("MinimumChrg_Mins")) ? old("MinimumChrg_Mins") : $branch->MinimumChrg_Mins }}"
@@ -95,11 +96,13 @@
                 @endif
               </div>
               <div class="form-group">
-                <input type="checkbox" name="ChkInOveride" id="ChkInOveride" {{ $branch->ChkInOveride == 1 ? 'checked' : ''}} value="1">
+                <input type="checkbox" name="ChkInOveride" id="ChkInOveride" {{ $branch->ChkInOveride == 1 ? 'checked' : ''}} value="1"
+                    {{ \Auth::user()->checkAccessById(4, "E") ? "" : "disabled" }}>
                 <label for="ChkInOveride">Check-in Override Request</label>
               </div>
               <div class="form-group">
-                <input type="checkbox" name="ChkOutOveride" id="ChkOutOveride" {{ $branch->ChkOutOveride == 1 ? 'checked' : ''}} value="1">
+                <input type="checkbox" name="ChkOutOveride" id="ChkOutOveride" {{ $branch->ChkOutOveride == 1 ? 'checked' : ''}} value="1"
+                    {{ \Auth::user()->checkAccessById(4, "E") ? "" : "disabled" }}>
                 <label for="ChkOutOveride">Check-out Override Request</label>
               </div>
             </div>
