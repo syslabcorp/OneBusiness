@@ -38,40 +38,40 @@
           @endif
       </tbody>
     </table>
-  </div>
-</div>
-@if($rate->tmplate_id && \Auth::user()->checkAccessById(2, "E"))
-<div class="box-assign nohide">
-  <hr>
-  <div class="col-md-12">
-    <div class="table-responsive">
-      <table class="table borderred">
-        <thead>
-          <tr>
-            <th></th>
-            <th>1Hr</th>
-            @for($i = 2; $i <= 24; $i++)
-            <th>{{ $i }}Hrs</th>
-            @endfor
-            <th>MinChrg</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <button class="btn btn-sm btn-success" type="button">
-                <i class="fa fa-magic"></i>
-              </button>
-            </td>
-            @for($i = 1; $i <= 25; $i++)
-            <td>
-              <input style="width: 60px" type="text" step="any" class="form-control" placeholder="0.00">
-            </td>
-            @endfor
-          </tr>
-        </tbody>
-      </table>
+
+    @if($rate->tmplate_id && \Auth::user()->checkAccessById(2, "E"))
+    <div class="box-assign nohide">
+      <hr>
+      <div class="col-md-12">
+        <table class="table borderred">
+          <thead>
+            <tr>
+              <th></th>
+              <th>1Hr</th>
+              @for($i = 2; $i <= 24; $i++)
+              <th>{{ $i }}Hrs</th>
+              @endfor
+              <th>MinChrg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <button class="btn btn-sm btn-success" type="button">
+                  <i class="fa fa-magic"></i>
+                </button>
+              </td>
+              @for($i = 1; $i <= 25; $i++)
+              <td>
+                <input style="width: 60px" type="text" step="any" class="form-control" placeholder="0.00">
+              </td>
+              @endfor
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+    @endif
   </div>
 </div>
-@endif
+

@@ -161,7 +161,8 @@ class RatesController extends Controller
     ));
 
     \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
-      'rates' => 1
+      'rates' => 1,
+      'services' => 1
     ]);
 
     \Session::flash('success', "Rate Template has been updated.");
