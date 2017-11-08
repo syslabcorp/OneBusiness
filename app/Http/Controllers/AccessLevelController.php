@@ -887,14 +887,11 @@ class AccessLevelController extends Controller
                 return redirect('purchase_order/'.$city_id)->withInput();;
             }else{
                 if ($id == NULL) {
-                //$po_tmpl8_hdr = DB::table('t_master.s_po_tmpl8_hdr')->insertGetId($temp_hdr);
                 $po_tmpl8_hdr = POTemplate::insertGetId($temp_hdr);
                 Request::session()->flash('flash_message', 'Product Template has been added.');
                 Request::Session()->flash('alert-class', 'alert-success');
                 }else{
-                    //DB::table('t_master.s_po_tmpl8_detail')->where('po_tmpl8_id', $id)->delete();
                     POTemplateDetail::where('po_tmpl8_id', $id)->delete();
-                    //DB::table('t_master.s_po_tmpl8_hdr')->where('po_tmpl8_id', $id)->update($temp_hdr);
                     POTemplate::where('po_tmpl8_id', $id)->update($temp_hdr);
                     Request::session()->flash('flash_message', 'Product Template has been Updated.');
                     Request::Session()->flash('alert-class', 'alert-success');
@@ -908,7 +905,6 @@ class AccessLevelController extends Controller
                             'po_tmpl8_branch' => $branch,
                             'po_tmpl8_item'   => $itemId,
                         );
-                        //DB::table('t_master.s_po_tmpl8_detail')->insert($temp_hdr_detail);
                         POTemplateDetail::insert($temp_hdr_detail);
                     }
                 }
@@ -916,10 +912,8 @@ class AccessLevelController extends Controller
             return redirect('list_purchase_order/'.$city_id);
         }
         if ($id != NULL) {
-            //$detail_edit_temp_hdr =  DB::table('t_master.s_po_tmpl8_hdr')->where('po_tmpl8_id',$id)->first();
             $detail_edit_temp_hdr =  POTemplate::where('po_tmpl8_id',$id)->first();
             $data['detail_edit_temp_hdr'] = $detail_edit_temp_hdr;  
-            //$proitemsSelected = DB::table('t_master.s_po_tmpl8_detail')->where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
             $proitemsSelected = POTemplateDetail::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
             $proretailitems_ids = array();
             $probranch_ids = array();
@@ -949,7 +943,6 @@ class AccessLevelController extends Controller
             $formData = Request::all();
             $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
             $data['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
-            //$branchesSelected = DB::table('t_master.s_po_tmpl8_detail')->where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
             $branchesSelected = POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
             $probranch_ids = array();
             foreach ($branchesSelected as $branchSelected) {
@@ -979,7 +972,6 @@ class AccessLevelController extends Controller
             }
             $data['brandname'] = $b_name;
             $data['s_invtry_hdr']=$inventory;
-            //$retailsSelected = DB::table('t_master.s_po_tmpl8_detail')->where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
             $retailsSelected = POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
             $proitems_ids = array();
             foreach ($retailsSelected as $retailSelected) {
@@ -996,7 +988,6 @@ class AccessLevelController extends Controller
             $formData = Request::all();
             $city_id = isset($formData['city_id']) ? $formData['city_id'] :'';
             $active = isset($formData['active']) ? $formData['active'] :'';
-            //$s_po_tmpl8 = DB::table('t_master.s_po_tmpl8_hdr')->where('city_id',$city_id)->where('Active',$active)->get();
             $s_po_tmpl8 = POTemplate::where('city_id',$city_id)->where('Active',$active)->get();
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
