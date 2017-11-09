@@ -191,7 +191,7 @@
                     {
                         "render": function ( data, type, row ) {
                             var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
-                            var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(26, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
                             var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
