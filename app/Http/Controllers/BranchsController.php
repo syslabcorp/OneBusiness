@@ -152,6 +152,9 @@ class BranchsController extends Controller
                             ->get();
 
         foreach($adminUsers as $user) {
+          if(!preg_match("/BR/", $user->area_type)) {
+            continue;
+          }
           $userArea = UserArea::where("user_ID", '=', $user->UserID)->first();
           if($userArea) {
             $branchIds = empty($userArea->branch) ? $branch->Branch : $userArea->branch . "," . $branch->Branch;
@@ -195,7 +198,9 @@ class BranchsController extends Controller
 
         return view('branchs.edit', [
             'branch' => $branch,
-            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)->orderBy('ShortName', 'ASC')->get(),
+            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)
+                                ->where("Active", "=", 1)
+                                ->orderBy('ShortName', 'ASC')->get(),
             'lc_uid' => $lcUid->lc_uid
         ]);
     }

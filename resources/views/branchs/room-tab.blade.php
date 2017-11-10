@@ -18,7 +18,7 @@
           <td>{{ $room->RmIndex }}</td>
           <td>
               <input type="text" class="form-control" placeholder="Tag" name="room[{{ $room->RmIndex }}][RmTag]" value="{{ !empty(old("room.{$room->RmIndex}.RmTag")) ? old("room.{$room->RmIndex}.RmTag") : $room->RmTag }}"
-                  {{ \Auth::user()->checkAccessById(2, "E") ? "" : "readonly" }} >
+                  {{ \Auth::user()->checkAccessById(9, "E") ? "" : "readonly" }} >
               @if($errors->has("room.{$room->RmIndex}.RmTag"))
               <i style="color:#cc0000;">{{ preg_replace("/room.{$room->RmIndex}.RmTag/", "Room Tag",$errors->first("room.{$room->RmIndex}.RmTag")) }}</i>
               @endif
@@ -44,7 +44,7 @@
     <a href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}" class="btn btn-default pull-left">
         <i class="fa fa-reply"></i> Back
     </a>
-    @if(\Auth::user()->checkAccessById(2, "E"))
+    @if(\Auth::user()->checkAccessById(9, "E"))
         <button type="submit" class="btn btn-success pull-right">Update</button>
     @endif
   </div>

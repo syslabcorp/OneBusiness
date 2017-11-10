@@ -332,6 +332,16 @@ $(document).ready(function()
 
     $('.rate-page .box-assign .btn').click(function(event) {
       $('.rate-page .btn-save').removeClass("not-apply");
+      var invalid = false;
+      $('.rate-page .box-assign td .form-control').each(function(index, element) {
+        if($(this).val().match(/[^0-9\.]/)) {
+          invalid = true;
+        }
+      });
+      if(invalid) {
+        toastr.error("Invalid input. Please enter a number.");
+        return;
+      }
       $('.rate-page .table tr.selected').each(function(index) {
         $(this).find('.form-control').each(function(key, element) {
           if($('.rate-page .box-assign td:eq(' + (key + 1) + ') .form-control').val()) {

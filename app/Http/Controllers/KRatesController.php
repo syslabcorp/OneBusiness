@@ -77,10 +77,10 @@ class KRatesController extends Controller
     $this->validate($request,[
       'tmplate_name' => 'required|max:20',
     ]);
+    $params = $request->only('active', 'tmplate_name');
+    $params['active'] = empty($params['active']) ? 0 : $params['active'];
 
-    $template = $branch->krates()->create($request->only(
-      'active', 'tmplate_name'
-    ));
+    $template = $branch->krates()->create($params);
     foreach($request->get('detail') as $detail) {
       $template->details()->create($detail);
     }

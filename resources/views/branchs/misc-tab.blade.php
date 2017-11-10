@@ -18,7 +18,7 @@
                   </div>
                 </div>
                 @if($errors->has('CancelAllowance'))
-                  <span class="help-block">{{ preg_replace("/cancel allowance/", "Cancel Check-in Allowance",$errors->first("CancelAllowance")) }}</span>
+                  <span class="help-block">Input must be a number</span>
                 @endif
               </div>
               <div class="form-group {{ $errors->has('TrnsfrAllowance') ? 'has-error' : '' }}">
@@ -32,7 +32,7 @@
                   </div>
                 </div>
                 @if($errors->has('TrnsfrAllowance'))
-                  <span class="help-block">{{ $errors->first("TrnsfrAllowance") }}</span>
+                  <span class="help-block">Input must be a number</span>
                 @endif
               </div>
               <div class="form-group {{ $errors->has('RmTimerAlert') ? 'has-error' : '' }}">
@@ -46,7 +46,7 @@
                   </div>
                 </div>
                 @if($errors->has('RmTimerAlert'))
-                  <span class="help-block">{{ $errors->first("RmTimerAlert") }}</span>
+                  <span class="help-block">Input must be a number</span>
                 @endif
               </div>
               <div class="form-group {{ $errors->has('RmOffAllowance') ? 'has-error' : '' }}">
@@ -60,7 +60,7 @@
                   </div>
                 </div>
                 @if($errors->has('RmOffAllowance'))
-                  <span class="help-block">{{ $errors->first("RmOffAllowance") }}</span>
+                  <span class="help-block">Input must be a number</span>
                 @endif
               </div>
 
@@ -75,7 +75,7 @@
                   </div>
                 </div>
                 @if($errors->has('CarryOverMins'))
-                  <span class="help-block">{{ $errors->first("CarryOverMins") }}</span>
+                  <span class="help-block">Input must be a number</span>
                 @endif
               </div>
             </div>
@@ -92,7 +92,7 @@
                   </div>
                 </div>
                 @if($errors->has('MinimumChrg_Mins'))
-                  <span class="help-block">{{ $errors->first("MinimumChrg_Mins") }}</span>
+                  <span class="help-block">Input must be a number</span>
                 @endif
               </div>
               <div class="form-group">
