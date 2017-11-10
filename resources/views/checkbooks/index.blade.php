@@ -371,12 +371,15 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(28, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(28, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
+                            var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccessDel == 0) { optionClassDel = 'disabled' };
                             return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClass+'">'+
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'">'+
                                 '<i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
