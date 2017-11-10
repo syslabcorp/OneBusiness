@@ -12,7 +12,7 @@ class RoomsController extends Controller
 
   public function store(Request $request, Branch $branch)
   {
-    if(!\Auth::user()->checkAccessById(2, "E"))
+    if(!\Auth::user()->checkAccessById(9, "E"))
     {
       \Session::flash('error', "You don't have permission"); 
       return redirect(route('branchs.index')); 

@@ -23,11 +23,13 @@
                 <div class="col-md-12 text-center">
                   <div class="form-group {{ $errors->has('tmplate_name') ? 'has-error' : '' }}"
                       style="display:inline-block;">
-                    <label for="">Template name:</label>
-                    <input type="text" class="form-control" name="tmplate_name" style="width: 300px;display:inline-block;" value="{{ old('tmplate_name') }}">
-                    @if($errors->has('tmplate_name'))
-                      <span class="help-block">{{ preg_replace("/tmplate/", "template", $errors->first('tmplate_name')) }}</span>
-                    @endif
+                    <label style="vertical-align: top;">Template name:</label>
+                    <div style="width: 300px;display:inline-block;" class="text-left">
+                      <input type="text" class="form-control" name="tmplate_name" value="{{ old('tmplate_name') }}">
+                      @if($errors->has('tmplate_name'))
+                        <span class="help-block">{{ preg_replace("/tmplate/", "template", $errors->first('tmplate_name')) }}</span>
+                      @endif
+                    </div>
                   </div>
                   <div class="form-group" style="display:inline-block;margin-left: 10px;vertical-align:top;">
                     <input id="active" type="checkbox" name="active" {{ $branch->active == 1 ? 'checked' : ''}} value="1"/>

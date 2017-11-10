@@ -46,7 +46,7 @@
                     </div>
                     @if($branch->company->corp_type == 'INN')
                     <div role="tabpanel" class="tab-pane" id="room">
-                        @if(\Auth::user()->checkAccessById(2, "V"))
+                        @if(\Auth::user()->checkAccessById(9, "V"))
                             @include('branchs.room-tab')
                         @else
                             <div class="alert alert-danger no-close">
