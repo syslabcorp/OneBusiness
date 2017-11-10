@@ -103,7 +103,7 @@
                                 
                                 <div class="form-group row">
                                   <div class="col-md-6">
-                                      <a type="button" class="btn btn-default back-button" href="{{ URL('list_purchase_order') }}">
+                                      <a type="button" class="btn btn-default back-button" href="{{ URL('list_purchase_order/'.(isset($corp_id) ? $corp_id : 0)) }}">
                                       Back
                                       </a>
                                   </div>

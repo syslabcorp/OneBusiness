@@ -15,25 +15,20 @@
         <title>Web Login System</title>
     @endif
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> 
-	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
-	
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL('/css/bootstrap.min.css') }}" />
     <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
-
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> 
-	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
 	
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// --->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
 	<script src="{{ URL('/biomertic-login/assets/js/html5shiv.min.js') }}"></script>
 	<script src="{{ URL('/biomertic-login/assets/js/respond.min.js') }}"></script>
@@ -41,17 +36,10 @@
 
 	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
 
-
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
-
-        #sidebar-togle-sidebar-sec {
-            z-index: 100 !important;
-        }
 	</style>
-
-    @yield('header-scripts')
 </head>
 <body>
     <div id="app">
@@ -86,27 +74,9 @@
                             <li><a href="{{ URL('/username') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @else
-                           
-							<!--li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    System <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ URL('list_corporation') }}">Corporations</a></li>
-                                    <li><a href="{{ URL('list_module') }}">Modules</a></li>
-                                    <li><a href="{{ URL('list_feature') }}">Features</a></li>
-                                    <li><a href="{{ URL('list_menu') }}">Manage Menus</a></li>
-                                    <li><a href="{{ URL('list_template') }}">Manage Templates</a></li>
-                                    <li><a href="{{ URL('active_users') }}">Active Users</a></li>
-                                    <li><a href="{{ URL('list_user') }}">Manage Users</a></li>
-                                    <li><a href="{{ URL('list_group') }}">Manage Groups</a></li>
-                                </ul>
-                            </li-->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                 {{ Auth::user()->UserName }} 
-                                
-                                     <span class="caret"></span>
+                                    {{ Auth::user()->UserName }} <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{{ URL('logout') }}">Logout</a></li>
@@ -117,19 +87,39 @@
                 </div>
             </div>
         </nav>
-        <!--div class="row" style="margin-top: 15px;">
-		@if(\Session::get('error'))
-            <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
-                <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
-            </div>
-            @elseif(\Session::get('success'))
-                <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
-                    <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
-                </div>
-		@endif
-        </div-->
 
-        @yield('content')
+        <div class="container-fluid">
+          <div class="row">
+            <div id="togle-sidebar-sec" class="active">
+              <div id="sidebar-togle-sidebar-sec">
+                <ul id="sidebar_menu" class="sidebar-nav">
+                    <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                </ul>
+                <div class="sidebar-nav" id="sidebar">     
+                    <div id="treeview_json"></div>
+                </div>
+              </div>
+              <div id="page-content-togle-sidebar-sec">
+                @if(\Session::get('error') || \Session::get('success'))
+                  <div class="row">
+                      @if(\Session::get('error'))
+                      <div class="alert alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;">
+                          <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
+                      </div>
+                      @elseif(\Session::get('success'))
+                          <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">
+                              <span class="fa fa-close"></span> <em>{{ \Session::get('success') }}</em>
+                          </div>
+                      @endif
+                  </div>
+                @endif
+                <div class="box-content">
+                  @yield('content')
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
     </div>
 
@@ -159,6 +149,16 @@
     <script src="{{ URL('/js/colorpicker.js') }}"></script>
 	<script>
 		if($("#treeview_json").length){
+			/* var curr_url  = window.location.href;
+			var open_menu = curr_url.split('#')[1];
+			if( typeof open_menu !== "undefined"){
+				$(".table-responsive a").each(function(){
+					if($(this).children().hasClass("glyphicon-pencil")){
+						alert($(this).attr("href"));
+					}
+				});
+			} */
+			
 			$("#menu-toggle").click(function(e) {
 					e.preventDefault();
 					$("#togle-sidebar-sec").toggleClass("active");
@@ -184,9 +184,6 @@
         $(document).on('click','.node-treeview_json',function(event) {
 			var obj=$(this).find('a');
 			var href=obj.attr('href');
-            if(typeof (href) === 'undefined'){
-                return false;
-            }
 			var val=$(this).attr('data-nodeid');
 			var path = window.location.href;
 			path = path.split('#')[0];
@@ -197,13 +194,5 @@
 			$('.alertfade').fadeOut(5000); // 5 seconds x 1000 milisec = 5000 milisec
         });
 	</script>
-@yield('footer-scripts')
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    </script>
 </body>
 </html>

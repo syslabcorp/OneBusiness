@@ -25,7 +25,12 @@
                     <h3 class="text-center">Manage Purchase Order Templates</h3>
                     <div class="row">  
                         <div class="panel panel-default">
-                            <div class="panel-heading">Auto Ordering Template<a href="{{ URL('purchase_order/'.(isset($cities[0]->City_ID) ? $cities[0]->City_ID : 0)) }}" class="pull-right update-add-url">Add Template</a></div>
+                            <div class="panel-heading">Auto Ordering Template
+                                @if(\Auth::user()->checkAccessByPoId([6,7],31, "A"))
+                                <a href="{{ URL('purchase_order/'.(isset($corp_id) ? $corp_id : 0).'/'.(isset($cities[0]->City_ID) ? $cities[0]->City_ID : 0)) }}" class="pull-right update-add-url">Add Template</a>
+                                @endif
+                            </div>
+                            <input type ="hidden" name="corp_id" id="corp_id" value="{{ (isset($corp_id) ? $corp_id : 0) }}">
                             <div class="panel-body">
                                 <div class="form-group row">
                                     <div class="col-md-5">

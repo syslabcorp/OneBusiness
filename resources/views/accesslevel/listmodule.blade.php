@@ -25,7 +25,12 @@
                     <h3 class="text-center">Manage Modules</h3>
                     <div class="row">
                         <div class="panel panel-default">
-                            <div class="panel-heading">List of Modules<a href="{{ URL('add_module') }}" class="pull-right">Add Module</a></div>
+                            <div class="panel-heading">List of Modules
+                                @if(\Auth::user()->checkAccessById(12, "A"))
+                                <a href="{{ URL('add_module') }}" class="pull-right">Add Module</a>
+                                @endif
+                            </div>
+                                
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table id="list_modul" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
@@ -44,9 +49,9 @@
                                                     <td>{{ $det->corp_name }}</td>
                                                     <td>{{ $det->description }}</td>
                                                     <td>
-                                                    <a class="btn btn-success btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('list_feature/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="List Features"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                    <a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Module"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Module" module-name="{{ $det->description }}" id="{{ $det->module_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                                    <a class="btn btn-success btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'V') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_feature/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="List Features"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                                    <a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Module"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(12, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Module" module-name="{{ $det->description }}" id="{{ $det->module_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach
                                         </tbody>

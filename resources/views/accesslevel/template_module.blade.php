@@ -1,4 +1,4 @@
-@if(isset($sys_features) && (!empty($sys_features)))
+@if(isset($sys_features) && (!empty($sys_features)) && isset($module_fet->module_id))
 	<div class="col-md-12">
 	<h4>SYSTEM</h4>
 	<div class="panel-group">
