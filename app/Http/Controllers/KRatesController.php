@@ -107,9 +107,10 @@ class KRatesController extends Controller
       'tmplate_name' => 'required|max:20',
     ]);
 
-    $rate->update($request->only(
-      'active', 'tmplate_name'
-    ));
+    $params = $request->only('active', 'tmplate_name');
+    $params['active'] = empty($params['active']) ? 0 : $params['active'];
+
+    $rate->update($params);
 
     foreach($rate->details()->get() as $detail) {
       $params = $request->get('detail')[$detail->nKey];
@@ -118,6 +119,11 @@ class KRatesController extends Controller
       }
       $detail->update($params);
     }
+
+    \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
+      'rates' => 1,
+      'services' => 1
+    ]);
 
     \Session::flash('success', "Rate Template has been updated.");
     return redirect(route('branchs.krates.index', [$branch]));
