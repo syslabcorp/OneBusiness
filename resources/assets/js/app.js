@@ -274,10 +274,10 @@ $(document).ready(function()
           $(this).toggleClass('selected');
         });
       }else if(event.shiftKey) {
-        if($('.rate-page .table tr.selected').length == 0) {
+        if($(this).parents("table").find('tr.selected').length == 0) {
           $(this).parents('tr').addClass('selected');
         }else {
-          var startIndex = $('.rate-page .table tr.selected').index();
+          var startIndex = $(this).parents("table").find('tr.selected').index();
           var endIndex = $(this).parents('tr').index();
           $('.rate-page .table tr.selected').removeClass('selected');
           if(startIndex == endIndex) {
@@ -290,7 +290,7 @@ $(document).ready(function()
               endIndex = temp;
             }
             for(startIndex; startIndex <= endIndex; startIndex++) {
-              $('.rate-page .table tbody tr:eq(' + startIndex + ')').addClass('selected');
+                $(this).parents("table").find('tbody tr:eq(' + startIndex + ')').addClass('selected');
             }
           }
         }

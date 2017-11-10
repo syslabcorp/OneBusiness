@@ -156,8 +156,10 @@ class BranchsController extends Controller
         foreach($adminUsers as $user) {
           $userArea = UserArea::where("user_ID", '=', $user->UserID)->first();
           if($userArea) {
-            $branchIds = empty($userArea->branch) ? $branch->Branch : $userArea->branch . "," . $branch->Branch;
-            $userArea->update(['branch' => $branchIds]);
+            if(empty($userArea->city) && empty($userArea->province)) {
+              $branchIds = empty($userArea->branch) ? $branch->Branch : $userArea->branch . "," . $branch->Branch;
+              $userArea->update(['branch' => $branchIds]);
+            }
           }else {
             UserArea::create(['branch' => $branch->Branch, 'user_ID' => $user->UserID]);
           }
