@@ -25,7 +25,11 @@
                 <h3 class="text-center">Manage Groups</h3>
                 <div class="row">
                     <div class="panel panel-default">
-                        <div class="panel-heading">List of Groups<a href="{{ URL('add_group') }}" class="pull-right">Add Group</a></div>
+                        <div class="panel-heading">List of Groups
+                            @if(\Auth::user()->checkAccessById(14, "A")) 
+                            <a href="{{ URL('add_group') }}" class="pull-right">Add Group</a>
+                            @endif
+                        </div>
                         <div class="panel-body">
                             <div class="table-responsive">
                                 <table id="list_group" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
@@ -43,11 +47,11 @@
                                                 <td>{{ $det->group_ID }}</td>
                                                 <td>{{ $det->desc }}</td>
                                                 <td class="text-center" >
-                                                    <input id="active_grp" class="active_group" type="checkbox" group-id="{{ $det->group_ID }}" name="active_group" {{isset($det->status) && $det->status == 1 ? "checked" : "" }} disabled >
+                                                    <input id="active_grp" class="active_group {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" type="checkbox" group-id="{{ $det->group_ID }}" name="active_group" {{isset($det->status) && $det->status == 1 ? "checked" : "" }} disabled >
                                                 </td>
 
-                                                <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="#" rel="{{ URL::to('delete_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Delete Group" group-name="{{ $det->desc }}" id="{{ $det->group_ID }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                                <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(14, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Delete Group" group-name="{{ $det->desc }}" id="{{ $det->group_ID }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                             </tr>  
                                         @endforeach
                                     </tbody>

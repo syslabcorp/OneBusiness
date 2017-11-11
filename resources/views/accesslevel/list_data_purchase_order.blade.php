@@ -7,7 +7,7 @@
         <td>{{ $s_template->po_avg_cycle }}</td>
         <td><input class="retail" type="checkbox"<?php if($s_template->active == 1){ echo 'checked'; }else{echo '';}?> disabled></td>
         <td>
-        	<a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('purchase_order/'.$s_template->city_id.'/'.$s_template->po_tmpl8_id ) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
+        	<a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessByPoId([6,7],31, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('purchase_order/'.(isset($corp_id) ? $corp_id : 0).'/'.$s_template->city_id.'/'.$s_template->po_tmpl8_id ) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
         </td>
     </tr> 
     @endforeach  

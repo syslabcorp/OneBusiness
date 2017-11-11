@@ -73,6 +73,7 @@ class User extends Authenticatable
 	//this accepts (int,text), like checkAccessById(18,"A")
    public function checkAccessById($feature_id, $action)
     {
+        
         if($this->permissions == null)
         {
             $this->permissions = \DB::table('rights_detail')
@@ -86,6 +87,28 @@ class User extends Authenticatable
     
             if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type))
 			{
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function checkAccessByPoId($module_ids,$feature_id, $action)
+    {   
+        if($this->permissions == null)
+        {
+            $this->permissions = \DB::table('rights_detail')
+                ->leftJoin("feature_masters", "rights_detail.feature_id", "=", "feature_masters.feature_id")
+                ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+                ->get();
+        }
+
+        foreach($this->permissions as $permission)
+        {
+            if(in_array($permission->module_id,$module_ids) && $feature_id == $permission->feature_id && preg_match("/$action/", $permission->access_type))
+            {
                 return true;
             }
         }
