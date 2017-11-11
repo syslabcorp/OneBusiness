@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }

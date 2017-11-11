@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.0/chosen.min.css" rel="stylesheet" >
     <style>
         .panel-footer {

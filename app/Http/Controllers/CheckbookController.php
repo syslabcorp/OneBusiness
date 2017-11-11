@@ -109,7 +109,9 @@ class CheckbookController extends Controller
 
         $bankCode = BankAccount::where('bank_acct_id', $acctId)->first();
 
-        $numRow = DB::table('cv_chkbk_series')->select(DB::raw('MAX(order_num) as num_row'))->first();
+        $numRow = DB::table('cv_chkbk_series')->select(DB::raw('MAX(order_num) as num_row'))
+            ->where('bank_acct_id', $acctId)
+            ->first();
 
         //create new instance
         $checkbook = new Checkbook;
