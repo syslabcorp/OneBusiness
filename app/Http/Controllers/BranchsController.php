@@ -150,9 +150,8 @@ class BranchsController extends Controller
 
         $adminUsers = User::leftJoin("rights_template", "rights_template.template_id", "=", "t_users.rights_template_id")
                             ->where('rights_template.is_super_admin', '=', 1)
-                            ->orWhere("area_type", 'like', '%BR%')
+                            ->where("t_users.area_type", 'like', '%BR%')
                             ->get();
-
         foreach($adminUsers as $user) {
           $userArea = UserArea::where("user_ID", '=', $user->UserID)->first();
           if($userArea) {
