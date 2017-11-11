@@ -279,7 +279,7 @@ $(document).ready(function()
         }else {
           var startIndex = $(this).parents("table").find('tr.selected').index();
           var endIndex = $(this).parents('tr').index();
-          $('.rate-page .table tr.selected').removeClass('selected');
+          $(this).parents("table").find('tr.selected').removeClass('selected');
           if(startIndex == endIndex) {
             $(this).parents('tr').removeClass('selected');
           }else {
