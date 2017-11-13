@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
@@ -379,8 +379,7 @@
                             if(checkAccessDel == 0) { optionClassDel = 'disabled' };
                             return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'">'+
-                                '<i class="glyphicon glyphicon-trash"></i></a>';
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
                         "targets": 4
