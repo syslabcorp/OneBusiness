@@ -1274,6 +1274,9 @@ class AccessLevelController extends Controller
 		if(!empty($user_area->city)){
 			$user_cities = explode(",", $user_area->city);
 			$cities = DB::table('t_cities')->select('City_ID','City')->whereIn('City_ID', $user_cities)->orderBy('t_cities.City', 'asc')->get();
+		}else if(!empty($user_area->province)){
+			$user_prov = explode(",", $user_area->province);
+			$cities = DB::table('t_cities')->select('City_ID','City')->whereIn('Prov_ID', $user_prov)->orderBy('t_cities.City', 'asc')->get();
 		}else{
 			$cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
 		}
