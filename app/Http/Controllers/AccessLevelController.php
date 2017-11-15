@@ -11,6 +11,7 @@ use Nexmo;
 use Hash;
 use App\POTemplate;
 use App\POTemplateDetail;
+use App\UserArea;
 
 class AccessLevelController extends Controller
 {
@@ -1269,7 +1270,13 @@ class AccessLevelController extends Controller
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
         }
-        $cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
+		$user_area = UserArea::where('user_ID', Auth::id())->first();
+		if(!empty($user_area->city)){
+			$user_cities = explode(",", $user_area->city);
+			$cities = DB::table('t_cities')->select('City_ID','City')->whereIn('City_ID', $user_cities)->orderBy('t_cities.City', 'asc')->get();
+		}else{
+			$cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
+		}
         $data['cities'] = $cities;
         $data['city_id'] = $city_id;
         $data['corp_id'] = $corp_id;
