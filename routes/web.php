@@ -140,3 +140,5 @@ Route::any('/purchase_order/{corp_id}/{city_id}/{id?}', 'AccessLevelController@p
 Route::any('/list_purchase_order/{corp_id}/{city_id?}', 'AccessLevelController@list_purchase_order');
 Route::any('/product_branch', 'AccessLevelController@product_branch');
 Route::any('/retail_items', 'AccessLevelController@retail_items');
+
+Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
