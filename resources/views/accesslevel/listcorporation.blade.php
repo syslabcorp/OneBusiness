@@ -43,7 +43,7 @@
                                     <tbody>
                                         @foreach($detail as $key=>$det)
                                             <tr>
-                                                <td>{{ $det->corp_id }}</td>
+                                                <td><span class="dispnone">{{ $det->corp_name }}</span>{{ $det->corp_id }}</td>
                                                 <td>{{ $det->corp_name }}</td>
                                                 <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(30, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_corporation/' . $det->corp_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Corporation"><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(30, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_corporation/' . $det->corp_id) }}" id="{{ $det->corp_id }}" corp-name="{{ $det->corp_name }}" data-toggle="tooltip" data-placement="top" title="Delete Corporation"><span class="glyphicon glyphicon-trash"></span></a></td>

@@ -12,7 +12,7 @@ use Hash;
 use App\POTemplate;
 use App\POTemplateDetail;
 use App\UserArea;
-
+use Session;
 class AccessLevelController extends Controller
 {
 	public function __construct()
@@ -71,7 +71,7 @@ class AccessLevelController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-    	$detail = DB::table('corporation_masters')->get();
+    	$detail = DB::table('corporation_masters')->orderBy('corp_name', 'asc')->get();
         return view('accesslevel.listcorporation', ['detail' => $detail]);	
     }
 	
@@ -155,7 +155,7 @@ class AccessLevelController extends Controller
         }
         $detailmodule = DB::table('module_masters')
             ->join('corporation_masters', 'module_masters.corp_id', '=', 'corporation_masters.corp_id')
-            ->select('module_masters.*', 'corporation_masters.corp_name')
+            ->select('module_masters.*', 'corporation_masters.corp_name')->orderBy('corporation_masters.corp_name', 'asc')->orderBy('module_masters.description', 'asc')
             ->get();   
         return view('accesslevel.listmodule', ['detail' => $detailmodule]);  
     }
@@ -268,9 +268,9 @@ class AccessLevelController extends Controller
         }
         $data['module_id'] = $module_id;
 		if($module_id == NULL){
-			$data['detailfeature'] = DB::table('feature_masters')->leftJoin('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->get();   
+			$data['detailfeature'] = DB::table('feature_masters')->leftJoin('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->orderBy('module_masters.description', 'asc')->orderBy('feature_masters.feature', 'asc')->get();   
 		}else{
-			$data['detailfeature'] = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->where('module_masters.module_id', $module_id)->get(); 
+			$data['detailfeature'] = DB::table('feature_masters')->join('module_masters', 'feature_masters.module_id', '=', 'module_masters.module_id')->select('feature_masters.*', 'module_masters.description')->where('module_masters.module_id', $module_id)->orderBy('module_masters.description', 'asc')->orderBy('feature_masters.feature', 'asc')->get(); 
             $data['module_desc'] =   DB::table('module_masters')->select('description')->where('module_id', $module_id)->first(); 
 		}
         return view('accesslevel.listfeature', $data);  
@@ -446,7 +446,7 @@ class AccessLevelController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-        $listtemplate = DB::table('rights_template')->get();  
+        $listtemplate = DB::table('rights_template')->orderBy('description', 'asc')->get();  
         return view('accesslevel.list_template', ['listtemp' => $listtemplate]);  
     }
     public function destroytemplate($template_id)
@@ -628,7 +628,7 @@ class AccessLevelController extends Controller
             return redirect("/home"); 
         }
         $data['parent_id'] = $parent_id;
-        $menu_detail = DB::table('menus')->where('parent_id', $parent_id)->get();
+        $menu_detail = DB::table('menus')->orderBy('title', 'asc')->where('parent_id', $parent_id)->get();
         $menu_ids = array();
         $child_count = array();
         $url = url('/list_menu/');
@@ -651,7 +651,7 @@ class AccessLevelController extends Controller
             $data['parentcrumb'] = "0";
         }
 
-        $child_menus = DB::table('menus')->whereIn('parent_id', $menu_ids)->get();
+        $child_menus = DB::table('menus')->orderBy('title', 'asc')->whereIn('parent_id', $menu_ids)->get();
         foreach ($child_menus as $child_menu) {
             $child_count[$child_menu->parent_id][] =  $child_menu;
         }
@@ -782,7 +782,7 @@ class AccessLevelController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-        $detail = DB::table('Remit_group')->get();
+        $detail = DB::table('Remit_group')->orderBy('desc', 'asc')->get();
         return view('accesslevel.list_group', ['group_detail' => $detail]);  
     }
 
@@ -819,14 +819,14 @@ class AccessLevelController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-        $group  = DB::table('Remit_group')->get();
+        $group  = DB::table('Remit_group')->orderBy('desc', 'asc')->get();
         $grp_IDs =array(); 
         foreach($group as $key=>$det){
             $grp_IDs[$det->group_ID]= $det->desc;     
         }
         $data['grp_IDs'] = $grp_IDs;
         
-        $detail = \App\User::get();
+        $detail = \App\User::orderBy('uname', 'asc')->orderBy('UserName', 'asc')->get();
         $template = DB::table('rights_template')->select('template_id', 'description')->get();
         foreach($template as $key=>$det){
             $temp_ids[$det->template_id]= $det->description; 
@@ -911,7 +911,7 @@ class AccessLevelController extends Controller
     }
     public function provinces($user_id = NULL)
     {   
-        $data['province'] = DB::table('t_provinces')->get();
+        $data['province'] = DB::table('t_provinces')->orderBy('Province', 'asc')->get();
         $detail_edit_user_area = DB::table('user_area')->where('user_ID', $user_id)->first();
         if(isset($detail_edit_user_area->province)){
             $data['province_ids'] = explode(",", $detail_edit_user_area->province);
@@ -1145,7 +1145,8 @@ class AccessLevelController extends Controller
                     }
                 }
             }
-            return redirect('list_purchase_order/'.$corp_id.'/'.$city_id);
+            Request::session()->put('city_id', $city_id);
+            return redirect('list_purchase_order?corpID='.$corp_id);
         }
         if ($id != NULL) {
             if(!\Auth::user()->checkAccessByPoId([6,7],31, "E"))
@@ -1254,7 +1255,10 @@ class AccessLevelController extends Controller
         return view('accesslevel.retail_items',$data);
     }
     
-    public function list_purchase_order($corp_id,$city_id = NULL){
+    public function list_purchase_order(){
+        $corp_id = isset($_GET['corpID']) ? $_GET['corpID']: '' ;
+        $city_id = session('city_id'); 
+
         if(!\Auth::user()->checkAccessByPoId([6,7],31, "V"))
         {
             \Session::flash('error', "You don't have permission"); 
@@ -1266,7 +1270,7 @@ class AccessLevelController extends Controller
             $city_id = isset($formData['city_id']) ? $formData['city_id'] :'';
             $active = isset($formData['active']) ? $formData['active'] :'';
             $data['corp_id'] = isset($formData['corp_id']) ? $formData['corp_id'] :'';
-            $s_po_tmpl8 = POTemplate::where('city_id',$city_id)->where('Active',$active)->get();
+            $s_po_tmpl8 = POTemplate::where('city_id',$city_id)->where('Active',$active)->orderBy('po_tmpl8_desc', 'asc')->get();
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
         }

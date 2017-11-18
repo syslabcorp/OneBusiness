@@ -44,7 +44,7 @@
                                     <tbody>
                                         @foreach($group_detail as $key=>$det)
                                             <tr>
-                                                <td>{{ $det->group_ID }}</td>
+                                                <td><span class="dispnone">{{ $det->desc }}</span>{{ $det->group_ID }}</td>
                                                 <td>{{ $det->desc }}</td>
                                                 <td class="text-center" >
                                                     <input id="active_grp" class="active_group {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" type="checkbox" group-id="{{ $det->group_ID }}" name="active_group" {{isset($det->status) && $det->status == 1 ? "checked" : "" }} disabled >

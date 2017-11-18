@@ -69,7 +69,7 @@
                                         }
                                         ?>
                                             <tr>
-                                                <td>{{ $det->UserID }}</td>
+                                                <td><span class="dispnone">{{ $username }}</span>{{ $det->UserID }}</td>
                                                 <td>{{ $username }}</td>
                                                 <td>{{ $template_name }}</td>
                                                 <td>{{ $ar_type }}</td>
