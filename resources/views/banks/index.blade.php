@@ -202,9 +202,11 @@
                                     <div class="col-md-7">
                                         <select name="branchName" class="form-control input-md branchName" id="">
                                             <option value="">Select Branch:</option>
+                                            @if(is_object($satelliteBranch))
                                             @foreach($satelliteBranch as $branch)
                                                 <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                                             @endforeach
+                                                @endif
                                         </select>
                                     </div>
                                 </div>
@@ -525,9 +527,10 @@
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif">@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
+                    @if(is_object($corporations))
                     @foreach($corporations as $key => $val)
                     if(cntCorp != 0){
                         corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
@@ -535,12 +538,14 @@
                     cntCorp++;
 
                     @endforeach
+                        @endif
                     var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
-                    var branches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->Branch }}">{{ $satelliteBranch[0]->ShortName }}</option></select>')
+                    var branches = $('<select class="form-control"><option value="@if(isset($satelliteBranch[0]->Branch)){{ $satelliteBranch[0]->Branch }} @endif">@if(isset($satelliteBranch[0]->ShortName)){{ $satelliteBranch[0]->ShortName }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
+                    @if(is_object($satelliteBranch))
                     @foreach($satelliteBranch as $key => $val)
                     if(cntBranches != 0){
                         branches.append('<option value="{{ $val->Branch }}">{{ $val->ShortName }}</option>');
@@ -548,6 +553,7 @@
                     cntBranches++;
 
                     @endforeach
+                        @endif
                     var mainStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
                         .appendTo('#example_ddl5');
                 },
@@ -558,8 +564,10 @@
                     url: "banks/get-banks-list",
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
+                        @if(isset($corporations[0]->corp_id))
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
                         d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
+                        @endif
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
                     }

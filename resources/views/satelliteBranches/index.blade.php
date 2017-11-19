@@ -131,7 +131,7 @@
             var table = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}" selected>{{ $corporations[0]->corp_name }}</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else "N/A" @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
                     @foreach($corporations as $key => $val)
@@ -153,7 +153,9 @@
                     url: "satellite-branch/get-branch-list",
                     data: function ( d ) {
                         d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val(),
-                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val()
+                            @if(isset($corporations[0]->corp_id))
+                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
+                        @endif
                         // d.custom = $('#myInput').val();
                         // etc
                     }
