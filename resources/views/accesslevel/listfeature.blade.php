@@ -52,7 +52,7 @@
                                         <tbody>
                                             @foreach($detailfeature as $key=>$detail)
                                                 <tr>
-                                                    <td>{{ $detail->feature_id }}</td>
+                                                    <td><span class="dispnone">{{ isset($detail->description) ? $detail->description : 'System Module' }} {{ $detail->feature }}</span>{{ $detail->feature_id }}</td>
                                                     @if(!isset($module_id))
                                                         <td>{{ isset($detail->description) ? $detail->description : 'System Module' }}</td>
                                                     @endif
