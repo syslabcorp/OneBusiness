@@ -13,7 +13,7 @@
               </div>
               <div class="col-xs-3">
                 <div class="pull-right">
-                  <a href="aaaa">Add Collection</a>
+                  <a href="{{ route('branch_remittances.create') }}">Add Collection</a>
                   
                 </div> 
               </div>
@@ -21,12 +21,12 @@
           </div>
 
           <div class="panel-body" style="margin: 30px 0px;">
-            <div class="row">
+            <div class="row" style="margin-bottom: 20px;">
               <form class="col-xs-3 pull-right" method="GET">
-                  <select name="status" class="form-control" >
-                    <option value="checked">Checked</option>
-                    <option value="unchecked">Unchecked</option>
-                  </select>
+                <select name="status" class="form-control" >
+                  <option value="checked">Checked</option>
+                  <option value="unchecked">Unchecked</option>
+                </select>
               </form>
             </div>
             <form action="">
@@ -43,10 +43,12 @@
                   @foreach($remittances as $remittance)
                     <tr class="text-center">
                       <td>{{ $remittance->txn_id }}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td>{{ strftime("%B-%d-%Y %l:%M  %p ",time())  }}</td>
+                      <td>Teller 1</td>
+                      <td>2,000.00</td>
+                      <td>
+                        <input type="checkbox" name="status" id="" >
+                      </td>
                       <td>
 
                         <a href="{{ route('branch_remittances.show', [$remittance]) }}" style="margin-right: 10px;" 
@@ -73,6 +75,37 @@
                 </tbody>
               </table>
             </form>
+
+            <div class="row">
+              <div class="col-md-4">
+                <form action="">
+                  <div class="checkbox col-xs-12">
+                    <label for="" class="control-label">
+                      <input type="checkbox" name="" id="">
+                      View by Date Range
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-xs-6">
+                      <input type="date" class="form-control datepicker ">
+                    </div>
+                    <div class="col-xs-6">
+                      <input type="date" class="form-control datepicker">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px;" >
+              <div class="col-xs-12">
+                <button class="btn btn-default">
+                  <i class="fa fa-reply"></i>
+                  Back
+                </button>
+              </div>
+              
+            </div>
           </div>
           
         </div>

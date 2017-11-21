@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->belongsTo(\App\UserArea::class, 'UserID', 'user_ID');
     }
 
+    public function shifts()
+    {
+        return $this->hasMany(\App\Shift::class, 'ShiftOwner', 'UserID');
+    }
+
 	/*
 	paramete should be changed to FEATURE_ID, ACTION
 	*/

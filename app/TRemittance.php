@@ -12,6 +12,9 @@ class TRemittance extends Model
   protected $connection = 'mysql2';
 
   protected $fillable = [
-      
+    'TotalRemit', 'TotalSales', 'Net_TotalSales',
+    'Games_TotalSales', 'Sales_TotalSales', 'Serv_TotalSales',
+    'Branch', 'Shift_ID', 'Net_Chercker', 'Sales_Checker',
+    'Wrong_Input', 'Adj_Short', 'Adj_Amt', 'memo_txn_no', 'Notes'
   ];
 }

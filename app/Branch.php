@@ -26,6 +26,10 @@ class Branch extends Model
         return $this->belongsTo(\App\City::class, "City_ID", "City_ID");
     }
 
+    public function remittance_collections()
+    {
+        return $this->hasMany(\App\RemittanceCollection::class, "Branch", "Branch");
+    }
     // Relationships
     public function footers()
     {
