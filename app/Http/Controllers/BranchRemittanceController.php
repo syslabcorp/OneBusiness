@@ -15,6 +15,10 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
+    if($request->start_date || $request->end_date)
+    {
+      dd($request->start_date);
+    }
     return view('t_remittances.index', [
       'remittances' => TRemittance::all()
     ]);
@@ -34,9 +38,9 @@ class BranchRemittanceController extends Controller
     $remit_groups = RemitGroup::all();
     $cities = City::all();
     
-    if($request)
+    if($request->city)
     {
-      $remit_group = RemitGroup::where('group_ID', $request->remit_group )->get()->first();
+      $remit_group = RemitGroup::where('group_ID', $request->remit_group )->first();
       // dd($remit_group);
       $brs = explode(",", $remit_group->branch );
       $branchs = Branch::where('City_ID', $request->city)->whereIn('Branch', $brs )->get();

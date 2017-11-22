@@ -64,7 +64,7 @@
                   <table class="table table-striped table-bordered">
                     <tbody>
                       <tr>
-                        <th class="text-center" >BRANCH</th>
+                        <th class="text-center">BRANCH</th>
                         <th class="text-center">DATE</th>
                         <th class="text-center">SHIFT ID</th>
                         <th class="text-center">SHIFT TIME</th>

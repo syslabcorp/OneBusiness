@@ -43,9 +43,9 @@
                   @foreach($remittances as $remittance)
                     <tr class="text-center">
                       <td>{{ $remittance->txn_id }}</td>
-                      <td>{{ strftime("%B-%d-%Y %l:%M  %p ",time())  }}</td>
-                      <td>Teller 1</td>
-                      <td>2,000.00</td>
+                      <td>{{ $remittance->shift ? ($remittance->shift()->first()->ShiftDate->format("M-d-Y"))." ".($remittance->shift()->first()->getTime() )  : ""  }} </td>
+                      <td>{{ $remittance->shift ? ($remittance->shift()->first()->user ? $remittance->shift()->first()->user()->first()->Full_Name : "") : ""}}</td>
+                      <td>{{ $remittance->branch ? $remittance->branch()->first()->getTotalAllRemittanceCollections() : "" }}</td>
                       <td>
                         <input type="checkbox" name="status" id="" >
                       </td>
@@ -78,7 +78,7 @@
 
             <div class="row">
               <div class="col-md-4">
-                <form action="">
+                <form action="/branch_remittances" method="GET>
                   <div class="checkbox col-xs-12">
                     <label for="" class="control-label">
                       <input type="checkbox" name="" id="">
@@ -87,10 +87,10 @@
                   </div>
                   <div class="form-group">
                     <div class="col-xs-6">
-                      <input type="date" class="form-control datepicker ">
+                      <input type="date" name="start_date" id="start_date" class="form-control datepicker ">
                     </div>
                     <div class="col-xs-6">
-                      <input type="date" class="form-control datepicker">
+                      <input type="date" name="end_date" id="end_date"  class="form-control datepicker">
                     </div>
                   </div>
                 </form>

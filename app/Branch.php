@@ -30,7 +30,26 @@ class Branch extends Model
     {
         return $this->hasMany(\App\RemittanceCollection::class, "Branch", "Branch");
     }
+
+    public function remittances()
+    {
+        return $this->hasMany(\App\TRemittance::class, "Branch", "Branch");
+    }
     // Relationships
+
+    public function getTotalAllRemittanceCollections(){
+        $total = 0;
+        if($this->remittance_collections)
+        {
+            $remittance_collections = $this->remittance_collections()->get();
+            foreach($remittance_collections as $remittance_collection )
+            {
+                $total += $remittance_collection->Total_Collection;
+            }
+        }
+        return $total;
+    }
+
     public function footers()
     {
         if($this->company && $this->company->corp_type == 'INN') {
