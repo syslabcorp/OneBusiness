@@ -238,5 +238,33 @@ $(function()
 {
   $('#brach_remittance_create').on('change', '#remit_group', function(){
     $('#brach_remittance_create').submit();
-  });
+	});
+	
+	$('#view_date_range').change(function(){
+		if( this.checked )
+		{
+			console.log("aasdfasdf");
+			$("#start_date").prop('disabled', false);
+			$("#end_date").prop('disabled', false);
+		}
+		else
+		{
+			console.log("123123");
+			$('#start_date').val("");
+			$('#end_date').val("");
+			$("#start_date").prop('disabled', true);
+			$("#end_date").prop('disabled', true);
+		}
+	});
+
+	$("#start_date").change(function()
+	{
+		$("#date_range").submit();
+	});
+
+	$("#end_date").change(function()
+	{
+		$("#date_range").submit();
+	});
+
 });

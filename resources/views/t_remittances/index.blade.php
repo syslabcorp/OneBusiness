@@ -78,19 +78,19 @@
 
             <div class="row">
               <div class="col-md-4">
-                <form action="/branch_remittances" method="GET>
+                <form id="date_range" action="/branch_remittances" method="GET">
                   <div class="checkbox col-xs-12">
                     <label for="" class="control-label">
-                      <input type="checkbox" name="" id="">
+                      <input type="checkbox" name="view_date_range" {{$checked ? 'checked': ""}} id="view_date_range" value="1">
                       View by Date Range
                     </label>
                   </div>
                   <div class="form-group">
                     <div class="col-xs-6">
-                      <input type="date" name="start_date" id="start_date" class="form-control datepicker ">
+                      <input type="date" name="start_date" id="start_date" {{ $checked ? '': 'disabled="true"' }} class="form-control datepicker " value="{{$start_date}}">
                     </div>
                     <div class="col-xs-6">
-                      <input type="date" name="end_date" id="end_date"  class="form-control datepicker">
+                      <input type="date" name="end_date" id="end_date"  {{ $checked ? '': 'disabled="true"' }}  class="form-control datepicker"  value="{{$end_date}}">
                     </div>
                   </div>
                 </form>

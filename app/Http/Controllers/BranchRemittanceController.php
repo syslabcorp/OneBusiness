@@ -15,12 +15,32 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
+    $checked = false;
     if($request->start_date || $request->end_date)
     {
-      dd($request->start_date);
+      $checked = true;
+      if(!$request->start_date)
+      {
+        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->get();
+      }
+      elseif(!$request->end_date)
+      {
+        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '>=', $request->start_date)->get() ;
+      }
+      else
+      {
+        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->where('ShiftDate', '>=', $request->start_date)->get();
+      }
+    }
+    else
+    {
+      $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->get();
     }
     return view('t_remittances.index', [
-      'remittances' => TRemittance::all()
+      'remittances' => $remittances ,
+      'checked' => $checked,
+      'start_date' => $request->start_date,
+      'end_date' => $request->end_date
     ]);
   }
 
