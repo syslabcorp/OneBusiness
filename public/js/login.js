@@ -226,3 +226,17 @@ function user_register_admin(user_id, user_name) {
 $('#assign-rate-template input[value!="all"]').click(function(event) {
   $('#assign-rate-template input[value="all"]').prop("checked", false);
 });
+
+$(function()
+{
+  $('#brach_remittance_create').on('change', '#city', function(){
+    $('#brach_remittance_create').submit();
+  });
+});
+
+$(function()
+{
+  $('#brach_remittance_create').on('change', '#remit_group', function(){
+    $('#brach_remittance_create').submit();
+  });
+});
