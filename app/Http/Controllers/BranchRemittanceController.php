@@ -89,9 +89,16 @@ class BranchRemittanceController extends Controller
   {
     foreach($request->collections as $key => $collection)
     {
-      if(!empty($collection['End_CRR']) || !empty($collection['Total_Collection']))
+      if(!empty($collection['End_CRR']) && !empty($collection['Total_Collection']) )
       {
+        if(RemittanceCollection::where('Branch',$key)->get()->count())
+        {
+          RemittanceCollection::where('Branch',$key)->update(['End_CRR' => $collection['End_CRR'], 'Start_CRR' => $collection['Start_CRR'], 'Total_Collection' => $collection['Total_Collection']]);
+        }
+        else
+        {
         RemittanceCollection::create(['End_CRR' => $collection['End_CRR'], 'Start_CRR' => $collection['Start_CRR'], 'Total_Collection' => $collection['Total_Collection'], 'Branch' => $key  ]);
+        }
       }
     }
     return redirect()->route('branch_remittances.create' );
