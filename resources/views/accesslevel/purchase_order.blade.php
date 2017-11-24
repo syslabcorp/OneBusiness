@@ -35,6 +35,7 @@
                             <form class="form-horizontal form" role="form" method="POST" action="" id ="potemplateform">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="proid" id="proid" value="{{isset($detail_edit_temp_hdr->po_tmpl8_id) ? $detail_edit_temp_hdr->po_tmpl8_id : '' }}">
+                                <input type="hidden" id="corp_id" value="{{ $corp_id }}">
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
