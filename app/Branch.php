@@ -28,12 +28,37 @@ class Branch extends Model
 
     public function remittance_collections()
     {
-        return $this->hasMany(\App\RemittanceCollection::class, "Branch", "Branch");
+      return $this->hasMany(\App\RemittanceCollection::class, "Branch", "Branch");
     }
 
     public function remittances()
     {
-        return $this->hasMany(\App\TRemittance::class, "Branch", "Branch");
+      return $this->hasMany(\App\TRemittance::class, "Branch", "Branch");
+    }
+
+    public function remittanceCollection($groupId) {
+      $collection = $this->remittance_collections()->where('Group', '=', $groupId)->first();
+      if(!$collection) {
+        $collection = new \App\RemittanceCollection;
+        $collection->Group = $groupId;
+        $collection->Branch = $this->Branch;
+      }
+      return $collection;
+    }
+
+    public function getStartCRR($groupId) {
+      $startCRR = 1;
+      $remittance = $this->remittance_collections()->where('Group', '=', $groupId)->first();
+
+      if($remittance) {
+        $startCRR = $remittance->Start_CRR;
+      }else {
+        $remittance = $this->remittance_collections()->orderBy('Start_CRR', 'DESC')->first();
+        if($remittance) {
+          $startCRR = $remittance->Start_CRR + 1;
+        }
+      }
+      return $startCRR;
     }
     // Relationships
 

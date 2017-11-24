@@ -227,9 +227,15 @@ $('#assign-rate-template input[value!="all"]').click(function(event) {
   $('#assign-rate-template input[value="all"]').prop("checked", false);
 });
 
-$(function()
-{
+$(function(){
   $('#brach_remittance_create').on('change', '#city', function(){
+    $('#brach_remittance_create').submit();
+  });
+
+  $('.form-status').on('change', 'select', function(event) {
+    $('#brach_remittance_create input[name="groupStatus"]').val($(this).val());
+    $('#brach_remittance_create select[name="groupId"]').val(null);
+    $('#brach_remittance_create select[name="cityId"]').val(null);
     $('#brach_remittance_create').submit();
   });
 });
