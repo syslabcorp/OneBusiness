@@ -52,6 +52,26 @@ class BranchRemittanceController extends Controller
     ]);
   }
 
+  public function  renderModal(Request $request)
+  {
+    // return response($request);
+    $shift = Shift::where('Shift_ID', $request->id)->first();
+    $array = array(
+      "cashier"=> "",
+      "shift_id"=> $request->id,
+      "total_sales"=> "",
+      "total_shortage"=> $shift->remittance->Adj_Amt,
+      'total_remittance'=> $shift->remittance->TotalRemit,
+      'couterchecked'=> "",
+      'wrong_input'=> $shift->remittance->Wrong_Input,
+      'adj_short'=> $shift->remittance->Adj_Short,
+      'shortage'=> $shift->remittance->Adj_Amt,
+      'remarks'=> $shift->remittance->Notes
+    );
+
+    return response()->json($array);
+  }
+
   public function create(Request $request)
   {
     $groupIds = explode(",", \Auth::user()->group_ID);
@@ -116,29 +136,29 @@ class BranchRemittanceController extends Controller
   public function store(Request $request)
   {
 
-    // $shift = Shift::where('Shift_ID', $request->get('Shift_ID'))->first();
-    // $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Notes' ]);
+    $shift = Shift::where('Shift_ID', $request->get('Shift_ID'))->first();
+    $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short' ]);
     
-    // if ( empty($params['Wrong_Input'])  )
-    // {
-    //   $params['Wrong_Input'] = '0';
-    // }
+    if ( empty($params['Wrong_Input'])  )
+    {
+      $params['Wrong_Input'] = '0';
+    }
 
-    // if (empty($params['Adj_Short']) )
-    // {
-    //   $params['Adj_Short'] = '0';
-    // }
+    if (empty($params['Adj_Short']) )
+    {
+      $params['Adj_Short'] = '0';
+    }
 
-    // if ($shift->remittance()->count())
-    // {
+    if ($shift->remittance()->count())
+    {
       
-    //   $shift->remittance()->update($params);
-    // }
-    // else
-    // {
-    //   $shift->remittance()->create($params);
-    // }
-    // return redirect()->route('branch_remittances.show', 3 );
+      $shift->remittance()->update($params);
+    }
+    else
+    {
+      $shift->remittance()->create($params);
+    }
+    return redirect()->route('branch_remittances.show', 3 );
   }
 
 }
