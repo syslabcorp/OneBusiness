@@ -50,7 +50,7 @@
                   <div class="col-md-8">
                     <select name="cityId" id="city" class="form-control">
                       @foreach($cities as $city)
-                        @if($selectCity->City_ID == $city->City_ID)
+                        @if($selectCity && $selectCity->City_ID == $city->City_ID)
                           <option selected value="{{$city->City_ID}}">{{$city->City}}</option>
                         @else
                           <option value="{{$city->City_ID}}">{{$city->City}}</option>

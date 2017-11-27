@@ -40,30 +40,30 @@
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
-                  @foreach($remittances as $remittance)
+                  @foreach($remittance_collections as $remittance_collection)
                     <tr class="text-center">
-                      <td>{{ $remittance->txn_id }}</td>
-                      <td>{{ $remittance->shift ? ($remittance->shift()->first()->ShiftDate->format("M-d-Y"))." ".($remittance->shift()->first()->getTime() )  : ""  }} </td>
-                      <td>{{ $remittance->shift ? ($remittance->shift()->first()->user ? $remittance->shift()->first()->user()->first()->Full_Name : "") : ""}}</td>
-                      <td>{{ $remittance->branch ? $remittance->branch()->first()->getTotalAllRemittanceCollections() : "" }}</td>
+                      <td>{{ $remittance_collection->ID }}</td>
+                      <td>{{ $remittance_collection->Time_Create ? $remittance_collection->Time_Create->format('Y-m-d H:i a') : "" }}</td>
+                      <td>{{ $remittance_collection->user()->first()->Full_Name }}</td>
+                      <td>{{ $remittance_collection->Total_Collection }}</td>
                       <td>
-                        <input type="checkbox" name="status" id="" >
+                        <input type="checkbox" name="status" id="" onclick="return false;" >
                       </td>
                       <td>
 
-                        <a href="{{ route('branch_remittances.show', [$remittance]) }}" style="margin-right: 10px;" 
+                        <a href="{{ route('branch_remittances.show', [$remittance_collection]) }}" style="margin-right: 10px;" 
                           class="btn btn-success btn-xs"
                           title="View">
                           <i class="fa fa-eye"></i>
                         </a>
 
-                        <a href="{{ route('branch_remittances.edit', [$remittance]) }}" style="margin-right: 10px;" 
+                        <a href="{{ route('branch_remittances.edit', [$remittance_collection]) }}" style="margin-right: 10px;" 
                           class="btn btn-primary btn-xs"
                           title="Edit">
                           <i class="fa fa-pencil"></i>
                         </a>
 
-                        <a href="{{ route('branch_remittances.destroy', [$remittance]) }}" style="margin-right: 10px;" 
+                        <a href="{{ route('branch_remittances.destroy', [$remittance_collection]) }}" style="margin-right: 10px;" 
                           class="btn btn-danger btn-xs"
                           title="Delete">
                           <i class="fa fa-trash"></i>

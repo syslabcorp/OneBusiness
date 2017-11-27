@@ -16,28 +16,31 @@ class BranchRemittanceController extends Controller
   public function index(Request $request)
   {
     $checked = false;
-    if($request->start_date || $request->end_date)
-    {
-      $checked = true;
-      if(!$request->start_date)
-      {
-        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->get();
-      }
-      elseif(!$request->end_date)
-      {
-        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '>=', $request->start_date)->get() ;
-      }
-      else
-      {
-        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->where('ShiftDate', '>=', $request->start_date)->get();
-      }
-    }
-    else
-    {
-      $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->get();
-    }
+    // if($request->start_date || $request->end_date)
+    // {
+    //   $checked = true;
+    //   if(!$request->start_date)
+    //   {
+    //     $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->get();
+    //   }
+    //   elseif(!$request->end_date)
+    //   {
+    //     $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '>=', $request->start_date)->get() ;
+    //   }
+    //   else
+    //   {
+    //     $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->where('ShiftDate', '>=', $request->start_date)->get();
+    //   }
+    // }
+    // else
+    // {
+    //   $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->get();
+    // }
+
+    $remittance_collections = RemittanceCollection::all();
+
     return view('t_remittances.index', [
-      'remittances' => $remittances ,
+      'remittance_collections' => $remittance_collections ,
       'checked' => $checked,
       'start_date' => $request->start_date,
       'end_date' => $request->end_date
@@ -126,6 +129,8 @@ class BranchRemittanceController extends Controller
     $this->validate($request, $rules, [], $niceNames);
 
     foreach($request->collections as $key => $collection) {
+      $collection['Time_Create'] = date('Y-m-d H:i:s');
+      $collection['UserID'] = \Auth::user()->UserID;
       RemittanceCollection::updateOrCreate(['ID' => $collection['ID']], $collection);
     }
 
