@@ -15,72 +15,129 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
+    $checked = false;
     if($request->start_date || $request->end_date)
     {
-      dd($request->start_date);
+      $checked = true;
+      if(!$request->start_date)
+      {
+        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->get();
+      }
+      elseif(!$request->end_date)
+      {
+        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '>=', $request->start_date)->get() ;
+      }
+      else
+      {
+        $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->where('ShiftDate', '>=', $request->start_date)->get();
+      }
+    }
+    else
+    {
+      $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->get();
     }
     return view('t_remittances.index', [
-      'remittances' => TRemittance::all()
+      'remittances' => $remittances ,
+      'checked' => $checked,
+      'start_date' => $request->start_date,
+      'end_date' => $request->end_date
     ]);
   }
 
   public function show($id)
   {
     $shifts =  \Auth::user()->shifts()->get();
-    // return response()->json($shifts);
     return view('t_remittances.show', [
       'shifts' => $shifts
     ]);
   }
 
-  public function create(Request $request)
+  public function  renderModal(Request $request)
   {
-    $remit_groups = RemitGroup::all();
-    $cities = City::all();
-    
-    if($request->city)
-    {
-      $remit_group = RemitGroup::where('group_ID', $request->remit_group )->first();
-      // dd($remit_group);
-      $brs = explode(",", $remit_group->branch );
-      $branchs = Branch::where('City_ID', $request->city)->whereIn('Branch', $brs )->get();
-      $city = $request->city;
-    }
-    else
-    {
-      $remit_group = $remit_groups->first();
-      $brs = explode(",", $remit_group->branch );
-      $branchs = Branch::where('City_ID', $cities->first()->City_ID)->whereIn('Branch', $brs )->get();
-      $city = $cities->first()->City_ID;
-    }
-    
-    return view('t_remittances.create', [
-      'remit_groups' => $remit_groups,
-      'remittance_group' => $remit_group,
-      'cities' => $cities,
-      'city_ID' => $city,
-      'brs' => $brs,
-      'branchs' => $branchs
-    ]);
-    // return response()->json($a);
+    // return response($request);
+    $shift = Shift::where('Shift_ID', $request->id)->first();
+    $array = array(
+      "cashier"=> "",
+      "shift_id"=> $request->id,
+      "total_sales"=> "",
+      "total_shortage"=> $shift->remittance->Adj_Amt,
+      'total_remittance'=> $shift->remittance->TotalRemit,
+      'couterchecked'=> "",
+      'wrong_input'=> $shift->remittance->Wrong_Input,
+      'adj_short'=> $shift->remittance->Adj_Short,
+      'shortage'=> $shift->remittance->Adj_Amt,
+      'remarks'=> $shift->remittance->Notes
+    );
+
+    return response()->json($array);
   }
 
-  public function store_collections(Request $request)
+  public function create(Request $request)
   {
-    foreach($request->collections as $key => $collection)
-    {
-      if(!empty($collection['End_CRR']) || !empty($collection['Total_Collection']))
-      {
-        RemittanceCollection::create(['End_CRR' => $collection['End_CRR'], 'Start_CRR' => $collection['Start_CRR'], 'Total_Collection' => $collection['Total_Collection'], 'Branch' => $key  ]);
-      }
+    $groupIds = explode(",", \Auth::user()->group_ID);
+    $selectStatus = $request->groupStatus != null ? $request->groupStatus : 1;
+    $remitGroups = RemitGroup::where('status', '=', $selectStatus)->whereIn('group_ID', $groupIds)->get();
+
+    $cities = City::orderBy('City', 'ASC')->get();
+    $selectCity = $cities->first();
+
+    $selectGroup = $remitGroups->first();
+    
+
+    if($request->cityId) {
+      $selectCity = City::find($request->cityId);
     }
-    return redirect()->route('branch_remittances.create' );
+
+    if($request->groupId) {
+      $selectGroup = RemitGroup::find($request->groupId);
+    }
+
+    if($selectGroup) {
+      $branchIds = explode(",", $selectGroup->branch);
+    }else {
+      $branchIds = [];
+    }
+
+    $branchs = Branch::where('City_ID', $request->cityId)->whereIn('Branch', $branchIds)->get();
+
+    return view('t_remittances.create', [
+      'remitGroups' => $remitGroups,
+      'selectGroup' => $selectGroup,
+      'cities' => $cities,
+      'selectCity' => $selectCity,
+      'branchs' => $branchs,
+      'selectStatus' => $selectStatus
+    ]);
+  }
+
+  public function storeCollections(Request $request)
+  {
+    $rules = [];
+    $niceNames = [];
+    
+    foreach($request->collections as $index => $collection) {
+      $min = intval($collection['Start_CRR']) + 1;
+      $rules["collections.{$index}.End_CRR"] = "numeric|min:{$min}";
+      $rules["collections.{$index}.Total_Collection"] = "numeric";
+
+      $niceNames["collections.{$index}.End_CRR"] = 'Input';
+      $niceNames["collections.{$index}.Total_Collection"] = 'Input';
+    }
+    $this->validate($request, $rules, [], $niceNames);
+
+    foreach($request->collections as $key => $collection) {
+      RemittanceCollection::updateOrCreate(['ID' => $collection['ID']], $collection);
+    }
+
+    \Session::flash('success', "Remittance collections has been updated successfully.");
+    return redirect(route('branch_remittances.create', ['cityId' => $request->cityId, 'groupId' => $request->groupId]));
   }
 
   public function store(Request $request)
   {
+
     $shift = Shift::where('Shift_ID', $request->get('Shift_ID'))->first();
-    $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Notes' ]);
+    $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short' ]);
     
     if ( empty($params['Wrong_Input'])  )
     {

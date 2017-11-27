@@ -12,33 +12,30 @@
                 
               </div>
               <div class="col-xs-3">
-              <form class="pull-right" method="GET">
-                <select name="status" class="form-control" >
-                  <option value="checked">Active</option>
-                  <option value="unchecked">Unchecked</option>
+              <form class="pull-right form-status" method="GET">
+                <select class="form-control" >
+                  <option value="1">Active</option>
+                  <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Unchecked</option>
                 </select>
-            </form>
+              </form>
               </div>
             </div>
           </div>
 
           <div class="panel-body" style="margin: 30px 0px;">
             <div class="row">
-              
             </div>
             <form class="form-horizontal" id="brach_remittance_create" action="/branch_remittances/create" method="GET" >
-            
+              <input type="hidden" name="groupStatus" value="1" />
               <div class="row">
                 <div class="form-group col-md-4">
                   <label for="" class="control-lable col-md-4">Remmit Group:</label>
                   <div class="col-md-8">
-                    <select name="remit_group" id="remit_group" class="form-control">
-                      @foreach($remit_groups as $remit_group)
-                        @if($remittance_group->group_ID == $remit_group->group_ID)
-                          <option selected value="{{$remit_group->group_ID}}">Remit Group {{ $remit_group->group_ID }}</option>
-                        @else
-                          <option value="{{$remit_group->group_ID}}">Remit Group {{ $remit_group->group_ID }}</option>
-                        @endif
+                    <select name="groupId" id="remit_group" class="form-control">
+                      @foreach($remitGroups as $group)
+                        <option value="{{$group->group_ID}}" 
+                        {{ $selectGroup->group_ID == $group->group_ID ? 'selected' : '' }}
+                          >{{ $group->desc }}</option>
                       @endforeach
                       
                     </select>
@@ -51,9 +48,9 @@
                 <div class="form-group col-md-4">
                   <label for="" class="control-lable col-md-4">City:</label>
                   <div class="col-md-8">
-                    <select name="city" id="city" class="form-control">
+                    <select name="cityId" id="city" class="form-control">
                       @foreach($cities as $city)
-                        @if($city_ID == $city->City_ID)
+                        @if($selectCity->City_ID == $city->City_ID)
                           <option selected value="{{$city->City_ID}}">{{$city->City}}</option>
                         @else
                           <option value="{{$city->City_ID}}">{{$city->City}}</option>
@@ -64,73 +61,88 @@
                 </div>
               </div>
             </form>
-              
-
-            <form action="/branch_remittances/collections" method="POST">
+            
+            @if($selectGroup)
+            <form action="{{ route('branch_remittances.collections.store', ['cityId' => $selectCity->City_ID, 'groupId' => $selectGroup->group_ID]) }}" method="POST">
               {{csrf_field()}}
-              <table class="table table-striped table-bordered">
-                  <tbody>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
                     <tr>
-                      <th class="text-center">Branch Name</th>
-                      <th class="text-center">Start CRR</th>
-                      <th class="text-center">End CRR</th>
-                      <th class="text-center">Total Collection</th>
+                      <th>Branch Name</th>
+                      <th>Start CRR</th>
+                      <th>End CRR</th>
+                      <th>Total Collection</th>
                     </tr>
+                  </thead>
+                  <tbody>
                     @php $total = 0; @endphp
                     @foreach($branchs as $branch)
                       <tr>
-                        <td class="text-center"> {{$branch->ShortName}} </td>
-                        <td class="text-center">
-                          @if($branch->remittance_collections()->whereIn('Branch', $brs)->count())
-                            {{$branch->remittance_collections()->whereIn('Branch', $brs)->first()->Start_CRR }}
-                            <input type="hidden" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{$branch->remittance_collections()->whereIn('Branch', $brs)->first()->Start_CRR }}">
-                          @else
-                            @if( $branch->remittance_collections->count() )
-                              {{ $branch->remittance_collections()->orderBy( 'End_CRR', 'desc')->first()->End_CRR + 1}}
-                              <input type="hidden" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $branch->remittance_collections()->orderBy( 'End_CRR', 'desc')->first()->End_CRR + 1}}">
-                            @else
-                              1
-                              <input type="hidden" name="collections[{{$branch->Branch}}][Start_CRR]" value="1">
-                            @endif
+                        <td>
+                          {{ $branch->ShortName }}
+                          <input type="hidden" name="collections[{{$branch->Branch}}][ID]" 
+                            value="{{ $branch->remittanceCollection($selectGroup->group_ID)->ID }}"/>
+                          <input type="hidden" name="collections[{{$branch->Branch}}][Group]" 
+                            value="{{ $branch->remittanceCollection($selectGroup->group_ID)->Group }}"/>
+                          <input type="hidden" name="collections[{{$branch->Branch}}][Branch]" 
+                            value="{{ $branch->remittanceCollection($selectGroup->group_ID)->Branch }}"/>
+                        </td>
+                        <td>
+                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $branch->getStartCRR($selectGroup->group_ID) }}"
+                            readonly="true" class="form-control">
+                        </td>
+                        <td>
+                          <input class="form-control" type="text" name="collections[{{$branch->Branch}}][End_CRR]"
+                            value="{{ !empty(old("collections.{$branch->Branch}.End_CRR")) ? old("collections.{$branch->Branch}.End_CRR") : $branch->remittanceCollection($selectGroup->group_ID)->End_CRR }}">
+                          @if($errors->has("collections.{$branch->Branch}.End_CRR"))
+                            <i style="color:#cc0000;">{{ $errors->first("collections.{$branch->Branch}.End_CRR") }}</i>
                           @endif
                         </td>
-                        <td class="text-center">
-                          <input type="hidden" name="Group" value="{{ $remit_group->group_ID}}">
-                          <input class="form-control" type="text" 
-                          name="collections[{{$branch->Branch}}][End_CRR]" id="" value="{{$branch->remittance_collections()->whereIn('Branch', $brs)->count() ? ($branch->remittance_collections()->whereIn('Branch', $brs)->first()->End_CRR) : "" }}">
+                        <td>
+                          <input class="form-control" type="text" name="collections[{{$branch->Branch}}][Total_Collection]"
+                            value="{{ !empty(old("collections.{$branch->Branch}.Total_Collection")) ? old("collections.{$branch->Branch}.Total_Collection") : $branch->remittanceCollection($selectGroup->group_ID)->Total_Collection }}">
+                          @if($errors->has("collections.{$branch->Branch}.Total_Collection"))
+                            <i style="color:#cc0000;">{{ $errors->first("collections.{$branch->Branch}.Total_Collection") }}</i>
+                          @endif
                         </td>
-                        <td class="text-center">
-                          <input class="form-control" type="text" name="collections[{{$branch->Branch}}][Total_Collection]" id="" value="{{$branch->remittance_collections()->whereIn('Branch', $brs)->count() ? ($branch->remittance_collections()->whereIn('Branch', $brs)->first()->Total_Collection) : "" }}">
-                        </td>
-                        @if($branch->remittance_collections()->whereIn('Branch', $brs)->count())
-                          @php $total += $branch->remittance_collections()->whereIn('Branch', $brs)->first()->Total_Collection; @endphp
-                        @endif
                       </tr>
+                      @php $total += $branch->remittanceCollection($selectGroup->group_ID)->Total_Collection; @endphp
                     @endforeach
-                  
-                  </tbody>
-                </table>
-
+                    @if(count($branchs) == 0)
+                      <tr>
+                        <td colspan="4">
+                          Not found any collections
+                        </td>
+                      </tr>
+                    @endif
+                    </tbody>
+                  </table>
+                </div>
                 <div class="row">
                   <div class="pull-right">
                     <strong>SUBTOTAL: {{$total}} </strong>
                   </div>
                 </div>
-                
+                @if(count($branchs))
                 <div class="row">
                   <div class=" pull-right" style="margin-top: 20px;">
                     <button class="btn btn-success">Save</button>
                   </div>
                 </div>
+                @endif
             </form>
-              
-              
+            @else
+            <div class="error">
+              You don't have assigned any groups
+            </div>
+            @endif
 
             <div class="row">
-              <button class="btn btn-default">
+              <a class="btn btn-default" href="{{ route('branch_remittances.index') }}">
                 <i class="fa fa-reply"></i>
                 Back
-              </button>
+              </a>
             </div>
           </div>
           
