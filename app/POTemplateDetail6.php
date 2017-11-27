@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class POTemplateDetail extends Model
+class POTemplateDetail6 extends Model
 {
     public $timestamps = false;
     protected $table = "s_po_tmpl8_detail";

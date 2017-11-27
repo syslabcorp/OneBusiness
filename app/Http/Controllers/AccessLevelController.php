@@ -9,8 +9,10 @@ use URL;
 use Twilio;
 use Nexmo;
 use Hash;
-use App\POTemplate;
-use App\POTemplateDetail;
+use App\POTemplate6;
+use App\POTemplate7;
+use App\POTemplateDetail6;
+use App\POTemplateDetail7;
 use App\UserArea;
 use Session;
 class AccessLevelController extends Controller
@@ -1118,7 +1120,12 @@ class AccessLevelController extends Controller
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
                     }
-                $po_tmpl8_hdr = POTemplate::insertGetId($temp_hdr);
+                if($corp_id == 7){
+                    $po_tmpl8_hdr = POTemplate7::insertGetId($temp_hdr);
+                }else{
+                    $po_tmpl8_hdr = POTemplate6::insertGetId($temp_hdr);
+                }
+                
                 Request::session()->flash('flash_message', 'Product Template has been added.');
                 Request::Session()->flash('alert-class', 'alert-success');
                 }else{
@@ -1127,8 +1134,13 @@ class AccessLevelController extends Controller
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
                     }
-                    POTemplateDetail::where('po_tmpl8_id', $id)->delete();
-                    POTemplate::where('po_tmpl8_id', $id)->update($temp_hdr);
+                    if($corp_id == 7){
+                        POTemplateDetail7::where('po_tmpl8_id', $id)->delete();
+                        POTemplate7::where('po_tmpl8_id', $id)->update($temp_hdr);
+                    }else{
+                        POTemplateDetail6::where('po_tmpl8_id', $id)->delete();
+                        POTemplate6::where('po_tmpl8_id', $id)->update($temp_hdr);
+                    }
                     Request::session()->flash('flash_message', 'Product Template has been Updated.');
                     Request::Session()->flash('alert-class', 'alert-success');
                     $po_tmpl8_hdr = $id;
@@ -1141,7 +1153,11 @@ class AccessLevelController extends Controller
                             'po_tmpl8_branch' => $branch,
                             'po_tmpl8_item'   => $itemId,
                         );
-                        POTemplateDetail::insert($temp_hdr_detail);
+                        if($corp_id == 7){
+                            POTemplateDetail7::insert($temp_hdr_detail);
+                        }else{
+                            POTemplateDetail6::insert($temp_hdr_detail);
+                        }
                     }
                 }
             }
@@ -1154,9 +1170,15 @@ class AccessLevelController extends Controller
                 \Session::flash('error', "You don't have permission"); 
                 return redirect("/home"); 
             }
-            $detail_edit_temp_hdr =  POTemplate::where('po_tmpl8_id',$id)->first();
+            if($corp_id == 7){
+                $detail_edit_temp_hdr =  POTemplate7::where('po_tmpl8_id',$id)->first();
+                $proitemsSelected = POTemplateDetail7::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
+            }else{
+                $detail_edit_temp_hdr =  POTemplate6::where('po_tmpl8_id',$id)->first();
+                $proitemsSelected = POTemplateDetail6::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
+            }
+            
             $data['detail_edit_temp_hdr'] = $detail_edit_temp_hdr;  
-            $proitemsSelected = POTemplateDetail::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
             $proretailitems_ids = array();
             $probranch_ids = array();
             foreach ($proitemsSelected as $proitemSelected) {
@@ -1216,7 +1238,11 @@ class AccessLevelController extends Controller
             $formData = Request::all();
             $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
             $data['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
-            $branchesSelected = POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
+            if($corp_id == 7){
+                $branchesSelected = POTemplateDetail7::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
+            }else{
+                $branchesSelected = POTemplateDetail6::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
+            }
             $probranch_ids = array();
             foreach ($branchesSelected as $branchSelected) {
                 array_push($probranch_ids, $branchSelected->po_tmpl8_branch);
@@ -1245,7 +1271,12 @@ class AccessLevelController extends Controller
             }
             $data['brandname'] = $b_name;
             $data['s_invtry_hdr']=$inventory;
-            $retailsSelected = POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
+            $corp_id = $formData['corp_id'];
+            if($corp_id == 7){
+                $retailsSelected = POTemplateDetail7::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
+            }else{
+                $retailsSelected = POTemplateDetail6::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
+            }
             $proitems_ids = array();
             foreach ($retailsSelected as $retailSelected) {
                 array_push($proitems_ids, $retailSelected->po_tmpl8_item);
@@ -1270,7 +1301,11 @@ class AccessLevelController extends Controller
             $city_id = isset($formData['city_id']) ? $formData['city_id'] :'';
             $active = isset($formData['active']) ? $formData['active'] :'';
             $data['corp_id'] = isset($formData['corp_id']) ? $formData['corp_id'] :'';
-            $s_po_tmpl8 = POTemplate::where('city_id',$city_id)->where('Active',$active)->orderBy('po_tmpl8_desc', 'asc')->get();
+            if($data['corp_id'] == 7){
+                $s_po_tmpl8 = POTemplate7::where('city_id',$city_id)->where('Active',$active)->orderBy('po_tmpl8_desc', 'asc')->get();
+            }else{
+                $s_po_tmpl8 = POTemplate6::where('city_id',$city_id)->where('Active',$active)->orderBy('po_tmpl8_desc', 'asc')->get();
+            }
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
         }
