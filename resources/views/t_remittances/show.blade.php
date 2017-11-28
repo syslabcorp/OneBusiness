@@ -83,60 +83,46 @@
                         <th class="text-center">ACTION</th>
                       </tr>
 
-                      @foreach($shifts as $shift)
-
-                        <tr>
-                          <td>abcd</td>
-                          <td></td>
-                          <td>{{ $shift->Shift_ID }}</td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          @if($shift->remittance)
-                            <td>{{ $shift->remittance->Serv_TotalSales }}</td>
-                            <td>{{ $shift->remittance->Games_TotalSales }}</td>
-                            <td>{{ $shift->remittance->Net_TotalSales }}</td>
-                            <td>{{ $shift->remittance->TotalSales}}</td>
-                            <td>{{ $shift->remittance->TotalRemit }}</td>
-                            <td>
-                              <input type="checkbox" name="" id="" {{ $shift->remittance->Sales_Checked == 1 ? "checked" : "" }} onclick="return false;" >
-                            </td>
-                            <td>
-                              <input type="checkbox" name="" id="" {{ $shift->remittance->Wrong_Input == 1 ? "checked" : "" }} onclick="return false;" >
-                            </td>
-                            <td>
-                              <input type="checkbox" name="" id="" {{ $shift->remittance->Adj_Short == 1 ? "checked" : "" }} onclick="return false;"  >
-                            <td></td>
-                            <td>{{ $shift->remittance->Notes }}</td>
-                            <td>
-                              <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" data-toggle="modal" data-target="#Modal">
-                                <i class="fa fa-pencil"></i>
-                              </button>
-
-                            </td>
-                          @else
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                              <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" data-toggle="modal" data-target="#Modal">
-                                <i class="fa fa-pencil"></i>
-                              </button>
+                      <!-- @foreach($shifts_by_branch as $branch => $shifts_by_date)
+                        @foreach($shifts_by_date as $date => $shifts)
+                          @php $index = $loop->index @endphp
+                          @foreach($shifts as $shift)
+                            <tr>
+                              @if($index == 0)
+                                <td rowspan="3">{{$branch}}</td>
+                              @endif
+                              @if($loop->index == 0 )
+                                <td rowspan="{{count($shifts)}}">{{$date}}</td>
+                              @endif
+                              <td>{{ $shift->Shift_ID }}</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>{{ $shift->remittance ?  $shift->remittance->Serv_TotalSales : "" }}</td>
+                              <td>{{ $shift->remittance ? $shift->remittance->Games_TotalSales : "" }}</td>
+                              <td>{{ $shift->remittance ? $shift->remittance->Net_TotalSales : "" }}</td>
+                              <td>{{ $shift->remittance ? $shift->remittance->TotalSales : "" }}</td>
+                              <td>{{ $shift->remittance ? $shift->remittance->TotalRemit : "" }}</td>
+                              <td>
+                                <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Sales_Checked == 1 ? "checked" : "") : "" }} onclick="return false;" >
+                              </td>
+                              <td>
+                                <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Wrong_Input == 1 ? "checked" : "") : "" }} onclick="return false;" >
+                              </td>
+                              <td>
+                                <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
+                              <td></td>
+                              <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
+                              <td>
+                                <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" data-toggle="modal" data-target="#Modal">
+                                  <i class="fa fa-pencil"></i>
+                                </button>
+                              </td>
+                            </tr>
                               
-                            </td>
-                          @endif
-                          
-
-                        </tr>
-
-                      @endforeach
+                          @endforeach
+                        @endforeach
+                      @endforeach -->
 
                     </tbody>
                   </table>

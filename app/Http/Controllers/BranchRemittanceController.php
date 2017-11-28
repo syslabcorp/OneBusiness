@@ -49,9 +49,15 @@ class BranchRemittanceController extends Controller
 
   public function show($id)
   {
-    $shifts =  \Auth::user()->shifts()->get();
+    $remittance_collection = RemittanceCollection::where('ID', $id)->first();
+    $shifts = Shift::whereBetween('Shift_ID', [$remittance_collection->Start_CRR, $remittance_collection->End_CRR])
+    ->get();
+    foreach($shifts as $key => $shift)
+    {
+       $array_shift["{$shift->branch()->first()->ShortName}"]["{$shift->ShiftDate->format('l,M-d-Y')}"][] = $shift;
+    }
     return view('t_remittances.show', [
-      'shifts' => $shifts
+      'shifts_by_branch' => $array_shift
     ]);
   }
 

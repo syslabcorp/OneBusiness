@@ -26,7 +26,12 @@ class Shift extends Model
 
   public function user()
   {
-      return $this->belongsTo(\App\User::class, 'ShiftOwner' , 'UserID');
+    return $this->belongsTo(\App\User::class, 'ShiftOwner' , 'UserID');
+  }
+
+  public function branch()
+  {
+    return $this->belongsTo(\App\Branch::class, 'Branch' , 'Branch');
   }
 
   public function getTime(){
