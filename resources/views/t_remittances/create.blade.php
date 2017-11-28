@@ -25,7 +25,7 @@
           <div class="panel-body" style="margin: 30px 0px;">
             <div class="row">
             </div>
-            <form class="form-horizontal" id="brach_remittance_create" action="/branch_remittances/create" method="GET" >
+            <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.create') }}" method="GET" >
               <input type="hidden" name="groupStatus" value="1" />
               <div class="row">
                 <div class="form-group col-md-4">
