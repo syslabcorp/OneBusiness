@@ -16,28 +16,26 @@ class BranchRemittanceController extends Controller
   public function index(Request $request)
   {
     $checked = false;
-    // if($request->start_date || $request->end_date)
-    // {
-    //   $checked = true;
-    //   if(!$request->start_date)
-    //   {
-    //     $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->get();
-    //   }
-    //   elseif(!$request->end_date)
-    //   {
-    //     $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '>=', $request->start_date)->get() ;
-    //   }
-    //   else
-    //   {
-    //     $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->where('ShiftDate', '<=', $request->end_date)->where('ShiftDate', '>=', $request->start_date)->get();
-    //   }
-    // }
-    // else
-    // {
-    //   $remittances = TRemittance::join('t_shifts','t_remitance.Shift_ID', '=', 't_shifts.Shift_ID')->get();
-    // }
-
+    if($request->start_date || $request->end_date)
+    {
+      $checked = true;
+      if(!$request->start_date)
+      {
+        $remittance_collections = RemittanceCollection::where('Time_Create', '<=', $request->end_date)->get();
+      }
+      elseif(!$request->end_date)
+      {
+        $remittance_collections = RemittanceCollection::where('Time_Create', '>=', $request->start_date)->get() ;
+      }
+      else
+      {
+        $remittance_collections = RemittanceCollection::where('Time_Create', '<=', $request->end_date)->where('Time_Create', '>=', $request->start_date)->get();
+      }
+    }
+    else
+    {
     $remittance_collections = RemittanceCollection::all();
+    }
 
     return view('t_remittances.index', [
       'remittance_collections' => $remittance_collections ,
@@ -54,29 +52,50 @@ class BranchRemittanceController extends Controller
     ->get();
     foreach($shifts as $key => $shift)
     {
-       $array_shift["{$shift->branch()->first()->ShortName}"]["{$shift->ShiftDate->format('l,M-d-Y')}"][] = $shift;
+       $array_shift["{$shift->branch()->first()->ShortName}"]["{$shift->ShiftDate->format('D,M-d-Y')}"][] = $shift;
     }
+    // return response($array_shift);
+    
     return view('t_remittances.show', [
-      'shifts_by_branch' => $array_shift
+      'shifts_by_branch' => $array_shift,
+      'remittance_collection_ID' => $remittance_collection->ID
     ]);
   }
 
   public function  renderModal(Request $request)
   {
-    // return response($request);
-    $shift = Shift::where('Shift_ID', $request->id)->first();
-    $array = array(
-      "cashier"=> "",
-      "shift_id"=> $request->id,
-      "total_sales"=> "",
-      "total_shortage"=> $shift->remittance->Adj_Amt,
-      'total_remittance'=> $shift->remittance->TotalRemit,
-      'couterchecked'=> "",
-      'wrong_input'=> $shift->remittance->Wrong_Input,
-      'adj_short'=> $shift->remittance->Adj_Short,
-      'shortage'=> $shift->remittance->Adj_Amt,
-      'remarks'=> $shift->remittance->Notes
-    );
+    $shift = Shift::where('Shift_ID', $request->id)->first(); 
+    if( $shift->remittance )
+    {
+      $array = array(
+        "cashier"=> "",
+        "shift_id"=> $request->id,
+        "total_sales"=> "",
+        "total_shortage"=> $shift->remittance->Adj_Amt,
+        'total_remittance'=> $shift->remittance->TotalRemit,
+        'couterchecked'=> "",
+        'wrong_input'=> $shift->remittance->Wrong_Input,
+        'adj_short'=> $shift->remittance->Adj_Short,
+        'shortage'=> $shift->remittance->Adj_Amt,
+        'remarks'=> $shift->remittance->Notes
+      );
+    }
+    else
+    {
+      $array = array(
+        "cashier"=> "",
+        "shift_id"=> $request->id,
+        "total_sales"=> "",
+        "total_shortage"=> "",
+        'total_remittance'=>"",
+        'couterchecked'=> "",
+        'wrong_input'=> "",
+        'adj_short'=> "",
+        'shortage'=> "",
+        'remarks'=> ""
+      );
+    }
+
 
     return response()->json($array);
   }
@@ -98,7 +117,7 @@ class BranchRemittanceController extends Controller
     }
 
     if($request->groupId) {
-      $selectGroup = RemitGroup::find($request->groupId);
+      $selectGroup = RemitGroup::whereIn('group_ID', $groupIds)->find($request->groupId);
     }
 
     if($selectGroup) {
@@ -146,7 +165,6 @@ class BranchRemittanceController extends Controller
 
   public function store(Request $request)
   {
-
     $shift = Shift::where('Shift_ID', $request->get('Shift_ID'))->first();
     $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short' ]);
     
@@ -169,7 +187,8 @@ class BranchRemittanceController extends Controller
     {
       $shift->remittance()->create($params);
     }
-    return redirect()->route('branch_remittances.show', 3 );
+    
+    return redirect()->route('branch_remittances.show', $request->remittance_collection_ID );
   }
 
 }
