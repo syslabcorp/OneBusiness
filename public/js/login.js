@@ -335,10 +335,18 @@ $(function()
 				{
 					$('#counterchecker').prop( "checked", true );
 				}
+				else
+				{
+					$('#counterchecker').prop( "checked", false );
+				}
 
 				if(res.wrong_input == 1)
 				{
 					$('#wrong_input').prop( "checked", true );
+				}
+				else
+				{
+					$('#wrong_input').prop( "checked", false );
 				}
 
 				$('#shortage').val(res.shortage);
@@ -347,7 +355,9 @@ $(function()
 				{
 					$('#adj_short').prop( "checked", true );
 				}
-				else{
+				else
+				{
+					$('#adj_short').prop( "checked", false );
 					$("#shortage").prop('disabled', true);
 				}
 				$('#remarks').val(res.remarks);

@@ -17,7 +17,7 @@ class Shift extends Model
   ];
 
   protected $dates = [
-    'ShiftDate', 'ShiftTime'
+    'ShiftDate'
   ];
 
   public function remittance() {

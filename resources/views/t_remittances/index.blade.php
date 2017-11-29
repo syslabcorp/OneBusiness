@@ -29,6 +29,7 @@
                 </select>
               </form>
             </div>
+            @if($remittance_collections->count())
             <form action="">
               <table class="table table-striped table-bordered">
                 <tbody>
@@ -75,6 +76,11 @@
                 </tbody>
               </table>
             </form>
+            @else
+              <div class="error">
+                Not found
+              </div>
+            @endif
 
             <div class="row">
               <div class="col-md-4">

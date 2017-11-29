@@ -13,7 +13,7 @@
               </div>
               <div class="col-xs-3">
               <form class="pull-right form-status" method="GET">
-                <select class="form-control" >
+                <select {{ $selectGroup ? "" : "disabled" }} class="form-control" >
                   <option value="1">Active</option>
                   <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Unchecked</option>
                 </select>
@@ -31,7 +31,7 @@
                 <div class="form-group col-md-4">
                   <label for="" class="control-lable col-md-4">Remmit Group:</label>
                   <div class="col-md-8">
-                    <select name="groupId" id="remit_group" class="form-control">
+                    <select {{ $selectGroup ? "" : "readonly" }} name="groupId" id="remit_group" class="form-control">
                       @foreach($remitGroups as $group)
                         <option value="{{$group->group_ID}}" 
                         {{ $selectGroup->group_ID == $group->group_ID ? 'selected' : '' }}
@@ -48,7 +48,7 @@
                 <div class="form-group col-md-4">
                   <label for="" class="control-lable col-md-4">City:</label>
                   <div class="col-md-8">
-                    <select name="cityId" id="city" class="form-control">
+                    <select {{ $selectGroup ? "" : "disabled" }} name="cityId" id="city" class="form-control">
                       @foreach($cities as $city)
                         @if($selectCity && $selectCity->City_ID == $city->City_ID)
                           <option selected value="{{$city->City_ID}}">{{$city->City}}</option>
