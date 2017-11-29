@@ -251,6 +251,7 @@ $(function()
 		{
 			$("#start_date").prop('disabled', false);
 			$("#end_date").prop('disabled', false);
+			$("#button_ranger_date").prop('disabled', false);
 		}
 		else
 		{
@@ -258,18 +259,19 @@ $(function()
 			$('#end_date').val("");
 			$("#start_date").prop('disabled', true);
 			$("#end_date").prop('disabled', true);
+			$("#button_ranger_date").prop('disabled', true);
 		}
 	});
 
-	$("#start_date").change(function()
-	{
-		$("#date_range").submit();
-	});
+	// $("#start_date").change(function()
+	// {
+	// 	$("#date_range").submit();
+	// });
 
-	$("#end_date").change(function()
-	{
-		$("#date_range").submit();
-	});
+	// $("#end_date").change(function()
+	// {
+	// 	$("#date_range").submit();
+	// });
 
 	$('#adj_short').change(function()
 	{

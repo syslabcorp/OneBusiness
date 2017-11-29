@@ -13,7 +13,7 @@
               </div>
               <div class="col-xs-3">
                 <div class="pull-right">
-                  <a href="{{ route('branch_remittances.create') }}">Add Collection</a>
+                  <a href="{{ route('branch_remittances.create', ['corpID' => $corpID]) }}">Add Collection</a>
                   
                 </div> 
               </div>
@@ -52,19 +52,19 @@
                       </td>
                       <td>
 
-                        <a href="{{ route('branch_remittances.show', [$remittance_collection]) }}" style="margin-right: 10px;" 
+                        <a href="{{ route('branch_remittances.show', [$remittance_collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
                           class="btn btn-success btn-xs"
                           title="View">
                           <i class="fa fa-eye"></i>
                         </a>
 
-                        <a href="{{ route('branch_remittances.edit', [$remittance_collection]) }}" style="margin-right: 10px;" 
+                        <a href="{{ route('branch_remittances.edit', [$remittance_collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
                           class="btn btn-primary btn-xs"
                           title="Edit">
                           <i class="fa fa-pencil"></i>
                         </a>
 
-                        <a href="{{ route('branch_remittances.destroy', [$remittance_collection]) }}" style="margin-right: 10px;" 
+                        <a href="{{ route('branch_remittances.destroy', [$remittance_collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
                           class="btn btn-danger btn-xs"
                           title="Delete">
                           <i class="fa fa-trash"></i>
@@ -84,19 +84,29 @@
 
             <div class="row">
               <div class="col-md-4">
-                <form id="date_range" action="/branch_remittances" method="GET">
+                <form class="" id="date_range" action="{{ route('branch_remittances.index', ['corpID' => $corpID]) }}" method="GET">
+                  <input type="hidden" name="corpID" value="{{$corpID}}">
                   <div class="checkbox col-xs-12">
                     <label for="" class="control-label">
-                      <input type="checkbox" name="view_date_range" {{$checked ? 'checked': ""}} id="view_date_range" value="1">
+                      <input type="checkbox" {{$checked ? 'checked': ""}} id="view_date_range" value="1">
                       View by Date Range
                     </label>
                   </div>
                   <div class="form-group">
-                    <div class="col-xs-6">
-                      <input type="date" name="start_date" id="start_date" {{ $checked ? '': 'disabled="true"' }} class="form-control datepicker " value="{{$start_date}}">
+                    <div class="row">
+                      <div class="col-xs-6">
+                        <input type="date" name="start_date" id="start_date" {{ $checked ? '': 'disabled="true"' }} class="form-control datepicker " value="{{$start_date}}">
+                      </div>
+                      <div class="col-xs-6">
+                        <input type="date" name="end_date" id="end_date"  {{ $checked ? '': 'disabled="true"' }}  class="form-control datepicker"  value="{{$end_date}}">
+                      </div>
                     </div>
-                    <div class="col-xs-6">
-                      <input type="date" name="end_date" id="end_date"  {{ $checked ? '': 'disabled="true"' }}  class="form-control datepicker"  value="{{$end_date}}">
+                  </div>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <button id="button_ranger_date" {{ $checked ? '': 'disabled="true"' }} class="btn btn-primary">Show</button>
+                      </div>
                     </div>
                   </div>
                 </form>

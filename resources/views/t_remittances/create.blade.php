@@ -13,7 +13,7 @@
               </div>
               <div class="col-xs-3">
               <form class="pull-right form-status" method="GET">
-                <select {{ $selectGroup ? "" : "disabled" }} class="form-control" >
+                <select class="form-control" >
                   <option value="1">Active</option>
                   <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Unchecked</option>
                 </select>
@@ -25,11 +25,12 @@
           <div class="panel-body" style="margin: 30px 0px;">
             <div class="row">
             </div>
-            <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.create') }}" method="GET" >
+            <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.create',['corpID' => $corpID]) }}" method="GET" >
+              <input type="hidden" name="corpID" value={{$corpID}}>
               <input type="hidden" name="groupStatus" value="1" />
               <div class="row">
                 <div class="form-group col-md-4">
-                  <label for="" class="control-lable col-md-4">Remmit Group:</label>
+                  <label for="" class="control-lable col-md-4">Remit Group:</label>
                   <div class="col-md-8">
                     <select {{ $selectGroup ? "" : "readonly" }} name="groupId" id="remit_group" class="form-control">
                       @foreach($remitGroups as $group)
@@ -63,7 +64,7 @@
             </form>
             
             @if($selectGroup)
-            <form action="{{ route('branch_remittances.collections.store', ['cityId' => $selectCity->City_ID, 'groupId' => $selectGroup->group_ID]) }}" method="POST">
+            <form action="{{ route('branch_remittances.collections.store', ['corpID' => $corpID, 'cityId' => $selectCity->City_ID, 'groupId' => $selectGroup->group_ID]) }}" method="POST">
               {{csrf_field()}}
               <div class="table-responsive">
                 <table class="table">
@@ -139,7 +140,7 @@
             @endif
 
             <div class="row">
-              <a class="btn btn-default" href="{{ route('branch_remittances.index') }}">
+              <a class="btn btn-default" href="{{ route('branch_remittances.index', ['corpID' => $corpID]) }}">
                 <i class="fa fa-reply"></i>
                 Back
               </a>

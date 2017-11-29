@@ -12,18 +12,22 @@ class Branch extends Model
     protected $connection = 'mysql';
 
     protected $fillable = [
-        'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active', "ShortName",
-        'StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip', 'RollOver', 'TxfrRollOver',
-        'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
-        'StubPrint', 'Modified', 'corp_id', 'MinimumChrg_Mins', 'CarryOverMins', 'RmTimerAlert',
-        'RmOffAllowance', 'ChkInOveride', 'ChkOutOveride', 'CancelAllowance', 'TrnsfrAllowance',
-        'Chrg_Min'
+			'Branch', 'Description', 'Street', 'City_ID', 'MaxUnits', 'Active', "ShortName",
+			'StubHdr', 'StubMsg', 'MAC_Address', 'cashier_ip', 'RollOver', 'TxfrRollOver',
+			'PosPtrPort', 'susp_ping_timeout', 'max_eload_amt', 'lc_uid', 'lc_pwd', 'to_mobile_num',
+			'StubPrint', 'Modified', 'corp_id', 'MinimumChrg_Mins', 'CarryOverMins', 'RmTimerAlert',
+			'RmOffAllowance', 'ChkInOveride', 'ChkOutOveride', 'CancelAllowance', 'TrnsfrAllowance',
+			'Chrg_Min'
     ];
 
+    public function corp()
+    {
+      return $this->belongsTo(\App\Corporation::class, "corp_id", "corp_id");
+    }
 
     public function city()
     {
-        return $this->belongsTo(\App\City::class, "City_ID", "City_ID");
+      return $this->belongsTo(\App\City::class, "City_ID", "City_ID");
     }
 
     public function remittance_collections()
@@ -77,26 +81,26 @@ class Branch extends Model
 
     public function footers()
     {
-        if($this->company && $this->company->corp_type == 'INN') {
-            return $this->hasMany(\App\KFooter::class, "Branch", "Branch");
-        }else {
-            return $this->hasMany(\App\Footer::class, "Branch", "Branch");
-        }
+			if($this->company && $this->company->corp_type == 'INN') {
+				return $this->hasMany(\App\KFooter::class, "Branch", "Branch");
+			}else {
+				return $this->hasMany(\App\Footer::class, "Branch", "Branch");
+			}
         
     }
 
     public function macs()
     {
-        return $this->hasMany(\App\Mac::class, "Branch", "Branch");
+			return $this->hasMany(\App\Mac::class, "Branch", "Branch");
     }
 
     public function rates()
     {
-        return $this->hasMany(\App\RateTemplate::class, "Branch", "Branch");
+			return $this->hasMany(\App\RateTemplate::class, "Branch", "Branch");
     }
 
     public function krates() {
-        return $this->hasMany(\App\KRateTemplate::class, "Branch", "Branch");
+			return $this->hasMany(\App\KRateTemplate::class, "Branch", "Branch");
     }
 
     public function rooms() {

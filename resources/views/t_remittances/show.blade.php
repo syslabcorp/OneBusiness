@@ -16,9 +16,9 @@
           </div>
 
           <div class="panel-body" style="margin: 30px 0px;">
-            @if (true)
+            @if ( $corp_type == "ICARE" )
               @include("t_remittances/icare") 
-            @else
+            @elseif( $corp_type == "INN" )
               @include("t_remittances/inn")
             @endif
             

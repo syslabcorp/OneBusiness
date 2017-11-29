@@ -10,6 +10,7 @@ use App\City;
 use App\Shift;
 use App\Branch;
 use App\RemittanceCollection;
+use App\Corporation;
 
 class BranchRemittanceController extends Controller
 {
@@ -38,6 +39,7 @@ class BranchRemittanceController extends Controller
     }
 
     return view('t_remittances.index', [
+      'corpID' => $request->corpID,
       'remittance_collections' => $remittance_collections ,
       'checked' => $checked,
       'start_date' => $request->start_date,
@@ -48,17 +50,19 @@ class BranchRemittanceController extends Controller
   public function show($id)
   {
     $remittance_collection = RemittanceCollection::where('ID', $id)->first();
+    $corp_type = $remittance_collection->branch()->first()->corp()->first()->corp_type;
     $shifts = Shift::whereBetween('Shift_ID', [$remittance_collection->Start_CRR, $remittance_collection->End_CRR])
     ->get();
     foreach($shifts as $key => $shift)
     {
-       $array_shift["{$shift->branch()->first()->ShortName}"]["{$shift->ShiftDate->format('D,M-d-Y')}"][] = $shift;
+      $array_shift["{$shift->branch()->first()->ShortName}"]["{$shift->ShiftDate->format('D,M-d-Y')}"][] = $shift;
     }
     // return response($array_shift);
     
     return view('t_remittances.show', [
       'shifts_by_branch' => $array_shift,
-      'remittance_collection_ID' => $remittance_collection->ID
+      'remittance_collection_ID' => $remittance_collection->ID,
+      'corp_type' => $corp_type
     ]);
   }
 
@@ -102,20 +106,13 @@ class BranchRemittanceController extends Controller
 
   public function create(Request $request)
   {
+    $corp = Corporation::find($request->corpID);
     $groupIds = explode(",", \Auth::user()->group_ID);
     $selectStatus = $request->groupStatus != null ? $request->groupStatus : 1;
     $remitGroups = RemitGroup::where('status', '=', $selectStatus)->whereIn('group_ID', $groupIds)->get();
 
-    $cities = City::orderBy('City', 'ASC')->get();
-    $selectCity = $cities->first();
-
     $selectGroup = $remitGroups->first();
     
-
-    if($request->cityId) {
-      $selectCity = City::find($request->cityId);
-    }
-
     if($request->groupId) {
       $selectGroup = RemitGroup::whereIn('group_ID', $groupIds)->find($request->groupId);
     }
@@ -126,9 +123,35 @@ class BranchRemittanceController extends Controller
       $branchIds = [];
     }
 
-    $branchs = Branch::where('City_ID', $request->cityId)->whereIn('Branch', $branchIds)->get();
+    $citiIDs = [];
 
+    foreach($branchIds as $id)
+    {
+      if(Branch::find($id)->city)
+      {
+        $cityID = Branch::find($id)->city()->first()->City_ID;
+        array_push($citiIDs, $cityID);
+      }
+    }
+    
+    $cities = City::whereIn('City_ID', $citiIDs)->get();
+
+    $selectCity = $cities->first();
+
+    if($request->cityId) {
+      $selectCity = City::find($request->cityId);
+    }
+
+    if($selectCity)
+    {
+      $branchs = Branch::where('City_ID', $selectCity->City_ID)->where('corp_id', $request->corpID)->whereIn('Branch', $branchIds)->get();
+    }
+    else
+    {
+      $branchs = [];
+    }
     return view('t_remittances.create', [
+      'corpID' => $request->corpID,
       'remitGroups' => $remitGroups,
       'selectGroup' => $selectGroup,
       'cities' => $cities,
@@ -145,8 +168,8 @@ class BranchRemittanceController extends Controller
     
     foreach($request->collections as $index => $collection) {
       $min = intval($collection['Start_CRR']) + 1;
-      $rules["collections.{$index}.End_CRR"] = "numeric|min:{$min}";
-      $rules["collections.{$index}.Total_Collection"] = "numeric";
+      $rules["collections.{$index}.End_CRR"] = "numeric|min:{$min}|nullable";
+      $rules["collections.{$index}.Total_Collection"] = "numeric|nullable";
 
       $niceNames["collections.{$index}.End_CRR"] = 'Input';
       $niceNames["collections.{$index}.Total_Collection"] = 'Input';
@@ -160,7 +183,7 @@ class BranchRemittanceController extends Controller
     }
 
     \Session::flash('success', "Remittance collections has been updated successfully.");
-    return redirect(route('branch_remittances.create', ['cityId' => $request->cityId, 'groupId' => $request->groupId]));
+    return redirect(route('branch_remittances.create', [ 'corpID' => $request->corpID, 'cityId' => $request->cityId, 'groupId' => $request->groupId]));
   }
 
   public function store(Request $request)
