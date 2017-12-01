@@ -9,10 +9,6 @@ use URL;
 use Twilio;
 use Nexmo;
 use Hash;
-use App\POTemplate6;
-use App\POTemplate7;
-use App\POTemplateDetail6;
-use App\POTemplateDetail7;
 use App\UserArea;
 use Session;
 class AccessLevelController extends Controller
@@ -29,20 +25,46 @@ class AccessLevelController extends Controller
     	if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$created_at   = date("Y-m-d H:i:s");
-        	$data = array('corp_type' => $formData["corp_type"],'corp_name' => $formData["corporation_title"],"created_at" => date("Y-m-d H:i:s"));
+            $db_name = $formData["database_name"];
+        	$data = array('corp_type' => $formData["corp_type"],'corp_name' => $formData["corporation_title"],'database_name' => $formData["database_name"],"created_at" => date("Y-m-d H:i:s"));
         	if ($corp_id == NULL) {
                 if(!\Auth::user()->checkAccessById(30, "A"))
                 {
                     \Session::flash('error', "You don't have permission"); 
                     return redirect("/home"); 
                 }
-	        	DB::table('corporation_masters')->insertGetId($data);
+	        	$id = DB::table('corporation_masters')->insertGetId($data);
+                /* new POTemplate model */
+                $filename = app_path()."/POTemplate".$id.".php";
+                fopen($filename, "w") or die("Unable to open file!");
+                chmod($filename, 0777);
+                $sourceFilePath=public_path()."/POTemplate.php";
+                $success = \File::copy($sourceFilePath,$filename);
+                file_put_contents($filename,str_replace('POTemplate',"POTemplate$id",file_get_contents($filename)));
+                file_put_contents($filename,str_replace('mysql2',"$db_name",file_get_contents($filename)));
+                /* new POTemplateDetail model */
+                $PODetail_filename = app_path()."/POTemplateDetail".$id.".php";
+                fopen($PODetail_filename, "w") or die("Unable to open file!");
+                chmod($PODetail_filename, 0777);
+                $PODetailSourcePath=public_path()."/POTemplateDetail.php";
+                $success_PODetail = \File::copy($PODetailSourcePath,$PODetail_filename);
+                file_put_contents($PODetail_filename,str_replace('POTemplateDetail',"POTemplateDetail$id",file_get_contents($PODetail_filename)));
+                file_put_contents($PODetail_filename,str_replace('k_master',"$db_name",file_get_contents($PODetail_filename)));
+                /* end POTemplateDetail model */
 	        	Request::session()->flash('flash_message', 'Corporation has been added.');
 	        }else{
+                $old_db_name = $formData["old_db_name"];
                 if(!\Auth::user()->checkAccessById(30, "E"))
                 {
                     \Session::flash('error', "You don't have permission"); 
                     return redirect("/home"); 
+                }
+                $filename = app_path()."/POTemplate".$corp_id.".php";
+                $PODetail_filename = app_path()."/POTemplateDetail".$corp_id.".php";
+                if(trim($old_db_name) != trim($db_name)){
+                    file_put_contents($filename,str_replace("$old_db_name","$db_name",file_get_contents($filename)));
+
+                    file_put_contents($PODetail_filename,str_replace("$old_db_name","$db_name",file_get_contents($PODetail_filename)));
                 }
 	        	DB::table('corporation_masters')->where('corp_id', $corp_id)->update($data);
 	        	Request::session()->flash('flash_message', 'Corporation has been updated.');
@@ -1096,234 +1118,7 @@ class AccessLevelController extends Controller
             echo json_encode($matched_groups);
         }
     }
-    public function purchase_order($corp_id ,$city_id, $id = NULL){
-        $data =array();
-        $userId = Auth::id();
-        if (Request::isMethod('post')) {
-            $formData = Request::all();
-            $active = isset($formData['active']) ? 1 : 0; 
-            $temp_hdr = array(
-                'po_tmpl8_desc' => $formData['po_tmpl8_desc'],
-                'city_id'       => $city_id,
-                'po_avg_cycle'  => $formData['po_avg_cycle'],
-                'active'        => $active,
-            );
-            $branches = isset($formData['branch']) ? $formData['branch'] : array();
-            $itemIds = isset($formData['item_id']) ? $formData['item_id'] :array();
-            if(empty($branches) || empty($itemIds)){
-                Request::session()->flash('flash_message', 'Select Branch or retail item before you can create this Purchase Order Template');
-                return redirect('purchase_order/'.$corp_id.'/'.$city_id.'/'.(is_null($id) ? '' : $id))->withInput();
-            }else{
-                if($id == NULL) {
-                    if(!\Auth::user()->checkAccessByPoId([6,7],31, "A"))
-                    {
-                        \Session::flash('error', "You don't have permission"); 
-                        return redirect("/home"); 
-                    }
-                if($corp_id == 7){
-                    $po_tmpl8_hdr = POTemplate7::insertGetId($temp_hdr);
-                }else{
-                    $po_tmpl8_hdr = POTemplate6::insertGetId($temp_hdr);
-                }
-                
-                Request::session()->flash('flash_message', 'Product Template has been added.');
-                Request::Session()->flash('alert-class', 'alert-success');
-                }else{
-                    if(!\Auth::user()->checkAccessByPoId([6,7],31, "E"))
-                    {
-                        \Session::flash('error', "You don't have permission"); 
-                        return redirect("/home"); 
-                    }
-                    if($corp_id == 7){
-                        POTemplateDetail7::where('po_tmpl8_id', $id)->delete();
-                        POTemplate7::where('po_tmpl8_id', $id)->update($temp_hdr);
-                    }else{
-                        POTemplateDetail6::where('po_tmpl8_id', $id)->delete();
-                        POTemplate6::where('po_tmpl8_id', $id)->update($temp_hdr);
-                    }
-                    Request::session()->flash('flash_message', 'Product Template has been Updated.');
-                    Request::Session()->flash('alert-class', 'alert-success');
-                    $po_tmpl8_hdr = $id;
-                }
-                
-                foreach($branches as $branch){
-                    foreach($itemIds as $itemId){
-                        $temp_hdr_detail = array(
-                            'po_tmpl8_id'     => $po_tmpl8_hdr,
-                            'po_tmpl8_branch' => $branch,
-                            'po_tmpl8_item'   => $itemId,
-                        );
-                        if($corp_id == 7){
-                            POTemplateDetail7::insert($temp_hdr_detail);
-                        }else{
-                            POTemplateDetail6::insert($temp_hdr_detail);
-                        }
-                    }
-                }
-            }
-            Request::session()->put('city_id', $city_id);
-            return redirect('list_purchase_order?corpID='.$corp_id);
-        }
-        if ($id != NULL) {
-            if(!\Auth::user()->checkAccessByPoId([6,7],31, "E"))
-            {
-                \Session::flash('error', "You don't have permission"); 
-                return redirect("/home"); 
-            }
-            if($corp_id == 7){
-                $detail_edit_temp_hdr =  POTemplate7::where('po_tmpl8_id',$id)->first();
-                $proitemsSelected = POTemplateDetail7::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
-            }else{
-                $detail_edit_temp_hdr =  POTemplate6::where('po_tmpl8_id',$id)->first();
-                $proitemsSelected = POTemplateDetail6::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
-            }
-            
-            $data['detail_edit_temp_hdr'] = $detail_edit_temp_hdr;  
-            $proretailitems_ids = array();
-            $probranch_ids = array();
-            foreach ($proitemsSelected as $proitemSelected) {
-                array_push($proretailitems_ids, $proitemSelected->po_tmpl8_item);
-                array_push($probranch_ids, $proitemSelected->po_tmpl8_branch);
-            }
-            $prolines  =  DB::table('s_invtry_hdr')->whereIn('item_id', $proretailitems_ids)->select('Prod_Line')->groupBy('Prod_Line')->get(); 
-            $proline_ids = array();
-            foreach ($prolines as $proline) {
-                array_push($proline_ids, $proline->Prod_Line);
-            }
-            $data['proline_ids'] = $proline_ids;
-            $branchdata['probranch_ids'] = $probranch_ids;
-        }
-        if(!\Auth::user()->checkAccessByPoId([6,7],31, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
-        $user_area_data = DB::table('user_area')->where('user_ID',$userId)->first();
-        $branchdata['branches'] = array();
-        if(isset($user_area_data->branch) && !is_null($user_area_data->branch)){
-            $branch_idss = explode(',', $user_area_data->branch);
-            $branchdata['branches'] = DB::table('t_sysdata')->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->whereIn('Branch',$branch_idss)->orderBy('ShortName')->get();
-        }
-        if(isset($user_area_data->city) && !is_null($user_area_data->city)){
-            $city_idss = explode(',', $user_area_data->city);
-            if(in_array($city_id,$city_idss)){
-                $branchdata['branches'] = DB::table('t_sysdata')->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->orderBy('ShortName')->get();
-            }
-            
-        }
-        if(isset($user_area_data->province) && !is_null($user_area_data->province)){
-            $province_idss = explode(',', $user_area_data->province);
-            $cities_get = DB::table('t_cities')->select('City_ID','City')->whereIn('Prov_ID',$province_idss)->get();
-            if(!empty($cities_get)){
-                $citi_ids = array();
-               foreach ($cities_get as $value) {
-                    $citi_ids[] = $value->City_ID;
-                } 
-                if(in_array($city_id,$citi_ids)){
-                    $branchdata['branches'] = DB::table('t_sysdata')->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->orderBy('ShortName')->get();
-                }
-            }  
-        }
-        $data['is_branch_exist'] = count($branchdata['branches']);
-        $cities = DB::table('t_cities')->select('City_ID','City')->where('City_ID',$city_id)->orderBy('t_cities.City', 'asc')->first();
-        $data['product_line'] = DB::table('s_prodline')->where('Active',1)->orderBy('Product')->get();
-        $data['cities'] = $cities;
-        $data['corp_id'] = $corp_id;
-        return view('accesslevel.purchase_order',$data)->nest('branchList', 'accesslevel.product_branches', $branchdata);
-    }
-
-    public function product_branch(){
-        $data =array();
-        if (Request::isMethod('post')) {
-            $formData = Request::all();
-            $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
-            $data['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
-            if($corp_id == 7){
-                $branchesSelected = POTemplateDetail7::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
-            }else{
-                $branchesSelected = POTemplateDetail6::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
-            }
-            $probranch_ids = array();
-            foreach ($branchesSelected as $branchSelected) {
-                array_push($probranch_ids, $branchSelected->po_tmpl8_branch);
-            }
-            $data['probranch_ids'] = $probranch_ids;
-        }
-        return view('accesslevel.product_branches',$data);
-    }
-
-    public function retail_items(){
-        $data =array();
-        if (Request::isMethod('post')) {
-            $formData = Request::all();
-            $p_id = isset($formData['ids']) ? $formData['ids'] : array();
-            $inventory = array();
-            foreach($p_id AS $pid){
-                $s_invtry_hdr = DB::table('s_invtry_hdr')->where('Prod_Line',$pid)->where('Active',1)->orderBy('ItemCode')->get();
-                foreach($s_invtry_hdr AS $s_invtry_hd){
-                    array_push($inventory, $s_invtry_hd);
-                }
-            }
-            
-            $brand_name = DB::table('s_brands')->get();
-            foreach($brand_name as $key=>$det){
-                $b_name[$det->Brand_ID] =$det->Brand;  
-            }
-            $data['brandname'] = $b_name;
-            $data['s_invtry_hdr']=$inventory;
-            $corp_id = $formData['corp_id'];
-            if($corp_id == 7){
-                $retailsSelected = POTemplateDetail7::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
-            }else{
-                $retailsSelected = POTemplateDetail6::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_item')->groupBy('po_tmpl8_item')->get();
-            }
-            $proitems_ids = array();
-            foreach ($retailsSelected as $retailSelected) {
-                array_push($proitems_ids, $retailSelected->po_tmpl8_item);
-            }
-            $data['proitems_ids'] = $proitems_ids;
-        }
-        return view('accesslevel.retail_items',$data);
-    }
-    
-    public function list_purchase_order(){
-        $corp_id = isset($_GET['corpID']) ? $_GET['corpID']: '' ;
-        $city_id = session('city_id'); 
-
-        if(!\Auth::user()->checkAccessByPoId([6,7],31, "V"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
-        $data = array();
-         if (Request::isMethod('post')) {
-            $formData = Request::all();
-            $city_id = isset($formData['city_id']) ? $formData['city_id'] :'';
-            $active = isset($formData['active']) ? $formData['active'] :'';
-            $data['corp_id'] = isset($formData['corp_id']) ? $formData['corp_id'] :'';
-            if($data['corp_id'] == 7){
-                $s_po_tmpl8 = POTemplate7::where('city_id',$city_id)->where('Active',$active)->orderBy('po_tmpl8_desc', 'asc')->get();
-            }else{
-                $s_po_tmpl8 = POTemplate6::where('city_id',$city_id)->where('Active',$active)->orderBy('po_tmpl8_desc', 'asc')->get();
-            }
-            $data['s_po_tmpl8'] = $s_po_tmpl8; 
-            return view('accesslevel.list_data_purchase_order',$data);
-        }
-		$user_area = UserArea::where('user_ID', Auth::id())->first();
-		if(!empty($user_area->city)){
-			$user_cities = explode(",", $user_area->city);
-			$cities = DB::table('t_cities')->select('City_ID','City')->whereIn('City_ID', $user_cities)->orderBy('t_cities.City', 'asc')->get();
-		}else if(!empty($user_area->province)){
-			$user_prov = explode(",", $user_area->province);
-			$cities = DB::table('t_cities')->select('City_ID','City')->whereIn('Prov_ID', $user_prov)->orderBy('t_cities.City', 'asc')->get();
-		}else{
-			$cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
-		}
-        $data['cities'] = $cities;
-        $data['city_id'] = $city_id;
-        $data['corp_id'] = $corp_id;
-        return view('accesslevel.list_purchase_order',$data);
-    }
+   
 }
 
 
