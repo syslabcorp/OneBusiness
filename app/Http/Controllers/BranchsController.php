@@ -144,18 +144,21 @@ class BranchsController extends Controller
             'brands' => 1,
             'item_cfg' => 1,
             'Branch' => $branch->Branch,
-            'services' => 1
+            'services' => 1,
+            'rates' => 1
         ]);
 
         $adminUsers = User::leftJoin("rights_template", "rights_template.template_id", "=", "t_users.rights_template_id")
                             ->where('rights_template.is_super_admin', '=', 1)
+                            ->where("t_users.area_type", 'like', '%BR%')
                             ->get();
-
         foreach($adminUsers as $user) {
           $userArea = UserArea::where("user_ID", '=', $user->UserID)->first();
           if($userArea) {
-            $branchIds = empty($userArea->branch) ? $branch->Branch : $userArea->branch . "," . $branch->Branch;
-            $userArea->update(['branch' => $branchIds]);
+            if(empty($userArea->city) && empty($userArea->province)) {
+              $branchIds = empty($userArea->branch) ? $branch->Branch : $userArea->branch . "," . $branch->Branch;
+              $userArea->update(['branch' => $branchIds]);
+            }
           }else {
             UserArea::create(['branch' => $branch->Branch, 'user_ID' => $user->UserID]);
           }
@@ -195,7 +198,9 @@ class BranchsController extends Controller
 
         return view('branchs.edit', [
             'branch' => $branch,
-            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)->orderBy('ShortName', 'ASC')->get(),
+            'branchs' => Branch::where("corp_id", "=", $branch->corp_id)
+                                ->where("Active", "=", 1)
+                                ->orderBy('ShortName', 'ASC')->get(),
             'lc_uid' => $lcUid->lc_uid
         ]);
     }

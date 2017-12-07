@@ -18,4 +18,12 @@ class KRateDetail extends Model
       'Hr_15', 'Hr_16', 'Hr_17', 'Hr_18', 'Hr_19', 'Hr_20',
       'Hr_21', 'Hr_22', 'Hr_23', 'Hr_24', 'nKey'
     ];
+
+    protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        $query
+        ->where('tmplate_id', '=', $this->tmplate_id)
+        ->where('nKey', '=', $this->nKey);
+        return $query;
+    }
 }

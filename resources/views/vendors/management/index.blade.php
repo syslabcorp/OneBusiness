@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }

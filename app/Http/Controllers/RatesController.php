@@ -162,7 +162,6 @@ class RatesController extends Controller
 
     \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
       'rates' => 1,
-      'services' => 1
     ]);
 
     \Session::flash('success', "Rate Template has been updated.");
@@ -183,6 +182,11 @@ class RatesController extends Controller
       }
       $detail->update($params);
     }
+
+    \DB::table('s_changes')->where('Branch', '=', $branch->Branch)->update([
+      'rates' => 1
+    ]);
+
     \Session::flash('success', "Rate has been updated.");
 
     return redirect(route('branchs.rates.index', [$branch, 'tmplate_id' => $rate->tmplate_id]));

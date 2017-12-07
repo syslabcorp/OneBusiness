@@ -226,3 +226,146 @@ function user_register_admin(user_id, user_name) {
 $('#assign-rate-template input[value!="all"]').click(function(event) {
   $('#assign-rate-template input[value="all"]').prop("checked", false);
 });
+
+$(function(){
+  $('#brach_remittance_create').on('change', '#city', function(){
+    $('#brach_remittance_create').submit();
+  });
+
+  $('.form-status').on('change', 'select', function(event) {
+    $('#brach_remittance_create input[name="groupStatus"]').val($(this).val());
+    $('#brach_remittance_create select[name="groupId"]').val(null);
+    $('#brach_remittance_create select[name="cityId"]').val(null);
+    $('#brach_remittance_create').submit();
+  });
+});
+
+$(function()
+{
+  $('#brach_remittance_create').on('change', '#remit_group', function(){
+    $('#brach_remittance_create').submit();
+	});
+	
+	$('#view_date_range').change(function(){
+		if( this.checked )
+		{
+			$("#start_date").prop('disabled', false);
+			$("#end_date").prop('disabled', false);
+		}
+		else
+		{
+			$('#start_date').val("");
+			$('#end_date').val("");
+			$("#start_date").prop('disabled', true);
+			$("#end_date").prop('disabled', true);
+		}
+	});
+
+	$("#start_date").change(function()
+	{
+		$("#date_range").submit();
+	});
+
+	$("#end_date").change(function()
+	{
+		$("#date_range").submit();
+	});
+
+	$('#adj_short').change(function()
+	{
+		if( this.checked )
+		{
+			$("#shortage").prop('disabled', false);
+		}
+		else
+		{
+			$("#shortage").prop('disabled', true);
+		}
+	});
+
+	$('#save_button').on('click', function(event)
+	{
+		event.preventDefault();
+		$continue = true;
+		$('.render-error-modal').remove();
+		if( !$.isNumeric( $('#shortage').val() ) )
+		{
+			$('#shortage').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a number.</i>')
+			$continue = false;
+		}
+		else
+		{
+			if(parseFloat( $('#shortage').val() )  > 0 )
+			{
+				$('#shortage').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a negative number.</i>')
+				$continue = false;
+			}
+		}
+
+		if( !$.isNumeric( $('#total_remittance').val() )  )
+		{
+			
+			$('#total_remittance').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a number.</i>')
+			$continue = false;
+		}
+		
+		if($continue)
+		{
+			$('#modal_form').submit();
+		}
+		
+	});
+
+	$(".show_modal").on('click', function(event)
+	{
+		event.preventDefault();
+		var _token = $("meta[name='csrf-token']").attr("content");
+		$id = $(this).attr("data-shift-id");
+		$.ajax({
+			url: '/branch_remittances/render_modal',
+			type: "POST",
+			data: { 'id': $id , _token },
+			success: function(res){
+				$('#cashier').html(res.cashier);
+				$('#shift_id').html(res.shift_id);
+				$('#total_sales').html(res.total_sales);
+				$('#total_shortage').html(res.total_shortage);
+				$('#total_remittance').val(res.total_remittance);
+				if(res.counterchecker == 1)
+				{
+					$('#counterchecker').prop( "checked", true );
+				}
+				else
+				{
+					$('#counterchecker').prop( "checked", false );
+				}
+
+				if(res.wrong_input == 1)
+				{
+					$('#wrong_input').prop( "checked", true );
+				}
+				else
+				{
+					$('#wrong_input').prop( "checked", false );
+				}
+
+				$('#shortage').val(res.shortage);
+
+				if(res.adj_short == 1 )
+				{
+					$('#adj_short').prop( "checked", true );
+				}
+				else
+				{
+					$('#adj_short').prop( "checked", false );
+					$("#shortage").prop('disabled', true);
+				}
+				$('#remarks').val(res.remarks);
+				$('#remarks').prop("disabled", true);
+				$('#hidden_shift_id').val(res.shift_id);
+			}
+
+		});
+	});
+
+});

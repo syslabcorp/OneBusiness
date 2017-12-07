@@ -8,6 +8,7 @@ class City extends Model
 {
     public $timestamps = false;
     protected $table = "t_cities";
+    protected $primaryKey = 'City_ID';
 
     public function province()
     {

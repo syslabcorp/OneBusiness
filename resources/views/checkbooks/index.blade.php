@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
@@ -124,11 +124,11 @@
                         <div class="row">
                             <div class="col-md-12 nopadding">
                                 <label for="">Account Number:</label>
-                                <span class="accNO">{{ $banks[0]->accountNo }}</span>
+                                <span class="accNO">@if(isset($banks[0]->accountNo)){{ $banks[0]->accountNo }} @endif</span>
                             </div>
                             <div class="col-md-12 nopadding">
                                 <label for="">Bank Code</label>
-                                <span class="bankCO">{{ $banks[0]->bankNameCode }}</span>
+                                <span class="bankCO">@if(isset($banks[0]->bankNameCode)) {{ $banks[0]->bankNameCode }} @endif</span>
                             </div>
                         </div>
                         <hr>
@@ -158,7 +158,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="accountId" value="{{ $banks[0]->bank_acct_id }}">
+                                <input type="hidden" name="accountId" value=" @if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }}  @endif">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -183,11 +183,11 @@
                         <div class="row">
                             <div class="col-md-12 nopadding">
                                 <label for="">Account Number:</label>
-                                <span class="accNO">{{ $banks[0]->accountNo }}</span>
+                                <span class="accNO"> @if(isset($banks[0]->accountNo)){{ $banks[0]->accountNo }} @endif</span>
                             </div>
                             <div class="col-md-12 nopadding">
                                 <label for="">Bank Code</label>
-                                <span class="bankCO">{{ $banks[0]->bankNameCode }}</span>
+                                <span class="bankCO">@if(isset($banks[0]->bankNameCode)){{ $banks[0]->bankNameCode }} @endif</span>
                             </div>
                         </div>
                         <hr>
@@ -217,7 +217,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="editAccountId" value="{{ $banks[0]->bank_acct_id }}">
+                                <input type="hidden" name="editAccountId" value="@if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }}  @endif">
                                 <button type="submit" class="btn btn-success pull-right">Update</button>
                             </div>
                         </div>
@@ -270,19 +270,22 @@
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}" selected>{{ $corporations[0]->corp_name }}</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
+                    @if(is_object($corporations))
                     @foreach($corporations as $key => $val)
                     if(cntCorp != 0){
                         corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
                     }
                     cntCorp++;
                             @endforeach
+                        @endif
 
-                    var satelliteBranches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->Branch }}">{{ $satelliteBranch[0]->ShortName }}</option></select>')
+                    var satelliteBranches = $('<select class="form-control"><option value="@if(isset($satelliteBranch[0]->Branch)){{ $satelliteBranch[0]->Branch }} @endif">@if(isset($satelliteBranch[0]->ShortName)){{ $satelliteBranch[0]->ShortName }} @else N/A @endif</option></select>')
                             .appendTo('#example_ddl1');
                     var cntSatellite = 0;
+                    @if(is_object($satelliteBranch))
                     @foreach($satelliteBranch as $key => $val)
                     if(cntSatellite != 0){
                         satelliteBranches.append('<option value="{{ $val->Branch }}">{{ $val->ShortName }}</option>');
@@ -290,6 +293,7 @@
                     cntSatellite++;
 
                             @endforeach
+                        @endif
 
 
 
@@ -298,15 +302,17 @@
                             .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
 
-                    var branches = $('<select class="form-control"><option value="{{ $banks[0]->bank_acct_id }}">{{ $banks[0]->account_info }}</option></select>')
+                    var branches = $('<select class="form-control"><option value="@if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }} @endif">@if(isset($banks[0]->account_info)){{ $banks[0]->account_info }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
+                    @if(is_object($banks))
                     @foreach($banks as $key => $val)
                         if(cntBranches != 0){
                         branches.append('<option value="{{ $val->bank_acct_id }}">{{ $val->account_info }}</option>');
                     }
                     cntBranches++;
                     @endforeach
+                        @endif
 
                     var mainStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
                             .appendTo('#example_ddl5');
@@ -317,11 +323,13 @@
                     type: "POST",
                     url: "checkbooks/get-checkbooks",
                     data: function (d) {
+                        @if(is_object($corporations))
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
                         d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
                         d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
+                        @endif
                     }
                 },
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
@@ -371,13 +379,15 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(28, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(28, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
+                            var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccessDel == 0) { optionClassDel = 'disabled' };
                             return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClass+'">'+
-                                '<i class="glyphicon glyphicon-trash"></i></a>';
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
                         "targets": 4
