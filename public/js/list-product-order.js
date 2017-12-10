@@ -5,7 +5,7 @@ function get_list_data(){
 	var active = $('#active option:selected').val();
     var _token = $("meta[name='csrf-token']").attr("content");
     $.ajax({
-        url: ajax_url+'/list_purchase_order/'+corp_id,
+        url: ajax_url+'/list_purchase_order',
         type: "POST",
         data: {_token,city_id,active,corp_id},
         success: function(response){

@@ -45,15 +45,19 @@ class BankController extends Controller
             ->get();
 
 
-        //todo 1 maybe some corporations don't exists need to be checked
+        if(isset($corporations[0]->corp_id)) {
 
-        //get records from t_sysdata
-        $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
-            ->where('Active', 1)
-            ->where('corp_id', $corporations[0]->corp_id)
-            ->select('t_sysdata.ShortName', 't_sysdata.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
-            ->get();
+            //get records from t_sysdata
+            $tSysdata = DB::table('t_sysdata')
+                ->orderBy('Branch', 'ASC')
+                ->where('Active', 1)
+                ->where('corp_id', $corporations[0]->corp_id)
+                ->select('t_sysdata.ShortName', 't_sysdata.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
+                ->get();
+        }else{
+            $tSysdata[] = null;
+        }
+
 
 
         //get banks from db

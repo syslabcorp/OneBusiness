@@ -45,7 +45,7 @@
                                         <tbody>
                                             @foreach($detail as $key=>$det)
                                                 <tr>
-                                                    <td>{{ $det->module_id}}</td>
+                                                    <td><span class="dispnone">{{ $det->corp_name }} {{ $det->description }}</span>{{ $det->module_id}}</td>
                                                     <td>{{ $det->corp_name }}</td>
                                                     <td>{{ $det->description }}</td>
                                                     <td>

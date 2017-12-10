@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class POTemplateDetail extends Model
+class POTemplate7 extends Model
 {
     public $timestamps = false;
-    protected $table = "s_po_tmpl8_detail";
+    protected $table = "s_po_tmpl8_hdr";
     protected $primaryKey = "po_tmpl8_id";
-    protected $connection = 'mysql2';
+    protected $connection = 'k_master';
 }

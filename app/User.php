@@ -77,8 +77,7 @@ class User extends Authenticatable
 	
 	//this accepts (int,text), like checkAccessById(18,"A")
    public function checkAccessById($feature_id, $action)
-    {
-        
+    {   
         if($this->permissions == null)
         {
             $this->permissions = \DB::table('rights_detail')

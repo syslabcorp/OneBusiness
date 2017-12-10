@@ -163,7 +163,7 @@ class HomeController extends Controller
 	}
 
 	public function login_logs(){
-		$data['logs_data'] = DB::table('demo_log')->whereDate('log_time', DB::raw('CURDATE()'))->get();
+		$data['logs_data'] = DB::table('demo_log')->whereDate('log_time', DB::raw('CURDATE()'))->orderBy('user_name','asc')->get();
 		$data['logtype'] =array('bio'=>'Biometric','pass'=>'Password','otp'=>'OTP');
 		return view('login.login_logs',$data);
 	}
