@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
 {
@@ -30,39 +31,17 @@ class Branch extends Model
       return $this->belongsTo(\App\City::class, "City_ID", "City_ID");
     }
 
-    public function remittance_collections()
+    public function remittanceDetails()
     {
-      return $this->hasMany(\App\RemittanceCollection::class, "Branch", "Branch");
+      $instance = new \App\RemittanceDetail;
+      $instance->setConnection($this->corp->database_name);
+
+      return new HasMany($instance->newQuery(), $this, "Branch", "Branch");
     }
 
     public function remittances()
     {
       return $this->hasMany(\App\TRemittance::class, "Branch", "Branch");
-    }
-
-    public function remittanceCollection($groupId) {
-      $collection = $this->remittance_collections()->where('Group', '=', $groupId)->first();
-      if(!$collection) {
-        $collection = new \App\RemittanceCollection;
-        $collection->Group = $groupId;
-        $collection->Branch = $this->Branch;
-      }
-      return $collection;
-    }
-
-    public function getStartCRR($groupId) {
-      $startCRR = 1;
-      $remittance = $this->remittance_collections()->where('Group', '=', $groupId)->first();
-
-      if($remittance) {
-        $startCRR = $remittance->Start_CRR;
-      }else {
-        $remittance = $this->remittance_collections()->orderBy('Start_CRR', 'DESC')->first();
-        if($remittance) {
-          $startCRR = $remittance->Start_CRR + 1;
-        }
-      }
-      return $startCRR;
     }
     // Relationships
 
@@ -70,10 +49,10 @@ class Branch extends Model
         $total = 0;
         if($this->remittance_collections)
         {
-            $remittance_collections = $this->remittance_collections()->get();
+            $remittance_collections = $this->remittanceDetails()->get();
             foreach($remittance_collections as $remittance_collection )
             {
-                $total += $remittance_collection->Total_Collection;
+                $total += $remittance_collection->Collection;
             }
         }
         return $total;

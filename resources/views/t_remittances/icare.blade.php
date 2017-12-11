@@ -31,11 +31,8 @@
             Show Remarks only
           </label>
           </div>
-          
-
+      </div>
     </div>
-    </div>
-
   </form>
 </div>
 
@@ -62,15 +59,8 @@
         <th class="text-center">ACTION</th>
       </tr>
 
-      @foreach($shifts_by_branch as $branch => $shifts_by_date)
-        @php $index_branch = $loop->index @endphp
-
-        @php $count = 0 @endphp
-        @foreach($shifts_by_date as $date => $shifts)
-          @php $count += count($shifts) @endphp
-        @endforeach
-        
-        @foreach($shifts_by_date as $date => $shifts)
+      @foreach($collection->details()->get() as $detail)
+        @foreach($detail as $date => $shifts)
           @php $index = $loop->index @endphp
           @foreach($shifts as $shift)
             <tr>

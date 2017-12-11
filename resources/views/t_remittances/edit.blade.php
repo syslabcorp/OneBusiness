@@ -9,7 +9,6 @@
             <div class="row">
               <div class="col-xs-9">
                 <h4>BRANCH LIST</h4>
-                
               </div>
               <div class="col-xs-3">
               <form class="pull-right form-status" method="GET">
@@ -25,7 +24,7 @@
           <div class="panel-body" style="margin: 30px 0px;">
             <div class="row">
             </div>
-            <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.create',['corpID' => $corpID]) }}" method="GET" >
+            <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.edit',[$collection, 'corpID' => $corpID]) }}" method="GET" >
               <input type="hidden" name="corpID" value={{$corpID}}>
               <input type="hidden" name="groupStatus" value="1" />
               <div class="row">
@@ -64,8 +63,9 @@
             </form>
             
             @if($selectGroup)
-            <form action="{{ route('branch_remittances.collections.store', ['corpID' => $corpID, 'cityId' => $selectCity->City_ID, 'groupId' => $selectGroup->group_ID]) }}" method="POST" id="remittance-collection-create">
+            <form action="{{ route('branch_remittances.update', [$collection, 'corpID' => $corpID, 'cityId' => $selectCity->City_ID, 'groupId' => $selectGroup->group_ID]) }}" method="POST" id="remittance-collection-create">
               {{csrf_field()}}
+              <input type="hidden" name="_method" value="PUT" />
               <div class="table-responsive">
                 <table class="table">
                   <thead>
@@ -79,30 +79,31 @@
                   <tbody>
                     @php $total = 0; @endphp
                     @foreach($branchs as $branch)
+                      @php $detail = $collection->detail($selectGroup->group_ID, $branch->Branch) @endphp
                       <tr>
                         <td>
                           {{ $branch->ShortName }}
                           <input type="hidden" name="collections[{{$branch->Branch}}][ID]" 
-                            value="{{ $branch->remittanceDetail($selectGroup->group_ID)->ID }}"/>
+                            value="{{ $detail->ID }}"/>
                           <input type="hidden" name="collections[{{$branch->Branch}}][Group]" 
-                            value="{{ $branch->remittanceDetail($selectGroup->group_ID)->Group }}"/>
+                            value="{{ $detail->Group }}"/>
                           <input type="hidden" name="collections[{{$branch->Branch}}][Branch]" 
-                            value="{{ $branch->remittanceDetail($selectGroup->group_ID)->Branch }}"/>
+                            value="{{ $detail->Branch }}"/>
                         </td>
                         <td>
-                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $branch->getStartCRR($selectGroup->group_ID) }}"
+                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $collection->getStartCRR($selectGroup->group_ID, $branch->Branch) }}"
                             readonly="true" class="form-control">
                         </td>
                         <td>
                           <input class="form-control" type="text" name="collections[{{$branch->Branch}}][End_CRR]"
-                            value="{{ !empty(old("collections.{$branch->Branch}.End_CRR")) ? old("collections.{$branch->Branch}.End_CRR") : "" }}">
+                            value="{{ !empty(old("collections.{$branch->Branch}.End_CRR")) ? old("collections.{$branch->Branch}.End_CRR") : $detail->End_CRR }}">
                           @if($errors->has("collections.{$branch->Branch}.End_CRR"))
                             <i style="color:#cc0000;">{{ $errors->first("collections.{$branch->Branch}.End_CRR") }}</i>
                           @endif
                         </td>
                         <td>
                           <input class="form-control collection" type="text" name="collections[{{$branch->Branch}}][Collection]"
-                            value="{{ !empty(old("collections.{$branch->Branch}.Collection")) ? old("collections.{$branch->Branch}.Collection") : "" }}">
+                            value="{{ !empty(old("collections.{$branch->Branch}.Collection")) ? old("collections.{$branch->Branch}.Collection") : $detail->Collection }}">
                           @if($errors->has("collections.{$branch->Branch}.Collection"))
                             <i style="color:#cc0000;">{{ $errors->first("collections.{$branch->Branch}.Collection") }}</i>
                           @endif
@@ -121,7 +122,7 @@
                 </div>
                 <div class="row">
                   <div class="pull-right">
-                    <strong>SUBTOTAL: <span class="subtotal">0</span> </strong>
+                    <strong>SUBTOTAL: <span class="subtotal">{{ $collection->Subtotal }}</span> </strong>
                   </div>
                 </div>
                 @if(count($branchs))

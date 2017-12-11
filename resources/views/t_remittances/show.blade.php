@@ -1,7 +1,6 @@
 @extends('layouts.custom')
 
 @section('content')
-
 <section class="content">
     <div class="row">
       <div class="col-md-12">
@@ -14,16 +13,15 @@
               </div>
             </div>
           </div>
-
           <div class="panel-body" style="margin: 30px 0px;">
-            @if ( $corp_type == "ICARE" )
+            @if ( $company->corp_type == "ICAFE" )
               @include("t_remittances/icare") 
-            @elseif( $corp_type == "INN" )
+            @elseif( $company->corp_type == "INN" )
               @include("t_remittances/inn")
             @endif
             
-            @include("t_remittances/modal") 
-            @include("t_remittances/footer") 
+            {{--  @include("t_remittances/modal") 
+            @include("t_remittances/footer")   --}}
               
             <div class="row">
               <div class="pull-right col-md-3">

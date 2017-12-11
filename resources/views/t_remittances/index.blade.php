@@ -29,65 +29,65 @@
                 </select>
               </form>
             </div>
-            @if($remittance_collections->count())
-            <form action="">
-              <table class="table table-striped table-bordered">
-                <tbody>
-                  <tr>
-                    <th >TXN No.</th>
-                    <th>Date/Time</th>
-                    <th>Pick-up Teller</th>
-                    <th>Subtotal</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                  @foreach($remittance_collections as $remittance_collection)
-                    <tr class="text-center">
-                      <td>{{ $remittance_collection->ID }}</td>
-                      <td>{{ $remittance_collection->Time_Create ? $remittance_collection->Time_Create->format('Y-m-d H:i a') : "" }}</td>
-                      <td>{{ $remittance_collection->user()->first()->Full_Name }}</td>
-                      <td>{{ $remittance_collection->Total_Collection }}</td>
-                      <td>
-                        <input type="checkbox" name="status" id="" onclick="return false;" >
-                      </td>
-                      <td>
+            <table class="table table-striped table-bordered">
+              <tbody>
+                <tr>
+                  <th >TXN No.</th>
+                  <th>Date/Time</th>
+                  <th>Pick-up Teller</th>
+                  <th>Subtotal</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+                @foreach($collections as $collection)
+                  <tr class="text-center">
+                    <td>{{ $collection->ID }}</td>
+                    <td>{{ $collection->CreatedAt->format('Y-m-d H:ia') }}</td>
+                    <td>{{ $collection->user->Full_Name }}</td>
+                    <td>{{ $collection->Subtotal }}</td>
+                    <td>
+                      <input type="checkbox" name="status" id="" onclick="return false;" >
+                    </td>
+                    <td>
 
-                        <a href="{{ route('branch_remittances.show', [$remittance_collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
-                          class="btn btn-success btn-xs"
-                          title="View">
-                          <i class="fa fa-eye"></i>
-                        </a>
+                      <a href="{{ route('branch_remittances.show', [$collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
+                        class="btn btn-success btn-xs"
+                        title="View">
+                        <i class="fa fa-eye"></i>
+                      </a>
 
-                        <a href="{{ route('branch_remittances.edit', [$remittance_collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
-                          class="btn btn-primary btn-xs"
-                          title="Edit">
-                          <i class="fa fa-pencil"></i>
-                        </a>
+                      <a href="{{ route('branch_remittances.edit', [$collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
+                        class="btn btn-primary btn-xs"
+                        title="Edit">
+                        <i class="fa fa-pencil"></i>
+                      </a>
 
-                        <a href="{{ route('branch_remittances.destroy', [$remittance_collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
-                          class="btn btn-danger btn-xs"
+                      <form action="{{ route('branch_remittances.destroy', [$collection, 'corpID' => $corpID]) }}" method="POST"
+                        style="display: inline-block;">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button style="margin-right: 10px;" class="btn btn-danger btn-xs"
                           title="Delete">
                           <i class="fa fa-trash"></i>
-                        </a>
-
-                      </td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </form>
-            @else
-              <div class="error">
-                Not found
-              </div>
-            @endif
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                @endforeach
+                @if(!$collections->count())
+                <tr>
+                  <td colspan="6">Not found any collections</td>
+                </tr>
+                @endif
+              </tbody>
+            </table>
 
             <div class="row">
               <div class="col-md-4">
                 <form class="" id="date_range" action="{{ route('branch_remittances.index', ['corpID' => $corpID]) }}" method="GET">
                   <input type="hidden" name="corpID" value="{{$corpID}}">
                   <div class="checkbox col-xs-12">
-                    <label for="" class="control-label">
+                    <label for="view_date_range" class="control-label">
                       <input type="checkbox" {{$checked ? 'checked': ""}} id="view_date_range" value="1">
                       View by Date Range
                     </label>
