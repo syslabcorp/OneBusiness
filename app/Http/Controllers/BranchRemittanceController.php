@@ -92,7 +92,7 @@ class BranchRemittanceController extends Controller
     return response()->json($array);
   }
 
-  public function create(Request $request, $id)
+  public function create(Request $request, $id = null)
   {
     $corp = Corporation::find($request->corpID);
     $groupIds = explode(",", \Auth::user()->group_ID);

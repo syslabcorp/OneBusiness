@@ -46,16 +46,31 @@ class Branch extends Model
     // Relationships
 
     public function getTotalAllRemittanceCollections(){
-        $total = 0;
-        if($this->remittance_collections)
-        {
-            $remittance_collections = $this->remittanceDetails()->get();
-            foreach($remittance_collections as $remittance_collection )
-            {
-                $total += $remittance_collection->Collection;
-            }
-        }
-        return $total;
+      $total = 0;
+      if($this->remittance_collections)
+      {
+          $remittance_collections = $this->remittanceDetails()->get();
+          foreach($remittance_collections as $remittance_collection )
+          {
+              $total += $remittance_collection->Collection;
+          }
+      }
+      return $total;
+    }
+
+    public function getStartCRR($corpID) {
+      $startCRR = 1;
+      $company = \App\Company::findOrFail($corpID);
+
+      $detailModel = new \App\RemittanceDetail;
+      $detailModel = $detailModel->setConnection($company->database_name);
+      $detail = $detailModel->where('Branch', '=', $this->Branch)
+                            ->orderBy('Start_CRR', 'DESC')
+                            ->first();
+      if($detail) {
+        $startCRR = $detail->Start_CRR + 1;
+      }
+      return $startCRR;
     }
 
     public function footers()
