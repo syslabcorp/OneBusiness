@@ -144,6 +144,6 @@ Route::any('/retail_items', 'AccessLevelController@retail_items');
 
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
-       ->middleware('auth')->name('branch_remittances.collections.store');;
+       ->middleware('auth')->name('branch_remittances.collections.store');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 

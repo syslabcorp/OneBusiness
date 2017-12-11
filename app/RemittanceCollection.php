@@ -12,20 +12,56 @@ class RemittanceCollection extends Model
   protected $primaryKey = "ID";
 
   protected $fillable = [
-    'Branch', 'Start_CRR', 'End_CRR', 'Total_Collection', 'Group', 'Time_Create', 'UserID'
+    'CreatedAt', 'TellerID', 'Status', 'Subtotal'
   ];
   
   protected $dates = [
-    'Time_Create'
+    'CreatedAt'
   ];
 
-  public function branch()
-  {
-    return $this->belongsTo(\App\Branch::class, "Branch", "Branch");
+  public function details() {
+    return $this->hasMany(\App\RemittanceDetail::class, "RemittanceCollectionID", "ID");
   }
 
-  public function user()
-  {
-    return $this->belongsTo(\App\User::class, "UserID", "UserID");
+  public function user() {
+    return $this->belongsTo(\App\User::class, "TellerID", "UserID");
+  }
+
+  public function detail($groupId, $branchId) {
+    $detail = $this->details()
+                   ->where('Group', '=', $groupId)
+                   ->where('Branch', '=', $branchId)
+                   ->first();
+    if(!$detail) {
+      $detail = new \App\RemittanceDetail;
+      $detail->Group = $groupId;
+      $detail->Branch = $branchId;
+    }
+    return $detail;
+  }
+
+  public function getStartCRR($groupId, $branchId) {
+    $startCRR = 1;
+
+    $detail = $this->details()->where('Group', '=', $groupId)
+                              ->where('Branch', '=', $branchId)
+                              ->first();
+    if($detail) {
+      $startCRR = $detail->Start_CRR;
+    }else {
+      $remittance = $this->details()->orderBy('Start_CRR', 'DESC')->first();
+      if($remittance) {
+        $startCRR = $remittance->Start_CRR + 1;
+      }
+    }
+    return $startCRR;
+  }
+
+  protected static function boot() {
+    parent::boot();
+
+    static::deleting(function($collection) {
+      $collection->details()->delete();
+    });
   }
 }
