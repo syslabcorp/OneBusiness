@@ -67,7 +67,7 @@
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
                         <button style="margin-right: 10px;" class="btn btn-danger btn-xs"
-                          title="Delete">
+                          title="Delete" onclick="return confirm('Are you sure you want to delete this collection?')">
                           <i class="fa fa-trash"></i>
                         </button>
                       </form>
@@ -105,6 +105,9 @@
                   <div class="form-group">
                     <div class="row">
                       <div class="col-xs-12">
+                        <a href="/OneBusiness/home" class="btn btn-default">
+                          <i class="fa fa-reply"></i> Back
+                        </a>
                         <button id="button_ranger_date" {{ $checked ? '': 'disabled="true"' }} class="btn btn-primary">Show</button>
                       </div>
                     </div>
@@ -112,18 +115,7 @@
                 </form>
               </div>
             </div>
-
-            <div class="row" style="margin-top: 20px;" >
-              <div class="col-xs-12">
-                <button class="btn btn-default">
-                  <i class="fa fa-reply"></i>
-                  Back
-                </button>
-              </div>
-              
-            </div>
           </div>
-          
         </div>
       </div>
     </div>

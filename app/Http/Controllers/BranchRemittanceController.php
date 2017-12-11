@@ -54,10 +54,14 @@ class BranchRemittanceController extends Controller
     ]);
   }
 
-  public function  renderModal(Request $request)
-  {
-    $shift = Shift::where('Shift_ID', $request->id)->first(); 
-    if( $shift->remittance )
+  public function  renderModal(Request $request) {
+    $company = \App\Company::findOrFail($request->corpID);
+
+    $shiftModel = new \App\Shift;
+    $shiftModel->setConnection($company->database_name);
+    $shift = $shiftModel->where('Shift_ID', $request->id)->first();
+
+    if($shift->remittance)
     {
       $array = array(
         "cashier"=> "",
@@ -223,11 +227,18 @@ class BranchRemittanceController extends Controller
 
   public function store(Request $request)
   {
-    $shift = Shift::where('Shift_ID', $request->get('Shift_ID'))->first();
-    $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short' ]);
+    $company = \App\Company::findOrFail($request->corpID);
     
-    if ( empty($params['Wrong_Input'])  )
-    {
+    $shiftModel = new \App\Shift;
+    $shiftModel->setConnection($company->database_name);
+    $shift = $shiftModel->where('Shift_ID', $request->Shift_ID)->first();
+
+    $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Adj_Amt']);
+
+    $params['Adj_Amt'] = $params['Adj_Amt'] ? $params['Adj_Amt'] : 0;
+    $params['Branch'] = $shift->Branch;
+
+    if (empty($params['Wrong_Input'])){
       $params['Wrong_Input'] = '0';
     }
 
@@ -236,17 +247,13 @@ class BranchRemittanceController extends Controller
       $params['Adj_Short'] = '0';
     }
 
-    if ($shift->remittance()->count())
-    {
-      
+    if ($shift->remittance) {
       $shift->remittance()->update($params);
-    }
-    else
-    {
+    }else {
       $shift->remittance()->create($params);
     }
     
-    return redirect()->route('branch_remittances.show', $request->remittance_collection_ID );
+    return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID]);
   }
 
   public function destroy(Request $request, $id){

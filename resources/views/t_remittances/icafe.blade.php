@@ -73,7 +73,7 @@
             @foreach($shifts as $shift)
               <tr>
                 @if($index == 0 && $loop->index == 0)
-                  <td rowspan="{{$count}}">{{$branch}}</td>
+                  <td rowspan="{{$count}}">{{$shift->branch->ShortName}}</td>
                 @endif
                 @if($loop->index == 0 )
                   <td rowspan="{{count($shifts)}}">{{$date}}</td>
@@ -98,7 +98,8 @@
                 <td></td>
                 <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" data-toggle="modal" data-target="#Modal">
+                  <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" 
+                    data-toggle="modal" data-target="#Modal" data-corp="{{ $company->corp_id }}">
                     <i class="fa fa-pencil"></i>
                   </button>
                 </td>

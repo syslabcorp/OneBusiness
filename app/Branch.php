@@ -65,10 +65,10 @@ class Branch extends Model
       $detailModel = new \App\RemittanceDetail;
       $detailModel = $detailModel->setConnection($company->database_name);
       $detail = $detailModel->where('Branch', '=', $this->Branch)
-                            ->orderBy('Start_CRR', 'DESC')
+                            ->orderBy('End_CRR', 'DESC')
                             ->first();
       if($detail) {
-        $startCRR = $detail->Start_CRR + 1;
+        $startCRR = $detail->End_CRR + 1;
       }
       return $startCRR;
     }

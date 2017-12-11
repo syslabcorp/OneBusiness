@@ -13,7 +13,6 @@ class Shift extends Model
   protected $connection = "mysql2";
 
   protected $fillable = [
-      
   ];
 
   protected $dates = [
@@ -21,7 +20,7 @@ class Shift extends Model
   ];
 
   public function remittance() {
-    return $this->belongsTo(\App\TRemittance::class, 'Shift_ID', 'Shift_ID');
+    return $this->belongsTo(\App\Remittance::class, 'Shift_ID', 'Shift_ID');
   }
 
   public function user()

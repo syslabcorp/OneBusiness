@@ -22,6 +22,7 @@ class RemittanceDetail extends Model
     $shiftModel->setConnection($company->database_name);
 
     $shifts = $shiftModel->whereBetween('Shift_ID', [$this->Start_CRR, $this->End_CRR])
+                         ->where('Branch', '=', $this->Branch)
                          ->get();
 
     $result = [];
@@ -29,7 +30,7 @@ class RemittanceDetail extends Model
       if(!$shift->branch) {
         continue;
       }
-      $result[$shift->branch->ShortName][$shift->ShiftDate->format('D,M-d-Y')][] = $shift;
+      $result[$shift->branch->Branch][$shift->ShiftDate->format('D,M-d-Y')][] = $shift;
     }
     return $result;
   }
