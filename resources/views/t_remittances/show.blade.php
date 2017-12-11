@@ -20,8 +20,8 @@
               @include("t_remittances/inn")
             @endif
             
-            {{--  @include("t_remittances/modal") 
-            @include("t_remittances/footer")   --}}
+            {{--  @include("t_remittances/modal")   --}}
+            @include("t_remittances/footer")
               
             <div class="row">
               <div class="pull-right col-md-3">
@@ -31,7 +31,7 @@
             </div>
 
             <div class="row">
-              <a class="btn btn-default">
+              <a class="btn btn-default" href="{{ route('branch_remittances.index', ['corpID' => $company->corp_id]) }}">
                 <i class="fa fa-reply"></i> Back
               </a>
             </div>

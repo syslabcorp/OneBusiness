@@ -60,46 +60,53 @@
       </tr>
 
       @foreach($collection->details()->get() as $detail)
-        @foreach($detail as $date => $shifts)
-          @php $index = $loop->index @endphp
-          @foreach($shifts as $shift)
-            <tr>
-              @if($index == 0 && $loop->index == 0)
-                <td rowspan="{{$count}}">{{$branch}}</td>
-              @endif
-              @if($loop->index == 0 )
-                <td rowspan="{{count($shifts)}}">{{$date}}</td>
-              @endif
-              <td>{{ $shift->Shift_ID }}</td>
-              <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
-              <td></td>
-              <td></td>
-              <td>{{ $shift->remittance ? $shift->remittance->Serv_TotalSales : "" }}</td>
-              <td>{{ $shift->remittance ? $shift->remittance->Games_TotalSales : "" }}</td>
-              <td>{{ $shift->remittance ? $shift->remittance->Net_TotalSales : "" }}</td>
-              <td>{{ $shift->remittance ? $shift->remittance->TotalSales : "" }}</td>
-              <td>{{ $shift->remittance ? $shift->remittance->TotalRemit : "" }}</td>
-              <td>
-                <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Sales_Checked == 1 ? "checked" : "") : "" }} onclick="return false;" >
-              </td>
-              <td>
-                <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Wrong_Input == 1 ? "checked" : "") : "" }} onclick="return false;" >
-              </td>
-              <td>
-                <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
-              <td></td>
-              <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
-              <td>
-                <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" data-toggle="modal" data-target="#Modal">
-                  <i class="fa fa-pencil"></i>
-                </button>
-              </td>
-            </tr>
-              
+        @foreach($detail->shifts($company->corp_id) as $branch => $shifts_by_date)
+          @php $index_branch = $loop->index @endphp
+
+          @php $count = 0 @endphp
+          @foreach($shifts_by_date as $date => $shifts)
+            @php $count += count($shifts) @endphp
+          @endforeach
+          
+          @foreach($shifts_by_date as $date => $shifts)
+            @php $index = $loop->index @endphp
+            @foreach($shifts as $shift)
+              <tr>
+                @if($index == 0 && $loop->index == 0)
+                  <td rowspan="{{$count}}">{{$branch}}</td>
+                @endif
+                @if($loop->index == 0 )
+                  <td rowspan="{{count($shifts)}}">{{$date}}</td>
+                @endif
+                <td>{{ $shift->Shift_ID }}</td>
+                <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ $shift->remittance ? $shift->remittance->Serv_TotalSales : "" }}</td>
+                <td>{{ $shift->remittance ? $shift->remittance->Games_TotalSales : "" }}</td>
+                <td>{{ $shift->remittance ? $shift->remittance->Net_TotalSales : "" }}</td>
+                <td>{{ $shift->remittance ? $shift->remittance->TotalSales : "" }}</td>
+                <td>{{ $shift->remittance ? $shift->remittance->TotalRemit : "" }}</td>
+                <td>
+                  <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Sales_Checked == 1 ? "checked" : "") : "" }} onclick="return false;" >
+                </td>
+                <td>
+                  <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Wrong_Input == 1 ? "checked" : "") : "" }} onclick="return false;" >
+                </td>
+                <td>
+                  <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
+                <td></td>
+                <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
+                <td>
+                  <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" data-toggle="modal" data-target="#Modal">
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                </td>
+              </tr>
+            @endforeach
           @endforeach
         @endforeach
       @endforeach
-
     </tbody>
   </table>
 </div>
