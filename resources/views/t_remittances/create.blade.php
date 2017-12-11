@@ -82,15 +82,13 @@
                       <tr>
                         <td>
                           {{ $branch->ShortName }}
-                          <input type="hidden" name="collections[{{$branch->Branch}}][ID]" 
-                            value="{{ $branch->remittanceDetail($selectGroup->group_ID)->ID }}"/>
                           <input type="hidden" name="collections[{{$branch->Branch}}][Group]" 
-                            value="{{ $branch->remittanceDetail($selectGroup->group_ID)->Group }}"/>
+                            value="{{ $selectGroup->group_ID }}"/>
                           <input type="hidden" name="collections[{{$branch->Branch}}][Branch]" 
-                            value="{{ $branch->remittanceDetail($selectGroup->group_ID)->Branch }}"/>
+                            value="{{ $branch->Branch }}"/>
                         </td>
                         <td>
-                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $branch->getStartCRR($selectGroup->group_ID) }}"
+                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $branch->getStartCRR($corpID) }}"
                             readonly="true" class="form-control">
                         </td>
                         <td>
