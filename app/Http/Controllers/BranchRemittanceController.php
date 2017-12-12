@@ -69,7 +69,7 @@ class BranchRemittanceController extends Controller
         "total_sales"=> "",
         "total_shortage"=> $shift->remittance->Adj_Amt,
         'total_remittance'=> $shift->remittance->TotalRemit,
-        'couterchecked'=> "",
+        'couterchecked'=> $shift->remittance->Sales_Checked,
         'wrong_input'=> $shift->remittance->Wrong_Input,
         'adj_short'=> $shift->remittance->Adj_Short,
         'shortage'=> $shift->remittance->Adj_Amt,
@@ -203,6 +203,20 @@ class BranchRemittanceController extends Controller
 
   public function update(Request $request, $id) {
     $company = Corporation::findOrFail($request->corpID);
+
+    $rules = [];
+    $niceNames = [];
+
+    foreach($request->collections as $index => $collection) {
+      $min = intval($collection['Start_CRR']) + 1;
+      $rules["collections.{$index}.End_CRR"] = "numeric|min:{$min}|nullable";
+      $rules["collections.{$index}.Collection"] = "numeric|nullable";
+
+      $niceNames["collections.{$index}.End_CRR"] = 'Input';
+      $niceNames["collections.{$index}.Collection"] = 'Input';
+    }
+    $this->validate($request, $rules, [], $niceNames);
+
     $collection = new \App\RemittanceCollection;
     $collection->setConnection($company->database_name);
     $collection = $collection->findOrFail($id);
@@ -233,9 +247,14 @@ class BranchRemittanceController extends Controller
     $shiftModel->setConnection($company->database_name);
     $shift = $shiftModel->where('Shift_ID', $request->Shift_ID)->first();
 
-    $params = $request->only(['Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Adj_Amt']);
+    $params = $request->only([
+      'Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Adj_Amt',
+      'Sales_Checked'
+    ]);
 
     $params['Adj_Amt'] = $params['Adj_Amt'] ? $params['Adj_Amt'] : 0;
+    $params['Sales_Checked'] = $params['Sales_Checked'] ? $params['Sales_Checked'] : 0;
+    
     $params['Branch'] = $shift->Branch;
 
     if (empty($params['Wrong_Input'])){
@@ -253,6 +272,7 @@ class BranchRemittanceController extends Controller
       $shift->remittance()->create($params);
     }
     
+    \Session::flash('success', "Remittance has been updated successfully.");
     return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID]);
   }
 

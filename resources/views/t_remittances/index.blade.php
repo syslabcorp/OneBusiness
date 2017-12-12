@@ -43,7 +43,7 @@
                   <tr class="text-center">
                     <td>{{ $collection->ID }}</td>
                     <td>{{ $collection->CreatedAt->format('Y-m-d H:ia') }}</td>
-                    <td>{{ $collection->user->Full_Name }}</td>
+                    <td>{{ $collection->user->UserName }}</td>
                     <td>{{ $collection->Subtotal }}</td>
                     <td>
                       <input type="checkbox" name="status" id="" onclick="return false;" >

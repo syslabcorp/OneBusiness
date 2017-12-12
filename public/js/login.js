@@ -328,12 +328,9 @@ $(function()
         $('#total_sales').html(res.total_sales);
         $('#total_shortage').html(res.total_shortage);
         $('#total_remittance').val(res.total_remittance);
-        if(res.counterchecker == 1)
-        {
+        if(res.couterchecked == 1) {
           $('#counterchecker').prop( "checked", true );
-        }
-        else
-        {
+        }else {
           $('#counterchecker').prop( "checked", false );
         }
 
