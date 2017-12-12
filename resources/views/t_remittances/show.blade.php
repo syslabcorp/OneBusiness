@@ -15,12 +15,12 @@
           </div>
           <div class="panel-body" style="margin: 30px 0px;">
             @if ( $company->corp_type == "ICAFE" )
-              @include("t_remittances/icare") 
+              @include("t_remittances/icafe") 
             @elseif( $company->corp_type == "INN" )
               @include("t_remittances/inn")
             @endif
             
-            {{--  @include("t_remittances/modal")   --}}
+            @include("t_remittances/modal")
             @include("t_remittances/footer")
               
             <div class="row">

@@ -49,9 +49,9 @@ class RemittanceCollection extends Model
     if($detail) {
       $startCRR = $detail->Start_CRR;
     }else {
-      $remittance = $this->details()->orderBy('Start_CRR', 'DESC')->first();
+      $remittance = $this->details()->orderBy('End_CRR', 'DESC')->first();
       if($remittance) {
-        $startCRR = $remittance->Start_CRR + 1;
+        $startCRR = $remittance->End_CRR + 1;
       }
     }
     return $startCRR;

@@ -3,7 +3,8 @@
     <div class="modal-content">
       <form class="form-horizontal" id="modal_form" method="POST" action="{{ route('branch_remittances.store') }}" role="form">
         {{ csrf_field() }}
-        <input type="hidden" name="remittance_collection_ID" value="{{$remittance_collection_ID}}">
+        <input type="hidden" name="collectionId" value="{{$collection->ID}}">
+        <input type="hidden" name="corpID" value="{{ $company->corp_id }}">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Edit Transaction Details</h4>
@@ -86,7 +87,7 @@
             <div class="row">
               <div class="col-xs-3">
                 <div class="checkbox">
-                  <label for="">
+                  <label for="counterchecker">
                     <input type="checkbox" id="counterchecker"  value="1" name="" id="">
                     Counterchecked
                   </label>
@@ -99,7 +100,7 @@
             <div class="row">
               <div class="col-xs-3">
                 <div class="checkbox">
-                  <label for="">
+                  <label for="wrong_input">
                     <input type="checkbox" id="wrong_input" name="Wrong_Input" id="" value="1" >
                     Wrong Input
                   </label>
@@ -113,7 +114,7 @@
             <div class="row">
               <div class="col-xs-3">
                   <div class="checkbox">
-                    <label for="">
+                    <label for="adj_short">
                       <input type="checkbox" id="adj_short"  value="1" name="Adj_Short" >
                       Adjust Shortage
                     </label>
