@@ -98,6 +98,14 @@ class User extends Authenticatable
         return false;
     }
 
+    public function isAdmin() {
+      $template = $this->leftJoin("rights_template", "rights_template.template_id", "=", "t_users.rights_template_id")
+                      ->where('rights_template.is_super_admin', '=', 1)
+                      ->where('rights_template.template_id', '=', $this->rights_template_id)
+                      ->first();
+      return $template ? true : false;
+    }
+
 
     public function checkAccessByPoId($module_ids,$feature_id, $action)
     {   

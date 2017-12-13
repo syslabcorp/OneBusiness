@@ -16,11 +16,14 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
-    $checked = false;
     $company = Corporation::findOrFail($request->corpID);
 
     $collections = new RemittanceCollection;
     $collections->setConnection($company->database_name);
+
+    if(!\Auth::user()->isAdmin()) {
+      $collections = $collections->where('TellerID', '=', \Auth::user()->UserID);
+    }
 
     if($request->start_date) {
       $collections = $collections->whereDate('CreatedAt', '>=', $request->start_date);
@@ -33,7 +36,6 @@ class BranchRemittanceController extends Controller
     return view('t_remittances.index', [
       'corpID' => $request->corpID,
       'collections' => $collections->get(),
-      'checked' => $checked,
       'start_date' => $request->start_date,
       'end_date' => $request->end_date
     ]);
