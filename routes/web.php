@@ -139,8 +139,8 @@ Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity')
 Route::any('/purchase_order/{corp_id}/{city_id}/{id?}', 'PurchaseOrderController@purchase_order');
 Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order');
 
-Route::any('/product_branch', 'AccessLevelController@product_branch');
-Route::any('/retail_items', 'AccessLevelController@retail_items');
+Route::any('/product_branch', 'PurchaseOrderController@product_branch');
+Route::any('/retail_items', 'PurchaseOrderController@retail_items');
 
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
