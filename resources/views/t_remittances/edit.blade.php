@@ -91,7 +91,7 @@
                             value="{{ $detail->Branch }}"/>
                         </td>
                         <td>
-                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $collection->getStartCRR($selectGroup->group_ID, $branch->Branch) }}"
+                          <input type="text" name="collections[{{$branch->Branch}}][Start_CRR]" value="{{ $collection->getStartCRR($selectGroup->group_ID, $branch->Branch, $corpID) }}"
                             readonly="true" class="form-control">
                         </td>
                         <td>

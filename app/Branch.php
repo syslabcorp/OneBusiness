@@ -62,13 +62,22 @@ class Branch extends Model
       $startCRR = 1;
       $company = \App\Company::findOrFail($corpID);
 
-      $detailModel = new \App\RemittanceDetail;
-      $detailModel = $detailModel->setConnection($company->database_name);
-      $detail = $detailModel->where('Branch', '=', $this->Branch)
-                            ->orderBy('End_CRR', 'DESC')
-                            ->first();
-      if($detail) {
-        $startCRR = $detail->End_CRR + 1;
+      $remittanceModel = new \App\Remittance;
+      $remittanceModel = $remittanceModel->setConnection($company->database_name);
+      $remittance = $remittanceModel->where('t_remitance.Branch', '=', $this->Branch)
+                                    ->where('t_remitance.Sales_Checked', '=', 0)
+                                    ->orderBy('Shift_ID', 'ASC')
+                                    ->first();
+      if($remittance) {
+        $startCRR = $remittance->Shift_ID;
+      }else {
+        $remittance = $remittanceModel->where('t_remitance.Branch', '=', $this->Branch)
+                                      ->where('t_remitance.Sales_Checked', '=', 1)
+                                      ->orderBy('Shift_ID', 'DESC')
+                                      ->first();
+        if($remittance) {
+          $startCRR = $remittance->Shift_ID + 1;
+        }
       }
       return $startCRR;
     }

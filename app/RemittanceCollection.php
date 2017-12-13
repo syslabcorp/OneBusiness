@@ -40,7 +40,8 @@ class RemittanceCollection extends Model
     return $detail;
   }
 
-  public function getStartCRR($groupId, $branchId) {
+  public function getStartCRR($groupId, $branchId, $corpID) {
+    $company = \App\Company::findOrFail($corpID);
     $startCRR = 1;
 
     $detail = $this->details()->where('Group', '=', $groupId)
@@ -49,9 +50,22 @@ class RemittanceCollection extends Model
     if($detail) {
       $startCRR = $detail->Start_CRR;
     }else {
-      $remittance = $this->details()->orderBy('End_CRR', 'DESC')->first();
+      $remittanceModel = new \App\Remittance;
+      $remittanceModel = $remittanceModel->setConnection($company->database_name);
+      $remittance = $remittanceModel->where('t_remitance.Branch', '=', $branchId)
+                                    ->where('t_remitance.Sales_Checked', '=', 0)
+                                    ->orderBy('Shift_ID', 'ASC')
+                                    ->first();
       if($remittance) {
-        $startCRR = $remittance->End_CRR + 1;
+        $startCRR = $remittance->Shift_ID;
+      }else {
+        $remittance = $remittanceModel->where('t_remitance.Branch', '=', $branchId)
+                                      ->where('t_remitance.Sales_Checked', '=', 1)
+                                      ->orderBy('Shift_ID', 'DESC')
+                                      ->first();
+        if($remittance) {
+          $startCRR = $remittance->Shift_ID + 1;
+        }
       }
     }
     return $startCRR;

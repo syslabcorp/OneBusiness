@@ -88,7 +88,7 @@
               <div class="col-xs-3">
                 <div class="checkbox">
                   <label for="counterchecker">
-                    <input type="checkbox" id="counterchecker"  value="1" name="" id="">
+                    <input type="checkbox" id="counterchecker"  value="1" name="Sales_Checked">
                     Counterchecked
                   </label>
                 </div>
@@ -112,7 +112,7 @@
 
           <div class="form-group">
             <div class="row">
-              <div class="col-xs-3">
+              <div class="col-xs-3" style="padding-right: 0px;">
                   <div class="checkbox">
                     <label for="adj_short">
                       <input type="checkbox" id="adj_short"  value="1" name="Adj_Short" >
