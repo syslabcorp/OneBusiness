@@ -88,17 +88,17 @@
                   <input type="hidden" name="corpID" value="{{$corpID}}">
                   <div class="checkbox col-xs-12">
                     <label for="view_date_range" class="control-label">
-                      <input type="checkbox" {{$checked ? 'checked': ""}} id="view_date_range" value="1">
+                      <input type="checkbox" {{$start_date || $end_date ? 'checked': ""}} id="view_date_range" value="1">
                       View by Date Range
                     </label>
                   </div>
                   <div class="form-group">
                     <div class="row">
                       <div class="col-xs-6">
-                        <input type="date" name="start_date" id="start_date" {{ $checked ? '': 'disabled="true"' }} class="form-control datepicker " value="{{$start_date}}">
+                        <input type="date" name="start_date" id="start_date" {{ $start_date || $end_date ? '': 'disabled="true"' }} class="form-control datepicker " value="{{$start_date}}">
                       </div>
                       <div class="col-xs-6">
-                        <input type="date" name="end_date" id="end_date"  {{ $checked ? '': 'disabled="true"' }}  class="form-control datepicker"  value="{{$end_date}}">
+                        <input type="date" name="end_date" id="end_date"  {{ $start_date || $end_date ? '': 'disabled="true"' }}  class="form-control datepicker"  value="{{$end_date}}">
                       </div>
                     </div>
                   </div>
@@ -108,7 +108,7 @@
                         <a href="/OneBusiness/home" class="btn btn-default">
                           <i class="fa fa-reply"></i> Back
                         </a>
-                        <button id="button_ranger_date" {{ $checked ? '': 'disabled="true"' }} class="btn btn-primary">Show</button>
+                        <button id="button_ranger_date" {{ $start_date || $end_date ? '': 'disabled="true"' }} class="btn btn-primary">Show</button>
                       </div>
                     </div>
                   </div>
