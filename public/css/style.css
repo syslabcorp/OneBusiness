@@ -51,6 +51,10 @@
 .table-remittances td.selected{
   background: #b8d4ea;
 }
+.table-remittances td {
+  user-select: none;
+  -webkit-user-select: none;
+}
 
 
 

@@ -5,7 +5,7 @@
         <label for="" class="control-label col-xs-2">
           CLEAR STATUS
         </label>
-          <div class="col-xs-10">
+        <div class="col-xs-10">
           <label class="radio-inline" for="">
             <input type="radio" name="status" id="">
             All
@@ -20,17 +20,18 @@
             <input type="radio" name="status" id="">
             Unchecked
           </label>
+          <div class="form-group">
+            <label class="radio-inline" for="shortage_only" style="padding-left: 0px;">
+              <input type="checkbox" name="shortage_only" id="shortage_only">
+              Show Shortage only
+            </label>
 
-          <label class="radio-inline" for="shortage_only">
-            <input type="checkbox" name="shortage_only" id="shortage_only">
-            Show Shortage only
-          </label>
-
-          <label class="radio-inline" for="remarks_only">
-            <input type="checkbox" name="remarks_only" id="remarks_only">
-            Show Remarks only
-          </label>
+            <label class="radio-inline" for="remarks_only" style="padding-left: 0px;">
+              <input type="checkbox" name="remarks_only" id="remarks_only">
+              Show Remarks only
+            </label>
           </div>
+        </div>
       </div>
     </div>
   </form>
@@ -82,12 +83,14 @@
                 <td>{{ $shift->Shift_ID }}</td>
                 <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
                 <td></td>
-                <td></td>
-                <td>{{ $shift->remittance ? round($shift->remittance->Serv_TotalSales, 2) : "" }}</td>
-                <td>{{ $shift->remittance ? round($shift->remittance->Games_TotalSales, 2) : "" }}</td>
-                <td>{{ $shift->remittance ? round($shift->remittance->Net_TotalSales, 2) : "" }}</td>
-                <td>{{ $shift->remittance ? round($shift->remittance->TotalSales, 2) : "" }}</td>
-                <td>{{ $shift->remittance ? round($shift->remittance->TotalRemit, 2) : "" }}</td>
+                <td class="col-retail">
+                  {{ $shift->remittance ? round($shift->remittance->Sales_TotalSales, 2) : 0 }}
+                </td>
+                <td class="col-service">{{ $shift->remittance ? round($shift->remittance->Serv_TotalSales, 2) : 0 }}</td>
+                <td>{{ $shift->remittance ? round($shift->remittance->Games_TotalSales, 2) : 0 }}</td>
+                <td>{{ $shift->remittance ? round($shift->remittance->Net_TotalSales, 2) : 0 }}</td>
+                <td class="col-sale">{{ $shift->remittance ? round($shift->remittance->TotalSales, 2) : 0 }}</td>
+                <td class="col-remit">{{ $shift->remittance ? round($shift->remittance->TotalRemit, 2) : 0 }}</td>
                 <td>
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Sales_Checked == 1 ? "checked" : "") : "" }} onclick="return false;" >
                 </td>
@@ -112,3 +115,15 @@
     </tbody>
   </table>
 </div>
+
+@section('pageJS')
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.table-remittances td').each(function(el, index) {
+    if(parseInt($(this).text()) == 0) {
+      $(this).css('color', 'red');
+    }
+  });
+});
+</script>
+@endsection
