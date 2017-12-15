@@ -1,12 +1,12 @@
-<div class="row">
+<div class="row remitance-total">
   <table class="table table-triped">
     <tr>
-      <th>Auto Total:</th>
-      <td>Total Retail: </td>
-      <td>Total Service: </td>
-      <td>Total Rental: </td>
-      <th>Total Sales: </th>
-      <th>Total Remit: </th>
+      <td><strong>Auto Total</strong></td>
+      <td>Total Retail: <span class="total">0</span></td>
+      <td>Total Service: <span class="total">0</span></td>
+      <td>Total Rental: <span class="total">0</span></td>
+      <td>Total Sales: <span class="total">0</span></td>
+      <td>Total Remit: <span class="total">0</span></td>
     </tr>
   </table>
 </div>

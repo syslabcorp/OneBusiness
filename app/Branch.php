@@ -79,7 +79,7 @@ class Branch extends Model
           $startCRR = $remittance->Shift_ID + 1;
         }
       }
-      return $startCRR;
+      return intval($startCRR);
     }
 
     public function footers()

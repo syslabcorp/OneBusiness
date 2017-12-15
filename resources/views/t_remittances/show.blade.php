@@ -25,8 +25,8 @@
               
             <div class="row">
               <div class="pull-right col-md-3">
-                <button   class="btn btn-primary">Check Ok <br> Selection</button>
-                <button  class="btn btn-success">Save Ok <br> Selection</button>
+                <button disabled="true" class="btn btn-primary btn-check-ok">Check Ok <br> Selection</button>
+                <button disabled="true" class="btn btn-success btn-save-ok">Save Ok <br> Selection</button>
               </div>
             </div>
 

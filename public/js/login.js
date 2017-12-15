@@ -257,9 +257,7 @@ $(function()
     {
       $('#start_date').val("");
       $('#end_date').val("");
-      $("#start_date").prop('disabled', true);
-      $("#end_date").prop('disabled', true);
-      $("#button_ranger_date").prop('disabled', true);
+      $(this).parents('form').submit();
     }
   });
 
@@ -364,14 +362,18 @@ $(function()
 
 
   $('.table-remittances tbody td').click(function(event) {
-    if(event.ctrlKey) {
-      var isSelected = $(this).hasClass('selected');
-      var startIndex = $(this).parent('tr').index();
-      var endIndex = startIndex;
-      var branchId = $(this).parent('tr').attr('data-branch');
-      var dateGroup = $(this).parent('tr').attr('data-date');
-      $tbodyEl = $(this).parents('tbody');
+    if(!event.ctrlKey && !event.shiftKey) {
+      return;
+    }
 
+    var isSelected = $(this).hasClass('selected');
+    var startIndex = $(this).parent('tr').index();
+    var endIndex = startIndex;
+    var branchId = $(this).parent('tr').attr('data-branch');
+    var dateGroup = $(this).parent('tr').attr('data-date');
+    $tbodyEl = $(this).parents('tbody');
+  
+    if(event.ctrlKey) {
       if($(this).hasClass('col-branch')) {
         endIndex = startIndex + $(this).attr('rowspan')*1;
       }else if($(this).hasClass('col-date')) {
@@ -379,28 +381,65 @@ $(function()
       }else {
         endIndex = startIndex + 1;
       }
-
-      for(var col = startIndex; col < endIndex; col++) {
-        if(isSelected) {
-          $tbodyEl.find('tr:eq(' + col + ') td').removeClass('selected');
+    }else if(event.shiftKey) {
+      if($('.table-remittances tbody td.selected').length == 0) {
+        endIndex = startIndex + 1;
+      }else {
+        startIndex = $('.table-remittances tbody td.selected:eq(4)').parent('tr').index();
+        if(endIndex > startIndex) {
+          endIndex += 1;
         }else {
-          $tbodyEl.find('tr:eq(' + col + ') td').addClass('selected');
+          startIndex += 1;
         }
       }
-
-      if($tbodyEl.find('tr[data-branch="' + branchId + '"] .selected').length > 1) {
-        $tbodyEl.find('tr[data-branch="' + branchId + '"] .col-branch').addClass('selected');
-      }else {
-        $tbodyEl.find('tr[data-branch="' + branchId + '"] .col-branch').removeClass('selected');
+      if(startIndex > endIndex) {
+        var temp = endIndex;
+        endIndex = startIndex;
+        startIndex = temp;
       }
+      $tbodyEl.find('tr td').removeClass('selected');
+    }
 
-      if($tbodyEl.find('tr[data-branch="' + branchId + '"][data-date="' + dateGroup + '"] .selected').length > 1) {
-        $tbodyEl.find('tr[data-branch="' + branchId + '"][data-date="' + dateGroup + '"] .col-date').addClass('selected');
+    for(var col = startIndex; col < endIndex; col++) {
+      if(isSelected) {
+        $tbodyEl.find('tr:eq(' + col + ') td').removeClass('selected');
       }else {
-        $tbodyEl.find('tr[data-branch="' + branchId + '"][data-date="' + dateGroup + '"] .col-date').removeClass('selected');
+        $tbodyEl.find('tr:eq(' + col + ') td').addClass('selected');
       }
+    }
 
+    if($tbodyEl.find('tr[data-branch="' + branchId + '"] .selected').length > 1) {
+      $tbodyEl.find('tr[data-branch="' + branchId + '"] .col-branch').addClass('selected');
+    }else {
+      $tbodyEl.find('tr[data-branch="' + branchId + '"] .col-branch').removeClass('selected');
+    }
+
+    if($tbodyEl.find('tr[data-branch="' + branchId + '"][data-date="' + dateGroup + '"] .selected').length > 1) {
+      $tbodyEl.find('tr[data-branch="' + branchId + '"][data-date="' + dateGroup + '"] .col-date').addClass('selected');
+    }else {
+      $tbodyEl.find('tr[data-branch="' + branchId + '"][data-date="' + dateGroup + '"] .col-date').removeClass('selected');
+    }
+
+    $('.remitance-total td:eq(1) .total').text(getTotalColumn('col-retail'));
+    $('.remitance-total td:eq(2) .total').text(getTotalColumn('col-service'));
+    $('.remitance-total td:eq(4) .total').text(getTotalColumn('col-sale'));
+    $('.remitance-total td:eq(5) .total').text(getTotalColumn('col-remit'));
+
+    if($('.table-remittances tbody td.selected').length > 0) {
+      $('.btn-check-ok').prop('disabled', false);
+      $('.btn-save-ok').prop('disabled', false);
+    }else {
+      $('.btn-check-ok').prop('disabled', true);
+      $('.btn-save-ok').prop('disabled', true);
     }
   });
 
+  function getTotalColumn(colClass) {
+    var result = 0;
+    $('.table-remittances tbody td.selected.' + colClass).each(function(el, index) {
+      result += parseFloat($(this).text());
+    });
+
+    return result.toFixed(2);
+  }
 });

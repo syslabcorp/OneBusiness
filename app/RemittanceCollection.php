@@ -68,7 +68,7 @@ class RemittanceCollection extends Model
         }
       }
     }
-    return $startCRR;
+    return intval($startCRR);
   }
 
   protected static function boot() {
