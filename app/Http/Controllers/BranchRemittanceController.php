@@ -43,6 +43,8 @@ class BranchRemittanceController extends Controller
 
   public function show(Request $request, $id)
   {
+    $queries = $request->only(['status', 'shortage_only', 'remarks_only']);
+    $queries['status'] = empty($queries['status']) ? '0' : $queries['status'];
     $company = Corporation::findOrFail($request->corpID);
 
     $collectionModel = new RemittanceCollection;
@@ -52,7 +54,8 @@ class BranchRemittanceController extends Controller
 
     return view('t_remittances.show', [
       'collection' => $collection,
-      'company' => $company
+      'company' => $company,
+      'queries' => $queries
     ]);
   }
 
@@ -66,9 +69,9 @@ class BranchRemittanceController extends Controller
     if($shift->remittance)
     {
       $array = array(
-        "cashier"=> "",
+        "cashier"=> $shift->user ? $shift->user->UserName : "",
         "shift_id"=> $request->id,
-        "total_sales"=> "",
+        "total_sales"=> $shift->remittance->TotalSales,
         "total_shortage"=> $shift->remittance->Adj_Amt,
         'total_remittance'=> $shift->remittance->TotalRemit,
         'couterchecked'=> $shift->remittance->Sales_Checked,
