@@ -422,6 +422,7 @@ $(function()
 
     $('.remitance-total td:eq(1) .total').text(getTotalColumn('col-retail'));
     $('.remitance-total td:eq(2) .total').text(getTotalColumn('col-service'));
+    $('.remitance-total td:eq(3) .total').text(getTotalColumn('col-rental'));
     $('.remitance-total td:eq(4) .total').text(getTotalColumn('col-sale'));
     $('.remitance-total td:eq(5) .total').text(getTotalColumn('col-remit'));
 
@@ -437,9 +438,11 @@ $(function()
   function getTotalColumn(colClass) {
     var result = 0;
     $('.table-remittances tbody td.selected.' + colClass).each(function(el, index) {
-      result += parseFloat($(this).text());
+      if(parseFloat($(this).text())) {
+        result += parseFloat($(this).text());
+      }
     });
 
-    return result.toFixed(2);
+    return result.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 });

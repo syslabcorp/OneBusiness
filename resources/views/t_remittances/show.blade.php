@@ -23,7 +23,7 @@
             @include("t_remittances/modal")
             @include("t_remittances/footer")
               
-            <div class="row">
+            <div class="row text-right">
               <div class="pull-right col-md-3">
                 <button disabled="true" class="btn btn-primary btn-check-ok">Check Ok <br> Selection</button>
                 <button disabled="true" class="btn btn-success btn-save-ok">Save Ok <br> Selection</button>
