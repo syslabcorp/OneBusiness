@@ -62,17 +62,22 @@ class Branch extends Model
       $startCRR = 1;
       $company = \App\Company::findOrFail($corpID);
 
-      $remittanceModel = new \App\Remittance;
+      if($company->corp_type == 'ICAFE') {
+        $remittanceModel = new \App\Remittance;
+      }else {
+        $remittanceModel = new \App\KRemittance;
+      }
+
       $remittanceModel = $remittanceModel->setConnection($company->database_name);
-      $remittance = $remittanceModel->where('t_remitance.Branch', '=', $this->Branch)
-                                    ->where('t_remitance.Sales_Checked', '=', 0)
+      $remittance = $remittanceModel->where('Branch', '=', $this->Branch)
+                                    ->where('Sales_Checked', '=', 0)
                                     ->orderBy('Shift_ID', 'ASC')
                                     ->first();
       if($remittance) {
         $startCRR = $remittance->Shift_ID;
       }else {
-        $remittance = $remittanceModel->where('t_remitance.Branch', '=', $this->Branch)
-                                      ->where('t_remitance.Sales_Checked', '=', 1)
+        $remittance = $remittanceModel->where('Branch', '=', $this->Branch)
+                                      ->where('Sales_Checked', '=', 1)
                                       ->orderBy('Shift_ID', 'DESC')
                                       ->first();
         if($remittance) {

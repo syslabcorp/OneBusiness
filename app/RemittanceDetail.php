@@ -18,23 +18,30 @@ class RemittanceDetail extends Model
   public function shifts($corpID, $queries = []) {
     $company = \App\Company::findOrFail($corpID);
 
-    $shiftModel = new \App\Shift;
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+      $remittanceModel = new \App\Remittance;
+    }else {
+      $shiftModel = new \App\KShift;
+      $remittanceModel = new \App\KRemittance;
+    }
+    
     $shiftModel->setConnection($company->database_name);
 
-    $shifts = $shiftModel->whereBetween('t_shifts.Shift_ID', [$this->Start_CRR, $this->End_CRR])
-                         ->join('t_remitance', 't_remitance.Shift_ID', '=', 't_shifts.Shift_ID')
-                         ->where('t_shifts.Branch', '=', $this->Branch);
+    $shifts = $shiftModel->whereBetween("{$shiftModel->getTable()}.Shift_ID", [$this->Start_CRR, $this->End_CRR])
+                         ->join("{$remittanceModel->getTable()}", "{$remittanceModel->getTable()}.Shift_ID", '=', "{$shiftModel->getTable()}.Shift_ID")
+                         ->where("{$shiftModel->getTable()}.Branch", '=', $this->Branch);
     
     if($queries['status'] != 'all') {
-      $shifts = $shifts->where('t_remitance.Sales_Checked', '=', $queries['status']);
+      $shifts = $shifts->where("{$remittanceModel->getTable()}.Sales_Checked", '=', $queries['status']);
     }
 
     if($queries['remarks_only'] == 1) {
-      $shifts = $shifts->whereNotNull('t_remitance.Notes');
+      $shifts = $shifts->whereNotNull("{$remittanceModel->getTable()}.Notes");
     }
 
     if($queries['shortage_only'] == 1) {
-      $shifts = $shifts->where('t_remitance.TotalSales', '>', 't_remitance.TotalRemit');
+      $shifts = $shifts->whereRaw("{$remittanceModel->getTable()}.TotalSales > {$remittanceModel->getTable()}.TotalRemit");
     }
 
     $shifts = $shifts->get();

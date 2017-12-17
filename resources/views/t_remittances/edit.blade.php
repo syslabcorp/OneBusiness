@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h4>BRANCH LIST</h4>
+                <h4>Edit Transaction: {{ $collection->ID }}</h4>
               </div>
               <div class="col-xs-3">
               <form class="pull-right form-status" method="GET">

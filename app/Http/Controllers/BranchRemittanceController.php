@@ -62,7 +62,12 @@ class BranchRemittanceController extends Controller
   public function  renderModal(Request $request) {
     $company = \App\Company::findOrFail($request->corpID);
 
-    $shiftModel = new \App\Shift;
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+    }else {
+      $shiftModel = new \App\KShift;
+    }
+
     $shiftModel->setConnection($company->database_name);
     $shift = $shiftModel->where('Shift_ID', $request->id)->first();
 
@@ -248,7 +253,12 @@ class BranchRemittanceController extends Controller
   {
     $company = \App\Company::findOrFail($request->corpID);
     
-    $shiftModel = new \App\Shift;
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+    }else {
+      $shiftModel = new \App\KShift;
+    }
+
     $shiftModel->setConnection($company->database_name);
     $shift = $shiftModel->where('Shift_ID', $request->Shift_ID)->first();
 
@@ -278,7 +288,8 @@ class BranchRemittanceController extends Controller
     }
     
     \Session::flash('success', "Remittance has been updated successfully.");
-    return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID]);
+    return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID,
+      'status' => $request->status, 'shortage_only' => $request->shortage_only, 'remarks_only' => $request->remarks_only]);
   }
 
   public function destroy(Request $request, $id){

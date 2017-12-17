@@ -68,13 +68,14 @@
       </tr>
     </thead>
     <tbody>
+      @php $totalShifts = 0 @endphp
       @foreach($collection->details()->get() as $detail)
         @foreach($detail->shifts($company->corp_id, $queries) as $branch => $shifts_by_date)
           @php $index_branch = $loop->index @endphp
 
           @php $count = 0 @endphp
           @foreach($shifts_by_date as $date => $shifts)
-            @php $count += count($shifts) @endphp
+            @php $count += count($shifts); $totalShifts += count($shifts); @endphp
           @endforeach
           
           @foreach($shifts_by_date as $date => $shifts)
@@ -117,8 +118,10 @@
                 <td>
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
                 <td>
-                  @if($shift->remittance)
-                    {{ round($shift->remittance->TotalSales - $shift->remittance->TotalRemit , 2) }}
+                  @if($shift->remittance->TotalSales < $shift->remittance->TotalRemit)
+                    {{ number_format($shift->remittance->TotalSales - $shift->remittance->TotalRemit , 2) }}
+                  @else
+                    {{ number_format($shift->remittance->TotalRemit - $shift->remittance->TotalSales , 2) }}
                   @endif
                 </td>
                 <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
@@ -133,6 +136,13 @@
           @endforeach
         @endforeach
       @endforeach
+      @if($totalShifts == 0)
+      <tr>
+        <td colspan="17">
+          No items
+        </td>
+      </tr>
+      @endif
     </tbody>
   </table>
 </div>
