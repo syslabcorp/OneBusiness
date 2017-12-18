@@ -13,8 +13,9 @@
               </div>
               <div class="col-xs-3">
                 <div class="pull-right">
-                  <a href="{{ route('branch_remittances.create', ['corpID' => $corpID]) }}">Add Collection</a>
-                  
+                  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 15, 'A'))
+                  <a href="{{ route('branch_remittances.create', $queries) }}">Add Collection</a>
+                  @endif
                 </div> 
               </div>
             </div>
@@ -24,6 +25,7 @@
             <div class="row" style="margin-bottom: 20px;">
               <form class="col-xs-3 pull-right" method="GET">
                 <select name="status" class="form-control" >
+                  <option value="checked">All</option>
                   <option value="checked">Checked</option>
                   <option value="unchecked">Unchecked</option>
                 </select>
@@ -49,24 +51,24 @@
                       <input type="checkbox" name="status" id="" onclick="return false;" >
                     </td>
                     <td>
-
-                      <a href="{{ route('branch_remittances.show', [$collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
-                        class="btn btn-success btn-xs"
+                      <a href="{{ route('branch_remittances.show', array_merge([$collection], $queries)) }}" style="margin-right: 10px;" 
+                        class="btn btn-success btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'V') ? "" : "disabled" }}"
                         title="View">
                         <i class="fa fa-eye"></i>
                       </a>
 
-                      <a href="{{ route('branch_remittances.edit', [$collection, 'corpID' => $corpID]) }}" style="margin-right: 10px;" 
-                        class="btn btn-primary btn-xs"
+                      <a href="{{ route('branch_remittances.edit', array_merge([$collection], $queries)) }}" style="margin-right: 10px;" 
+                        class="btn btn-primary btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'E') ? "" : "disabled" }}"
                         title="Edit">
                         <i class="fa fa-pencil"></i>
                       </a>
 
-                      <form action="{{ route('branch_remittances.destroy', [$collection, 'corpID' => $corpID]) }}" method="POST"
+                      <form action="{{ route('branch_remittances.destroy', array_merge([$collection], $queries)) }}" method="POST"
                         style="display: inline-block;">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
-                        <button style="margin-right: 10px;" class="btn btn-danger btn-xs" title="Delete" data-id="{{ $collection->ID }}">
+                        <button style="margin-right: 10px;"  title="Delete" data-id="{{ $collection->ID }}"
+                        class="btn btn-danger btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'D') ? "" : "disabled" }}" >
                           <i class="fa fa-trash"></i>
                         </button>
                       </form>

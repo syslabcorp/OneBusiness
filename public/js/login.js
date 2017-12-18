@@ -317,7 +317,7 @@ $(function()
     var self = $(this);
     $id = $(this).attr("data-shift-id");
     $.ajax({
-      url: '/branch_remittances/render_modal',
+      url: '/OneBusiness/branch_remittances/render_modal',
       type: "POST",
       data: { 'id': $id, corpID: self.attr('data-corp'), _token },
       success: function(res){

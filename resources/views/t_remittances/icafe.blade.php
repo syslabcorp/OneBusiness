@@ -81,7 +81,7 @@
           @foreach($shifts_by_date as $date => $shifts)
             @php $index = $loop->index @endphp
             @foreach($shifts as $shift)
-              <tr data-branch="{{ $shift->branch->Branch }}" data-date="{{ $date }}">
+              <tr data-branch="{{ $shift->branch->Branch }}" data-date="{{ $date }}" data-id="{{ $shift->Shift_ID }}">
                 @if($index == 0 && $loop->index == 0)
                   <td class="col-branch" rowspan="{{$count}}">{{$shift->branch->ShortName}}</td>
                 @endif
@@ -122,7 +122,8 @@
                 </td>
                 <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" 
+                  <button type="button" class="btn btn-primary show_modal {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 15, 'E') ? "" : "disabled" }}" 
+                    data-shift-id="{{$shift->Shift_ID}}" 
                     data-toggle="modal" data-target="#Modal" data-corp="{{ $company->corp_id }}">
                     <i class="fa fa-pencil"></i>
                   </button>

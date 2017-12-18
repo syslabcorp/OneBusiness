@@ -24,8 +24,12 @@
               
             <div class="row text-right">
               <div class="pull-right col-md-3">
-                <button disabled="true" class="btn btn-primary btn-check-ok">Check Ok <br> Selection</button>
-                <button disabled="true" class="btn btn-success btn-save-ok">Save Ok <br> Selection</button>
+                <button disabled="true" class="btn btn-primary btn-check-ok {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 16, 'E') ? "" : "disabled" }}">
+                  Check Ok <br> Selection
+                </button>
+                <button disabled="true" class="btn btn-success btn-save-ok {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 16, 'E') ? "" : "disabled" }}">
+                  Save Ok <br> Selection
+                </button>
               </div>
             </div>
 
