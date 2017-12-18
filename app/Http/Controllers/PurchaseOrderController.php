@@ -8,10 +8,6 @@ use URL;
 use Twilio;
 use Nexmo;
 use Hash;
-use App\POTemplate6;
-use App\POTemplate7;
-use App\POTemplateDetail6;
-use App\POTemplateDetail7;
 use App\UserArea;
 use App\PoModel;
 use Session;
@@ -164,6 +160,7 @@ class PurchaseOrderController extends Controller
         if (Request::isMethod('post')) {
             $formData = Request::all();
             $p_id = isset($formData['ids']) ? $formData['ids'] : array();
+            $retail_itemsArray = isset($formData['retail_itemsArray']) ? $formData['retail_itemsArray'] : array();
             $inventory = array();
             foreach($p_id AS $pid){
                 $s_invtry_hdr = DB::table('s_invtry_hdr')->where('Prod_Line',$pid)->where('Active',1)->orderBy('ItemCode')->get();
@@ -187,6 +184,7 @@ class PurchaseOrderController extends Controller
                 array_push($proitems_ids, $retailSelected->po_tmpl8_item);
             }
             $data['proitems_ids'] = $proitems_ids;
+            $data['retail_itemsArray']=$retail_itemsArray;
         }
         return view('accesslevel.retail_items',$data);
     }
