@@ -36,8 +36,9 @@ class RemittanceDetail extends Model
       $shifts = $shifts->where("{$remittanceModel->getTable()}.Sales_Checked", '=', $queries['status']);
     }
 
-    if($queries['remarks_only'] == 1 && $company->corp_type == 'ICAFE') {
-      $shifts = $shifts->whereNotNull("{$remittanceModel->getTable()}.Notes");
+    if($queries['remarks_only'] == 1) {
+      $shifts = $shifts->whereNotNull("{$remittanceModel->getTable()}.Notes")
+                       ->where("{$remittanceModel->getTable()}.Notes", "<>", "");
     }
 
     if($queries['shortage_only'] == 1) {

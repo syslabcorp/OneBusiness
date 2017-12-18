@@ -21,7 +21,6 @@
             @endif
             
             @include("t_remittances/modal")
-            @include("t_remittances/footer")
               
             <div class="row text-right">
               <div class="pull-right col-md-3">

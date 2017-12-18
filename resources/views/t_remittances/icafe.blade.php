@@ -92,24 +92,24 @@
                 <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
                 <td>{{ $shift->user ? $shift->user->UserName : "" }}</td>
                 <td class="col-retail">
-                  {{ $shift->remittance ? round($shift->remittance->Sales_TotalSales, 2) : "" }}
+                  {{ $shift->remittance ? number_format($shift->remittance->Sales_TotalSales, 2) : "" }}
                 </td>
                 <td class="col-service">
-                  {{ $shift->remittance ? round($shift->remittance->Serv_TotalSales, 2) : "" }}
+                  {{ $shift->remittance ? number_format($shift->remittance->Serv_TotalSales, 2) : "" }}
                 </td>
                 <td class="col-rental">
-                  {{ $shift->remittance ? round($shift->remittance->Games_TotalSales, 2) : "" }}
+                  {{ $shift->remittance ? number_format($shift->remittance->Games_TotalSales, 2) : "" }}
                 </td>
                 <td>
-                  {{ $shift->remittance ? round($shift->remittance->Net_TotalSales, 2) : "" }}
+                  {{ $shift->remittance ? number_format($shift->remittance->Net_TotalSales, 2) : "" }}
                 </td>
                 <td class="col-sale">
-                  {{ $shift->remittance ? round($shift->remittance->TotalSales, 2) : "" }}
+                  {{ $shift->remittance ? number_format($shift->remittance->TotalSales, 2) : "" }}
                 </td>
                 <td class="col-remit">
-                  {{ $shift->remittance ? round($shift->remittance->TotalRemit, 2) : "" }}
+                  {{ $shift->remittance ? number_format($shift->remittance->TotalRemit, 2) : "" }}
                 </td>
-                <td>
+                <td class="col-clr">
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Sales_Checked == 1 ? "checked" : "") : "" }} onclick="return false;" >
                 </td>
                 <td>
@@ -118,11 +118,7 @@
                 <td>
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
                 <td>
-                  @if($shift->remittance->TotalSales < $shift->remittance->TotalRemit)
-                    {{ number_format($shift->remittance->TotalSales - $shift->remittance->TotalRemit , 2) }}
-                  @else
-                    {{ number_format($shift->remittance->TotalRemit - $shift->remittance->TotalSales , 2) }}
-                  @endif
+                  {{ number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2) }}
                 </td>
                 <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
                 <td>
@@ -144,6 +140,19 @@
       </tr>
       @endif
     </tbody>
+  </table>
+</div>
+
+<div class="row remitance-total">
+  <table class="table table-triped">
+    <tr>
+      <td><strong>Auto Total</strong></td>
+      <td>Total Retail: <span class="total">0</span></td>
+      <td>Total Service: <span class="total">0</span></td>
+      <td>Total Rental: <span class="total">0</span></td>
+      <td>Total Sales: <span class="total">0</span></td>
+      <td>Total Remit: <span class="total">0</span></td>
+    </tr>
   </table>
 </div>
 

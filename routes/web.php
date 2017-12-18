@@ -145,5 +145,7 @@ Route::any('/retail_items', 'PurchaseOrderController@retail_items');
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
        ->middleware('auth')->name('branch_remittances.collections.store');
+Route::put('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittances')
+       ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 

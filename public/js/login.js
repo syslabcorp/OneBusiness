@@ -435,11 +435,40 @@ $(function()
     }
   });
 
+  $('.btn-check-ok').click(function(event) {
+    $('.table-remittances tbody tr').each(function(el) {
+      $(this).find('.col-clr.selected input').prop('checked', true);
+    });
+  });
+
+  $('.btn-save-ok').click(function(event) {
+    var shiftIds = [];
+    $('.table-remittances tbody tr').each(function(el) {
+      if($(this).find('td:eq(4).selected').length > 0) {
+        shiftIds.push($(this).attr('data-id'));
+      }
+    });
+
+    var _token = $("input[name='_token']").val();
+
+    $.ajax({
+      url: window.location.pathname + '/remittances' + window.location.search,
+      type: "POST",
+      data: { shiftIds: shiftIds, _method: "PUT", _token },
+      success: function(res){
+        window.location.reload();
+      },
+      error: function(res) {
+        window.location.reload();
+      }
+    });
+  });
+
   function getTotalColumn(colClass) {
     var result = 0;
     $('.table-remittances tbody td.selected.' + colClass).each(function(el, index) {
       if(parseFloat($(this).text())) {
-        result += parseFloat($(this).text());
+        result += parseFloat($(this).text().replace(/\,/, ""));
       }
     });
 

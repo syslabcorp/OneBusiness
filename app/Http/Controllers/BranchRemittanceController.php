@@ -59,7 +59,7 @@ class BranchRemittanceController extends Controller
     ]);
   }
 
-  public function  renderModal(Request $request) {
+  public function renderModal(Request $request) {
     $company = \App\Company::findOrFail($request->corpID);
 
     if($company->corp_type == 'ICAFE') {
@@ -290,6 +290,28 @@ class BranchRemittanceController extends Controller
     \Session::flash('success', "Remittance has been updated successfully.");
     return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID,
       'status' => $request->status, 'shortage_only' => $request->shortage_only, 'remarks_only' => $request->remarks_only]);
+  }
+
+  public function updateRemittances(Request $request) {
+    $company = \App\Company::findOrFail($request->corpID);
+    
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+    }else {
+      $shiftModel = new \App\KShift;
+    }
+
+    $shiftModel->setConnection($company->database_name);
+
+    foreach($request->shiftIds as $shiftId) {
+      $shift = $shiftModel->where('Shift_ID', $shiftId)->first();
+
+      if ($shift->remittance) {
+        $shift->remittance()->update(['Sales_Checked' => 1]);
+      }
+    }
+
+    return response()->json(["success" => true]);
   }
 
   public function destroy(Request $request, $id){
