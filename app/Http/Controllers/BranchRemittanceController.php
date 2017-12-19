@@ -16,6 +16,7 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
+    $queries = $request->only('corpID', 'start_date', 'end_date');
     $company = Corporation::findOrFail($request->corpID);
 
     $collections = new RemittanceCollection;
@@ -37,12 +38,18 @@ class BranchRemittanceController extends Controller
       'corpID' => $request->corpID,
       'collections' => $collections->get(),
       'start_date' => $request->start_date,
-      'end_date' => $request->end_date
+      'end_date' => $request->end_date,
+      'queries' => $queries
     ]);
   }
 
   public function show(Request $request, $id)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
     $queries = $request->only(['status', 'shortage_only', 'remarks_only']);
     $queries['status'] = empty($queries['status']) ? '0' : $queries['status'];
     $company = Corporation::findOrFail($request->corpID);
@@ -108,6 +115,14 @@ class BranchRemittanceController extends Controller
 
   public function create(Request $request, $id = null)
   {
+
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
+    $queries = $request->only('corpID', 'start_date', 'end_date');
+
     $corp = Corporation::find($request->corpID);
     $groupIds = explode(",", \Auth::user()->group_ID);
     $selectStatus = $request->groupStatus != null ? $request->groupStatus : 1;
@@ -165,11 +180,17 @@ class BranchRemittanceController extends Controller
       'selectCity' => $selectCity,
       'branchs' => $branchs,
       'selectStatus' => $selectStatus,
-      'collection' => $collection
+      'collection' => $collection,
+      'queries' => $queries
     ]);
   }
 
   public function edit(Request $request, $id) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'E')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
     return $this->create($request, $id);
   }
 
@@ -300,7 +321,6 @@ class BranchRemittanceController extends Controller
     }else {
       $shiftModel = new \App\KShift;
     }
-
     $shiftModel->setConnection($company->database_name);
 
     foreach($request->shiftIds as $shiftId) {
@@ -315,6 +335,14 @@ class BranchRemittanceController extends Controller
   }
 
   public function destroy(Request $request, $id){
+
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'D')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
+    $queries = $request->only('corpID', 'start_date', 'end_date');
+
     $company = Corporation::findOrFail($request->corpID);
     $collectionModel = new \App\RemittanceCollection;
     $collectionModel->setConnection($company->database_name);
@@ -323,6 +351,6 @@ class BranchRemittanceController extends Controller
     $collection->delete();
 
     \Session::flash('success', "Remittance collections has been deleted successfully.");
-    return redirect(route('branch_remittances.index', [ 'corpID' => $request->corpID]));
+    return redirect(route('branch_remittances.index', $queries));
   }
 }

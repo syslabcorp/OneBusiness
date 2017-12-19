@@ -137,7 +137,7 @@
             @endif
 
             <div class="row">
-              <a class="btn btn-default" href="{{ route('branch_remittances.index', ['corpID' => $corpID]) }}">
+              <a class="btn btn-default" href="{{ route('branch_remittances.index', $queries) }}">
                 <i class="fa fa-reply"></i>
                 Back
               </a>
