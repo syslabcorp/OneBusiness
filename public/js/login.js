@@ -321,7 +321,7 @@ $(function()
       success: function(res){
         $('#cashier').html(res.cashier);
         $('#shift_id').html(res.shift_id);
-        $('#total_sales').html(res.total_sales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#total_sales').html(res.total_sales);
         $('#total_shortage').html(res.total_shortage);
         $('#total_remittance').val(res.total_remittance.toFixed(2));
         if(res.couterchecked == 1) {

@@ -83,7 +83,7 @@ class BranchRemittanceController extends Controller
       $array = array(
         "cashier"=> $shift->user ? $shift->user->UserName : "",
         "shift_id"=> str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT),
-        "total_sales"=> $shift->remittance->TotalSales,
+        "total_sales"=> number_format($shift->remittance->TotalSales, 2),
         "total_shortage"=> number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2),
         'total_remittance'=> round($shift->remittance->TotalRemit, 2),
         'couterchecked'=> $shift->remittance->Sales_Checked,
