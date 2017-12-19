@@ -13,7 +13,7 @@
               </div>
               <div class="col-xs-3">
                 <div class="pull-right">
-                  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 15, 'A'))
+                  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 22, 'A'))
                   <a href="{{ route('branch_remittances.create', $queries) }}">Add Collection</a>
                   @endif
                 </div> 
@@ -58,7 +58,7 @@
                       </a>
 
                       <a href="{{ route('branch_remittances.edit', array_merge([$collection], $queries)) }}" style="margin-right: 10px;" 
-                        class="btn btn-primary btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'E') ? "" : "disabled" }}"
+                        class="btn btn-primary btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "" : "disabled" }}"
                         title="Edit">
                         <i class="fa fa-pencil"></i>
                       </a>
@@ -68,7 +68,7 @@
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
                         <button style="margin-right: 10px;"  title="Delete" data-id="{{ $collection->ID }}"
-                        class="btn btn-danger btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'D') ? "" : "disabled" }}" >
+                        class="btn btn-danger btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'D') ? "" : "disabled" }}" >
                           <i class="fa fa-trash"></i>
                         </button>
                       </form>

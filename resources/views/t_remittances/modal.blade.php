@@ -65,7 +65,7 @@
               <div class="col-xs-3 ">
               <p class="text-right">
                 <strong>
-                  Total Shortage
+                  Shortage
                 </strong>
               </p>
               
@@ -79,9 +79,11 @@
             
           <div class="form-group">
             <div class="row">
-              <label  class="col-sm-3 control-label">Total Remittnace</label>
+              <label  class="col-sm-3 control-label">Total Remittance</label>
               <div class="col-xs-9">
-                  <input type="number" id="total_remittance" name="TotalRemit" class="form-control" value=""/>
+                  <input type="number" id="total_remittance" name="TotalRemit" 
+                    class="form-control " value=""
+                    {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 17, 'E') ? "" : "readonly" }}>
               </div>
             </div>
             
@@ -104,7 +106,8 @@
               <div class="col-xs-3">
                 <div class="checkbox">
                   <label for="wrong_input">
-                    <input type="checkbox" id="wrong_input" name="Wrong_Input" id="" value="1" >
+                    <input type="checkbox" id="wrong_input" name="Wrong_Input" id="" value="1"
+                      onclick="{{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 17, 'E') ? "" : "return false" }}">
                     Wrong Input
                   </label>
                 </div>
@@ -118,14 +121,16 @@
               <div class="col-xs-3" style="padding-right: 0px;">
                   <div class="checkbox">
                     <label for="adj_short">
-                      <input type="checkbox" id="adj_short"  value="1" name="Adj_Short" >
+                      <input type="checkbox" id="adj_short"  value="1" name="Adj_Short"
+                        onclick="{{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 21, 'E') ? "" : "return false" }}">
                       Adjust Shortage
                     </label>
                   </div>
                 </div>
 
                 <div class="col-xs-9">
-                  <input type="text" id="shortage" name="Adj_Amt" class="form-control">
+                  <input type="text" id="shortage" name="Adj_Amt" class="form-control"
+                    {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 21, 'E') ? "" : "readonly" }}>
                 </div>
             </div>
           </div>

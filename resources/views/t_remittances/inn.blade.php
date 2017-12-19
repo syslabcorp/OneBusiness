@@ -86,7 +86,7 @@
                 @if($loop->index == 0 )
                   <td class="col-date" rowspan="{{count($shifts)}}">{{$date}}</td>
                 @endif
-                <td>{{ $shift->Shift_ID }}</td>
+                <td>{{ str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT) }}</td>
                 <td>{{ date("h:i A", strtotime($shift->shift_start) ) }}</td>
                 <td>{{ $shift->user ? $shift->user->UserName : "" }}</td>
                 <td class="col-retail">
