@@ -82,10 +82,10 @@ class BranchRemittanceController extends Controller
     {
       $array = array(
         "cashier"=> $shift->user ? $shift->user->UserName : "",
-        "shift_id"=> $request->id,
+        "shift_id"=> str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT),
         "total_sales"=> $shift->remittance->TotalSales,
-        "total_shortage"=> $shift->remittance->Adj_Amt,
-        'total_remittance'=> $shift->remittance->TotalRemit,
+        "total_shortage"=> number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2),
+        'total_remittance'=> round($shift->remittance->TotalRemit, 2),
         'couterchecked'=> $shift->remittance->Sales_Checked,
         'wrong_input'=> $shift->remittance->Wrong_Input,
         'adj_short'=> $shift->remittance->Adj_Short,
@@ -116,7 +116,7 @@ class BranchRemittanceController extends Controller
   public function create(Request $request, $id = null)
   {
 
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'A')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'A')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }
@@ -186,7 +186,7 @@ class BranchRemittanceController extends Controller
   }
 
   public function edit(Request $request, $id) {
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'E')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'E')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }
@@ -288,9 +288,9 @@ class BranchRemittanceController extends Controller
       'Sales_Checked'
     ]);
 
-    $params['Adj_Amt'] = $params['Adj_Amt'] ? $params['Adj_Amt'] : 0;
+    $params['Adj_Amt'] = $params['Adj_Amt'] ? abs($params['Adj_Amt'])*-1 : 0;
     $params['Sales_Checked'] = $params['Sales_Checked'] ? $params['Sales_Checked'] : 0;
-    
+
     $params['Branch'] = $shift->Branch;
 
     if (empty($params['Wrong_Input'])){
@@ -330,13 +330,13 @@ class BranchRemittanceController extends Controller
         $shift->remittance()->update(['Sales_Checked' => 1]);
       }
     }
-
+    \Session::flash('success', "Remittance records successfully checked and updated");
     return response()->json(["success" => true]);
   }
 
   public function destroy(Request $request, $id){
 
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'D')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'D')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }

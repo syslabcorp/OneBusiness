@@ -289,12 +289,6 @@ $(function()
     if(!$.isNumeric($('#shortage').val()) && $('#adj_short')[0].checked) {
       $('#shortage').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a number.</i>')
       $continue = false;
-    }else {
-      if(parseFloat( $('#shortage').val() )  > 0  && $('#adj_short')[0].checked)
-      {
-        $('#shortage').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a negative number.</i>')
-        $continue = false;
-      }
     }
 
     if( !$.isNumeric( $('#total_remittance').val() )  )
@@ -316,16 +310,20 @@ $(function()
     var _token = $("meta[name='csrf-token']").attr("content");
     var self = $(this);
     $id = $(this).attr("data-shift-id");
+    var url = "/branch_remittances/render_modal";
+    if(window.location.pathname.match(/OneBusiness/)) {
+      url = '/OneBusiness' + url; 
+    }
     $.ajax({
-      url: '/OneBusiness/branch_remittances/render_modal',
+      url: url,
       type: "POST",
       data: { 'id': $id, corpID: self.attr('data-corp'), _token },
       success: function(res){
         $('#cashier').html(res.cashier);
         $('#shift_id').html(res.shift_id);
-        $('#total_sales').html(res.total_sales);
+        $('#total_sales').html(res.total_sales.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#total_shortage').html(res.total_shortage);
-        $('#total_remittance').val(res.total_remittance);
+        $('#total_remittance').val(res.total_remittance.toFixed(2));
         if(res.couterchecked == 1) {
           $('#counterchecker').prop( "checked", true );
         }else {
