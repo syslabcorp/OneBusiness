@@ -351,7 +351,6 @@ $(function()
           $("#shortage").prop('disabled', true);
         }
         $('#remarks').val(res.remarks);
-        $('#remarks').prop("disabled", true);
         $('#hidden_shift_id').val(res.shift_id);
       }
 

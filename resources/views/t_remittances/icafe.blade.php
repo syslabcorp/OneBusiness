@@ -118,7 +118,11 @@
                 <td>
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
                 <td>
-                  {{ number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2) }}
+                  @if($shift->remittance->Adj_Short == 1)
+                    {{ number_format($shift->remittance->Adj_Amt, 2) }}
+                  @else
+                    {{ number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2) }}
+                  @endif
                 </td>
                 <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
                 <td>
