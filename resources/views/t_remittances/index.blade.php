@@ -89,7 +89,9 @@
                   <input type="hidden" name="corpID" value="{{$corpID}}">
                   <div class="checkbox col-xs-12">
                     <label for="view_date_range" class="control-label">
-                      <input type="checkbox" {{$start_date || $end_date ? 'checked': ""}} id="view_date_range" value="1">
+                      <input type="hidden" value="0" name="view_date_range">
+                      <input type="checkbox" {{$start_date || $end_date ? 'checked': ""}} id="view_date_range" value="1"
+                        name="view_date_range">
                       View by Date Range
                     </label>
                   </div>

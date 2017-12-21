@@ -16,7 +16,18 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
-    $queries = $request->only('corpID', 'start_date', 'end_date');
+    $queries = $request->only('corpID', 'start_date', 'end_date', 'view_date_range');
+    if($queries['view_date_range'] == 1) {
+      session($queries);
+    }else {
+      if($queries['view_date_range'] == null) {
+        $queries['start_date'] = session('start_date');
+        $queries['end_date'] = session('end_date');
+      }else {
+        session(['view_date_range' => null, 'start_date' => null, 'end_date' => null]);
+      }
+    }
+
     $company = Corporation::findOrFail($request->corpID);
 
     $collections = new RemittanceCollection;
@@ -37,8 +48,8 @@ class BranchRemittanceController extends Controller
     return view('t_remittances.index', [
       'corpID' => $request->corpID,
       'collections' => $collections->get(),
-      'start_date' => $request->start_date,
-      'end_date' => $request->end_date,
+      'start_date' => $queries['start_date'],
+      'end_date' => $queries['end_date'],
       'queries' => $queries
     ]);
   }
@@ -285,7 +296,7 @@ class BranchRemittanceController extends Controller
 
     $params = $request->only([
       'Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Adj_Amt',
-      'Sales_Checked'
+      'Sales_Checked', 'Notes'
     ]);
 
     $params['Adj_Amt'] = $params['Adj_Amt'] ? abs($params['Adj_Amt'])*-1 : 0;

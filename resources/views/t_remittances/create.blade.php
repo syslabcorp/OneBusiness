@@ -15,7 +15,7 @@
               <form class="pull-right form-status" method="GET">
                 <select class="form-control" >
                   <option value="1">Active</option>
-                  <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Unchecked</option>
+                  <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
               </form>
               </div>
