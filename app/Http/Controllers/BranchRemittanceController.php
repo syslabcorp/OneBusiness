@@ -16,7 +16,9 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
-    $queries = $request->only('corpID', 'start_date', 'end_date', 'view_date_range');
+    $queries = $request->only('corpID', 'start_date', 'end_date', 'view_date_range', 'status');
+
+    $queries['status'] = empty($queries['status']) ? 'unchecked' : $queries['status'];
     if($queries['view_date_range'] == 1) {
       session($queries);
     }else {
@@ -35,6 +37,14 @@ class BranchRemittanceController extends Controller
 
     if(!\Auth::user()->isAdmin()) {
       $collections = $collections->where('TellerID', '=', \Auth::user()->UserID);
+    }
+
+    if($queries['status'] == 'unchecked') {
+      $collections = $collections->where("Status", "=", "0");
+    }
+
+    if($queries['status'] == 'checked') {
+      $collections = $collections->where("Status", "=", "1");
     }
 
     if($request->start_date) {
@@ -343,6 +353,23 @@ class BranchRemittanceController extends Controller
     }
     \Session::flash('success', "Remittance records successfully checked and updated");
     return response()->json(["success" => true]);
+  }
+
+  public function updateRemittanceStatus(Request $request, $id) {
+    $company = Corporation::findOrFail($request->corpID);
+
+    $collection = new \App\RemittanceCollection;
+    $collection->setConnection($company->database_name);
+    $collection = $collection->findOrFail($id);
+
+    if(md5($request->password) == \Auth::user()->passwrd) {
+      $collection->update(['Status' => !$collection->Status]);
+      \Session::flash('success', "Collection status has been update successfully");
+    }else {
+      \Session::flash('error', "Confirm password is invalid");
+    }
+
+    return redirect($request->redirect);
   }
 
   public function destroy(Request $request, $id){

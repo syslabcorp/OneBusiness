@@ -17,7 +17,6 @@ class RemittanceDetail extends Model
 
   public function shifts($corpID, $queries = []) {
     $company = \App\Company::findOrFail($corpID);
-
     if($company->corp_type == 'ICAFE') {
       $shiftModel = new \App\Shift;
       $remittanceModel = new \App\Remittance;
@@ -36,13 +35,20 @@ class RemittanceDetail extends Model
       $shifts = $shifts->where("{$remittanceModel->getTable()}.Sales_Checked", '=', $queries['status']);
     }
 
-    if($queries['remarks_only'] == 1) {
-      $shifts = $shifts->whereNotNull("{$remittanceModel->getTable()}.Notes")
-                       ->where("{$remittanceModel->getTable()}.Notes", "<>", "");
-    }
-
-    if($queries['shortage_only'] == 1) {
-      $shifts = $shifts->whereRaw("{$remittanceModel->getTable()}.TotalSales > {$remittanceModel->getTable()}.TotalRemit");
+    if($queries['remarks_only'] == 1 && $queries['shortage_only'] == 1) {
+      $shifts = $shifts->where(function($query) use($remittanceModel) {
+        return $query->whereRaw("{$remittanceModel->getTable()}.TotalSales > {$remittanceModel->getTable()}.TotalRemit")
+                     ->orWhere("{$remittanceModel->getTable()}.Notes", "<>", "");
+      });
+    }else {
+      if($queries['remarks_only'] == 1) {
+        $shifts = $shifts->whereNotNull("{$remittanceModel->getTable()}.Notes")
+                        ->where("{$remittanceModel->getTable()}.Notes", "<>", "");
+      }
+  
+      if($queries['shortage_only'] == 1) {
+        $shifts = $shifts->whereRaw("{$remittanceModel->getTable()}.TotalSales > {$remittanceModel->getTable()}.TotalRemit");
+      }
     }
 
     $shifts = $shifts->get();
