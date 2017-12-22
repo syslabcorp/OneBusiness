@@ -160,7 +160,11 @@
 @section('pageJS')
 <script type="text/javascript">
   $('.table').on("click", ".col-status", function(event) {
-    $('#modal-confirm-password form').attr('action', '/branch_remittances/' + $(this).attr('data-id') +  '/remittances')
+    var url = '/branch_remittances/' + $(this).attr('data-id') +  '/remittances';
+    if(window.location.pathname.match(/OneBusiness/)) {
+      url = '/OneBusiness' + url; 
+    }
+    $('#modal-confirm-password form').attr('action', url)
     $('#modal-confirm-password input[name="redirect"]').val(window.location.href);
     $('#modal-confirm-password').modal("show");
   });
