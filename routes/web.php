@@ -147,5 +147,7 @@ Route::post('branch_remittances/collections', 'BranchRemittanceController@storeC
        ->middleware('auth')->name('branch_remittances.collections.store');
 Route::put('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittances')
        ->middleware('auth');
+Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittanceStatus')
+       ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 

@@ -23,11 +23,11 @@
 
           <div class="panel-body" style="margin: 30px 0px;">
             <div class="row" style="margin-bottom: 20px;">
-              <form class="col-xs-3 pull-right" method="GET">
-                <select name="status" class="form-control" >
-                  <option value="checked">All</option>
-                  <option value="checked">Checked</option>
-                  <option value="unchecked">Unchecked</option>
+              <form class="col-xs-3 pull-right">
+                <select name="status" class="form-control" id="filter-status">
+                  <option value="all">All</option>
+                  <option value="checked" {{ $queries['status'] == "checked" ? "selected" : "" }}>Checked</option>
+                  <option value="unchecked" {{ $queries['status'] == "unchecked" ? "selected" : "" }} >Unchecked</option>
                 </select>
               </form>
             </div>
@@ -48,7 +48,8 @@
                     <td>{{ $collection->user->UserName }}</td>
                     <td>{{ $collection->Subtotal }}</td>
                     <td>
-                      <input type="checkbox" name="status" id="" onclick="return false;" >
+                      <input type="checkbox" name="status" class="{{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "col-status" : "" }}" onclick="return false;" data-id="{{ $collection->ID }}"
+                        {{ $collection->Status == 1 ? "checked" : ""}}>
                     </td>
                     <td>
                       <a href="{{ route('branch_remittances.show', array_merge([$collection], $queries)) }}" style="margin-right: 10px;" 
@@ -127,8 +128,43 @@
 </section>
 @endsection
 
+<div id="modal-confirm-password" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="form-horizontal" action="" role="form" method="POST">
+        {{ csrf_field() }}
+        <input type="hidden" name="redirect" value=""> 
+        <input type="hidden" name="corpID" value="{{ $corpID }}">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Confirm Password</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <div class="row">
+              <label for="" class="col-xs-3">Your Password</label>
+              <div class="col-xs-9">
+                <input type="password" name="password" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary">Verify</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 @section('pageJS')
 <script type="text/javascript">
+  $('.table').on("click", ".col-status", function(event) {
+    $('#modal-confirm-password form').attr('action', '/branch_remittances/' + $(this).attr('data-id') +  '/remittances')
+    $('#modal-confirm-password input[name="redirect"]').val(window.location.href);
+    $('#modal-confirm-password').modal("show");
+  });
+
   $('form').on("click", ".btn-danger", function(event){
     event.preventDefault();
     var collectionID = $(this).attr('data-id');
@@ -150,6 +186,10 @@
         self.parents('form').submit();
       }
     });
+  });
+
+  $('#filter-status').change(function(event) {
+    window.location = window.location.pathname + window.location.search.replace(/status=\w*&/g, "").replace(/&status=\w*/g, "") + "&status=" + $(this).val();
   });
 </script>
 @endsection

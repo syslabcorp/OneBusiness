@@ -108,7 +108,7 @@
                   <label for="wrong_input">
                     <input type="checkbox" id="wrong_input" name="Wrong_Input" id="" value="1"
                       onclick="{{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 17, 'E') ? "" : "return false" }}">
-                    Wrong Input {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 17, 'E') }}
+                    Wrong Input
                   </label>
                 </div>
               </div>
