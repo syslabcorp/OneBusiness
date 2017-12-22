@@ -25,6 +25,7 @@ class BranchRemittanceController extends Controller
       if($queries['view_date_range'] == null) {
         $queries['start_date'] = session('start_date');
         $queries['end_date'] = session('end_date');
+        $queries['status'] = session('status');
       }else {
         session(['view_date_range' => null, 'start_date' => null, 'end_date' => null]);
       }
@@ -362,12 +363,7 @@ class BranchRemittanceController extends Controller
     $collection->setConnection($company->database_name);
     $collection = $collection->findOrFail($id);
 
-    if(md5($request->password) == \Auth::user()->passwrd) {
-      $collection->update(['Status' => !$collection->Status]);
-      \Session::flash('success', "Collection status has been update successfully");
-    }else {
-      \Session::flash('error', "Confirm password is invalid");
-    }
+    $collection->update(['Status' => !$collection->Status]);
 
     return redirect($request->redirect);
   }

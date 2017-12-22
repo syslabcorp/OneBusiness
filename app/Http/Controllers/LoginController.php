@@ -19,6 +19,7 @@ class LoginController extends Controller
 
     public function username()
     {
+		session(['view_date_range' => null, 'start_date' => null, 'end_date' => null, 'status' => null]);
 		if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$email = $formData['email'];
