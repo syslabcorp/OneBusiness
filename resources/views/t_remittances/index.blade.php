@@ -52,19 +52,19 @@
                         {{ $collection->Status == 1 ? "checked" : ""}}>
                     </td>
                     <td>
-                      <a href="{{ route('branch_remittances.show', array_merge([$collection], $queries)) }}" style="margin-right: 10px;" 
+                      <a href="{{ route('branch_remittances.show', array_merge([$collection], ['corpID' => $corpID])) }}" style="margin-right: 10px;" 
                         class="btn btn-success btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'V') ? "" : "disabled" }}"
                         title="View">
                         <i class="fa fa-eye"></i>
                       </a>
 
-                      <a href="{{ route('branch_remittances.edit', array_merge([$collection], $queries)) }}" style="margin-right: 10px;" 
+                      <a href="{{ route('branch_remittances.edit', array_merge([$collection], ['corpID' => $corpID])) }}" style="margin-right: 10px;" 
                         class="btn btn-primary btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "" : "disabled" }}"
                         title="Edit">
                         <i class="fa fa-pencil"></i>
                       </a>
 
-                      <form action="{{ route('branch_remittances.destroy', array_merge([$collection], $queries)) }}" method="POST"
+                      <form action="{{ route('branch_remittances.destroy', array_merge([$collection], ['corpID' => $corpID])) }}" method="POST"
                         style="display: inline-block;">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
@@ -135,22 +135,42 @@
         {{ csrf_field() }}
         <input type="hidden" name="redirect" value=""> 
         <input type="hidden" name="corpID" value="{{ $corpID }}">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Confirm Password</h4>
+        <div class="verify-password">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Confirm Password</h4>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-danger" style="display: none;"></div>
+            <div class="form-group">
+              <div class="row">
+                <label for="" class="col-xs-3">Your Password</label>
+                <div class="col-xs-9">
+                  <input type="password" name="password" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <div class="row">
-              <label for="" class="col-xs-3">Your Password</label>
-              <div class="col-xs-9">
-                <input type="password" name="password" class="form-control">
+        <div class="verify-otp" style="display: none;">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">OTP</h4>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-danger" style="display: none;"></div>
+            <div class="form-group">
+              <div class="row">
+                <label for="" class="col-xs-3">Your otp</label>
+                <div class="col-xs-9">
+                  <input type="text" name="otp" class="form-control">
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary">Verify</button>
+          <button class="btn btn-primary btn-verify" type="button">Verify</button>
         </div>
       </form>
     </div>
@@ -159,14 +179,63 @@
 
 @section('pageJS')
 <script type="text/javascript">
+  var verifyStep = 1;
   $('.table').on("click", ".col-status", function(event) {
     var url = '/branch_remittances/' + $(this).attr('data-id') +  '/remittances';
     if(window.location.pathname.match(/OneBusiness/)) {
       url = '/OneBusiness' + url; 
     }
+    verifyStep = 1;
+    $('#modal-confirm-password .alert-danger').css('display', 'none');
+    $('#modal-confirm-password .verify-password').css('display', 'block');
+    $('#modal-confirm-password .verify-otp').css('display', 'none');
+    $('#modal-confirm-password input[name="password"]').val("");
+    $('#modal-confirm-password input[name="otp"]').val("");
     $('#modal-confirm-password form').attr('action', url)
     $('#modal-confirm-password input[name="redirect"]').val(window.location.href);
     $('#modal-confirm-password').modal("show");
+  });
+
+  $('#modal-confirm-password').on("click", '.btn-verify', function(event) {
+    var _token = $("input[name='_token']").val();
+    self = $(this);
+
+    if(verifyStep == 1) {
+      $.ajax({
+        url: "{{ route('users.verifyPassword') }}",
+        type: "POST",
+        data: { password: $('#modal-confirm-password input[name="password"]').val(), _token},
+        success: function(res) {
+          if(res.success) {
+            verifyStep = 2;
+            $('#modal-confirm-password .verify-password').css('display', 'none');
+            $('#modal-confirm-password .verify-otp').css('display', 'block');
+            $('#modal-confirm-password .alert-danger').css('display', 'none');
+          }else {
+            $('#modal-confirm-password .alert-danger').html("Incorrect password.").slideDown(500).delay(3000).slideUp(400);
+          }
+        },
+        error: function(res) {
+          $('#modal-confirm-password .alert-danger').html("Incorrect password.").slideDown(500).delay(3000).slideUp(400);
+        }
+      });
+    }else {
+      $.ajax({
+        url: "{{ route('users.verifyOTP') }}",
+        type: "POST",
+        data: {otp: $('#modal-confirm-password input[name="otp"]').val(), _token},
+        success: function(res) {
+          if(res.success) {
+            self.parents('form').submit();
+          }else {
+            $('#modal-confirm-password .alert-danger').html("Please enter correct OTP.").slideDown(500).delay(3000).slideUp(400);
+          }
+        },
+        error: function(res) {
+          $('#modal-confirm-password .alert-danger').html("Please enter correct OTP.").slideDown(500).delay(3000).slideUp(400);
+        }
+      });
+    }
   });
 
   $('form').on("click", ".btn-danger", function(event){
