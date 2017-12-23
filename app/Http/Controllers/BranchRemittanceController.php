@@ -17,15 +17,18 @@ class BranchRemittanceController extends Controller
   public function index(Request $request)
   {
     $queries = $request->only('corpID', 'start_date', 'end_date', 'view_date_range', 'status');
+    if($queries['status']) {
+      session(['status' => $queries['status']]);
+    }else {
+      $queries['status'] = empty(session('status')) ? 'unchecked' : session('status');
+    }
 
-    $queries['status'] = empty($queries['status']) ? 'unchecked' : $queries['status'];
     if($queries['view_date_range'] == 1) {
       session($queries);
     }else {
       if($queries['view_date_range'] == null) {
         $queries['start_date'] = session('start_date');
         $queries['end_date'] = session('end_date');
-        $queries['status'] = session('status');
       }else {
         session(['view_date_range' => null, 'start_date' => null, 'end_date' => null]);
       }

@@ -46,7 +46,7 @@
                     <td>{{ $collection->ID }}</td>
                     <td>{{ $collection->CreatedAt->format('Y-m-d H:ia') }}</td>
                     <td>{{ $collection->user->UserName }}</td>
-                    <td>{{ $collection->Subtotal }}</td>
+                    <td>{{ number_format($collection->Subtotal, 2) }}</td>
                     <td>
                       <input type="checkbox" name="status" class="{{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "col-status" : "" }}" onclick="return false;" data-id="{{ $collection->ID }}"
                         {{ $collection->Status == 1 ? "checked" : ""}}>
@@ -90,6 +90,7 @@
                   <input type="hidden" name="corpID" value="{{$corpID}}">
                   <div class="checkbox col-xs-12">
                     <label for="view_date_range" class="control-label">
+                      <input type="hidden" value="{{ $queries['status'] }}" name="status">
                       <input type="hidden" value="0" name="view_date_range">
                       <input type="checkbox" {{$start_date || $end_date ? 'checked': ""}} id="view_date_range" value="1"
                         name="view_date_range">

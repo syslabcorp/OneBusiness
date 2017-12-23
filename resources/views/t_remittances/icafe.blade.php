@@ -44,7 +44,7 @@
   </form>
 </div>
 
-<div class="table-responsive">
+<div class="table-responsive text-right">
   <table class="table table-striped table-bordered table-remittances">
     <thead>
       <tr>
@@ -100,7 +100,7 @@
                 <td class="col-rental">
                   {{ $shift->remittance ? number_format($shift->remittance->Games_TotalSales, 2) : "" }}
                 </td>
-                <td>
+                <td class="col-internet">
                   {{ $shift->remittance ? number_format($shift->remittance->Net_TotalSales, 2) : "" }}
                 </td>
                 <td class="col-sale">
@@ -144,20 +144,17 @@
         </td>
       </tr>
       @endif
+      <tr class="remitance-total" style="pointer-events: none;">
+        <td colspan="5"><strong>Auto Total:</strong></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td colspan="6"></td>
+      </tr>
     </tbody>
-  </table>
-</div>
-
-<div class="row remitance-total">
-  <table class="table table-triped">
-    <tr>
-      <td><strong>Auto Total</strong></td>
-      <td>Total Retail: <span class="total">0</span></td>
-      <td>Total Service: <span class="total">0</span></td>
-      <td>Total Rental: <span class="total">0</span></td>
-      <td>Total Sales: <span class="total">0</span></td>
-      <td>Total Remit: <span class="total">0</span></td>
-    </tr>
   </table>
 </div>
 
