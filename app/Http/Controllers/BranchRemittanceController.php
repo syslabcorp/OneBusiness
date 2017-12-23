@@ -51,12 +51,12 @@ class BranchRemittanceController extends Controller
       $collections = $collections->where("Status", "=", "1");
     }
 
-    if($request->start_date) {
-      $collections = $collections->whereDate('CreatedAt', '>=', $request->start_date);
+    if($queries['start_date']) {
+      $collections = $collections->whereDate('CreatedAt', '>=', $queries['start_date']);
     }
 
-    if($request->end_date) {
-      $collections = $collections->whereDate('CreatedAt', '<=', $request->end_date);
+    if($queries['end_date']) {
+      $collections = $collections->whereDate('CreatedAt', '<=', $queries['end_date']);
     }
 
     return view('t_remittances.index', [
