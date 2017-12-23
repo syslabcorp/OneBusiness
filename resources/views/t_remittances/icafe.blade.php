@@ -44,7 +44,7 @@
   </form>
 </div>
 
-<div class="table-responsive text-right">
+<div class="table-responsive">
   <table class="table table-striped table-bordered table-remittances">
     <thead>
       <tr>
