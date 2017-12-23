@@ -91,7 +91,7 @@
                 <td>{{ str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT) }}</td>
                 <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
                 <td>{{ $shift->user ? $shift->user->UserName : "" }}</td>
-                <td class="col-retailtext-right">
+                <td class="col-retail text-right">
                   {{ $shift->remittance ? number_format($shift->remittance->Sales_TotalSales, 2) : "" }}
                 </td>
                 <td class="col-service text-right">
@@ -146,12 +146,12 @@
       @endif
       <tr class="remitance-total" style="pointer-events: none;">
         <td colspan="5"><strong>Auto Total:</strong></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
         <td colspan="6"></td>
       </tr>
     </tbody>

@@ -138,10 +138,10 @@
       @endif
       <tr class="remitance-total" style="pointer-events: none;">
         <td colspan="5"><strong>Auto Total:</strong></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
-        <td><span class="total text-right">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
         <td colspan="6"></td>
       </tr>
     </tbody>
