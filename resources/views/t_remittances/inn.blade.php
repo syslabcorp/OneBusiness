@@ -44,7 +44,7 @@
   </form>
 </div>
 
-<div class="table-responsive">
+<div class="table-responsive text-right">
   <table class="table table-striped table-bordered table-remittances">
     <thead>
       <tr>
@@ -98,7 +98,7 @@
                 <td class="col-rental">
                   {{ $shift->remittance ? number_format($shift->remittance->TotalSales, 2) : "" }}
                 </td>
-                <td class="col-sale">
+                <td class="col-internet">
                   {{ $shift->remittance ? number_format($shift->remittance->TotalRemit, 2) : "" }}
                 </td>
                 <td class="col-clr">
@@ -136,19 +136,15 @@
         </td>
       </tr>
       @endif
+      <tr class="remitance-total" style="pointer-events: none;">
+        <td colspan="5"><strong>Auto Total:</strong></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td><span class="total">0</span></td>
+        <td colspan="6"></td>
+      </tr>
     </tbody>
-  </table>
-</div>
-
-<div class="row remitance-total">
-  <table class="table table-triped">
-    <tr>
-      <td><strong>Auto Total</strong></td>
-      <td>Total Room: <span class="total">0</span></td>
-      <td>Total Order: <span class="total">0</span></td>
-      <td>Total Sales: <span class="total">0</span></td>
-      <td>Total Remit: <span class="total">0</span></td>
-    </tr>
   </table>
 </div>
 

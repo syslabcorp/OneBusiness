@@ -420,8 +420,9 @@ $(function()
     $('.remitance-total td:eq(1) .total').text(getTotalColumn('col-retail'));
     $('.remitance-total td:eq(2) .total').text(getTotalColumn('col-service'));
     $('.remitance-total td:eq(3) .total').text(getTotalColumn('col-rental'));
-    $('.remitance-total td:eq(4) .total').text(getTotalColumn('col-sale'));
-    $('.remitance-total td:eq(5) .total').text(getTotalColumn('col-remit'));
+    $('.remitance-total td:eq(4) .total').text(getTotalColumn('col-internet'));
+    $('.remitance-total td:eq(5) .total').text(getTotalColumn('col-sale'));
+    $('.remitance-total td:eq(6) .total').text(getTotalColumn('col-remit'));
 
     if($('.table-remittances tbody td.selected').length > 0) {
       $('.btn-check-ok').prop('disabled', false);
