@@ -28,7 +28,7 @@
                   Check Ok <br> Selection
                 </button>
                 <button disabled="true" class="btn btn-success btn-save-ok {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 16, 'E') ? "" : "disabled" }}">
-                  Save Ok <br> Selection
+                  Save Checked <br>  OK
                 </button>
               </div>
             </div>
