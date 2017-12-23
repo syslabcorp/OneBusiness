@@ -44,7 +44,7 @@
   </form>
 </div>
 
-<div class="table-responsive text-right">
+<div class="table-responsive">
   <table class="table table-striped table-bordered table-remittances">
     <thead>
       <tr>
@@ -91,22 +91,22 @@
                 <td>{{ str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT) }}</td>
                 <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
                 <td>{{ $shift->user ? $shift->user->UserName : "" }}</td>
-                <td class="col-retail">
+                <td class="col-retailtext-right">
                   {{ $shift->remittance ? number_format($shift->remittance->Sales_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-service">
+                <td class="col-service text-right">
                   {{ $shift->remittance ? number_format($shift->remittance->Serv_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-rental">
+                <td class="col-rental text-right">
                   {{ $shift->remittance ? number_format($shift->remittance->Games_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-internet">
+                <td class="col-internet text-right">
                   {{ $shift->remittance ? number_format($shift->remittance->Net_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-sale">
+                <td class="col-sale text-right">
                   {{ $shift->remittance ? number_format($shift->remittance->TotalSales, 2) : "" }}
                 </td>
-                <td class="col-remit">
+                <td class="col-remit text-right">
                   {{ $shift->remittance ? number_format($shift->remittance->TotalRemit, 2) : "" }}
                 </td>
                 <td class="col-clr">
@@ -146,12 +146,12 @@
       @endif
       <tr class="remitance-total" style="pointer-events: none;">
         <td colspan="5"><strong>Auto Total:</strong></td>
-        <td><span class="total">0</span></td>
-        <td><span class="total">0</span></td>
-        <td><span class="total">0</span></td>
-        <td><span class="total">0</span></td>
-        <td><span class="total">0</span></td>
-        <td><span class="total">0</span></td>
+        <td><span class="total text-right">0</span></td>
+        <td><span class="total text-right">0</span></td>
+        <td><span class="total text-right">0</span></td>
+        <td><span class="total text-right">0</span></td>
+        <td><span class="total text-right">0</span></td>
+        <td><span class="total text-right">0</span></td>
         <td colspan="6"></td>
       </tr>
     </tbody>
