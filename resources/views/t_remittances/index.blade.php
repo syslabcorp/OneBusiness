@@ -1,6 +1,16 @@
 @extends('layouts.custom')
 
 @section('content')
+@php
+  $verifyType = 0;
+  if(\Auth::user()->bio_auth != 1) {
+    if(\Auth::user()->otp_auth == 1) {
+      $verifyType = 2;
+    }else {
+      $verifyType = 1;
+    }
+  }
+@endphp
 <section class="content">
     <div class="row">
       <div class="col-md-12">
@@ -180,16 +190,30 @@
 
 @section('pageJS')
 <script type="text/javascript">
-  var verifyStep = 1;
+  var verifyStep = {{ $verifyType }};
+
+  if(verifyStep == 2) {
+    $('#modal-confirm-password .verify-password').css('display', 'none');
+    $('#modal-confirm-password .verify-otp').css('display', 'block');
+  }
   $('.table').on("click", ".col-status", function(event) {
     var url = '/branch_remittances/' + $(this).attr('data-id') +  '/remittances';
     if(window.location.pathname.match(/OneBusiness/)) {
       url = '/OneBusiness' + url; 
     }
-    verifyStep = 1;
+    if(event.target.checked) {
+      $('#modal-confirm-password form').attr('action', url)
+      $('#modal-confirm-password input[name="redirect"]').val(window.location.href);
+      $('#modal-confirm-password').modal("show");
+      $('#modal-confirm-password form').submit();
+      return;
+    }
+
+    if(verifyStep == 0) {
+      return;
+    }
+
     $('#modal-confirm-password .alert-danger').css('display', 'none');
-    $('#modal-confirm-password .verify-password').css('display', 'block');
-    $('#modal-confirm-password .verify-otp').css('display', 'none');
     $('#modal-confirm-password input[name="password"]').val("");
     $('#modal-confirm-password input[name="otp"]').val("");
     $('#modal-confirm-password form').attr('action', url)
@@ -208,10 +232,7 @@
         data: { password: $('#modal-confirm-password input[name="password"]').val(), _token},
         success: function(res) {
           if(res.success) {
-            verifyStep = 2;
-            $('#modal-confirm-password .verify-password').css('display', 'none');
-            $('#modal-confirm-password .verify-otp').css('display', 'block');
-            $('#modal-confirm-password .alert-danger').css('display', 'none');
+            self.parents('form').submit();
           }else {
             $('#modal-confirm-password .alert-danger').html("Incorrect password.").slideDown(500).delay(3000).slideUp(400);
           }
@@ -220,7 +241,7 @@
           $('#modal-confirm-password .alert-danger').html("Incorrect password.").slideDown(500).delay(3000).slideUp(400);
         }
       });
-    }else {
+    }else if(verifyStep == 2) {
       $.ajax({
         url: "{{ route('users.verifyOTP') }}",
         type: "POST",

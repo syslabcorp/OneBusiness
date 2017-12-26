@@ -366,7 +366,11 @@ class BranchRemittanceController extends Controller
     $collection->setConnection($company->database_name);
     $collection = $collection->findOrFail($id);
 
-    $collection->update(['Status' => !$collection->Status]);
+    $collection->update([
+      'Status' => !$collection->Status,
+      'UpdatedBy' => \Auth::user()->UserID,
+      'UpdatedAt' => date('Y-m-d h:i:s')
+    ]);
 
     return redirect($request->redirect);
   }

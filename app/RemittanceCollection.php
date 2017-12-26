@@ -12,7 +12,7 @@ class RemittanceCollection extends Model
   protected $primaryKey = "ID";
 
   protected $fillable = [
-    'CreatedAt', 'TellerID', 'Status', 'Subtotal'
+    'CreatedAt', 'TellerID', 'Status', 'Subtotal', 'UpdatedBy', 'UpdatedAt'
   ];
   
   protected $dates = [
