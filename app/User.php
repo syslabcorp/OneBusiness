@@ -25,6 +25,7 @@ class User extends Authenticatable
     ]; */
 	protected $fillable = [
         'UserName', 'uname','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
+        'otp_generate_time', 'otp'
     ];
  
     /**

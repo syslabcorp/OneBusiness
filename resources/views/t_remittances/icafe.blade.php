@@ -25,7 +25,7 @@
               {{ $queries['status'] == '0' ? "checked" : "" }}>
             Unchecked
           </label>
-          <div class="form-group">
+          <div class="row">
             <label class="radio-inline" for="shortage_only" style="padding-left: 0px;">
               <input type="checkbox" name="shortage_only" id="shortage_only" value="1"
                 {{ $queries['shortage_only'] == '1' ? "checked" : "" }}>
@@ -38,7 +38,7 @@
               Show Remarks only
             </label>
           </div>
-        </div>
+      </div>
       </div>
     </div>
   </form>
