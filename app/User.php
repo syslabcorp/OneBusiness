@@ -105,10 +105,10 @@ class User extends Authenticatable
         {
             $this->permissions = \DB::table('rights_detail')
                 ->leftJoin("feature_masters", "rights_detail.feature_id", "=", "feature_masters.feature_id")
+                ->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type', 'feature_masters.feature')
                 ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
                 ->get();
         }
-
         foreach($this->permissions as $permission)
         {
             if(in_array($permission->module_id,$module_ids) && $feature_id == $permission->feature_id && preg_match("/$action/", $permission->access_type))
