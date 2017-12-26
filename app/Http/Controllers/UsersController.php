@@ -35,7 +35,7 @@ class UsersController extends Controller
       ]);
     }
 
-    return response()->json(['success' => $success]);
+    return response()->json(['success' => true]);
   }
 
   public function generateOTP(Request $request) {
