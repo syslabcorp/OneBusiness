@@ -25,19 +25,17 @@
               {{ $queries['status'] == '0' ? "checked" : "" }}>
             Unchecked
           </label>
-          <div class="row">
-            <label class="radio-inline" for="shortage_only" style="padding-left: 0px;">
-              <input type="checkbox" name="shortage_only" id="shortage_only" value="1"
-                {{ $queries['shortage_only'] == '1' ? "checked" : "" }}>
-              Show Shortage only
-            </label>
+          <label class="radio-inline" for="shortage_only" style="padding-left: 50px;">
+            <input type="checkbox" name="shortage_only" id="shortage_only" value="1"
+              {{ $queries['shortage_only'] == '1' ? "checked" : "" }}>
+            Show Shortage only
+          </label>
 
-            <label class="radio-inline" for="remarks_only" style="padding-left: 0px;">
-              <input type="checkbox" name="remarks_only" id="remarks_only" value="1"
-                {{ $queries['remarks_only'] == '1' ? "checked" : "" }}>
-              Show Remarks only
-            </label>
-          </div>
+          <label class="radio-inline" for="remarks_only" style="padding-left: 0px;">
+            <input type="checkbox" name="remarks_only" id="remarks_only" value="1"
+              {{ $queries['remarks_only'] == '1' ? "checked" : "" }}>
+            Show Remarks only
+          </label>
       </div>
       </div>
     </div>
@@ -117,7 +115,7 @@
                 </td>
                 <td>
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
-                <td>
+                <td class="text-right">
                   @if($shift->remittance->Adj_Short == 1)
                     {{ number_format($shift->remittance->Adj_Amt, 2) }}
                   @else

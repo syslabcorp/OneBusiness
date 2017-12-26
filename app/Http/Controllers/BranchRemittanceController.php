@@ -372,6 +372,7 @@ class BranchRemittanceController extends Controller
       'UpdatedAt' => date('Y-m-d h:i:s')
     ]);
 
+    \Session::flash('success', "Transaction #{$collection->ID}’s status has been updated");
     return redirect($request->redirect);
   }
 
