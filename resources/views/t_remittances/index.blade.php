@@ -95,7 +95,7 @@
                 @endforeach
                 @if(!$collections->count())
                 <tr>
-                  <td colspan="6">No collections</td>
+                  <td colspan="7">No collections</td>
                 </tr>
                 @endif
               </tbody>
@@ -242,6 +242,7 @@
         data: {_token},
         success: function(res) {
           if(res.success) {
+            $('#modal-confirm-password').modal({ backdrop: 'static', keyboard: false });
             $('#modal-confirm-password').modal("show");
           }else {
             toastr.error(res.message);
@@ -285,7 +286,7 @@
           if(res.success) {
             self.parents('form').submit();
           }else {
-            $('#modal-confirm-password .alert-danger').html("Please enter correct OTP.").slideDown(500).delay(3000).slideUp(400);
+            $('#modal-confirm-password .alert-danger').html(res.message).slideDown(500).delay(3000).slideUp(400);
           }
         },
         error: function(res) {
