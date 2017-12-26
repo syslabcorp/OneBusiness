@@ -110,7 +110,7 @@
                     @if(count($branchs) == 0)
                       <tr>
                         <td colspan="4">
-                          Not found any collections
+                          No collections
                         </td>
                       </tr>
                     @endif

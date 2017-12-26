@@ -49,6 +49,7 @@
                   <th>Pick-up Teller</th>
                   <th>Subtotal</th>
                   <th>Status</th>
+                  <th>Last Updated by</th>
                   <th>Action</th>
                 </tr>
                 @foreach($collections as $collection)
@@ -60,6 +61,12 @@
                     <td>
                       <input type="checkbox" name="status" class="{{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "col-status" : "" }}" onclick="return false;" data-id="{{ $collection->ID }}"
                         {{ $collection->Status == 1 ? "checked" : ""}}>
+                    </td>
+                    <td>
+                      @if($collection->updatedBy)
+                      {{ $collection->updatedBy->UserName }} </br>
+                      ({{ $collection->UpdatedAt->format('Y-m-d H:ia') }})
+                      @endif
                     </td>
                     <td>
                       <a href="{{ route('branch_remittances.show', array_merge([$collection], ['corpID' => $corpID])) }}" style="margin-right: 10px;" 
@@ -88,7 +95,7 @@
                 @endforeach
                 @if(!$collections->count())
                 <tr>
-                  <td colspan="6">Not found any collections</td>
+                  <td colspan="6">No collections</td>
                 </tr>
                 @endif
               </tbody>
@@ -191,6 +198,7 @@
 @section('pageJS')
 <script type="text/javascript">
   var verifyStep = {{ $verifyType }};
+  var _token = $("input[name='_token']").val();
 
   if(verifyStep == 2) {
     $('#modal-confirm-password .verify-password').css('display', 'none');
@@ -198,14 +206,23 @@
   }
   $('.table').on("click", ".col-status", function(event) {
     var url = '/branch_remittances/' + $(this).attr('data-id') +  '/remittances';
+
     if(window.location.pathname.match(/OneBusiness/)) {
       url = '/OneBusiness' + url; 
     }
+
     if(event.target.checked) {
-      $('#modal-confirm-password form').attr('action', url)
-      $('#modal-confirm-password input[name="redirect"]').val(window.location.href);
-      $('#modal-confirm-password').modal("show");
-      $('#modal-confirm-password form').submit();
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: { redirect: window.location.href, corpID: {{ $corpID }} , _token},
+        success: function(res) {
+          window.location.reload();
+        },
+        error: function(res) {
+          $('#modal-confirm-password .alert-danger').html("Incorrect password.").slideDown(500).delay(3000).slideUp(400);
+        }
+      });
       return;
     }
 
@@ -218,11 +235,29 @@
     $('#modal-confirm-password input[name="otp"]').val("");
     $('#modal-confirm-password form').attr('action', url)
     $('#modal-confirm-password input[name="redirect"]').val(window.location.href);
-    $('#modal-confirm-password').modal("show");
+    if(verifyStep == 2) {
+      $.ajax({
+        url: "{{ route('users.generateOTP') }}",
+        type: "POST",
+        data: {_token},
+        success: function(res) {
+          if(res.success) {
+            $('#modal-confirm-password').modal("show");
+          }else {
+            toastr.error(res.message);
+          }
+        },
+        error: function(res) {
+          toastr.error("Can't generate OTP");
+        }
+      });
+    }else {
+      $('#modal-confirm-password').modal("show");
+    }
+    
   });
 
   $('#modal-confirm-password').on("click", '.btn-verify', function(event) {
-    var _token = $("input[name='_token']").val();
     self = $(this);
 
     if(verifyStep == 1) {

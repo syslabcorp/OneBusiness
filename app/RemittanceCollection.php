@@ -16,7 +16,8 @@ class RemittanceCollection extends Model
   ];
   
   protected $dates = [
-    'CreatedAt'
+    'CreatedAt',
+    'UpdatedAt'
   ];
 
   public function details() {
@@ -25,6 +26,10 @@ class RemittanceCollection extends Model
 
   public function user() {
     return $this->belongsTo(\App\User::class, "TellerID", "UserID");
+  }
+
+  public function updatedBy() {
+    return $this->belongsTo(\App\User::class, "UpdatedBy", "UserID");
   }
 
   public function detail($groupId, $branchId) {
