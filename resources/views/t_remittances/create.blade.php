@@ -27,7 +27,7 @@
             </div>
             <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.create',['corpID' => $corpID]) }}" method="GET" >
               <input type="hidden" name="corpID" value={{$corpID}}>
-              <input type="hidden" name="groupStatus" value="1" />
+              <input type="hidden" name="groupStatus" value="{{ $selectStatus }}" />
               <div class="row">
                 <div class="form-group col-md-4">
                   <label for="" class="control-lable col-md-4">Remit Group:</label>
