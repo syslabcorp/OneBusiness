@@ -104,8 +104,9 @@ class User extends Authenticatable
 
       if($this->permissions == null) {
         $this->permissions = \DB::table('rights_detail')
+            ->join("module_masters", "module_masters.module_id", "=", "rights_detail.module_id")
             ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
-            ->where('rights_detail.module_id', '=', $moduleId)
+            ->where('module_masters.corp_id', '=', $corpID)
             ->get();
       }
 
