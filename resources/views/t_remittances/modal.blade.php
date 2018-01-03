@@ -93,7 +93,8 @@
               <div class="col-xs-3">
                 <div class="checkbox">
                   <label for="counterchecker">
-                    <input type="checkbox" id="counterchecker"  value="1" name="Sales_Checked">
+                    <input type="checkbox" id="counterchecker"  value="1" name="Sales_Checked"
+                      onclick="{{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 16, 'E') ? "" : "return false" }}">
                     Counterchecked
                   </label>
                 </div>
