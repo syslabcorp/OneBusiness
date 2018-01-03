@@ -376,8 +376,12 @@ class BranchRemittanceController extends Controller
       'UpdatedBy' => \Auth::user()->UserID,
       'UpdatedAt' => date('Y-m-d h:i:s')
     ]);
+    if($collection->Status) {
+      \Session::flash('success', "Transaction #{$collection->ID} has been marked as cleared");
+    }else {
+      \Session::flash('success', "Transaction #{$collection->ID} has been unchecked");
+    }
 
-    \Session::flash('success', "Transaction #{$collection->ID} has been marked as cleared");
     return redirect($request->redirect);
   }
 
