@@ -23,6 +23,9 @@
             @include("t_remittances/modal")
               
             <div class="row text-right">
+              <a class="btn btn-default pull-left" href="{{ route('branch_remittances.index', ['corpID' => $company->corp_id]) }}">
+                <i class="fa fa-reply"></i> Back
+              </a>
               <div class="pull-right col-md-3">
                 <button disabled="true" class="btn btn-primary btn-check-ok {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 16, 'E') ? "" : "disabled" }}">
                   Check Ok <br> Selection
@@ -31,12 +34,6 @@
                   Save Checked <br>  OK
                 </button>
               </div>
-            </div>
-
-            <div class="row">
-              <a class="btn btn-default" href="{{ route('branch_remittances.index', ['corpID' => $company->corp_id]) }}">
-                <i class="fa fa-reply"></i> Back
-              </a>
             </div>
           </div>
         </div>

@@ -126,8 +126,12 @@
                   </div>
                 </div>
                 @if(count($branchs))
-                <div class="row">
-                  <div class=" pull-right" style="margin-top: 20px;">
+                <div class="row" style="margin-top: 20px;">
+                  <a class="btn btn-default pull-left" href="{{ route('branch_remittances.index', $queries) }}">
+                    <i class="fa fa-reply"></i>
+                    Back
+                  </a>
+                  <div class="pull-right">
                     <button class="btn btn-success">Save</button>
                   </div>
                 </div>
@@ -138,13 +142,6 @@
               You don't have assigned any groups
             </div>
             @endif
-
-            <div class="row">
-              <a class="btn btn-default" href="{{ route('branch_remittances.index', $queries) }}">
-                <i class="fa fa-reply"></i>
-                Back
-              </a>
-            </div>
           </div>
           
         </div>

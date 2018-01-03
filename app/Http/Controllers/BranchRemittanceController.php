@@ -16,6 +16,11 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
     $queries = $request->only('corpID', 'start_date', 'end_date', 'view_date_range', 'status');
     if($queries['status']) {
       session(['status' => $queries['status']]);
@@ -291,7 +296,7 @@ class BranchRemittanceController extends Controller
 
     $collection->update(['Subtotal' => $subTotal]);
 
-    \Session::flash('success', "Remittance collections has been created successfully.");
+    \Session::flash('success', "Transaction #{$collection->ID} has been updated.");
     return redirect(route('branch_remittances.index', [ 'corpID' => $request->corpID]));
   }
 
@@ -372,7 +377,7 @@ class BranchRemittanceController extends Controller
       'UpdatedAt' => date('Y-m-d h:i:s')
     ]);
 
-    \Session::flash('success', "Transaction #{$collection->ID}’s status has been updated");
+    \Session::flash('success', "Transaction #{$collection->ID} has been marked as cleared");
     return redirect($request->redirect);
   }
 
