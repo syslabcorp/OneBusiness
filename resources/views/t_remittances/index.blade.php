@@ -59,8 +59,13 @@
                     <td>{{ $collection->user->UserName }}</td>
                     <td>{{ number_format($collection->Subtotal, 2) }}</td>
                     <td>
-                      <input type="checkbox" name="status" class="{{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "col-status" : "" }}" onclick="return false;" data-id="{{ $collection->ID }}"
+                      <form class="form-horizontal" method="POST" action="" role="form">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="redirect" value=""/>
+                        <input type="hidden" name="corpID" value="{{ $corpID }}">
+                        <input type="checkbox" name="status" class="{{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "col-status" : "" }}" onclick="return false;" data-id="{{ $collection->ID }}"
                         {{ $collection->Status == 1 ? "checked" : ""}}>
+                      </form>
                     </td>
                     <td>
                       @if($collection->updatedBy)
@@ -212,17 +217,10 @@
     }
 
     if(event.target.checked) {
-      $.ajax({
-        url: url,
-        type: "POST",
-        data: { redirect: window.location.href, corpID: {{ $corpID }} , _token},
-        success: function(res) {
-          window.location.reload();
-        },
-        error: function(res) {
-          $('#modal-confirm-password .alert-danger').html("Incorrect password.").slideDown(500).delay(3000).slideUp(400);
-        }
-      });
+      $selfForm = $(this).parents('form');
+      $selfForm.attr('action', url)
+      $selfForm.find('input[name="redirect"]').val(window.location.href);
+      $selfForm.submit();
       return;
     }
 
