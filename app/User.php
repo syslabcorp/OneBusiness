@@ -159,7 +159,9 @@ class User extends Authenticatable
 						->where('rights_detail.module_id', '=', $match_corp[0]->module_id)
 						->get();
 				}
-			}
+			}else{
+                return 501;
+            }
         }
         foreach($this->permissions as $permission)
         {

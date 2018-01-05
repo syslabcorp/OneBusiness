@@ -205,10 +205,13 @@ class PurchaseOrderController extends Controller
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
         }
-        if(!\Auth::user()->checkAccessByPoId([$corp_id],31, "V"))
+        $permission = \Auth::user()->checkAccessByPoId([$corp_id],31, "V");
+        if(!$permission)
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
+        }elseif ($permission === 501) {
+            return redirect("/501");
         }
         $user_area = UserArea::where('user_ID', Auth::id())->first();
         if(!empty($user_area->city)){
@@ -224,6 +227,10 @@ class PurchaseOrderController extends Controller
         $data['city_id'] = $city_id;
         $data['corp_id'] = $corp_id;
         return view('accesslevel.list_purchase_order',$data);
+    }
+
+    public function module_not_found(){
+        return view('accesslevel.501');
     }
 }
 
