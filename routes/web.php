@@ -142,6 +142,8 @@ Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order'
 Route::any('/product_branch', 'PurchaseOrderController@product_branch');
 Route::any('/retail_items', 'PurchaseOrderController@retail_items');
 
+Route::any('/501', 'PurchaseOrderController@module_not_found');
+
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
        ->middleware('auth')->name('branch_remittances.collections.store');;
