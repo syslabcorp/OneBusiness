@@ -11,7 +11,7 @@
 					<div class="error-content">
 						<h3><i class="fa fa-warning text-yellow"></i> Oops! Something Went Wrong.</h3>
 						<p>
-							Please setup modules, features and access rights for this page and try again !!
+							Please setup a connection,database and access rights for this corporation and try again.
 						</p>
 					</div>
 				</div>

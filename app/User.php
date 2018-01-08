@@ -25,6 +25,7 @@ class User extends Authenticatable
     ]; */
 	protected $fillable = [
         'UserName', 'uname','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
+        'otp_generate_time', 'otp'
     ];
  
     /**
@@ -76,8 +77,7 @@ class User extends Authenticatable
     }
 	
 	//this accepts (int,text), like checkAccessById(18,"A")
-   public function checkAccessById($feature_id, $action)
-    {   
+    public function checkAccessById($feature_id, $action) {
         if($this->permissions == null)
         {
             $this->permissions = \DB::table('rights_detail')
@@ -89,13 +89,42 @@ class User extends Authenticatable
         foreach($this->permissions as $permission)
         {
     
-            if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type))
-			{
+            if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function checkAccessByIdForCorp($corpID, $feature_id, $action) {
+      $company = \App\Company::findOrFail($corpID);
+
+      $moduleId = $company->corp_type == 'ICAFE' ? 3 : 5;
+
+      if($this->permissions == null) {
+        $this->permissions = \DB::table('rights_detail')
+            ->join("module_masters", "module_masters.module_id", "=", "rights_detail.module_id")
+            ->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+            ->where('module_masters.corp_id', '=', $corpID)
+            ->get();
+      }
+
+      foreach($this->permissions as $permission) {
+        if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    public function isAdmin() {
+      $template = $this->leftJoin("rights_template", "rights_template.template_id", "=", "t_users.rights_template_id")
+                      ->where('rights_template.is_super_admin', '=', 1)
+                      ->where('rights_template.template_id', '=', $this->rights_template_id)
+                      ->first();
+      return $template ? true : false;
     }
 
 
@@ -122,7 +151,7 @@ class User extends Authenticatable
 					->whereIn('module_masters.module_id', $all_module_ids)
 					->where('module_masters.corp_id', '=', $module_ids[0])
 					->get();
-				if(isset($match_corp[0]->module_id)){
+				if(isset($match_corp[0]) && $match_corp[0]->module_id != ''){
 					$this->permissions = \DB::table('rights_detail')
 						->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type')
 						->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
