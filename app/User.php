@@ -151,7 +151,7 @@ class User extends Authenticatable
 					->whereIn('module_masters.module_id', $all_module_ids)
 					->where('module_masters.corp_id', '=', $module_ids[0])
 					->get();
-				if(isset($match_corp[0]->module_id)){
+				if(isset($match_corp[0]) && $match_corp[0]->module_id != ''){
 					$this->permissions = \DB::table('rights_detail')
 						->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type')
 						->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
