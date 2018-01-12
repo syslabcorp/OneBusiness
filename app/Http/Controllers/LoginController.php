@@ -23,6 +23,7 @@ class LoginController extends Controller
 			$formData = Request::all();
 			$email = $formData['email'];
 			$users = DB::table('t_users')->where('uname', $email)->first();
+			
 			if(count($users)){
 				$data['email'] = $users->email;
 				$data['username'] = $users->uname;
@@ -33,10 +34,12 @@ class LoginController extends Controller
 					$url_verification = base64_encode($base_url."/verification.php?user_id=".$users->UserID);
 					$data['btn'] = "<a href='finspot:FingerspotVer;$url_verification' class='btn btn-success'>Login</a>";
 					return view('login.login_type', $data);
+
 				}else{
 					if($users->otp_auth == 1 && $users->bio_auth == 1){
 						$data['finger_count'] = DB::table('demo_finger')->where('user_id', $users->UserID)->count();
 						return view('login.login_type', $data);
+						
 					}else{
 						$data['logintype'] = ($users->otp_auth == 1) ? 'otp_auth' : 'pswd_auth';
 						return view('login.password', $data);					
