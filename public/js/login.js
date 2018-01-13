@@ -472,4 +472,25 @@ $(function()
 
     return result.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+
+  $('input[name="vendor"]').change(function(){
+    if ($('input[name="vendor"]:checked').attr('id')  == "one")
+    {
+      $('#select-vendor').removeAttr('disabled');
+    }
+    else
+    {
+      $('#form-search').submit();
+      $('#select-vendor').attr('disabled', true);
+    }
+  });
+
+  $('#select-vendor').change(function(event){
+    $('#form-search').submit();
+  });
+
+
+  
 });
+

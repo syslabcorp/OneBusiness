@@ -158,7 +158,7 @@ Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@u
        ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
-
+Route::resource('stocks', 'StocksController', ['middleware' => 'auth']);
 
 <<<<<<< HEAD
 =======
