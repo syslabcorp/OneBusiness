@@ -42,6 +42,11 @@ Route::resource('bank-accounts', 'BankAccountController', ['middleware' => 'auth
 Route::resource('checkbooks', 'CheckbookController', ['middleware' => 'auth']);
 Route::resource('vendors', 'VendorController', ['middleware' => 'auth']);
 Route::resource('vendor-management', 'VendorManagementController', ['middleware' => 'auth']);
+Route::resource('retail-items-price-conf', 'RetailItemPriceConfController', ['middleware' => 'auth']);
+Route::resource('services-price-conf', 'ServicePriceConfController', ['middleware' => 'auth']);
+Route::get('/ajax/branches/{corp_id?}', ['as'=>'ajax.fetch.branches', 'uses'=>'AjaxController@fetchBrances']);
+Route::get('/ajax/services/{service_id_csv?}', ['as'=>'ajax.fetch.services', 'uses'=>'AjaxController@fetchServices']);
+Route::get('/ajax/retail-items/{product_id_csv?}', ['as'=>'ajax.fetch.retail-items', 'uses'=>'AjaxController@fetchRetailItems']);
 
 Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth']);
 Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middleware' => 'auth']);
@@ -155,6 +160,9 @@ Route::post('branch_remittances/render_modal', 'BranchRemittanceController@rende
 
 
 
+<<<<<<< HEAD
+=======
 Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
 Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');
 Route::post('users/verify-otp', 'UsersController@verifyOTP')->middleware('auth')->name('users.verifyOTP');
+>>>>>>> a31ea128623ba0f68c2c31137ab44de86435ad72

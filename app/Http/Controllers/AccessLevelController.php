@@ -25,8 +25,10 @@ class AccessLevelController extends Controller
     	if (Request::isMethod('post')) {
 			$formData = Request::all();
 			$created_at   = date("Y-m-d H:i:s");
+
             $db_name = $formData["database_name"];
         	$data = array('corp_type' => $formData["corp_type"],'corp_name' => $formData["corporation_title"],'database_name' => $formData["database_name"],"created_at" => date("Y-m-d H:i:s"));
+
         	if ($corp_id == NULL) {
                 if(!\Auth::user()->checkAccessById(30, "A"))
                 {
@@ -52,7 +54,8 @@ class AccessLevelController extends Controller
                 file_put_contents($PODetail_filename,str_replace('k_master',"$db_name",file_get_contents($PODetail_filename)));
                 /* end POTemplateDetail model */
 	        	Request::session()->flash('flash_message', 'Corporation has been added.');
-	        }else{
+	        
+            }else{
                 $old_db_name = $formData["old_db_name"];
                 if(!\Auth::user()->checkAccessById(30, "E"))
                 {
@@ -601,19 +604,27 @@ class AccessLevelController extends Controller
 		die;
     }
 	
+    /* 
+        MBH_DOC: funtion to return menu items for sidebar through ajax call /list_menu 
+    */
     public function list_menu($parent_id = 0)
     {   
         $userId = Auth::id(); 
+
         $t_user_data = \App\User::find($userId);
+
         $template_menu = DB::table('rights_template')->where('template_id', $t_user_data->rights_template_id)->select('template_menus')->first();
+
         if(!empty($template_menu)) {
             $temp_menu_array = explode(",", $template_menu->template_menus);
-        }else{
+
+        } else {
              $temp_menu_array = array();
         }
         
         if (Request::isMethod('post')){
 			$menus  =  DB::table('menus')->whereIn('id', $temp_menu_array)->select('id', 'parent_id', 'title', 'url','icon')->get(); 
+            
 			$datamenu = array();
 			$data = array();
 			foreach ($menus AS $menu){
