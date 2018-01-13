@@ -289,12 +289,6 @@ $(function()
     if(!$.isNumeric($('#shortage').val()) && $('#adj_short')[0].checked) {
       $('#shortage').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a number.</i>')
       $continue = false;
-    }else {
-      if(parseFloat( $('#shortage').val() )  > 0  && $('#adj_short')[0].checked)
-      {
-        $('#shortage').closest('.col-xs-9').append('<i class="render-error-modal" style="color:#cc0000;">The Input must be a negative number.</i>')
-        $continue = false;
-      }
     }
 
     if( !$.isNumeric( $('#total_remittance').val() )  )
@@ -316,8 +310,12 @@ $(function()
     var _token = $("meta[name='csrf-token']").attr("content");
     var self = $(this);
     $id = $(this).attr("data-shift-id");
+    var url = "/branch_remittances/render_modal";
+    if(window.location.pathname.match(/OneBusiness/)) {
+      url = '/OneBusiness' + url; 
+    }
     $.ajax({
-      url: '/branch_remittances/render_modal',
+      url: url,
       type: "POST",
       data: { 'id': $id, corpID: self.attr('data-corp'), _token },
       success: function(res){
@@ -325,7 +323,7 @@ $(function()
         $('#shift_id').html(res.shift_id);
         $('#total_sales').html(res.total_sales);
         $('#total_shortage').html(res.total_shortage);
-        $('#total_remittance').val(res.total_remittance);
+        $('#total_remittance').val(res.total_remittance.toFixed(2));
         if(res.couterchecked == 1) {
           $('#counterchecker').prop( "checked", true );
         }else {
@@ -353,7 +351,6 @@ $(function()
           $("#shortage").prop('disabled', true);
         }
         $('#remarks').val(res.remarks);
-        $('#remarks').prop("disabled", true);
         $('#hidden_shift_id').val(res.shift_id);
       }
 
@@ -423,8 +420,9 @@ $(function()
     $('.remitance-total td:eq(1) .total').text(getTotalColumn('col-retail'));
     $('.remitance-total td:eq(2) .total').text(getTotalColumn('col-service'));
     $('.remitance-total td:eq(3) .total').text(getTotalColumn('col-rental'));
-    $('.remitance-total td:eq(4) .total').text(getTotalColumn('col-sale'));
-    $('.remitance-total td:eq(5) .total').text(getTotalColumn('col-remit'));
+    $('.remitance-total td:eq(4) .total').text(getTotalColumn('col-internet'));
+    $('.remitance-total td:eq(5) .total').text(getTotalColumn('col-sale'));
+    $('.remitance-total td:eq(6) .total').text(getTotalColumn('col-remit'));
 
     if($('.table-remittances tbody td.selected').length > 0) {
       $('.btn-check-ok').prop('disabled', false);
@@ -435,11 +433,40 @@ $(function()
     }
   });
 
+  $('.btn-check-ok').click(function(event) {
+    $('.table-remittances tbody tr').each(function(el) {
+      $(this).find('.col-clr.selected input').prop('checked', true);
+    });
+  });
+
+  $('.btn-save-ok').click(function(event) {
+    var shiftIds = [];
+    $('.table-remittances tbody tr').each(function(el) {
+      if($(this).find('td:eq(4).selected').length > 0) {
+        shiftIds.push($(this).attr('data-id'));
+      }
+    });
+
+    var _token = $("input[name='_token']").val();
+
+    $.ajax({
+      url: window.location.pathname + '/remittances' + window.location.search,
+      type: "POST",
+      data: { shiftIds: shiftIds, _method: "PUT", _token },
+      success: function(res){
+        window.location.reload();
+      },
+      error: function(res) {
+        window.location.reload();
+      }
+    });
+  });
+
   function getTotalColumn(colClass) {
     var result = 0;
     $('.table-remittances tbody td.selected.' + colClass).each(function(el, index) {
       if(parseFloat($(this).text())) {
-        result += parseFloat($(this).text());
+        result += parseFloat($(this).text().replace(/\,/, ""));
       }
     });
 

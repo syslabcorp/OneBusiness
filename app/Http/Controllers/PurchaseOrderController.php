@@ -8,10 +8,6 @@ use URL;
 use Twilio;
 use Nexmo;
 use Hash;
-use App\POTemplate6;
-use App\POTemplate7;
-use App\POTemplateDetail6;
-use App\POTemplateDetail7;
 use App\UserArea;
 use App\PoModel;
 use Session;
@@ -43,7 +39,7 @@ class PurchaseOrderController extends Controller
                 return redirect('purchase_order/'.$corp_id.'/'.$city_id.'/'.(is_null($id) ? '' : $id))->withInput();
             }else{
                 if($id == NULL) {
-                    if(!\Auth::user()->checkAccessByPoId([6,7],31, "A"))
+                    if(!\Auth::user()->checkAccessByPoId([$corp_id],31, "A"))
                     {
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
@@ -52,7 +48,7 @@ class PurchaseOrderController extends Controller
                 Request::session()->flash('flash_message', 'Product Template has been added.');
                 Request::Session()->flash('alert-class', 'alert-success');
                 }else{
-                    if(!\Auth::user()->checkAccessByPoId([6,7],31, "E"))
+                    if(!\Auth::user()->checkAccessByPoId([$corp_id],31, "E"))
                     {
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
@@ -79,16 +75,11 @@ class PurchaseOrderController extends Controller
             Request::session()->put('city_id', $city_id);
             return redirect('list_purchase_order?corpID='.$corp_id);
         }
+        $accessvariable = "A";
         if ($id != NULL) {
-            if(!\Auth::user()->checkAccessByPoId([6,7],31, "E"))
-            {
-                \Session::flash('error', "You don't have permission"); 
-                return redirect("/home"); 
-            }
+            $accessvariable = "E";
             $detail_edit_temp_hdr =  $POTemplate::where('po_tmpl8_id',$id)->first();
             $proitemsSelected = $POTemplateDetail::where('po_tmpl8_id',$id)->select('po_tmpl8_item', 'po_tmpl8_branch')->get();
-            
-            
             $data['detail_edit_temp_hdr'] = $detail_edit_temp_hdr;  
             $proretailitems_ids = array();
             $probranch_ids = array();
@@ -104,11 +95,7 @@ class PurchaseOrderController extends Controller
             $data['proline_ids'] = $proline_ids;
             $branchdata['probranch_ids'] = $probranch_ids;
         }
-        if(!\Auth::user()->checkAccessByPoId([6,7],31, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
+        
         $user_area_data = DB::table('user_area')->where('user_ID',$userId)->first();
         $branchdata['branches'] = array();
         if(isset($user_area_data->branch) && !is_null($user_area_data->branch)){
@@ -140,6 +127,11 @@ class PurchaseOrderController extends Controller
         $data['product_line'] = DB::table('s_prodline')->where('Active',1)->orderBy('Product')->get();
         $data['cities'] = $cities;
         $data['corp_id'] = $corp_id;
+        if(!\Auth::user()->checkAccessByPoId([$corp_id],31, $accessvariable))
+        {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
         return view('accesslevel.purchase_order',$data)->nest('branchList', 'accesslevel.product_branches', $branchdata);
     }
     public function product_branch(){
@@ -164,6 +156,7 @@ class PurchaseOrderController extends Controller
         if (Request::isMethod('post')) {
             $formData = Request::all();
             $p_id = isset($formData['ids']) ? $formData['ids'] : array();
+            $retail_itemsArray = isset($formData['retail_itemsArray']) ? $formData['retail_itemsArray'] : array();
             $inventory = array();
             foreach($p_id AS $pid){
                 $s_invtry_hdr = DB::table('s_invtry_hdr')->where('Prod_Line',$pid)->where('Active',1)->orderBy('ItemCode')->get();
@@ -187,6 +180,7 @@ class PurchaseOrderController extends Controller
                 array_push($proitems_ids, $retailSelected->po_tmpl8_item);
             }
             $data['proitems_ids'] = $proitems_ids;
+            $data['retail_itemsArray']=$retail_itemsArray;
         }
         return view('accesslevel.retail_items',$data);
     }
@@ -194,12 +188,6 @@ class PurchaseOrderController extends Controller
     public function list_purchase_order(){
         $corp_id = isset($_GET['corpID']) ? $_GET['corpID']: '' ;
         $city_id = session('city_id'); 
-        
-        if(!\Auth::user()->checkAccessByPoId([6,7],31, "V"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
         $data = array();
          if (Request::isMethod('post')) {
             $formData = Request::all();
@@ -217,6 +205,14 @@ class PurchaseOrderController extends Controller
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
         }
+        $permission = \Auth::user()->checkAccessByPoId([$corp_id],31, "V");
+        if(!$permission)
+        {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }elseif ($permission === 501) {
+            return redirect("/501");
+        }
         $user_area = UserArea::where('user_ID', Auth::id())->first();
         if(!empty($user_area->city)){
             $user_cities = explode(",", $user_area->city);
@@ -231,6 +227,10 @@ class PurchaseOrderController extends Controller
         $data['city_id'] = $city_id;
         $data['corp_id'] = $corp_id;
         return view('accesslevel.list_purchase_order',$data);
+    }
+
+    public function module_not_found(){
+        return view('accesslevel.501');
     }
 }
 

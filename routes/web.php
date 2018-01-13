@@ -147,10 +147,22 @@ Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order'
 Route::any('/product_branch', 'PurchaseOrderController@product_branch');
 Route::any('/retail_items', 'PurchaseOrderController@retail_items');
 
+Route::any('/501', 'PurchaseOrderController@module_not_found');
+
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
        ->middleware('auth')->name('branch_remittances.collections.store');
+Route::put('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittances')
+       ->middleware('auth');
+Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittanceStatus')
+       ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
 
 
+<<<<<<< HEAD
+=======
+Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
+Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');
+Route::post('users/verify-otp', 'UsersController@verifyOTP')->middleware('auth')->name('users.verifyOTP');
+>>>>>>> a31ea128623ba0f68c2c31137ab44de86435ad72

@@ -16,6 +16,29 @@ class BranchRemittanceController extends Controller
 {
   public function index(Request $request)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
+    $queries = $request->only('corpID', 'start_date', 'end_date', 'view_date_range', 'status');
+    if($queries['status']) {
+      session(['status' => $queries['status']]);
+    }else {
+      $queries['status'] = empty(session('status')) ? 'unchecked' : session('status');
+    }
+
+    if($queries['view_date_range'] == 1) {
+      session($queries);
+    }else {
+      if($queries['view_date_range'] == null) {
+        $queries['start_date'] = session('start_date');
+        $queries['end_date'] = session('end_date');
+      }else {
+        session(['view_date_range' => null, 'start_date' => null, 'end_date' => null]);
+      }
+    }
+
     $company = Corporation::findOrFail($request->corpID);
 
     $collections = new RemittanceCollection;
@@ -25,24 +48,38 @@ class BranchRemittanceController extends Controller
       $collections = $collections->where('TellerID', '=', \Auth::user()->UserID);
     }
 
-    if($request->start_date) {
-      $collections = $collections->whereDate('CreatedAt', '>=', $request->start_date);
+    if($queries['status'] == 'unchecked') {
+      $collections = $collections->where("Status", "=", "0");
     }
 
-    if($request->end_date) {
-      $collections = $collections->whereDate('CreatedAt', '<=', $request->end_date);
+    if($queries['status'] == 'checked') {
+      $collections = $collections->where("Status", "=", "1");
+    }
+
+    if($queries['start_date']) {
+      $collections = $collections->whereDate('CreatedAt', '>=', $queries['start_date']);
+    }
+
+    if($queries['end_date']) {
+      $collections = $collections->whereDate('CreatedAt', '<=', $queries['end_date']);
     }
 
     return view('t_remittances.index', [
       'corpID' => $request->corpID,
       'collections' => $collections->get(),
-      'start_date' => $request->start_date,
-      'end_date' => $request->end_date
+      'start_date' => $queries['start_date'],
+      'end_date' => $queries['end_date'],
+      'queries' => $queries
     ]);
   }
 
   public function show(Request $request, $id)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
     $queries = $request->only(['status', 'shortage_only', 'remarks_only']);
     $queries['status'] = empty($queries['status']) ? '0' : $queries['status'];
     $company = Corporation::findOrFail($request->corpID);
@@ -59,10 +96,15 @@ class BranchRemittanceController extends Controller
     ]);
   }
 
-  public function  renderModal(Request $request) {
+  public function renderModal(Request $request) {
     $company = \App\Company::findOrFail($request->corpID);
 
-    $shiftModel = new \App\Shift;
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+    }else {
+      $shiftModel = new \App\KShift;
+    }
+
     $shiftModel->setConnection($company->database_name);
     $shift = $shiftModel->where('Shift_ID', $request->id)->first();
 
@@ -70,10 +112,10 @@ class BranchRemittanceController extends Controller
     {
       $array = array(
         "cashier"=> $shift->user ? $shift->user->UserName : "",
-        "shift_id"=> $request->id,
-        "total_sales"=> $shift->remittance->TotalSales,
-        "total_shortage"=> $shift->remittance->Adj_Amt,
-        'total_remittance'=> $shift->remittance->TotalRemit,
+        "shift_id"=> str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT),
+        "total_sales"=> number_format($shift->remittance->TotalSales, 2),
+        "total_shortage"=> number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2),
+        'total_remittance'=> round($shift->remittance->TotalRemit, 2),
         'couterchecked'=> $shift->remittance->Sales_Checked,
         'wrong_input'=> $shift->remittance->Wrong_Input,
         'adj_short'=> $shift->remittance->Adj_Short,
@@ -103,6 +145,14 @@ class BranchRemittanceController extends Controller
 
   public function create(Request $request, $id = null)
   {
+
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
+    $queries = $request->only('corpID', 'start_date', 'end_date');
+
     $corp = Corporation::find($request->corpID);
     $groupIds = explode(",", \Auth::user()->group_ID);
     $selectStatus = $request->groupStatus != null ? $request->groupStatus : 1;
@@ -160,11 +210,17 @@ class BranchRemittanceController extends Controller
       'selectCity' => $selectCity,
       'branchs' => $branchs,
       'selectStatus' => $selectStatus,
-      'collection' => $collection
+      'collection' => $collection,
+      'queries' => $queries
     ]);
   }
 
   public function edit(Request $request, $id) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'E')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
     return $this->create($request, $id);
   }
 
@@ -240,7 +296,7 @@ class BranchRemittanceController extends Controller
 
     $collection->update(['Subtotal' => $subTotal]);
 
-    \Session::flash('success', "Remittance collections has been created successfully.");
+    \Session::flash('success', "Transaction #{$collection->ID} has been updated.");
     return redirect(route('branch_remittances.index', [ 'corpID' => $request->corpID]));
   }
 
@@ -248,18 +304,23 @@ class BranchRemittanceController extends Controller
   {
     $company = \App\Company::findOrFail($request->corpID);
     
-    $shiftModel = new \App\Shift;
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+    }else {
+      $shiftModel = new \App\KShift;
+    }
+
     $shiftModel->setConnection($company->database_name);
     $shift = $shiftModel->where('Shift_ID', $request->Shift_ID)->first();
 
     $params = $request->only([
       'Shift_ID', 'TotalRemit', 'Wrong_Input', 'Adj_Short', 'Adj_Amt',
-      'Sales_Checked'
+      'Sales_Checked', 'Notes'
     ]);
 
-    $params['Adj_Amt'] = $params['Adj_Amt'] ? $params['Adj_Amt'] : 0;
+    $params['Adj_Amt'] = $params['Adj_Amt'] ? abs($params['Adj_Amt'])*-1 : 0;
     $params['Sales_Checked'] = $params['Sales_Checked'] ? $params['Sales_Checked'] : 0;
-    
+
     $params['Branch'] = $shift->Branch;
 
     if (empty($params['Wrong_Input'])){
@@ -278,10 +339,61 @@ class BranchRemittanceController extends Controller
     }
     
     \Session::flash('success', "Remittance has been updated successfully.");
-    return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID]);
+    return redirect()->route('branch_remittances.show', [$request->collectionId, 'corpID' => $request->corpID,
+      'status' => $request->status, 'shortage_only' => $request->shortage_only, 'remarks_only' => $request->remarks_only]);
+  }
+
+  public function updateRemittances(Request $request) {
+    $company = \App\Company::findOrFail($request->corpID);
+    
+    if($company->corp_type == 'ICAFE') {
+      $shiftModel = new \App\Shift;
+    }else {
+      $shiftModel = new \App\KShift;
+    }
+    $shiftModel->setConnection($company->database_name);
+
+    foreach($request->shiftIds as $shiftId) {
+      $shift = $shiftModel->where('Shift_ID', $shiftId)->first();
+
+      if ($shift->remittance) {
+        $shift->remittance()->update(['Sales_Checked' => 1]);
+      }
+    }
+    \Session::flash('success', "Remittance records successfully checked and updated");
+    return response()->json(["success" => true]);
+  }
+
+  public function updateRemittanceStatus(Request $request, $id) {
+    $company = Corporation::findOrFail($request->corpID);
+
+    $collection = new \App\RemittanceCollection;
+    $collection->setConnection($company->database_name);
+    $collection = $collection->findOrFail($id);
+
+    $collection->update([
+      'Status' => !$collection->Status,
+      'UpdatedBy' => \Auth::user()->UserID,
+      'UpdatedAt' => date('Y-m-d h:i:s')
+    ]);
+    if($collection->Status) {
+      \Session::flash('success', "Transaction #{$collection->ID} has been marked as cleared");
+    }else {
+      \Session::flash('success', "Transaction #{$collection->ID} has been unchecked");
+    }
+
+    return redirect($request->redirect);
   }
 
   public function destroy(Request $request, $id){
+
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'D')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
+    $queries = $request->only('corpID', 'start_date', 'end_date');
+
     $company = Corporation::findOrFail($request->corpID);
     $collectionModel = new \App\RemittanceCollection;
     $collectionModel->setConnection($company->database_name);
@@ -290,6 +402,6 @@ class BranchRemittanceController extends Controller
     $collection->delete();
 
     \Session::flash('success', "Remittance collections has been deleted successfully.");
-    return redirect(route('branch_remittances.index', [ 'corpID' => $request->corpID]));
+    return redirect(route('branch_remittances.index', $queries));
   }
 }

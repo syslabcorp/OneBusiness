@@ -25,20 +25,18 @@
               {{ $queries['status'] == '0' ? "checked" : "" }}>
             Unchecked
           </label>
-          <div class="form-group">
-            <label class="radio-inline" for="shortage_only" style="padding-left: 0px;">
-              <input type="checkbox" name="shortage_only" id="shortage_only" value="1"
-                {{ $queries['shortage_only'] == '1' ? "checked" : "" }}>
-              Show Shortage only
-            </label>
+          <label class="radio-inline" for="shortage_only" style="padding-left: 50px;">
+            <input type="checkbox" name="shortage_only" id="shortage_only" value="1"
+              {{ $queries['shortage_only'] == '1' ? "checked" : "" }}>
+            Show Shortage only
+          </label>
 
-            <label class="radio-inline" for="remarks_only" style="padding-left: 0px;">
-              <input type="checkbox" name="remarks_only" id="remarks_only" value="1"
-                {{ $queries['remarks_only'] == '1' ? "checked" : "" }}>
-              Show Remarks only
-            </label>
-          </div>
-        </div>
+          <label class="radio-inline" for="remarks_only" style="padding-left: 0px;">
+            <input type="checkbox" name="remarks_only" id="remarks_only" value="1"
+              {{ $queries['remarks_only'] == '1' ? "checked" : "" }}>
+            Show Remarks only
+          </label>
+      </div>
       </div>
     </div>
   </form>
@@ -68,47 +66,48 @@
       </tr>
     </thead>
     <tbody>
+      @php $totalShifts = 0 @endphp
       @foreach($collection->details()->get() as $detail)
         @foreach($detail->shifts($company->corp_id, $queries) as $branch => $shifts_by_date)
           @php $index_branch = $loop->index @endphp
 
           @php $count = 0 @endphp
           @foreach($shifts_by_date as $date => $shifts)
-            @php $count += count($shifts) @endphp
+            @php $count += count($shifts); $totalShifts += count($shifts); @endphp
           @endforeach
           
           @foreach($shifts_by_date as $date => $shifts)
             @php $index = $loop->index @endphp
             @foreach($shifts as $shift)
-              <tr data-branch="{{ $shift->branch->Branch }}" data-date="{{ $date }}">
+              <tr data-branch="{{ $shift->branch->Branch }}" data-date="{{ $date }}" data-id="{{ $shift->Shift_ID }}">
                 @if($index == 0 && $loop->index == 0)
                   <td class="col-branch" rowspan="{{$count}}">{{$shift->branch->ShortName}}</td>
                 @endif
                 @if($loop->index == 0 )
                   <td class="col-date" rowspan="{{count($shifts)}}">{{$date}}</td>
                 @endif
-                <td>{{ $shift->Shift_ID }}</td>
+                <td>{{ str_pad($shift->Shift_ID, 8, "0", STR_PAD_LEFT) }}</td>
                 <td>{{ date("h:i A", strtotime($shift->ShiftTime) ) }}</td>
                 <td>{{ $shift->user ? $shift->user->UserName : "" }}</td>
-                <td class="col-retail">
-                  {{ $shift->remittance ? round($shift->remittance->Sales_TotalSales, 2) : "" }}
+                <td class="col-retail text-right">
+                  {{ $shift->remittance ? number_format($shift->remittance->Sales_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-service">
-                  {{ $shift->remittance ? round($shift->remittance->Serv_TotalSales, 2) : "" }}
+                <td class="col-service text-right">
+                  {{ $shift->remittance ? number_format($shift->remittance->Serv_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-rental">
-                  {{ $shift->remittance ? round($shift->remittance->Games_TotalSales, 2) : "" }}
+                <td class="col-rental text-right">
+                  {{ $shift->remittance ? number_format($shift->remittance->Games_TotalSales, 2) : "" }}
                 </td>
-                <td>
-                  {{ $shift->remittance ? round($shift->remittance->Net_TotalSales, 2) : "" }}
+                <td class="col-internet text-right">
+                  {{ $shift->remittance ? number_format($shift->remittance->Net_TotalSales, 2) : "" }}
                 </td>
-                <td class="col-sale">
-                  {{ $shift->remittance ? round($shift->remittance->TotalSales, 2) : "" }}
+                <td class="col-sale text-right">
+                  {{ $shift->remittance ? number_format($shift->remittance->TotalSales, 2) : "" }}
                 </td>
-                <td class="col-remit">
-                  {{ $shift->remittance ? round($shift->remittance->TotalRemit, 2) : "" }}
+                <td class="col-remit text-right">
+                  {{ $shift->remittance ? number_format($shift->remittance->TotalRemit, 2) : "" }}
                 </td>
-                <td>
+                <td class="col-clr">
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Sales_Checked == 1 ? "checked" : "") : "" }} onclick="return false;" >
                 </td>
                 <td>
@@ -116,14 +115,17 @@
                 </td>
                 <td>
                   <input type="checkbox" name="" id="" {{ $shift->remittance ? ($shift->remittance->Adj_Short == 1 ? "checked" : "") : "" }} onclick="return false;"  >
-                <td>
-                  @if($shift->remittance)
-                    {{ round($shift->remittance->TotalSales - $shift->remittance->TotalRemit , 2) }}
+                <td class="text-right">
+                  @if($shift->remittance->Adj_Short == 1)
+                    {{ number_format($shift->remittance->Adj_Amt, 2) }}
+                  @else
+                    {{ number_format(($shift->remittance->TotalSales - $shift->remittance->TotalRemit)*-1 , 2) }}
                   @endif
                 </td>
                 <td>{{ $shift->remittance ? $shift->remittance->Notes : "" }}</td>
                 <td>
-                  <button type="button" class="btn btn-primary show_modal" data-shift-id="{{$shift->Shift_ID}}" 
+                  <button type="button" class="btn btn-primary show_modal {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 15, 'E') ? "" : "disabled" }}" 
+                    data-shift-id="{{$shift->Shift_ID}}" 
                     data-toggle="modal" data-target="#Modal" data-corp="{{ $company->corp_id }}">
                     <i class="fa fa-pencil"></i>
                   </button>
@@ -133,6 +135,23 @@
           @endforeach
         @endforeach
       @endforeach
+      @if($totalShifts == 0)
+      <tr>
+        <td colspan="17">
+          No items
+        </td>
+      </tr>
+      @endif
+      <tr class="remitance-total" style="pointer-events: none;">
+        <td colspan="5"><strong>Auto Total:</strong></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td class="text-right"><span class="total">0</span></td>
+        <td colspan="6"></td>
+      </tr>
     </tbody>
   </table>
 </div>

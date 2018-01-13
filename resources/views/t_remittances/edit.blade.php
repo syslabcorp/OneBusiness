@@ -8,13 +8,13 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h4>BRANCH LIST</h4>
+                <h4>Edit Transaction: {{ $collection->ID }}</h4>
               </div>
               <div class="col-xs-3">
               <form class="pull-right form-status" method="GET">
                 <select class="form-control" >
                   <option value="1">Active</option>
-                  <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Unchecked</option>
+                  <option value="0" {{ $selectStatus == '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
               </form>
               </div>
@@ -26,7 +26,7 @@
             </div>
             <form class="form-horizontal" id="brach_remittance_create" action="{{ route('branch_remittances.edit',[$collection, 'corpID' => $corpID]) }}" method="GET" >
               <input type="hidden" name="corpID" value={{$corpID}}>
-              <input type="hidden" name="groupStatus" value="1" />
+              <input type="hidden" name="groupStatus" value="{{ $selectStatus }}" />
               <div class="row">
                 <div class="form-group col-md-4">
                   <label for="" class="control-lable col-md-4">Remit Group:</label>
@@ -113,7 +113,7 @@
                     @if(count($branchs) == 0)
                       <tr>
                         <td colspan="4">
-                          Not found any collections
+                          No collections
                         </td>
                       </tr>
                     @endif
@@ -126,8 +126,12 @@
                   </div>
                 </div>
                 @if(count($branchs))
-                <div class="row">
-                  <div class=" pull-right" style="margin-top: 20px;">
+                <div class="row" style="margin-top: 20px;">
+                  <a class="btn btn-default pull-left" href="{{ route('branch_remittances.index', $queries) }}">
+                    <i class="fa fa-reply"></i>
+                    Back
+                  </a>
+                  <div class="pull-right">
                     <button class="btn btn-success">Save</button>
                   </div>
                 </div>
@@ -138,13 +142,6 @@
               You don't have assigned any groups
             </div>
             @endif
-
-            <div class="row">
-              <a class="btn btn-default" href="{{ route('branch_remittances.index', ['corpID' => $corpID]) }}">
-                <i class="fa fa-reply"></i>
-                Back
-              </a>
-            </div>
           </div>
           
         </div>

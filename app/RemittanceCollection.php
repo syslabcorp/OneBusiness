@@ -12,11 +12,12 @@ class RemittanceCollection extends Model
   protected $primaryKey = "ID";
 
   protected $fillable = [
-    'CreatedAt', 'TellerID', 'Status', 'Subtotal'
+    'CreatedAt', 'TellerID', 'Status', 'Subtotal', 'UpdatedBy', 'UpdatedAt'
   ];
   
   protected $dates = [
-    'CreatedAt'
+    'CreatedAt',
+    'UpdatedAt'
   ];
 
   public function details() {
@@ -25,6 +26,10 @@ class RemittanceCollection extends Model
 
   public function user() {
     return $this->belongsTo(\App\User::class, "TellerID", "UserID");
+  }
+
+  public function updatedBy() {
+    return $this->belongsTo(\App\User::class, "UpdatedBy", "UserID");
   }
 
   public function detail($groupId, $branchId) {
@@ -50,17 +55,22 @@ class RemittanceCollection extends Model
     if($detail) {
       $startCRR = $detail->Start_CRR;
     }else {
-      $remittanceModel = new \App\Remittance;
+      if($company->corp_type == 'ICAFE') {
+        $remittanceModel = new \App\Remittance;
+      }else {
+        $remittanceModel = new \App\KRemittance;
+      }
+
       $remittanceModel = $remittanceModel->setConnection($company->database_name);
-      $remittance = $remittanceModel->where('t_remitance.Branch', '=', $branchId)
-                                    ->where('t_remitance.Sales_Checked', '=', 0)
+      $remittance = $remittanceModel->where('Branch', '=', $branchId)
+                                    ->where('Sales_Checked', '=', 0)
                                     ->orderBy('Shift_ID', 'ASC')
                                     ->first();
       if($remittance) {
         $startCRR = $remittance->Shift_ID;
       }else {
-        $remittance = $remittanceModel->where('t_remitance.Branch', '=', $branchId)
-                                      ->where('t_remitance.Sales_Checked', '=', 1)
+        $remittance = $remittanceModel->where('Branch', '=', $branchId)
+                                      ->where('Sales_Checked', '=', 1)
                                       ->orderBy('Shift_ID', 'DESC')
                                       ->first();
         if($remittance) {
