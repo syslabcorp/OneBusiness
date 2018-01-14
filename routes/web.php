@@ -152,6 +152,7 @@ Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@u
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
 Route::resource('stocks', 'StocksController', ['middleware' => 'auth']);
+Route::any('/stocks/{stock_id}/{detail_id}' , 'StocksController@destroy_detail')->middleware('auth')->name('stocks.delete_detail');
 
 Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
 Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');
