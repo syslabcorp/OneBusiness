@@ -10,6 +10,7 @@ use App\StockItem;
 use App\StockDetail;
 use App\Vendor;
 use App\PurchaseOrder;
+use App\PurchaseOrderDetail;
 
 class StocksController extends Controller
 {
@@ -35,10 +36,41 @@ class StocksController extends Controller
   public function update(Request $request, Stock $stock)
   {
     // dd($request->all());
-    if($request->item_id && $request->ServedQty){
-      $detail_params = $request->only( 'item_id', 'ItemCode', 'ServedQty', 'Qty', 'RR_No', 'RcvDate' );
-      $stock_detail = new StockDetail($detail_params);
-      $stock_detail->save();
+  //   $this->validate($request,[
+  //     'ItemCode' => 'required|max:15',
+  //     'ServedQty' => 'required|numeric',
+  //     'Qty' => 'required',
+  //     'Bal' => 'required',
+  //     'RR_No' => 'required',
+  //     'RcvDate' => 'required',
+  //     'Cost' => 'required'
+  // ]);
+
+    if($request->item_id){
+      $stock_detail = new StockDetail;
+      $stock_detail->item_id = intval($request->item_id);
+      $stock_detail->ItemCode = $request->ItemCode;
+      $stock_detail->ServedQty = intval($request->ServedQty);
+      $stock_detail->Qty = floatval($request->Qty);
+      $stock_detail->Bal = floatval($request->Qty);
+      $stock_detail->RR_No = $request->RR_No;
+      $stock_detail->RcvDate = $request->RcvDate;
+      $stock_detail->Cost = $request->Cost;
+      $success = $stock_detail->save();
+      // dd($stock_detail);
+
+      if($success && $request->po && ($request->po != ""))
+      {
+        
+        $detail = new PurchaseOrderDetail;
+        $detail->item_id = intval($request->item_id);
+        $detail->ItemCode = $request->ItemCode;
+        $detail->po_no = $request->po;
+        $detail->Qty = floatval($request->Qty);
+        $detail->ServedQty = intval($request->ServedQty);
+        $detail->cost = $request->Cost;
+        $detail->save();
+      }
     }
 
     if($request->ItemCode_Update)
@@ -96,6 +128,15 @@ class StocksController extends Controller
         'stockitems' => $stockitems
       ]
     );
+  }
+
+  public function destroy_detail(Request $request)
+  {
+    $stock = Stock::find($request->stock_id);
+    $detail = StockDetail::find($request->detail_id);
+    // dd($request->stock_id);
+    $detail->delete();
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
   public function destroy(Request $request,Stock $stock)

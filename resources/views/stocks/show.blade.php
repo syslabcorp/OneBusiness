@@ -27,7 +27,7 @@
                         P.O#:
                       </label>
                       <div class="col-sm-4">
-                        <select name="status" class="form-control" {{ $stock->check_transfered() ? "disabled" : "" }}  >
+                        <select name="po" id="PO" class="form-control" disabled >
                           @foreach($pos as $po)
                             <option value="{{$po->po_no}}" >{{$po->po_no}}</option>
                           @endforeach
@@ -42,7 +42,7 @@
                       D.R#:
                     </label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" name="RR_No" {{ $stock->check_transfered() ? "disabled" : "" }} >
+                      <input type="text" class="form-control" name="RR_No" value="{{$stock->RR_No}}" {{ $stock->check_transfered() ? "disabled" : "" }} >
                     </div>
 
                     <label class="control-label col-sm-1">
@@ -110,7 +110,7 @@
                       <a class="btn btn-primary edit" {{ $stock->check_transfered() ? "disabled" : "" }}>
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a href="{{route('stocks.destroy', [ $stock , 'corpID' => $corpID] )}}" class="btn btn-danger" {{ $stock->check_transfered() ? "disabled" : "" }}>
+                      <a href="{{route('stocks.delete_detail', [ $stock , $detail , 'corpID' => $corpID] )}}" class="btn btn-danger" {{ $stock->check_transfered() ? "disabled" : "" }}>
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
@@ -123,7 +123,7 @@
                   <td> <input type="text" name="Prod_Line" class="form-control input_Prod_Line"> </td>
                   <td> <input type="text" name="Brand" class="form-control input_Brand"> </td>
                   <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
-                  <td></td>
+                  <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
                   <td> <input type="text" name="ServedQty" id="" class="form-control"> </td>
                   <td> <input type="text" name="Qty" id="" class="form-control"> </td>
                   <td></td>
@@ -148,7 +148,7 @@
               <tbody style="display:block; max-height:300px; overflow-y:scroll; background: #f4b2b6;">
                 @foreach($stockitems as $stockitem )
                   <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" >
-                    <td class="recommend_item_id"> {{$stockitem->item_id}} </td>
+                    <td class="recommend_item_id" style="display: none;"> {{$stockitem->item_id}} </td>
                     <td class="recommend_itemcode" >{{$stockitem->ItemCode}}</td>
                     <td class="recommend_prod_line" > {{$stockitem->product_line->Product}} </td>
                     <td class="recommend_prod_line_id" style="display: none;" > {{$stockitem->Prod_Line}} </td>
@@ -278,12 +278,14 @@
     $(document).keydown(function(e) {
       if(e.which == 113) {
         $('#add-row').css('display' , ''); 
+        $('#PO').removeAttr('disabled', false);
         return false;
       }
     });
 
     $('#pressF2').click(function(){
       $('#add-row').css('display' , ''); 
+      $('#PO').removeAttr('disabled', false);
     });
 
     $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on('click', function(){
