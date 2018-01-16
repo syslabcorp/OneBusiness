@@ -42,11 +42,14 @@ Route::resource('bank-accounts', 'BankAccountController', ['middleware' => 'auth
 Route::resource('checkbooks', 'CheckbookController', ['middleware' => 'auth']);
 Route::resource('vendors', 'VendorController', ['middleware' => 'auth']);
 Route::resource('vendor-management', 'VendorManagementController', ['middleware' => 'auth']);
+
+// feature: service & retail item price configuration
 Route::resource('retail-items-price-conf', 'RetailItemPriceConfController', ['middleware' => 'auth']);
 Route::resource('services-price-conf', 'ServicePriceConfController', ['middleware' => 'auth']);
 Route::get('/ajax/branches/{corp_id?}', ['as'=>'ajax.fetch.branches', 'uses'=>'AjaxController@fetchBrances']);
 Route::get('/ajax/services/{service_id_csv?}', ['as'=>'ajax.fetch.services', 'uses'=>'AjaxController@fetchServices']);
 Route::get('/ajax/retail-items/{product_id_csv?}', ['as'=>'ajax.fetch.retail-items', 'uses'=>'AjaxController@fetchRetailItems']);
+// end of routes for feature: service & retail item price configuration
 
 Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth']);
 Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middleware' => 'auth']);

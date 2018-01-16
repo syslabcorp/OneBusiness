@@ -14,13 +14,13 @@
 
         .modal { z-index: 10001 !important; }
 
-        #feedback { font-size: 1.4em; }
+        #feedback { font-size: 14px; }
             
         /* css for selectable */
-        .selectable .ui-selecting { background: #FECA40; }
-        .selectable .ui-selected { background: #F39814; color: white; }
+        .selectable .ui-selecting { background: #b8d4ea; }
+        .selectable .ui-selected { background: #76acd6; color: white; }
         .selectable { list-style-type: none; margin: 0; padding: 0; }
-        .selectable li { margin: 5px; padding: 0.4em; font-size: 1.4em; }
+        .selectable li { margin: 5px; padding: 0.4em; font-size: 14px; }
         /* end of -------- css for selectable */
         
         /* css for fixed first column of the table (for confStep 2) */
@@ -40,7 +40,7 @@
         /* end of ----------------- css for fixed first column of the table (for confStep 2) */
 
 
-
+        #serviceAppWrapper, #serviceAppWrapper select, #serviceAppWrapper select option {font-size: 14px !important;}
 
     </style>
 @endsection
@@ -71,12 +71,13 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Price Configuration for Services by Branch 
-                                <button type="button" class="btn btn-info btn-md pull-right" @click="confNext" v-if="confStep === 1">Next</button>
-                                <a href="{{ url('/services-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
-                                <div class="clearfix"></div>
+                                
+                                <!-- <a href="{{ url('/services-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
+                                <div class="clearfix"></div> -->
+                            </div>
 
+                            <div class="panel-body">
                                 <div v-if="confStep === 2">
-                                    <hr>
                                     <div class="pull-left">
                                         <label>Price</label>
                                         <input type="text" name="">
@@ -87,9 +88,9 @@
                                         <button type="button" class="btn btn-success btn-sm" style="margin-left: 5px;">Unset Active</button>
                                     </div>
                                     <div class="clearfix"></div>
+                                    <hr>
                                 </div>
-                            </div>
-                            <div class="panel-body">
+
                                 <div v-if="confStep === 1">
                                     
                                     <div class="row">
@@ -98,7 +99,6 @@
                                                 <label for="corp_nam" class="col-md-4 control-label">Corporation</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control required" id="corp_type" name="corp_type" v-model="selectedCorporationId" @change="loadBranches">
-                                                        <option value="">Choose Corporation</option>
                                                         <option v-for="corporation in corporations" :value="corporation.id" :selected="selectedCorporationId==corporation.id">@{{ corporation.name }}</option>
                                                     </select>
                                                 </div>
@@ -361,6 +361,8 @@
 
                             </div>
                             <div class="panel-footer text-right">
+                                <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
+
                                 <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
                             </div>
                         </div>
@@ -585,6 +587,11 @@
 
                 self.loadServices();
                 self.setLocalStorageVariables();
+
+                if(self.selectedCorporationId === 0) {
+                    self.selectedCorporationId = self.corporations[0].id;
+                    self.loadBranches();
+                }
 
                 $(function() {
                     self.activateSelectable();
