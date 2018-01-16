@@ -9,7 +9,7 @@ class StockDetail extends Model
   public $timestamps = false;
   protected $table = "s_rcv_detail";
   protected $primaryKey = "Movement_ID";
-  protected $connection = 'mysql2';
+  // protected $connection = 'mysql2';
   protected $dates = [
     'RcvDate'
   ];

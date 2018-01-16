@@ -11,16 +11,23 @@ use App\StockDetail;
 use App\Vendor;
 use App\PurchaseOrder;
 use App\PurchaseOrderDetail;
+use App\Corporation;
 
 class StocksController extends Controller
 {
   public function show(Request $request)
   {
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+    $purchaseOrderModel = new \App\PurchaseOrder;
+    $purchaseOrderModel->setConnection($company->database_name);
+
     $stockitems = StockItem::where( 'Active', 1 )->get();
-    $stock = Stock::find($request->stock);
+    $stock = $stockModel->find($request->stock);
     $stock_details = $stock->stock_details;
     $vendors = Vendor::all();
-    $pos = PurchaseOrder::where('served', 0)->get();
+    $pos = $purchaseOrderModel->where('served', 0)->get();
     return view('stocks.show',
       [
         'corpID' => $request->corpID,
@@ -35,19 +42,20 @@ class StocksController extends Controller
 
   public function update(Request $request, Stock $stock)
   {
-    // dd($request->all());
-  //   $this->validate($request,[
-  //     'ItemCode' => 'required|max:15',
-  //     'ServedQty' => 'required|numeric',
-  //     'Qty' => 'required',
-  //     'Bal' => 'required',
-  //     'RR_No' => 'required',
-  //     'RcvDate' => 'required',
-  //     'Cost' => 'required'
-  // ]);
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\StockDetail;
+    $stockModel->setConnection($company->database_name);
+    $stockDetailModel = new \App\StockDetail;
+    $stockDetailModel->setConnection($company->database_name);
+    $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+    $purchaseOrderDetailModel->setConnection($company->database_name);
+    $stockDetailModel = new \App\StockDetail;
+    $stockDetailModel->setConnection($company->database_name);
+
+    $stock = $stockModel->find($request->stock); 
 
     if($request->item_id){
-      $stock_detail = new StockDetail;
+      $stock_detail = new $stockDetailModel;
       $stock_detail->item_id = intval($request->item_id);
       $stock_detail->ItemCode = $request->ItemCode;
       $stock_detail->ServedQty = intval($request->ServedQty);
@@ -62,7 +70,7 @@ class StocksController extends Controller
       if($success && $request->po && ($request->po != ""))
       {
         
-        $detail = new PurchaseOrderDetail;
+        $detail = new $purchaseOrderDetailModel;
         $detail->item_id = intval($request->item_id);
         $detail->ItemCode = $request->ItemCode;
         $detail->po_no = $request->po;
@@ -77,7 +85,7 @@ class StocksController extends Controller
     {
       foreach($request->ItemCode_Update as $key => $value)
       {
-        $detail = StockDetail::find($key);
+        $detail = $stockDetailModel->find($key);
         $detail->ItemCode = $value;
         $detail->save();
       }
@@ -89,18 +97,21 @@ class StocksController extends Controller
 
   public function index(Request $request)
   {
+
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+
     $one_vendor = false;
     $vendor_ID = "";
 
-    if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != ""))
-    {
-      $stocks = Stock::where('Supp_ID', $request->vendorID)->get();
+    if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != "")) {
+      $stocks = $stockModel->where('Supp_ID', $request->vendorID)->get();
       $one_vendor = true;
       $vendor_ID = $request->vendorID;
     }
-    else
-    {
-      $stocks = Stock::all();
+    else{
+      $stocks = $stockModel->get();
     }
     
     $vendors = Vendor::all();
@@ -117,31 +128,41 @@ class StocksController extends Controller
 
   public function create(Request $request)
   {
-    $vendors = Vendor::all();
-    $stockitems = StockItem::where( 'Active', 1 )->get();
-    $pos = PurchaseOrder::where('served', 0)->get();
-    return view('stocks.create',
-      [
-        'corpID' => $request->corpID,
-        'vendors' => $vendors,
-        'pos' => $pos,
-        'stockitems' => $stockitems
-      ]
-    );
+    // $vendors = Vendor::all();
+    // $stockitems = StockItem::where( 'Active', 1 )->get();
+    // $pos = PurchaseOrder::where('served', 0)->get();
+    // return view('stocks.create',
+    //   [
+    //     'corpID' => $request->corpID,
+    //     'vendors' => $vendors,
+    //     'pos' => $pos,
+    //     'stockitems' => $stockitems
+    //   ]
+    // );
   }
 
   public function destroy_detail(Request $request)
   {
-    $stock = Stock::find($request->stock_id);
-    $detail = StockDetail::find($request->detail_id);
-    // dd($request->stock_id);
+
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+    $stockDetailModel = new \App\StockDetail;
+    $stockDetailModel->setConnection($company->database_name);
+
+    $stock = $stockModel->find($request->stock_id);
+    $detail = $stockDetailModel->find($request->detail_id);
     $detail->delete();
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
-  public function destroy(Request $request,Stock $stock)
+  public function destroy(Request $request)
   {
-    // dd($request);
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+
+    $stock = $stockModel->find($request->stock);
     $success = $stock->delete();
     if($success){
       // \Session::flash('success', "Brand deleted successfully");
