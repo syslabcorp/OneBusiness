@@ -28,7 +28,7 @@
         .customThCss {text-align: center; vertical-align: middle; width: 300px !important;}
         .rightBorder {border-right: 2px solid #ccc;}
         .priceField {width: 50px; text-align: center;}
-        .selectedRow {background-color: #eee;}
+        .selectedRow, tbody > tr:hover {background-color: #b8d4ea !important;}
 
         table.fixedColumn > thead > tr { background-color: #ddd; padding-top: 20px; padding-bottom: 20px;}
         table.fixedColumn > thead > tr > th:first-child, table.fixedColumn > tbody > tr > td:first-child  { position: absolute; display: inline-block; background-color: #ccc; width: 140px; vertical-align: middle; }
