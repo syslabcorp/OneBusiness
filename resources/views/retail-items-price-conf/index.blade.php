@@ -14,13 +14,13 @@
 
         .modal { z-index: 10001 !important; }
 
-        #feedback { font-size: 1.4em; }
+        #feedback { font-size: 14px; }
             
         /* css for selectable */
-        .selectable .ui-selecting { background: #FECA40; }
-        .selectable .ui-selected { background: #F39814; color: white; }
+        .selectable .ui-selecting { background: #b8d4ea; }
+        .selectable .ui-selected { background: #76acd6; color: white; }
         .selectable { list-style-type: none; margin: 0; padding: 0; }
-        .selectable li { margin: 5px; padding: 0.4em; font-size: 1.4em; }
+        .selectable li { margin: 5px; padding: 0.4em; font-size: 14px; }
         /* end of -------- css for selectable */
         
         /* css for fixed first column of the table (for confStep 2) */
@@ -28,7 +28,7 @@
         .customThCss {text-align: center; vertical-align: middle; width: 300px !important;}
         .rightBorder {border-right: 2px solid #ccc;}
         .priceField {width: 50px; text-align: center;}
-        .selectedRow {background-color: #eee;}
+        .selectedRow, tbody > tr:hover {background-color: #b8d4ea;}
 
         table.fixedColumn > thead > tr { background-color: #ddd; padding-top: 20px; padding-bottom: 20px;}
         table.fixedColumn > thead > tr > th:first-child, table.fixedColumn > tbody > tr > td:first-child  { position: absolute; display: inline-block; background-color: #ccc; width: 140px; vertical-align: middle; }
@@ -39,13 +39,14 @@
         table.fixedColumn > thead > tr > th:nth-child(2), table.fixedColumn > tbody > tr > td:nth-child(2) { padding-left:150px !important; }
         /* end of ----------------- css for fixed first column of the table (for confStep 2) */
 
-
+        
+        #retailItemPCAppWrapper, #retailItemPCAppWrapper select, #retailItemPCAppWrapper select option {font-size: 14px !important;}
 
 
     </style>
 @endsection
 @section('content')
-    <div class="container-fluid" id="serviceAppWrapper">
+    <div class="container-fluid" id="retailItemPCAppWrapper">
         <div class="row">
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
@@ -71,12 +72,12 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Price Configuration for Retail Items by Branch
-                                <button type="button" class="btn btn-info btn-md pull-right" @click="confNext" v-if="confStep === 1">Next</button>
-                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
-                                <div class="clearfix"></div>
-
+                                
+                                <!-- <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
+                                <div class="clearfix"></div> -->
+                            </div>
+                            <div class="panel-body">
                                 <div v-if="confStep === 2">
-                                    <hr>
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="row">
@@ -111,9 +112,9 @@
                                             </div>                                            
                                         </div>
                                     </div>
+                                    <hr>
                                 </div>
-                            </div>
-                            <div class="panel-body">
+
                                 <div v-if="confStep === 1">
                                     
                                     <div class="row">
@@ -154,7 +155,6 @@
                                                 <label for="product_id" class="col-md-4 control-label">Products</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control required" id="product_id" name="product_id" v-model="selectedProductId" @change="loadItems">
-                                                        <option value="">Choose Product</option>
                                                         <option v-for="product in products" :value="product.id" :selected="selectedProductId==product.id">@{{ product.name }}</option>
                                                     </select>
                                                 </div>
@@ -280,7 +280,7 @@
                                                                     <input type="checkbox" name="" class="childControl">
                                                                 </td> 
                                                                 <td>
-                                                                    0
+                                                                    <input type="text" name="" value="0" class="priceField childControl">
                                                                 </td> 
                                                                 <td>
                                                                     <input type="text" name="" value="100" class="priceField childControl">
@@ -298,7 +298,7 @@
                                                                     <input type="checkbox" name="" class="childControl">
                                                                 </td> 
                                                                 <td>
-                                                                    0
+                                                                    <input type="text" name="" value="0" class="priceField childControl">
                                                                 </td> 
                                                                 <td>
                                                                     <input type="text" name="" value="100" class="priceField childControl">
@@ -316,7 +316,7 @@
                                                                     <input type="checkbox" name="" class="childControl">
                                                                 </td> 
                                                                 <td>
-                                                                    0
+                                                                    <input type="text" name="" value="0" class="priceField childControl">
                                                                 </td> 
                                                                 <td>
                                                                     <input type="text" name="" value="100" class="priceField childControl">
@@ -340,7 +340,7 @@
                                                                     <input type="checkbox" name="" class="childControl">
                                                                 </td> 
                                                                 <td>
-                                                                    0
+                                                                    <input type="text" name="" value="0" class="priceField childControl">
                                                                 </td> 
                                                                 <td>
                                                                     <input type="text" name="" value="100" class="priceField childControl">
@@ -358,7 +358,7 @@
                                                                     <input type="checkbox" name="" class="childControl">
                                                                 </td> 
                                                                 <td>
-                                                                    0
+                                                                    <input type="text" name="" value="0" class="priceField childControl">
                                                                 </td> 
                                                                 <td>
                                                                     <input type="text" name="" value="100" class="priceField childControl">
@@ -376,7 +376,7 @@
                                                                     <input type="checkbox" name="" class="childControl">
                                                                 </td> 
                                                                 <td>
-                                                                    0
+                                                                    <input type="text" name="" value="0" class="priceField childControl">
                                                                 </td> 
                                                                 <td>
                                                                     <input type="text" name="" value="100" class="priceField childControl">
@@ -399,6 +399,7 @@
 
                             </div>
                             <div class="panel-footer text-right">
+                                <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
                                 <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
                             </div>
                         </div>
@@ -417,7 +418,7 @@
 
     <script>
         var serviceApp = new Vue({
-            el: '#serviceAppWrapper',
+            el: '#retailItemPCAppWrapper',
             data: {
                 confStep: 1,
                 corporations: [
@@ -646,9 +647,15 @@
                 var self = this;
 
                 self.setLocalStorageVariables();
-                console.log('test data...')
-                console.log('selectedProductId=' + localStorage.getItem("selectedProductId"))
-                console.log(self.selectedRetailItemIds)
+                if(self.ri_selectedCorporationId === 0) {
+                    self.ri_selectedCorporationId = self.corporations[0].id;
+                    self.loadBranches();
+                }
+
+                if(self.selectedProductId === 0) {
+                    self.selectedProductId = self.products[0].id;
+                    self.loadItems();
+                }
 
                 $(function() {
                     self.activateSelectable();
