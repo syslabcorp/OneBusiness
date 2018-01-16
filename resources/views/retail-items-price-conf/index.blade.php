@@ -73,8 +73,6 @@
                             <div class="panel-heading">
                                 Price Configuration for Retail Items by Branch
                                 
-                                <!-- <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
-                                <div class="clearfix"></div> -->
                             </div>
                             <div class="panel-body">
                                 <div v-if="confStep === 2">
@@ -398,9 +396,15 @@
                                 </div>
 
                             </div>
-                            <div class="panel-footer text-right">
-                                <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
-                                <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
+                            <div class="panel-footer">
+                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
+
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
+                                    <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
+                                </div>
+
+                                <div class="clearfix"></div>
                             </div>
                         </div>
 

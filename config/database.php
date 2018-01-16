@@ -52,6 +52,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'unix_socket' => '/opt/lampp/var/mysql/mysql.sock',
         ],
 
         'mysql2' => array(
