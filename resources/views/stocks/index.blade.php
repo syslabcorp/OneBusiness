@@ -81,20 +81,11 @@
               </tbody>
             </table>
 
-
-            <div class="row">
-              <div class="col-md-6">
-                <a type="button" class="btn btn-default" href="{{ URL('list_module') }}">
-                  <i class="fa fa-reply"></i> Back
-                </a>
-              </div>
-              <div class="col-md-6">
-                <button type="submit" class="btn btn-success pull-right save_button">
-                  Save
-                </button>
-              </div>
-            </div>
-
+            @if($one_vendor)
+            {{ $stocks->appends(array('corpID'=>$corpID, 'vendor'=>'one', 'vendorID'=>$vendor_ID))->links() }}
+            @else
+              {{ $stocks->appends(array('corpID'=>$corpID))->links() }}
+            @endif
           </div>
         </div>
       </div>
