@@ -12,7 +12,7 @@
                 
               </div>
               <div class="col-xs-3">
-                <a href="{{ route('stocks.create', ['corpID' => $corpID]) }}" class="pull-right">Add Stock</a>
+                <a class="pull-right">Add Stock</a>
               </div>
             </div>
           </div>
@@ -81,14 +81,6 @@
               </tbody>
             </table>
 
-            <div class="row" style="margin-top: 200px;">
-              <div class="col-sm-3 pull-right">
-                <h4>
-                  <strong>TOTAL AMOUNT:</strong>
-                  <span style="color:red">3,700,000</span>
-                </h4>
-              </div>
-            </div>
 
             <div class="row">
               <div class="col-md-6">

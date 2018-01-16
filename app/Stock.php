@@ -10,7 +10,7 @@ class Stock extends Model
   public $timestamps = false;
   protected $table = "s_rcv_hdr";
   protected $primaryKey = "txn_no";
-  protected $connection = 'mysql2';
+  // protected $connection = 'mysql2';
   protected $dates = [
     'RcvDate',
     'DateSaved'

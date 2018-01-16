@@ -9,7 +9,7 @@ class PurchaseOrder extends Model
   public $timestamps = false;
   protected $table = "s_po_hdr";
   protected $primaryKey = "po_no";
-  protected $connection = 'mysql2';
+  // protected $connection = 'mysql2';
   protected $dates = [
     'po_date',
   ];
