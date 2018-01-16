@@ -105,15 +105,13 @@ class StocksController extends Controller
     $one_vendor = false;
     $vendor_ID = "";
 
-    if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != ""))
-    {
+    if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != "")) {
       $stocks = $stockModel->where('Supp_ID', $request->vendorID)->get();
       $one_vendor = true;
       $vendor_ID = $request->vendorID;
     }
-    else
-    {
-      $stocks = $stockModel->all();
+    else{
+      $stocks = $stockModel->get();
     }
     
     $vendors = Vendor::all();
