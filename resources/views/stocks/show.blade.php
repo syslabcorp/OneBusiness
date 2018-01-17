@@ -270,9 +270,10 @@
       $('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
       $('.input_Brand').val($(this).find('.recommend_brand').text());
       $('.input_Description').val($(this).find('.recommend_description').text());
-      // $('.input_Cost').text($(this).find('.recommend_cost').text());
+      $('.input_Cost').val($(this).find('.recommend_cost').text());
       $('.input_Unit').val($(this).find('.recommend_unit').text());
       $('.input_item_id').val($(this).find('.recommend_item_id').text());
+      $('#recommend-table').css('display', "none");
     });
 
     $(document).keydown(function(e) {
