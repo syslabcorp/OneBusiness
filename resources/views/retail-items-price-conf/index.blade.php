@@ -164,7 +164,7 @@
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    Item Codes for this Product (Total = @{{ retailItems.length }})
+                                                    Item Codes for this Product 
 
                                                     <select class="form-group pull-right" @change="filterServiceList($event)">
                                                         <option value="1">Active</option>
@@ -174,10 +174,33 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
-                                                    <ul v-if="retailItems.length > 0" id="selectableRetailItems" class="selectable">
-                                                        <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="(showRetailItemStatus == retailItem.isActive) || showRetailItemStatus == 2" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                    </ul>
-                                                    <div v-else style="color: #900;">No items for this product line</div>
+                                                    <div v-if="retailItems.length == 0" style="color: #900;">No items for this product line</div>
+                                                    
+                                                    <div v-else>
+                                                        <div v-if="showRetailItemStatus == 1">
+                                                            <!-- work with active items -->
+                                                            <ul v-if="retailItems[0].activeCounter > 0" id="selectableRetailItems" class="selectable">
+                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
+                                                            </ul>
+                                                            <div v-else style="color: #900;">No active items for this product line</div>
+                                                        </div>
+
+                                                        <div v-else-if="showRetailItemStatus == 2">
+                                                            <!-- work with all items -->
+                                                            <ul id="selectableRetailItems" class="selectable">
+                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
+                                                            </ul>
+                                                        </div>
+
+                                                        <div v-else>
+                                                            <!-- work with inactive items -->
+                                                            <ul v-if="retailItems[0].inactiveCounter > 0" id="selectableRetailItems" class="selectable">
+                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="!retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
+                                                            </ul>
+                                                            <div v-else style="color: #900;">No inactive items for this product line</div>
+                                                        </div>
+                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -400,7 +423,7 @@
 
                             </div>
                             <div class="panel-footer">
-                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-left" v-if="confStep === 2">Back</a> 
+                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
@@ -555,15 +578,18 @@
                         fetchUrl = fetchUrl.replace(':productIdCSV', self.selectedProductId);
 
                         axios.get(fetchUrl)
-                          .then(function (responsedServices) {
-                            var responseServices = responsedServices.data;
+                          .then(function (responsedRetailItems) {
+                            var responseRetailItems = responsedRetailItems.data;
                             self.retailItems = [];
 
-                            responseServices.map(function(service, index) {
+                            responseRetailItems.map(function(retailItem, index) {
                                 self.retailItems.push({
-                                    id: service.id,
-                                    code: service.code,
-                                    isActive: service.isActive,
+                                    id: retailItem.id,
+                                    code: retailItem.code,
+                                    description: retailItem.description,
+                                    isActive: retailItem.isActive,
+                                    activeCounter: retailItem.activeCounter,
+                                    inactiveCounter: retailItem.inactiveCounter,
                                 });
                             });
                             
