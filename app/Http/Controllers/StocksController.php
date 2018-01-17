@@ -17,6 +17,10 @@ class StocksController extends Controller
 {
   public function show(Request $request)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -40,22 +44,24 @@ class StocksController extends Controller
     )->with('corpID', $request->corpID);
   }
 
-  public function update(Request $request, Stock $stock)
+  public function update(Request $request)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
     $company = Corporation::findOrFail($request->corpID);
-    $stockModel = new \App\StockDetail;
+    $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
     $stockDetailModel = new \App\StockDetail;
     $stockDetailModel->setConnection($company->database_name);
     $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
     $purchaseOrderDetailModel->setConnection($company->database_name);
-    $stockDetailModel = new \App\StockDetail;
-    $stockDetailModel->setConnection($company->database_name);
 
     $stock = $stockModel->find($request->stock); 
 
     if($request->item_id){
-      $stock_detail = new $stockDetailModel;
+      $stock_detail = $stockDetailModel;
       $stock_detail->item_id = intval($request->item_id);
       $stock_detail->ItemCode = $request->ItemCode;
       $stock_detail->ServedQty = intval($request->ServedQty);
@@ -65,12 +71,10 @@ class StocksController extends Controller
       $stock_detail->RcvDate = $request->RcvDate;
       $stock_detail->Cost = $request->Cost;
       $success = $stock_detail->save();
-      // dd($stock_detail);
 
       if($success && $request->po && ($request->po != ""))
       {
-        
-        $detail = new $purchaseOrderDetailModel;
+        $detail = $purchaseOrderDetailModel;
         $detail->item_id = intval($request->item_id);
         $detail->ItemCode = $request->ItemCode;
         $detail->po_no = $request->po;
@@ -80,7 +84,6 @@ class StocksController extends Controller
         $detail->save();
       }
     }
-
     if($request->ItemCode_Update)
     {
       foreach($request->ItemCode_Update as $key => $value)
@@ -90,14 +93,15 @@ class StocksController extends Controller
         $detail->save();
       }
     }
-    // dd( Redirect::action('StocksController@show', [$stock, 'corpID' => $request->corpID ]));
-    // return Redirect::action('StocksController@show', [$stock, 'corpID' => $request->corpID ]);
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
   public function index(Request $request)
   {
-
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -111,7 +115,7 @@ class StocksController extends Controller
       $vendor_ID = $request->vendorID;
     }
     else{
-      $stocks = $stockModel->paginate(100);
+      $stocks = $stockModel->orderBy('txn_no')->paginate(100);
     }
     
     $vendors = Vendor::all();
@@ -128,22 +132,14 @@ class StocksController extends Controller
 
   public function create(Request $request)
   {
-    // $vendors = Vendor::all();
-    // $stockitems = StockItem::where( 'Active', 1 )->get();
-    // $pos = PurchaseOrder::where('served', 0)->get();
-    // return view('stocks.create',
-    //   [
-    //     'corpID' => $request->corpID,
-    //     'vendors' => $vendors,
-    //     'pos' => $pos,
-    //     'stockitems' => $stockitems
-    //   ]
-    // );
   }
 
   public function destroy_detail(Request $request)
   {
-
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'D')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -158,6 +154,10 @@ class StocksController extends Controller
 
   public function destroy(Request $request)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'D')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -165,7 +165,6 @@ class StocksController extends Controller
     $stock = $stockModel->find($request->stock);
     $success = $stock->delete();
     if($success){
-      // \Session::flash('success', "Brand deleted successfully");
       return redirect()->route('stocks.index', ['corpID' => $request->corpID]);
     }
   }

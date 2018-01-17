@@ -54,7 +54,9 @@
                   <th>Date Saved</th>
                   <th>Action</th>
                 </tr>
+                @php $checkCountZero = true; @endphp
                 @foreach($stocks as $stock)
+                  @php $checkCountZero = false; @endphp
                   <tr>
                     <td>{{$stock->txn_no}}</td>
                     <td>{{$stock->RR_No}}</td>
@@ -78,6 +80,12 @@
                     </td>
                   </tr>
                 @endforeach
+
+                @if($checkCountZero)
+                  <tr>
+                    <td colspan="7" style="color:red;">No received stock for this vendor</td>
+                  </tr>
+                @endif
               </tbody>
             </table>
 
