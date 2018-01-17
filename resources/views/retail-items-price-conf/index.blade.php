@@ -28,12 +28,13 @@
         .customThCss {text-align: center; vertical-align: middle; width: 300px !important;}
         .rightBorder {border-right: 2px solid #ccc;}
         .priceField {width: 50px; text-align: center;}
-        .selectedRow, tbody > tr:hover {background-color: #b8d4ea;}
 
         table.fixedColumn > thead > tr { background-color: #ddd; padding-top: 20px; padding-bottom: 20px;}
         table.fixedColumn > thead > tr > th:first-child, table.fixedColumn > tbody > tr > td:first-child  { position: absolute; display: inline-block; background-color: #ccc; width: 140px; vertical-align: middle; }
         table.fixedColumn > tbody > tr > td {padding-bottom: 15px !important;}
         table.fixedColumn > tbody > tr > td:first-child {text-align: center;}
+
+        .selectedRow, tbody > tr:hover {background-color: #b8d4ea !important;}
 
 
         table.fixedColumn > thead > tr > th:nth-child(2), table.fixedColumn > tbody > tr > td:nth-child(2) { padding-left:150px !important; }
@@ -68,7 +69,7 @@
                     @endif
 
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Items per Branch :: Price Configuration</h3>
+                        <h3 class="text-center">Retail Items Price Configuration</h3>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Price Configuration for Retail Items by Branch
@@ -141,9 +142,10 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                                 <div class="panel-body" id="branchList">
-                                                    <ul id="selectableBranches" class="selectable">
+                                                    <ul v-if="corpBranches.length > 0" id="selectableBranches" class="selectable">
                                                         <li v-for="branch in corpBranches" :branchid="branch.id" class="ui-widget-content" v-if="(showBranchStatus == branch.isActive) || showBranchStatus == 2" :class="(ri_selectedBranchIds.includes(branch.id.toString())) ? 'ui-selected' : ''">@{{ branch.name }} </li>
                                                     </ul>
+                                                    <div v-else style="color: #900;">No branch for this corporation</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -162,7 +164,7 @@
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    Item Codes for this Product
+                                                    Item Codes for this Product (Total = @{{ retailItems.length }})
 
                                                     <select class="form-group pull-right" @change="filterServiceList($event)">
                                                         <option value="1">Active</option>
@@ -172,9 +174,10 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
-                                                    <ul id="selectableRetailItems" class="selectable">
+                                                    <ul v-if="retailItems.length > 0" id="selectableRetailItems" class="selectable">
                                                         <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="(showRetailItemStatus == retailItem.isActive) || showRetailItemStatus == 2" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
                                                     </ul>
+                                                    <div v-else style="color: #900;">No items for this product line</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -266,22 +269,22 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr @click="toggleRowToEditable($event)"> 
+                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
                                                                 <td>
                                                                     ABC-101
                                                                     <div class="text-center"><i class="glyphicon glyphicon-cog" title="SequelSports Membership Fee"></i> Last Cost: <strong>15.50</strong></div>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl">
+                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
                                                                     48.39
@@ -290,16 +293,16 @@
                                                                     7.50
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl">
+                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
                                                                     48.39
@@ -308,16 +311,16 @@
                                                                     7.50
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl">
+                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
                                                                     48.39
@@ -326,22 +329,22 @@
                                                                     7.50
                                                                 </td> 
                                                             </tr>
-                                                            <tr @click="toggleRowToEditable($event)"> 
+                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
                                                                 <td>
                                                                     ABC-102
                                                                     <div class="text-center"><i class="glyphicon glyphicon-cog" title="SequelSports Membership Fee"></i> Last Cost: <strong>18.00</strong></div>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl">
+                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
                                                                     48.39
@@ -350,16 +353,16 @@
                                                                     7.50
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl">
+                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
                                                                     48.39
@@ -368,16 +371,16 @@
                                                                     7.50
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl">
+                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td>
                                                                     48.39
@@ -397,7 +400,7 @@
 
                             </div>
                             <div class="panel-footer">
-                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-right" v-if="confStep === 2">Back</a> 
+                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-info btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
@@ -476,8 +479,6 @@
 
                     if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
                         self.confStep = 2;
-
-                        
 
                     } else {
                         alert('Please select branch and retail items first, to proceed to next step.');
@@ -669,7 +670,6 @@
                        $("#togle-sidebar-sec").toggleClass("active");
                     });
 
-                    $('.childControl').attr('disabled', 'true');
                 });
             }
         });
