@@ -67,7 +67,7 @@
                     @endif
 
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Services per Branch :: Price Configuration</h3>
+                        <h3 class="text-center">Services Price Configuration</h3>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Price Configuration for Services by Branch 
@@ -116,9 +116,10 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                                 <div class="panel-body" id="branchList">
-                                                    <ul id="selectableBranches" class="selectable">
+                                                    <ul v-if="corpBranches.length > 0" id="selectableBranches" class="selectable">
                                                         <li v-for="branch in corpBranches" :branchid="branch.id" class="ui-widget-content" v-if="(showBranchStatus == branch.isActive) || showBranchStatus == 2" :class="(selectedBranchIds.includes(branch.id.toString())) ? 'ui-selected' : ''">@{{ branch.name }} </li>
                                                     </ul>
+                                                    <div v-else style="color: #900;">No branch for this corporation</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -239,114 +240,114 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr @click="toggleRowToEditable($event)"> 
+                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
                                                                 <td>
                                                                     <div class="text-center"><i class="glyphicon glyphicon-info-sign" title="SequelSports Membership Fee"></i></div>
 
                                                                     MBRSHP-SQSP
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                             </tr>
-                                                            <tr @click="toggleRowToEditable($event)"> 
+                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
                                                                 <td>
                                                                     <div class="text-center"><i class="glyphicon glyphicon-info-sign" title="Monochrome Laser Printing w/ Image"></i></div>
 
                                                                     PRT-MNOIMG
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl">
+                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
                                                                 </td> 
                                                                 <td class="rightBorder">
-                                                                    <input type="checkbox" name="" class="childControl">
+                                                                    <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td> 
                                                             </tr>
                                                         </tbody>
