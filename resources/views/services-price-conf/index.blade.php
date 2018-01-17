@@ -138,9 +138,35 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
-                                                    <ul id="selectableServices" class="selectable">
-                                                        <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" v-if="(showServiceStatus == service.isActive) || showServiceStatus == 2" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
-                                                    </ul>
+                                                    <div v-if="services.length == 0" style="color: #900;">No services found</div>
+
+                                                    <div v-else>
+                                                        <div v-if="showServiceStatus == 1">
+                                                            <!-- work with active list -->
+                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices" class="selectable">
+                                                                <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" v-if="service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
+                                                            </ul>
+                                                            <div v-else style="color: #900;">No active services found</div>
+                                                        </div>
+
+                                                        <div v-else-if="showServiceStatus == 2">
+                                                            <!-- work with all list -->
+                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices" class="selectable">
+                                                                <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
+                                                            </ul>
+                                                            <div v-else style="color: #900;">No active services found</div>
+                                                        </div>
+                                                        <div v-else>
+                                                            <!-- work with inactive list -->
+                                                            <ul v-if="services[0].inactiveCounter > 0" id="selectableServices" class="selectable">
+                                                                <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" v-if="!service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
+                                                            </ul>
+                                                            <div v-else style="color: #900;">No inactive services found</div>
+                                                        </div>
+                                                    </div>
+
+                                                    
+
                                                 </div>
                                             </div>
                                         </div>
@@ -360,7 +386,7 @@
 
                             </div>
                             <div class="panel-footer">
-                                <a href="{{ url('/services-price-conf') }}" class="btn btn-info btn-md pull-left" v-if="confStep === 2">Back</a> 
+                                <a href="{{ url('/services-price-conf') }}" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
                                 
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
@@ -508,7 +534,10 @@
                             self.services.push({
                                 id: service.id,
                                 code: service.code,
+                                description: service.description,
                                 isActive: service.isActive,
+                                activeCounter: service.activeCounter,
+                                inactiveCounter: service.inactiveCounter,
                             });
                         });
                         
