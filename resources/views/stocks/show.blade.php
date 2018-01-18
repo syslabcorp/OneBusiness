@@ -78,10 +78,10 @@
                 </div>
                 
             </div>
-            <table class="table table-striped table-bordered">
+            <table id="table_editable" class="table table-bordered" style="width: 100% !important; dispaly: table;">
               <tbody>
                 <tr>
-                  <th>Item Code</th>
+                  <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Item Code</th>
                   <th>Product Line</th>
                   <th>Brand</th>
                   <th>Description</th>
@@ -94,18 +94,16 @@
                 </tr>
 
                 @foreach($stock_details as $detail)
-                  <tr>
-                    <td>
-                      <input type="text" name="ItemCode_Update[{{$detail->Movement_ID}}]" id="" class="form-control item_code" value="{{$detail->ItemCode}}" disabled>
-                    </td>
-                    <td>{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}</td>
-                    <td>{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}</td>
-                    <td>{{$detail->stock_item ? $detail->stock_item->Description : ""}}</td>
-                    <td>{{$detail->Cost}}</td>
-                    <td>{{$detail->ServedQty }}</td>
-                    <td>{{$detail->Qty }}</td>
+                  <tr class="editable" data-id="{{$detail->Movement_ID}}">
+                    <td  data-field="ItemCode" >{{$detail->stock_item ? $detail->stock_item->ItemCode : $detail->ItemCode}}</td>
+                    <td  data-field="Prod_Line" >{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}</td>
+                    <td  data-field="Brand" >{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}</td>
+                    <td  data-field="Description">{{$detail->stock_item ? $detail->stock_item->Description : ""}}</td>
+                    <td  data-field="Cost" >{{$detail->Cost}}</td>
+                    <td  data-field="ServedQty">{{$detail->ServedQty }}</td>
+                    <td  data-field="Qty" >{{$detail->Qty }}</td>
                     <td> {{ number_format( $detail->Cost * $detail->Qty , 2) }} </td>
-                    <td>{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</td>
+                    <td  data-field="Unit" >{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</td>
                     <td class="text-center" >
                       <a class="btn btn-primary edit" {{ $stock->check_transfered() ? "disabled" : "" }}>
                         <i class="fa fa-pencil"></i>
@@ -148,7 +146,7 @@
               <tbody style="display:block; max-height:300px; overflow-y:scroll; background: #f4b2b6;">
                 @foreach($stockitems as $stockitem )
                   <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" >
-                    <td class="recommend_item_id" style="display: none;"> {{$stockitem->item_id}} </td>
+                    <td class="recommend_item_id" style="display: none;">{{$stockitem->item_id}} </td>
                     <td class="recommend_itemcode" >{{$stockitem->ItemCode}}</td>
                     <td class="recommend_prod_line" > {{$stockitem->product_line->Product}} </td>
                     <td class="recommend_prod_line_id" style="display: none;" > {{$stockitem->Prod_Line}} </td>
@@ -258,10 +256,10 @@
       }
     }
 
-    $('.edit').click(function()
-    {
-      $(this).parents('tr').find('.item_code').removeAttr('disabled');
-    });
+    // $('.edit').click(function()
+    // {
+    //   $(this).parents('tr').find('.item_code').removeAttr('disabled');
+    // });
 
     $('.recommend_row').click(function(){
       $('.recommend_row').removeClass('row-highlight');
@@ -313,5 +311,60 @@
         });
       // }
     });
+
+    $(function() {
+      var pickers = {};
+
+      $('.editable').editable({
+        button: true,
+        buttonSelector: ".edit",
+        dropdowns: {
+          Prod_Line: {!! $prod_lines !!},
+          Brand: {!! $brands !!}
+        },
+        edit: function(values) {
+          $(".edit i", this)
+            .removeClass('fa-pencil')
+            .addClass('fa-save')
+            .attr('title', 'Save');
+
+        },
+        save: function(values) {
+          $(".edit i", this)
+            .removeClass('fa-save')
+            .addClass('fa-pencil')
+            .attr('title', 'Edit');
+          var id = $(this).data('id');
+          $.ajax({
+            url: "{{ route('stocks.update_detail', [ $stock ,'corpID' => $corpID]) }}",
+            type: "POST",
+            data: {"_token": "{{ csrf_token() }}", values, "id": id},
+            success: function(res){
+              if(res.success)
+              {
+              }
+            }
+          });
+
+          if (this in pickers) {
+            pickers[this].destroy();
+            delete pickers[this];
+          }
+        },
+        cancel: function(values) {
+          $(".edit i", this)
+            .removeClass('fa-save')
+            .addClass('fa-pencil')
+            .attr('title', 'Edit');
+
+          if (this in pickers) {
+            pickers[this].destroy();
+            delete pickers[this];
+          }
+        }
+      });
+
+    });
+
   </script>
 @endsection

@@ -43,8 +43,8 @@
                 </form>
               </div>
 
-            <table class="table table-striped table-bordered">
-              <tbody>
+            <table class="table table-striped table-bordered" id="stocks_table">
+              <thead>
                 <tr>
                   <th>SRR #</th>
                   <th>D.R.#</th>
@@ -54,6 +54,8 @@
                   <th>Date Saved</th>
                   <th>Action</th>
                 </tr>
+              </thead>
+              <tbody>
                 @php $checkCountZero = true; @endphp
                 @foreach($stocks as $stock)
                   @php $checkCountZero = false; @endphp
@@ -176,6 +178,19 @@
 
     $('#alert').on('show.bs.modal', function(e) {
       $('#alert-dr').text( $(e.relatedTarget).data('dr'));
+    });
+
+    $('#stocks_table').dataTable({
+      "bPaginate": false,
+      "bLengthChange": false,
+      "bFilter": false,
+      "aaSorting": [[ 0, "asc" ]],
+      "columnDefs": [ {
+        "targets": 6,
+        "orderable": false
+        } ],
+      "bInfo": false,
+      "bAutoWidth": false
     });
   </script>
 @endsection

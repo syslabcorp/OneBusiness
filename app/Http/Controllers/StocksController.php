@@ -12,6 +12,8 @@ use App\Vendor;
 use App\PurchaseOrder;
 use App\PurchaseOrderDetail;
 use App\Corporation;
+use App\Brand;
+use App\ProductLine;
 
 class StocksController extends Controller
 {
@@ -31,9 +33,23 @@ class StocksController extends Controller
     $stock = $stockModel->find($request->stock);
     $stock_details = $stock->stock_details;
     $vendors = Vendor::all();
+
+    $brands = Brand::all();
+
+    $prod_lines = ProductLine::all();
+
+    $prod_lines = $prod_lines->map(function ($prod_lines) {
+      return $prod_lines->Product;
+    });
+    $brands = $brands->map(function ($brands) {
+      return $brands->Brand;
+    });
+    // dd(Brand::all());
     $pos = $purchaseOrderModel->where('served', 0)->get();
     return view('stocks.show',
       [
+        'brands' => $brands,
+        'prod_lines' => $prod_lines,
         'corpID' => $request->corpID,
         'vendors' => $vendors,
         'stock' => $stock,
@@ -84,16 +100,66 @@ class StocksController extends Controller
         $detail->save();
       }
     }
-    if($request->ItemCode_Update)
-    {
-      foreach($request->ItemCode_Update as $key => $value)
+    // if($request->ItemCode_Update)
+    // {
+    //   foreach($request->ItemCode_Update as $key => $value)
+    //   {
+    //     $detail = $stockDetailModel->find($key);
+    //     $detail->ItemCode = $value;
+    //     $detail->save();
+    //   }
+    // }
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
+  }
+
+  public function update_detail(Request $request)
+  {
+
+    if(\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      $company = Corporation::findOrFail($request->corpID);
+      $stockModel = new \App\Stock;
+      $stockModel->setConnection($company->database_name);
+      $stockDetailModel = new \App\StockDetail;
+      $stockDetailModel->setConnection($company->database_name);
+      
+
+      $params =  (object) $request->values;
+      if($params->Brand)
       {
-        $detail = $stockDetailModel->find($key);
-        $detail->ItemCode = $value;
-        $detail->save();
+        $brand = Brand::where('Brand', $params->Brand)->get()->first();
+      }
+      
+      if($params->Prod_Line)
+      {
+        $prod_line = ProductLine::where('Product', $params->Prod_Line)->get()->first();
+      }
+      $stock_detail = $stockDetailModel->find($request->id);
+      
+      $stock_detail->ItemCode = $params->ItemCode;
+      $stock_detail->ServedQty = $params->ServedQty;
+      $stock_detail->Qty = $params->Qty;
+      $stock_detail->Bal = $params->Qty;
+      $stock_detail->Cost = $params->Cost;
+
+      $success = $stock_detail->save();
+
+      $stock_item = StockItem::where( 'item_id', $stock_detail->item_id )->get()->first();
+      $stock_item->ItemCode = $params->ItemCode;
+      $stock_item->Brand_ID = $brand->Brand_ID;
+      $stock_item->Prod_Line = $prod_line->ProdLine_ID;
+      $stock_item->Description = $params->Description;
+      $stock_item->Unit = $params->Unit;
+      
+      $stock_item->save();
+      
+      if($success)
+      {
+        return response()->json([
+          'status' => true,
+          "data" => $stock_item->Description
+        ]);
       }
     }
-    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
   public function index(Request $request)
