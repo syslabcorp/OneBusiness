@@ -69,7 +69,7 @@
                     </div>
                   </div>
                   <div class="col-sm-6">
-                    <a class="pull-right btn btn-success" id="pressF2" {{ $stock->check_transfered() ? "disabled" : "" }} >
+                    <a class="pull-right btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " id="pressF2" {{ $stock->check_transfered() ? "disabled" : "" }} >
                     Add Row
                     <br>
                     (F2)
@@ -105,10 +105,10 @@
                     <td> {{ number_format( $detail->Cost * $detail->Qty , 2) }} </td>
                     <td  data-field="Unit" >{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</td>
                     <td class="text-center" >
-                      <a class="btn btn-primary edit" {{ $stock->check_transfered() ? "disabled" : "" }}>
+                      <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                         <i class="fa fa-pencil"></i>
                       </a>
-                      <a href="{{route('stocks.delete_detail', [ $stock , $detail , 'corpID' => $corpID] )}}" class="btn btn-danger" {{ $stock->check_transfered() ? "disabled" : "" }}>
+                      <a href="{{route('stocks.delete_detail', [ $stock , $detail , 'corpID' => $corpID] )}}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
@@ -176,7 +176,7 @@
                 </a>
               </div>
               <div class="col-md-6">
-                <button type="button" data-toggle="modal" data-target="#confirm_save" class="btn btn-success pull-right save_button" {{ $stock->check_transfered() ? "disabled" : "" }}>
+                <button type="button" data-toggle="modal" data-target="#confirm_save" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                   Save
                 </button>
               </div>

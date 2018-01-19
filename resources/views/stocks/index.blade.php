@@ -67,15 +67,15 @@
                     <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
                     <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
                     <td class="text-center" >
-                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success">
+                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
                         <i class="fa fa-eye"></i>
                       </a>
                       @if($stock->check_transfered() )
-                        <a class="btn btn-danger" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#alert" >
+                        <a class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#alert" >
                           <i class="fa fa-trash"></i>
                         </a>
                       @else
-                        <a data-href="{{ route('stocks.destroy', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-danger" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#confirm-delete" >
+                        <a data-href="{{ route('stocks.destroy', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#confirm-delete" >
                           <i class="fa fa-trash"></i>
                         </a>
                       @endif
