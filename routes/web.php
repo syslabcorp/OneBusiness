@@ -161,6 +161,8 @@ Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@u
        ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
+Route::post('/stocks/{stock_id}/update_detail', 'StocksController@update_detail')->middleware('auth')->name('stocks.update_detail');
+
 Route::resource('stocks', 'StocksController', ['middleware' => 'auth']);
 Route::any('/stocks/{stock_id}/{detail_id}' , 'StocksController@destroy_detail')->middleware('auth')->name('stocks.delete_detail');
 

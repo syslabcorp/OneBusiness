@@ -147,6 +147,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
     <script src="{{ URL('/js/colorpicker.js') }}"></script>
+    <script src="{{ URL('/js/table-edits.min.js') }}"></script>
+    
 	<script>
 		if($("#treeview_json").length){
 			/* var curr_url  = window.location.href;

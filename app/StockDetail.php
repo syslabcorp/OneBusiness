@@ -16,7 +16,7 @@ class StockDetail extends Model
 
   protected $fillable = [
     'RRNo', 'RcvDate', 'item_id',
-    'itemCode', 'ServerQty', 'Qty',
+    'ItemCode', 'ServerQty', 'Qty',
     'Bal', 'Cost', 'RMA_Qty'
   ];
 
