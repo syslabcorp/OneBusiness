@@ -29,7 +29,7 @@ class StocksController extends Controller
     $purchaseOrderModel = new \App\PurchaseOrder;
     $purchaseOrderModel->setConnection($company->database_name);
 
-    $stockitems = StockItem::where( 'Active', 1 )->get();
+    $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
     $stock = $stockModel->find($request->stock);
     $stock_details = $stock->stock_details;
     $vendors = Vendor::all();
@@ -100,63 +100,69 @@ class StocksController extends Controller
         $detail->save();
       }
     }
-    // if($request->ItemCode_Update)
-    // {
-    //   foreach($request->ItemCode_Update as $key => $value)
-    //   {
-    //     $detail = $stockDetailModel->find($key);
-    //     $detail->ItemCode = $value;
-    //     $detail->save();
-    //   }
-    // }
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
   public function update_detail(Request $request)
   {
 
-    if(\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+    if(\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
       $company = Corporation::findOrFail($request->corpID);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
       $stockDetailModel = new \App\StockDetail;
       $stockDetailModel->setConnection($company->database_name);
       
-
-      $params =  (object) $request->values;
-      if($params->Brand)
+      $stock_detail = $stockDetailModel->find($request->Movement_ID);
+      $have_update = false;
+      if($request->id != $request->old_id)
       {
-        $brand = Brand::where('Brand', $params->Brand)->get()->first();
+        $have_update = true;
+        $stock_detail->item_id = intval($request->id);
       }
-      
-      if($params->Prod_Line)
-      {
-        $prod_line = ProductLine::where('Product', $params->Prod_Line)->get()->first();
-      }
-      $stock_detail = $stockDetailModel->find($request->id);
-      
-      $stock_detail->ItemCode = $params->ItemCode;
-      $stock_detail->ServedQty = $params->ServedQty;
-      $stock_detail->Qty = $params->Qty;
-      $stock_detail->Bal = $params->Qty;
-      $stock_detail->Cost = $params->Cost;
-
+      $stock_detail->Qty = floatval($request->Qty);
+      $stock_detail->Bal = floatval($request->Qty);
+      $stock_detail->Cost = floatval($request->Cost);
+        
       $success = $stock_detail->save();
-
-      $stock_item = StockItem::where( 'item_id', $stock_detail->item_id )->get()->first();
-      $stock_item->ItemCode = $params->ItemCode;
-      $stock_item->Brand_ID = $brand->Brand_ID;
-      $stock_item->Prod_Line = $prod_line->ProdLine_ID;
-      $stock_item->Description = $params->Description;
-      $stock_item->Unit = $params->Unit;
       
-      $stock_item->save();
+      // $params =  (object) $request->values;
+      // if($params->Brand)
+      // {
+      //   $brand = Brand::where('Brand', $params->Brand)->get()->first();
+      // }
+      
+      // if($params->Prod_Line)
+      // {
+      //   $prod_line = ProductLine::where('Product', $params->Prod_Line)->get()->first();
+      // }
+      // $stock_detail = $stockDetailModel->find($request->id);
+      
+      // $stock_detail->ItemCode = $params->ItemCode;
+      // // $stock_detail->ServedQty = $params->ServedQty;
+      // $stock_detail->Qty = $params->Qty;
+      // $stock_detail->Bal = $params->Qty;
+      // $stock_detail->Cost = $params->Cost;
+
+      // $success = $stock_detail->save();
+
+      // $stock_item = StockItem::where( 'item_id', $stock_detail->item_id )->get()->first();
+      // $stock_item->ItemCode = $params->ItemCode;
+      // $stock_item->Brand_ID = $brand->Brand_ID;
+      // $stock_item->Prod_Line = $prod_line->ProdLine_ID;
+      // // $stock_item->Description = $params->Description;
+      // // $stock_item->Unit = $params->Unit;
+      
+      // $stock_item->save();
       
       if($success)
       {
         return response()->json([
-          'status' => true,
-          "data" => $stock_item->Description
+          'status' => $have_update,
+          'item_id' => $stock_detail->item_id,
+          "ItemCode" => $stock_detail->stock_item->ItemCode,
+          "Brand" => $stock_detail->stock_item->brand->Brand,
+          "Prod_Line" => $stock_detail->stock_item->product_line->Product,
         ]);
       }
     }

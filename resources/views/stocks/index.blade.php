@@ -32,7 +32,6 @@
 
                   <div class="form-group">
                     <select class="form-control" style="min-width: 200px;" name="vendorID" id="select-vendor" {{ $one_vendor ? "" : "disabled" }} >
-                      <option value=""></option>
                       @foreach($vendors as $vendor)
                         <option {{ $vendor_ID == $vendor->Supp_ID ? "selected": "" }} value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>
                       @endforeach
@@ -67,7 +66,7 @@
                     <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
                     <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
                     <td class="text-center" >
-                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
+                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
                         <i class="fa fa-eye"></i>
                       </a>
                       @if($stock->check_transfered() )

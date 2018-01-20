@@ -42,7 +42,7 @@
                       D.R#:
                     </label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" name="RR_No" value="{{$stock->RR_No}}" {{ $stock->check_transfered() ? "disabled" : "" }} >
+                      <input type="text" class="form-control" name="RR_No" value="{{$stock->RR_No}}" disabled >
                     </div>
 
                     <label class="control-label col-sm-1">
@@ -78,59 +78,87 @@
                 </div>
                 
             </div>
-            <table id="table_editable" class="table table-bordered" style="width: 100% !important; dispaly: table;">
-              <tbody>
-                <tr>
-                  <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Item Code</th>
-                  <th>Product Line</th>
-                  <th>Brand</th>
-                  <th>Description</th>
-                  <th>Cost/Unit</th>
-                  <th>Served</th>
-                  <th>Qty</th>
-                  <th>Subtotal</th>
-                  <th>Unit</th>
-                  <th style="min-width: 100px;">Action</th>
-                </tr>
-
-                @foreach($stock_details as $detail)
-                  <tr class="editable" data-id="{{$detail->Movement_ID}}">
-                    <td  data-field="ItemCode" >{{$detail->stock_item ? $detail->stock_item->ItemCode : $detail->ItemCode}}</td>
-                    <td  data-field="Prod_Line" >{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}</td>
-                    <td  data-field="Brand" >{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}</td>
-                    <td  data-field="Description">{{$detail->stock_item ? $detail->stock_item->Description : ""}}</td>
-                    <td  data-field="Cost" >{{$detail->Cost}}</td>
-                    <td  data-field="ServedQty">{{$detail->ServedQty }}</td>
-                    <td  data-field="Qty" >{{$detail->Qty }}</td>
-                    <td> {{ number_format( $detail->Cost * $detail->Qty , 2) }} </td>
-                    <td  data-field="Unit" >{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</td>
-                    <td class="text-center" >
-                      <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
-                        <i class="fa fa-pencil"></i>
-                      </a>
-                      <a href="{{route('stocks.delete_detail', [ $stock , $detail , 'corpID' => $corpID] )}}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
-                        <i class="fa fa-trash"></i>
-                      </a>
-                    </td>
+            <div class="table-responsive">
+              <table id="table_editable" class="table table-bordered" style="width: 100% !important; dispaly: table;" >
+                <tbody>
+                  <tr>
+                    <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Item Code</th>
+                    <th>Product Line</th>
+                    <th>Brand</th>
+                    <th>Description</th>
+                    <th>Cost/Unit</th>
+                    <th>Served</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                    <th>Unit</th>
+                    <th style="min-width: 100px;">Action</th>
                   </tr>
-                @endforeach
 
-                <tr class="" id="add-row" style="display: none;">
-                  <input type="hidden" name="item_id" value="" class="input_item_id">
-                  <td> <input type="text" name="ItemCode" class="form-control input_ItemCode"> </td>
-                  <td> <input type="text" name="Prod_Line" class="form-control input_Prod_Line"> </td>
-                  <td> <input type="text" name="Brand" class="form-control input_Brand"> </td>
-                  <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
-                  <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
-                  <td> <input type="text" name="ServedQty" id="" class="form-control"> </td>
-                  <td> <input type="text" name="Qty" id="" class="form-control"> </td>
-                  <td></td>
-                  <td> <input type="text" name="Unit" id="" class="form-control input_Unit"> </td>
-                  <td></td>
-                </tr>
+                  @foreach($stock_details as $detail)
+                    <tr class="editable" data-id="{{$detail->Movement_ID}}">
+                      <td class="edit_ItemCode"  data-field="ItemCode" >
+                        <span class="value_ItemCode">{{$detail->stock_item ? $detail->stock_item->ItemCode : $detail->ItemCode}}</span>
+                        <input type="hidden" name="old_item_id" value="{{$detail->item_id}}" >
+                        <input type="hidden" name="item_id" value="{{$detail->item_id}}" >
+                        <input class="show_suggest" type="hidden" name="ItemCode" id="" value="{{$detail->stock_item ? $detail->stock_item->ItemCode : ""}}" >
+                      </td>
+                      <td class="edit_Prod_Line" data-field="Prod_Line" >
+                        <span class="value_Prod_Line">{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}</span>
+                        <input class="show_suggest" type="hidden" name="Prod_Line" value="{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}" >
+                      </td>
+                      <td class="edit_Brand" data-field="Brand" >
+                        <span class="value_Brand">{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}</span>
+                        <input class="show_suggest" type="hidden" name="Brand" id="" value="{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}" >
+                      </td>
+                      <td class="edit_Description" >
+                        <span class="value_Description">{{$detail->stock_item ? $detail->stock_item->Description : ""}}</span>
+                      </td>
+                      <td class="edit_Cost text-right" data-field="Cost" >
+                      <span class="value_Cost">{{number_format($detail->Cost,2)}}</span>
+                        <input type="hidden" name="Cost" id="" value="{{number_format($detail->Cost,2)}}" >
+                      </td>
+                      <td class="edit_ServedQty text-right" >
+                        <span class="value_ServedQty">{{$detail->ServedQty }}</span>
+                      </td>
+                      <td class="edit_Qty text-right" data-field="Qty" >
+                        <span class="value_Qty">{{$detail->Qty }}</span>
+                        <input type="hidden" name="Qty" id="" value="{{$detail->Qty }}" >
+                      </td>
+                      <td class="edit_Sub text-right" >
+                        {{ number_format( $detail->Cost * $detail->Qty , 2) }} 
+                      </td>
+                      <td class="edit_Unit" >
+                        <span class="value_Unit">{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</span>
+                      </td>
+                      <td class="text-center" >
+                        <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
+                          <i class="fa fa-pencil"></i>
+                        </a>
+                        <a href="{{route('stocks.delete_detail', [ $stock , $detail , 'corpID' => $corpID] )}}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
+                          <i class="fa fa-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  @endforeach
 
-              </tbody>
-            </table>
+                  <tr class="" id="add-row" style="display: none;">
+                    <input type="hidden" name="item_id" value="" class="input_item_id">
+                    <td> <input type="text" name="ItemCode" class="form-control check_focus input_ItemCode"> </td>
+                    <td> <input type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
+                    <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
+                    <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
+                    <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
+                    <td> <input type="text" name="ServedQty" id="" class="form-control"> </td>
+                    <td> <input type="text" name="Qty" id="" class="form-control"> </td>
+                    <td></td>
+                    <td> <input type="text" name="Unit" id="" class="form-control input_Unit"> </td>
+                    <td></td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
 
             <table class="table table-bordered" id="recommend-table" style=" display: none; " >
               <thead>
@@ -171,7 +199,7 @@
 
             <div class="row">
               <div class="col-md-6">
-                <a type="button" class="btn btn-default" href="{{ URL('list_module') }}">
+                <a type="button" class="btn btn-default" href="{{ route('stocks.index', ['corpID' => $corpID]) }}">
                   <i class="fa fa-reply"></i> Back
                 </a>
               </div>
@@ -247,37 +275,125 @@
 
 @section('pageJS')
   <script>
-    function check(){
-      if( {{ $stock->check_transfered() }} )
-      {
-        $(window).on('load',function(){
-          $('#alert').modal('show');
-        });
-      }
-    }
+    @if($stock->check_transfered())
+      $(window).on('load',function(){
+        $('#alert').modal('show');
+      });
+    @endif
 
-    // $('.edit').click(function()
-    // {
-    //   $(this).parents('tr').find('.item_code').removeAttr('disabled');
-    // });
+    $('body').on('focus', '.editable input' , function()
+    {
+      $('.last_focus').removeClass('last_focus');
+      $(this).addClass('last_focus');
+    }
+    );
+
+    $('body').on('focus', '.check_focus' , function()
+    {
+      $('.last_focus').removeClass('last_focus');
+      $(this).addClass('last_focus');
+    }
+    );
+
+    $('.show_suggest').on('change paste keyup', function()
+    {
+      if($(this).val() == "")
+      {
+        $('#recommend-table').css('display', "");
+        $('.recommend_row').css('display', "table");
+        $('.recommend_row').removeClass('row-highlight');
+      }
+    });
+
 
     $('.recommend_row').click(function(){
       $('.recommend_row').removeClass('row-highlight');
-      $(this).addClass('row-highlight');
-      $('.input_ItemCode').val($(this).find('.recommend_itemcode').text());
-      $('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
-      $('.input_Brand').val($(this).find('.recommend_brand').text());
-      $('.input_Description').val($(this).find('.recommend_description').text());
-      $('.input_Cost').val($(this).find('.recommend_cost').text());
-      $('.input_Unit').val($(this).find('.recommend_unit').text());
-      $('.input_item_id').val($(this).find('.recommend_item_id').text());
-      $('#recommend-table').css('display', "none");
+
+      if($('.last_focus').hasClass('check_focus'))
+      {
+        $(this).addClass('row-highlight');
+        $('.input_ItemCode').val($(this).find('.recommend_itemcode').text());
+        $('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
+        $('.input_Brand').val($(this).find('.recommend_brand').text());
+        $('.input_Description').val($(this).find('.recommend_description').text());
+        $('.input_Cost').val($(this).find('.recommend_cost').text());
+        $('.input_Unit').val($(this).find('.recommend_unit').text());
+        $('.input_item_id').val($(this).find('.recommend_item_id').text());
+        $('#recommend-table').css('display', "none");
+      }
+      else
+      {
+        $(this).addClass('row-highlight');
+        $('.last_focus').parents('.editable').find('.edit_ItemCode').find("input[name='ItemCode']").val($(this).find('.recommend_itemcode').text());
+        $('.last_focus').parents('.editable').find('.edit_ItemCode').find("input[name='item_id']").val($(this).find('.recommend_item_id').text());
+        $('.last_focus').parents('.editable').find('.edit_Brand').find("input[name='Brand']").val($(this).find('.recommend_brand').text());
+        $('.last_focus').parents('.editable').find('.edit_Prod_Line').find("input[name='Prod_Line']").val($(this).find('.recommend_prod_line').text());
+        $('.last_focus').parents('.editable').find('.edit_Description').find(".value_Description").text($(this).find('.recommend_description').text());
+        $('.last_focus').parents('.editable').find('.edit_Unit').find(".value_Unit").text($(this).find('.recommend_unit').text());
+        $('#recommend-table').css('display', "none");
+      }
+    });
+
+    $('.edit').on('click', function(){
+      var self = $(this);
+      if($(this).find('i').hasClass('fa-pencil'))
+      {
+        $(this).find('i').removeClass('fa-pencil').addClass('fa-save');
+        $(this).parents('.editable').find( "input[name='ItemCode']" ).val($(this).parents('.editable').find('.value_ItemCode').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( "input[name='Prod_Line']" ).val($(this).parents('.editable').find('.value_Prod_Line').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( "input[name='Brand']" ).val($(this).parents('.editable').find('.value_Brand').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( "input[name='Qty']" ).val($(this).parents('.editable').find('.value_Qty').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( "input[name='Cost']" ).val($(this).parents('.editable').find('.value_Cost').text()).attr("type", "text") ;
+        
+        $(this).parents('.editable').find('.value_ItemCode, .value_Prod_Line, .value_Brand, .value_Qty, .value_Cost').text("");
+      }
+      else
+      {
+        $.ajax({
+          url: "{{ route('stocks.update_detail', [ $stock ,'corpID' => $corpID]) }}",
+          type: "POST",
+          data: {
+            "_token": "{{ csrf_token() }}",
+            "Movement_ID": $(this).parents('.editable').data( "id" ),
+            "old_id": $(this).parents('.editable').find( "input[name='old_item_id']" ).val(),
+            "id": $(this).parents('.editable').find( "input[name='item_id']" ).val(),
+            "Cost": $(this).parents('.editable').find( "input[name='Cost']" ).val(),
+            "Qty": $(this).parents('.editable').find( "input[name='Qty']" ).val()
+          },
+          success: function(res){
+            if(res.status)
+            {
+              self.parents('.editable').find('.value_ItemCode').text(res.ItemCode);
+              self.parents('.editable').find('.value_Prod_Line').text(res.Prod_Line);
+              self.parents('.editable').find('.value_Brand').text(res.Brand);
+              self.parents('.editable').find('.edit_ItemCode').find("input[name='old_item_id']").val(res.item_id);
+            }
+          }
+        });
+
+        $('#recommend-table').css('display', "none");
+
+        $(this).find('i').addClass('fa-pencil').removeClass('fa-save');
+        // $(this).parents('.editable').find('.value_ItemCode').text( $(this).parents('.editable').find( "input[name='ItemCode']" ).val());
+        // $(this).parents('.editable').find('.value_Brand').text( $(this).parents('.editable').find( "input[name='Brand']" ).val());
+        // $(this).parents('.editable').find('.value_Prod_Line').text( $(this).parents('.editable').find( "input[name='Prod_Line']" ).val());
+        $(this).parents('.editable').find('.value_Qty').text( $(this).parents('.editable').find( "input[name='Qty']" ).val());
+        $(this).parents('.editable').find('.value_Cost').text( $(this).parents('.editable').find( "input[name='Cost']" ).val());
+        
+        $(this).parents('.editable').find( "input[name='ItemCode']" ).attr("type", "hidden");
+        $(this).parents('.editable').find( "input[name='Cost']" ).attr("type", "hidden");
+        $(this).parents('.editable').find( "input[name='Prod_Line']" ).attr("type", "hidden");
+        $(this).parents('.editable').find( "input[name='Brand']" ).attr("type", "hidden");
+        $(this).parents('.editable').find( "input[name='Qty']" ).attr("type", "hidden");
+      }
+      
     });
 
     $(document).keydown(function(e) {
       if(e.which == 113) {
         $('#add-row').css('display' , ''); 
         $('#PO').removeAttr('disabled', false);
+        $('input[name="RR_No"]').removeAttr('disabled');
         return false;
       }
     });
@@ -285,6 +401,7 @@
     $('#pressF2').click(function(){
       $('#add-row').css('display' , ''); 
       $('#PO').removeAttr('disabled', false);
+      $('input[name="RR_No"]').removeAttr('disabled');
     });
 
     $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on('click', function(){
@@ -312,59 +429,59 @@
       // }
     });
 
-    $(function() {
-      var pickers = {};
 
-      $('.editable').editable({
-        button: true,
-        buttonSelector: ".edit",
-        dropdowns: {
-          Prod_Line: {!! $prod_lines !!},
-          Brand: {!! $brands !!}
-        },
-        edit: function(values) {
-          $(".edit i", this)
-            .removeClass('fa-pencil')
-            .addClass('fa-save')
-            .attr('title', 'Save');
+    // $(function() {
+    //   var pickers = {};
 
-        },
-        save: function(values) {
-          $(".edit i", this)
-            .removeClass('fa-save')
-            .addClass('fa-pencil')
-            .attr('title', 'Edit');
-          var id = $(this).data('id');
-          $.ajax({
-            url: "{{ route('stocks.update_detail', [ $stock ,'corpID' => $corpID]) }}",
-            type: "POST",
-            data: {"_token": "{{ csrf_token() }}", values, "id": id},
-            success: function(res){
-              if(res.success)
-              {
-              }
-            }
-          });
+    //   $('.editable').editable({
+    //     button: true,
+    //     buttonSelector: ".edit",
+    //     dropdowns: {
 
-          if (this in pickers) {
-            pickers[this].destroy();
-            delete pickers[this];
-          }
-        },
-        cancel: function(values) {
-          $(".edit i", this)
-            .removeClass('fa-save')
-            .addClass('fa-pencil')
-            .attr('title', 'Edit');
+    //     },
+    //     edit: function(values) {
+    //       $(".edit i", this)
+    //         .removeClass('fa-pencil')
+    //         .addClass('fa-save')
+    //         .attr('title', 'Save');
 
-          if (this in pickers) {
-            pickers[this].destroy();
-            delete pickers[this];
-          }
-        }
-      });
+    //     },
+    //     save: function(values) {
+    //       $(".edit i", this)
+    //         .removeClass('fa-save')
+    //         .addClass('fa-pencil')
+    //         .attr('title', 'Edit');
+    //       var id = $(this).data('id');
+    //       $.ajax({
+    //         url: "{{ route('stocks.update_detail', [ $stock ,'corpID' => $corpID]) }}",
+    //         type: "POST",
+    //         data: {"_token": "{{ csrf_token() }}", values, "id": id},
+    //         success: function(res){
+    //           if(res.success)
+    //           {
+    //           }
+    //         }
+    //       });
 
-    });
+    //       if (this in pickers) {
+    //         pickers[this].destroy();
+    //         delete pickers[this];
+    //       }
+    //     },
+    //     cancel: function(values) {
+    //       $(".edit i", this)
+    //         .removeClass('fa-save')
+    //         .addClass('fa-pencil')
+    //         .attr('title', 'Edit');
+
+    //       if (this in pickers) {
+    //         pickers[this].destroy();
+    //         delete pickers[this];
+    //       }
+    //     }
+    //   });
+
+    // });
 
   </script>
 @endsection
