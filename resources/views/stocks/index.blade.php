@@ -62,7 +62,7 @@
                     <td>{{$stock->txn_no}}</td>
                     <td>{{$stock->RR_No}}</td>
                     <td>{{$stock->RcvDate->format('M,d,Y') }}</td>
-                    <td>{{$stock->TotalAmt}}</td>
+                    <td class="text-right">{{number_format($stock->TotalAmt,2)}}</td>
                     <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
                     <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
                     <td class="text-center" >
