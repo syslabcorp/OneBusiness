@@ -66,7 +66,7 @@
                     <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
                     <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
                     <td class="text-center" >
-                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
+                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
                         <i class="fa fa-eye"></i>
                       </a>
                       @if($stock->check_transfered() )
