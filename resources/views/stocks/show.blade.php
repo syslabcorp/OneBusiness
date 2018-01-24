@@ -93,7 +93,7 @@
                     <th>Unit</th>
                     <th style="min-width: 100px;">Action</th>
                   </tr>
-
+                  @if( $stock_details->count() > 0 )
                   @foreach($stock_details as $detail)
                     <tr class="editable" data-id="{{$detail->Movement_ID}}">
                       <td class="edit_ItemCode"  data-field="ItemCode" >
@@ -140,6 +140,13 @@
                       </td>
                     </tr>
                   @endforeach
+                  @else
+                    <tr id="no-item">
+                      <td colspan="10" style="color: red;" class="text-center" >
+                        No items
+                      </td>
+                    </tr>
+                  @endif
 
                   <tr class="" id="add-row" style="display: none;">
                     <input type="hidden" name="item_id" value="" class="input_item_id">
@@ -149,10 +156,14 @@
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
                     <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
                     <td> <input type="text" name="ServedQty" id="" class="form-control"> </td>
-                    <td> <input type="text" name="Qty" id="" class="form-control"> </td>
+                    <td> <input type="text" name="Qty" id="" value="1" class="form-control"> </td>
                     <td></td>
-                    <td> <input type="text" name="Unit" id="" class="form-control input_Unit"> </td>
-                    <td></td>
+                    <td class="input_Unit" ></td>
+                    <td class="text-center" >
+                      <a data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" >
+                        <i class="fa fa-trash"></i>
+                      </a>
+                    </td>
                   </tr>
 
                 </tbody>
@@ -199,7 +210,7 @@
 
             <div class="row">
               <div class="col-md-6">
-                <a type="button" class="btn btn-default" href="{{ route('stocks.index', ['corpID' => $corpID]) }}">
+                <a type="button" class="btn btn-default" href="{{ URL::previous() }}">
                   <i class="fa fa-reply"></i> Back
                 </a>
               </div>
@@ -316,8 +327,11 @@
         $('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
         $('.input_Brand').val($(this).find('.recommend_brand').text());
         $('.input_Description').val($(this).find('.recommend_description').text());
-        $('.input_Cost').val($(this).find('.recommend_cost').text());
-        $('.input_Unit').val($(this).find('.recommend_unit').text());
+        if($('.input_Cost').val() == "")
+        {
+          $('.input_Cost').val($(this).find('.recommend_cost').text());
+        }
+        $('.input_Unit').text($(this).find('.recommend_unit').text());
         $('.input_item_id').val($(this).find('.recommend_item_id').text());
         $('#recommend-table').css('display', "none");
       }
@@ -389,46 +403,89 @@
       
     });
 
-    $(document).keydown(function(e) {
-      if(e.which == 113) {
-        $('#add-row').css('display' , ''); 
-        $('#PO').removeAttr('disabled', false);
-        $('input[name="RR_No"]').removeAttr('disabled');
-        return false;
-      }
-    });
+    @if(!$stock->check_transfered())
+      $(document).keydown(function(e) {
+        if(e.which == 113) {
+          $('#add-row').css('display' , ''); 
+          $('#PO').removeAttr('disabled', false);
+          $('input[name="RR_No"]').removeAttr('disabled');
+          $('#no-item').css('display', 'none');
+          return false;
+        }
+      });
+    @endif
 
     $('#pressF2').click(function(){
       $('#add-row').css('display' , ''); 
       $('#PO').removeAttr('disabled', false);
       $('input[name="RR_No"]').removeAttr('disabled');
+      $('#no-item').css('display', 'none');
     });
 
     $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on('click', function(){
       $('#recommend-table').css('display', "");
     });
 
-    $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on( 'change paste keyup' ,function(){
+    $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on( 'click change paste keyup' ,function(){
       $('.recommend_row').css('display', 'table');
       $self = $(this);
       $parent = $self.parents('#add-row');
-      // if ($self.hasClass('ItemCode'))
-      // {
+      if ($self.hasClass('input_ItemCode'))
+      {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_itemcode').text().includes( $parent.find('.input_ItemCode').val()) 
-          && $(this).find('.recommend_prod_line').text().includes( $parent.find(".input_Prod_Line").val()) 
-          && $(this).find('.recommend_brand').text().includes( $parent.find(".input_Brand").val()) )
+          if ( $(this).find('.recommend_itemcode').text().includes( $parent.find('.input_ItemCode').val()) )
           {
           }
           else
           {
-          $(this).css('display' , 'none');
+            $(this).css('display' , 'none');
           }
         });
-      // }
+      }
+
+      if(($self.hasClass('input_Brand')))
+      {
+        $('.recommend_row').each(function()
+        {
+          if ( $(this).find('.recommend_brand').text().includes( $parent.find(".input_Brand").val()) )
+          {
+          }
+          else
+          {
+            $(this).css('display' , 'none');
+          }
+        });
+      }
+
+      if($self.hasClass('input_Prod_Line'))
+      {
+        $('.recommend_row').each(function()
+        {
+          if ( $(this).find('.recommend_prod_line').text().includes( $parent.find(".input_Prod_Line").val())  )
+          {
+          }
+          else
+          {
+            $(this).css('display' , 'none');
+          }
+        });
+      }
     });
 
+    $('.delete_add_detail').on('click', function()
+    {
+      $('#add-row').css('display' , 'none'); 
+      $('.recommend_row').removeClass('row-highlight');
+      $('.input_ItemCode').val('');
+      $('.input_Prod_Line').val('');
+      $('.input_Brand').val('');
+      $('.input_Description').val('');
+      $('.input_Cost').val('');
+      $('.input_Unit').text('');
+      $('.input_item_id').val('');
+      $('#recommend-table').css('display', "none");
+    });
 
     // $(function() {
     //   var pickers = {};

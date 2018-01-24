@@ -478,6 +478,8 @@ $(function()
     if ($('input[name="vendor"]:checked').attr('id')  == "one")
     {
       $('#select-vendor').removeAttr('disabled');
+      $("#select-vendor  option[value='option1'] ").remove();
+      // $("#selectBox option[value='option1']").remove();
     }
     else
     {

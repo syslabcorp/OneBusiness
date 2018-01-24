@@ -12,7 +12,7 @@
                 
               </div>
               <div class="col-xs-3">
-                <a class="pull-right">Add Stock</a>
+                <a href="{{route('stocks.create' , ['corpID' => $corpID] )}}" class="pull-right">Add Stock</a>
               </div>
             </div>
           </div>
@@ -32,6 +32,9 @@
 
                   <div class="form-group">
                     <select class="form-control" style="min-width: 200px;" name="vendorID" id="select-vendor" {{ $one_vendor ? "" : "disabled" }} >
+                      @if( !$one_vendor )
+                        <option value="" selected></option>
+                      @endif
                       @foreach($vendors as $vendor)
                         <option {{ $vendor_ID == $vendor->Supp_ID ? "selected": "" }} value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>
                       @endforeach

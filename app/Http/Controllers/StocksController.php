@@ -182,15 +182,15 @@ class StocksController extends Controller
     $vendor_ID = "";
 
     if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != "")) {
-      $stocks = $stockModel->where('Supp_ID', $request->vendorID)->paginate(100);
+      $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy('txn_no','desc')->paginate(100);
       $one_vendor = true;
       $vendor_ID = $request->vendorID;
     }
     else{
-      $stocks = $stockModel->orderBy('txn_no')->paginate(100);
+      $stocks = $stockModel->orderBy('txn_no','desc')->paginate(100);
     }
     
-    $vendors = Vendor::all();
+    $vendors = Vendor::orderBy('VendorName')->get();
     return view('stocks.index',
       [
         'corpID' => $request->corpID,
@@ -204,6 +204,35 @@ class StocksController extends Controller
 
   public function create(Request $request)
   {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+    $vendors = Vendor::orderBy('VendorName')->get();
+    return view('stocks.create',
+    [
+      'corpID' => $request->corpID,
+      'vendors' => $vendors
+    ]
+    );
+  }
+
+  public function store(Request $request)
+  {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+    $stock = $stockModel;
+    $stock->RR_No = $request->RR_No;
+    $stock->RcvDate = $request->RcvDate;
+    $stock->TotalAmt = $request->TotalAmt;
+    $stock->Supp_ID = $request->Supp_ID;
+    $stock->save();
+    return redirect()->route('stocks.index', ['corpID' => $request->corpID ]);
   }
 
   public function destroy_detail(Request $request)
