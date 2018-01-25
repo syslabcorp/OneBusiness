@@ -12,7 +12,9 @@
                 
               </div>
               <div class="col-xs-3">
-                <a href="{{route('stocks.create' , ['corpID' => $corpID] )}}" class="pull-right">Add Stock</a>
+                @if(Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A'))
+                  <a href="{{route('stocks.create' , ['corpID' => $corpID] )}}" class="pull-right">Add Stock</a>
+                @endif
               </div>
             </div>
           </div>
@@ -44,55 +46,55 @@
                   
                 </form>
               </div>
-
-            <table class="table table-striped table-bordered" id="stocks_table">
-              <thead>
-                <tr>
-                  <th>SRR #</th>
-                  <th>D.R.#</th>
-                  <th>Date</th>
-                  <th>Total Amount</th>
-                  <th>Vendor Name</th>
-                  <th>Date Saved</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                @php $checkCountZero = true; @endphp
-                @foreach($stocks as $stock)
-                  @php $checkCountZero = false; @endphp
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered" id="stocks_table">
+                <thead>
                   <tr>
-                    <td>{{$stock->txn_no}}</td>
-                    <td>{{$stock->RR_No}}</td>
-                    <td>{{$stock->RcvDate->format('M,d,Y') }}</td>
-                    <td class="text-right">{{number_format($stock->TotalAmt,2)}}</td>
-                    <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
-                    <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
-                    <td class="text-center" >
-                      <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
-                        <i class="fa fa-eye"></i>
-                      </a>
-                      @if($stock->check_transfered() )
-                        <a class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#alert" >
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @else
-                        <a data-href="{{ route('stocks.destroy', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#confirm-delete" >
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @endif
-                    </td>
+                    <th>SRR #</th>
+                    <th>D.R.#</th>
+                    <th>Date</th>
+                    <th>Total Amount</th>
+                    <th>Vendor Name</th>
+                    <th>Date Saved</th>
+                    <th>Action</th>
                   </tr>
-                @endforeach
+                </thead>
+                <tbody>
+                  @php $checkCountZero = true; @endphp
+                  @foreach($stocks as $stock)
+                    @php $checkCountZero = false; @endphp
+                    <tr>
+                      <td>{{$stock->txn_no}}</td>
+                      <td>{{$stock->RR_No}}</td>
+                      <td>{{$stock->RcvDate->format('M,d,Y') }}</td>
+                      <td class="text-right">{{number_format($stock->TotalAmt,2)}}</td>
+                      <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
+                      <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
+                      <td class="text-center" >
+                        <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
+                          <i class="fa fa-eye"></i>
+                        </a>
+                        @if($stock->check_transfered() )
+                          <a class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#alert" >
+                            <i class="fa fa-trash"></i>
+                          </a>
+                        @else
+                          <a data-href="{{ route('stocks.destroy', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#confirm-delete" >
+                            <i class="fa fa-trash"></i>
+                          </a>
+                        @endif
+                      </td>
+                    </tr>
+                  @endforeach
 
-                @if($checkCountZero)
-                  <tr>
-                    <td colspan="7" style="color:red;">No received stock for this vendor</td>
-                  </tr>
-                @endif
-              </tbody>
-            </table>
-
+                  @if($checkCountZero)
+                    <tr>
+                      <td colspan="7" style="color:red;">No received stock for this vendor</td>
+                    </tr>
+                  @endif
+                </tbody>
+              </table>
+            </div>
             @if($one_vendor)
             {{ $stocks->appends(array('corpID'=>$corpID, 'vendor'=>'one', 'vendorID'=>$vendor_ID))->links() }}
             @else

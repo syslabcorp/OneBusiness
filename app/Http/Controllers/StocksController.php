@@ -103,6 +103,80 @@ class StocksController extends Controller
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
+  public function save_new_row_ajax(Request $request)
+  {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+    $stockDetailModel = new \App\StockDetail;
+    $stockDetailModel->setConnection($company->database_name);
+    $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+    $purchaseOrderDetailModel->setConnection($company->database_name);
+
+    $stock = $stockModel->find($request->stock_id); 
+
+    $success = false;
+    
+    if($request->item_id){
+      $stock_detail = $stockDetailModel;
+      $stock_detail->item_id = intval($request->item_id);
+      $stock_detail->ItemCode = $request->ItemCode;
+      $stock_detail->ServedQty = intval($request->ServedQty);
+      $stock_detail->Qty = floatval($request->Qty);
+      $stock_detail->Bal = floatval($request->Qty);
+      $stock_detail->RR_No = $request->RR_No;
+      $stock_detail->RcvDate = $request->RcvDate;
+      $stock_detail->Cost = $request->Cost;
+      $success = $stock_detail->save();
+      
+      $success = true;
+      
+      if($success && $request->po && ($request->po != ""))
+      {
+        $detail = $purchaseOrderDetailModel;
+        $detail->item_id = intval($request->item_id);
+        $detail->ItemCode = $request->ItemCode;
+        $detail->po_no = $request->po;
+        $detail->Qty = floatval($request->Qty);
+        $detail->ServedQty = intval($request->ServedQty);
+        $detail->cost = $request->Cost;
+        $detail->save();
+      }
+    }
+    if($success == true)
+    {
+      return response()->json([
+        'status' => true,
+        'item_id' => $stock_detail->item_id,
+        'ItemCode' => $stock_detail->ItemCode,
+        'ServedQty' => $stock_detail->ServedQty,
+        'Qty' => $stock_detail->Qty,
+        'Cost' => number_format( $stock_detail->Cost, 2),
+        'Prod_Line' => $stock_detail->stock_item->product_line->Product,
+        'Brand' => $stock_detail->stock_item->brand->Brand,
+        'Description' => $stock_detail->stock_item->Description,
+        'Unit' => $stock_detail->stock_item->Unit,
+        'Sub_view' => number_format($stock_detail->Qty * $stock_detail->Cost, 2),
+        'Sub' => $stock_detail->Qty * $stock_detail->Cost,
+        'Movement_ID' => $stock_detail->Movement_ID,
+        'check_edit' => \Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E'),
+        'check_delete' => \Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'D'),
+        'route' => route('stocks.delete_detail', [ $stock , $stock_detail , 'corpID' => $request->corpID] )
+      ]);
+    }
+    else
+    {
+      return response()->json([
+        'status' => false,
+      ]);
+    }
+
+  }
+
   public function update_detail(Request $request)
   {
 
@@ -125,35 +199,6 @@ class StocksController extends Controller
       $stock_detail->Cost = floatval($request->Cost);
         
       $success = $stock_detail->save();
-      
-      // $params =  (object) $request->values;
-      // if($params->Brand)
-      // {
-      //   $brand = Brand::where('Brand', $params->Brand)->get()->first();
-      // }
-      
-      // if($params->Prod_Line)
-      // {
-      //   $prod_line = ProductLine::where('Product', $params->Prod_Line)->get()->first();
-      // }
-      // $stock_detail = $stockDetailModel->find($request->id);
-      
-      // $stock_detail->ItemCode = $params->ItemCode;
-      // // $stock_detail->ServedQty = $params->ServedQty;
-      // $stock_detail->Qty = $params->Qty;
-      // $stock_detail->Bal = $params->Qty;
-      // $stock_detail->Cost = $params->Cost;
-
-      // $success = $stock_detail->save();
-
-      // $stock_item = StockItem::where( 'item_id', $stock_detail->item_id )->get()->first();
-      // $stock_item->ItemCode = $params->ItemCode;
-      // $stock_item->Brand_ID = $brand->Brand_ID;
-      // $stock_item->Prod_Line = $prod_line->ProdLine_ID;
-      // // $stock_item->Description = $params->Description;
-      // // $stock_item->Unit = $params->Unit;
-      
-      // $stock_item->save();
       
       if($success)
       {
@@ -204,17 +249,41 @@ class StocksController extends Controller
 
   public function create(Request $request)
   {
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
-      \Session::flash('error', "You don't have permission"); 
-      return redirect("/home"); 
-    }
-    $vendors = Vendor::orderBy('VendorName')->get();
-    return view('stocks.create',
-    [
-      'corpID' => $request->corpID,
-      'vendors' => $vendors
-    ]
-    );
+    // if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+    //   \Session::flash('error', "You don't have permission"); 
+    //   return redirect("/home"); 
+    // }
+    // $company = Corporation::findOrFail($request->corpID);
+    // $stockModel = new \App\Stock;
+    // $stockModel->setConnection($company->database_name);
+    // $purchaseOrderModel = new \App\PurchaseOrder;
+    // $purchaseOrderModel->setConnection($company->database_name);
+
+    // $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
+    // $vendors = Vendor::all();
+
+    // $brands = Brand::all();
+
+    // $prod_lines = ProductLine::all();
+
+    // $prod_lines = $prod_lines->map(function ($prod_lines) {
+    //   return $prod_lines->Product;
+    // });
+    // $brands = $brands->map(function ($brands) {
+    //   return $brands->Brand;
+    // });
+    // // dd(Brand::all());
+    // $pos = $purchaseOrderModel->where('served', 0)->get();
+    // return view('stocks.create',
+    //   [
+    //     'brands' => $brands,
+    //     'prod_lines' => $prod_lines,
+    //     'corpID' => $request->corpID,
+    //     'vendors' => $vendors,
+    //     'pos' => $pos,
+    //     'stockitems' => $stockitems
+    //   ]
+    // )->with('corpID', $request->corpID);
   }
 
   public function store(Request $request)
