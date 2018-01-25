@@ -156,8 +156,8 @@
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
                     <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
                     <td> <input type="text" name="ServedQty" id="" class="form-control"> </td>
-                    <td> <input type="text" name="Qty" id="" value="1" class="form-control"> </td>
-                    <td></td>
+                    <td> <input type="text" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
+                    <td> <input type="text" name="Sub" id="" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
                       <a data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" >
@@ -203,7 +203,7 @@
               <div class="col-sm-3 pull-right">
                 <h4>
                   <strong>TOTAL AMOUNT:</strong>
-                  <span style="color:red">{{ number_format($stock->total_amount() , 2) }}</span>
+                  <span id="total_amount" style="color:red">{{ number_format($stock->total_amount() , 2) }}</span>
                 </h4>
               </div>
             </div>
@@ -424,6 +424,50 @@
 
     $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on('click', function(){
       $('#recommend-table').css('display', "");
+    });
+
+    var old_total = parseFloat($('#total_amount').text().replace(",", ""));
+
+    $('.input_Cost ,.input_Qty, .input_Sub').on( 'change paste keyup', function()
+    {
+      $self = $(this);
+      $parent = $self.parents('#add-row');
+      if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
+      {
+        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
+        {
+          var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
+          $parent.find('.input_Sub').val(val);
+          var newtotal = (old_total + parseFloat($parent.find('.input_Sub').val()));
+          $('#total_amount').text(newtotal.numberFormat(2));
+        }
+        else
+        {
+          $parent.find('.input_Sub').val('');
+          $('#total_amount').text(old_total.numberFormat(2));
+        }
+      }
+
+      if ($self.hasClass('input_Sub'))
+      {
+        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
+        {
+          var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Cost').val());
+          $parent.find('.input_Qty').val(val);
+
+        }
+        else
+        {
+          $('#total_amount').text(old_total.numberFormat(2));
+        }
+
+        if($parent.find('.input_Sub').val() != "" )
+        {
+          var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
+          $('#total_amount').text(newtotal.numberFormat(2));
+        }
+      }
+      
     });
 
     $('.input_ItemCode ,.input_Prod_Line, .input_Brand').on( 'click change paste keyup' ,function(){
