@@ -443,6 +443,7 @@
 @endsection
 
 @section('footer-scripts')
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -562,6 +563,8 @@
                           .catch(function (error) {
                             console.log(error);
                           });
+
+                        self.activateSelectable();
                     }
                 },
                 loadItems: function() {
@@ -597,6 +600,8 @@
                         .catch(function (error) {
                             console.log(error);
                         });
+
+                        self.activateSelectable();
                     }
                 },
                 activateSelectable: function() {
@@ -700,29 +705,6 @@
             }
         });
 
-        
-        // matches polyfill
-        this.Element && function(ElementPrototype) {
-            ElementPrototype.matches = ElementPrototype.matches ||
-            ElementPrototype.matchesSelector ||
-            ElementPrototype.webkitMatchesSelector ||
-            ElementPrototype.msMatchesSelector ||
-            function(selector) {
-                var node = this, nodes = (node.parentNode || node.document).querySelectorAll(selector), i = -1;
-                while (nodes[++i] && nodes[i] != node);
-                return !!nodes[i];
-            }
-        }(Element.prototype);
-
-        // closest polyfill
-        this.Element && function(ElementPrototype) {
-            ElementPrototype.closest = ElementPrototype.closest ||
-            function(selector) {
-                var el = this;
-                while (el.matches && !el.matches(selector)) el = el.parentNode;
-                return el.matches ? el : null;
-            }
-        }(Element.prototype);
     </script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
 @endsection

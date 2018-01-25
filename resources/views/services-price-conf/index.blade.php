@@ -117,7 +117,7 @@
                                                 </div>
                                                 <div class="panel-body" id="branchList">
                                                     <ul v-if="corpBranches.length > 0" id="selectableBranches" class="selectable">
-                                                        <li v-for="branch in corpBranches" :branchid="branch.id" class="ui-widget-content" v-if="(showBranchStatus == branch.isActive) || showBranchStatus == 2" :class="(selectedBranchIds.includes(branch.id.toString())) ? 'ui-selected' : ''">@{{ branch.name }} </li>
+                                                        <li v-for="branch in corpBranches" :branchid="branch.id" v-if="(showBranchStatus == branch.isActive) || showBranchStatus == 2" :class="(selectedBranchIds.includes(branch.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ branch.name }} </li>
                                                     </ul>
                                                     <div v-else style="color: #900;">No branch for this corporation</div>
                                                 </div>
@@ -143,30 +143,31 @@
                                                     <div v-else>
                                                         <div v-if="showServiceStatus == 1">
                                                             <!-- work with active list -->
-                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices" class="selectable">
-                                                                <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" v-if="service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
+                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices" class="selectable selectableServices">
+                                                                <li v-for="service in services" :serviceid="service.id" v-if="service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
                                                             </ul>
-                                                            <div v-else style="color: #900;">No active services found</div>
+                                                            <div v-else style="color: #900;">
+                                                                No active services found
+                                                            </div>
                                                         </div>
 
                                                         <div v-else-if="showServiceStatus == 2">
                                                             <!-- work with all list -->
-                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices" class="selectable">
-                                                                <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
+                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices2" class="selectable selectableServices">
+                                                                <li v-for="service in services" :serviceid="service.id" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
                                                             </ul>
                                                             <div v-else style="color: #900;">No active services found</div>
                                                         </div>
                                                         <div v-else>
                                                             <!-- work with inactive list -->
-                                                            <ul v-if="services[0].inactiveCounter > 0" id="selectableServices" class="selectable">
-                                                                <li v-for="service in services" :serviceid="service.id" class="ui-widget-content" v-if="!service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-selected' : ''">@{{ service.code }}</li>
+                                                            <ul v-if="services[0].inactiveCounter > 0" id="selectableServices3" class="selectable selectableServices">
+                                                                <li v-for="service in services" :serviceid="service.id" v-if="!service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
                                                             </ul>
-                                                            <div v-else style="color: #900;">No inactive services found</div>
+                                                            <div v-else style="color: #900;">
+                                                                No inactive services found
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                    
-
                                                 </div>
                                             </div>
                                         </div>
@@ -407,6 +408,7 @@
 @endsection
 
 @section('footer-scripts')
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -470,7 +472,7 @@
                     var self = this;
                     self.confStep -= 1;
 
-                    self.activateSelectable();
+                    // self.activateSelectable();
 
                 },
                 filterBranchList: function(event) {
@@ -487,7 +489,7 @@
 
                     if(filterOption == 0) self.showServiceStatus = 0;
                     else if(filterOption == 1) self.showServiceStatus = 1;
-                    else self.showServiceStatus = 2;
+                    else self.showServiceStatus = 2;                    
                 },
                 loadBranches: function() {
                     var self = this;
@@ -519,6 +521,8 @@
                           .catch(function (error) {
                             console.log(error);
                           });
+
+                        self.activateSelectable();
                     }
                 },
                 loadServices: function() {
@@ -543,8 +547,10 @@
                         
                     })
                     .catch(function (error) {
-                    console.log(error);
+                        console.log(error);
                     });
+
+                    self.activateSelectable();
                 },
                 activateSelectable: function() {
                     var self = this;
@@ -574,7 +580,7 @@
                     });
 
                     
-                    $("#selectableServices").selectable({
+                    $(".selectableServices").selectable({
                         selected: function( event, ui ) {
                             if(self.selectedServiceIds.indexOf(ui.selected.getAttribute('serviceid')) == -1)
                                 self.selectedServiceIds.push(ui.selected.getAttribute('serviceid'));
@@ -640,29 +646,6 @@
             }
         });
 
-        
-        // matches polyfill
-        this.Element && function(ElementPrototype) {
-            ElementPrototype.matches = ElementPrototype.matches ||
-            ElementPrototype.matchesSelector ||
-            ElementPrototype.webkitMatchesSelector ||
-            ElementPrototype.msMatchesSelector ||
-            function(selector) {
-                var node = this, nodes = (node.parentNode || node.document).querySelectorAll(selector), i = -1;
-                while (nodes[++i] && nodes[i] != node);
-                return !!nodes[i];
-            }
-        }(Element.prototype);
-
-        // closest polyfill
-        this.Element && function(ElementPrototype) {
-            ElementPrototype.closest = ElementPrototype.closest ||
-            function(selector) {
-                var el = this;
-                while (el.matches && !el.matches(selector)) el = el.parentNode;
-                return el.matches ? el : null;
-            }
-        }(Element.prototype);
     </script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
 @endsection
