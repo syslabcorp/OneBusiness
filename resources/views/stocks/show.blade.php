@@ -43,6 +43,7 @@
                     </label>
                     <div class="col-sm-5">
                       <input type="text" class="form-control" name="RR_No" value="{{$stock->RR_No}}" disabled >
+                      <input type="hidden" id="RR_No_hidden" class="form-control" name="RR_No" value="{{$stock->RR_No}}" >
                     </div>
 
                     <label class="control-label col-sm-1">
@@ -155,11 +156,14 @@
                     <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
                     <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
-                    <td> <input type="text" name="ServedQty" id="" class="form-control"> </td>
+                    <td> <input type="text" name="ServedQty" id="" class="form-control input_ServedQty"> </td>
                     <td> <input type="text" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
                     <td> <input type="text" name="Sub" id="" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
+                      <a data-href="#"  class="btn btn-success add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" >
+                        <i class="fa fa-check"></i>
+                      </a>
                       <a data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" >
                         <i class="fa fa-trash"></i>
                       </a>
@@ -286,6 +290,79 @@
 
 @section('pageJS')
   <script>
+
+    $('.add_detail').on('click', function()
+    {
+      var self = $(this);
+      $.ajax({
+        url: "{{ route('stocks.save_new_row_ajax', [ $stock ,'corpID' => $corpID]) }}",
+        type: "POST",
+        data: {
+          "_token": "{{ csrf_token() }}",
+          "item_id": $('#add-row').find(".input_item_id" ).val(),
+          "ItemCode": $('#add-row').find(".input_ItemCode" ).val(),
+          "Cost": $('#add-row').find('.input_Cost').val(),
+          "ServedQty": $('#add-row').find('.input_ServedQty').val(),
+          "Qty": $('#add-row').find('.input_Qty').val(),
+          "RcvDate": $('input[name="RcvDate"]').val(),
+          "RR_No": $('#RR_No_hidden').val()
+        },
+        success: function(res){
+          if(res.status)
+          {
+            $('.editable').last().after('<tr class="editable" data-id="'+res.Movement_ID+'">\
+            <td class="edit_ItemCode"  data-field="ItemCode" >\
+              <span class="value_ItemCode">'+res.ItemCode+'</span>\
+              <input type="hidden" name="old_item_id" value="'+res.item_id+'" >\
+              <input type="hidden" name="item_id" value="'+res.item_id+'" >\
+              <input class="show_suggest" type="hidden" name="ItemCode" id="" value="'+res.ItemCode+'" >\
+            </td>\
+            <td class="edit_Prod_Line" data-field="Prod_Line" >\
+              <span class="value_Prod_Line">'+res.Prod_Line+'</span>\
+              <input class="show_suggest" type="hidden" name="Prod_Line" value="'+res.Prod_Line+'" >\
+            </td>\
+            <td class="edit_Brand" data-field="Brand" >\
+              <span class="value_Brand">'+res.Brand+'</span>\
+              <input class="show_suggest" type="hidden" name="Brand" id="" value="'+res.Brand+'" >\
+            </td>\
+            <td class="edit_Description" >\
+              <span class="value_Description">'+res.Description+'</span>\
+            </td>\
+            <td class="edit_Cost text-right" data-field="Cost" >\
+            <span class="value_Cost">'+res.Cost+'</span>\
+              <input type="hidden" name="Cost" id="" value="'+res.Cost+'" >\
+            </td>\
+            <td class="edit_ServedQty text-right" >\
+              <span class="value_ServedQty">'+res.ServedQty+'</span>\
+            </td>\
+            <td class="edit_Qty text-right" data-field="Qty" >\
+              <span class="value_Qty">'+res.Qty+'</span>\
+              <input type="hidden" name="Qty" id="" value="'+res.Qty+'" >\
+            </td>\
+            <td class="edit_Sub text-right" >\
+              '+res.Sub_view+' \
+            </td>\
+            <td class="edit_Unit" >\
+              <span class="value_Unit">'+res.Unit+'</span>\
+            </td>\
+            <td class="text-center" >\
+              <a class="btn btn-primary edit">\
+                <i class="fa fa-pencil"></i>\
+              </a>\
+              <a href="'+res.route+'" class="btn btn-danger " >\
+                <i class="fa fa-trash"></i>\
+              </a>\
+            </td>\
+          </tr>');
+
+          $('#add-row').find('input').val('');
+          $('#add-row').find('.input_Unit').text('');
+          $('#add-row').css('display', 'none');
+          }
+        }
+      });
+    });
+
     @if($stock->check_transfered())
       $(window).on('load',function(){
         $('#alert').modal('show');
@@ -348,7 +425,7 @@
       }
     });
 
-    $('.edit').on('click', function(){
+    $('body').on('click', '.edit', function(){
       var self = $(this);
       if($(this).find('i').hasClass('fa-pencil'))
       {
@@ -375,13 +452,13 @@
             "Qty": $(this).parents('.editable').find( "input[name='Qty']" ).val()
           },
           success: function(res){
-            if(res.status)
-            {
+            // if(res.status == true)
+            // {
               self.parents('.editable').find('.value_ItemCode').text(res.ItemCode);
               self.parents('.editable').find('.value_Prod_Line').text(res.Prod_Line);
               self.parents('.editable').find('.value_Brand').text(res.Brand);
               self.parents('.editable').find('.edit_ItemCode').find("input[name='old_item_id']").val(res.item_id);
-            }
+            // }
           }
         });
 
@@ -407,8 +484,8 @@
       $(document).keydown(function(e) {
         if(e.which == 113) {
           $('#add-row').css('display' , ''); 
-          $('#PO').removeAttr('disabled', false);
-          $('input[name="RR_No"]').removeAttr('disabled');
+          // $('#PO').removeAttr('disabled', false);
+          // $('input[name="RR_No"]').removeAttr('disabled');
           $('#no-item').css('display', 'none');
           return false;
         }
@@ -417,8 +494,8 @@
 
     $('#pressF2').click(function(){
       $('#add-row').css('display' , ''); 
-      $('#PO').removeAttr('disabled', false);
-      $('input[name="RR_No"]').removeAttr('disabled');
+      // $('#PO').removeAttr('disabled', false);
+      // $('input[name="RR_No"]').removeAttr('disabled');
       $('#no-item').css('display', 'none');
     });
 
@@ -452,8 +529,8 @@
       {
         if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
         {
-          var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Cost').val());
-          $parent.find('.input_Qty').val(val);
+          var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
+          $parent.find('.input_Cost').val(val);
 
         }
         else
@@ -530,59 +607,6 @@
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
     });
-
-    // $(function() {
-    //   var pickers = {};
-
-    //   $('.editable').editable({
-    //     button: true,
-    //     buttonSelector: ".edit",
-    //     dropdowns: {
-
-    //     },
-    //     edit: function(values) {
-    //       $(".edit i", this)
-    //         .removeClass('fa-pencil')
-    //         .addClass('fa-save')
-    //         .attr('title', 'Save');
-
-    //     },
-    //     save: function(values) {
-    //       $(".edit i", this)
-    //         .removeClass('fa-save')
-    //         .addClass('fa-pencil')
-    //         .attr('title', 'Edit');
-    //       var id = $(this).data('id');
-    //       $.ajax({
-    //         url: "{{ route('stocks.update_detail', [ $stock ,'corpID' => $corpID]) }}",
-    //         type: "POST",
-    //         data: {"_token": "{{ csrf_token() }}", values, "id": id},
-    //         success: function(res){
-    //           if(res.success)
-    //           {
-    //           }
-    //         }
-    //       });
-
-    //       if (this in pickers) {
-    //         pickers[this].destroy();
-    //         delete pickers[this];
-    //       }
-    //     },
-    //     cancel: function(values) {
-    //       $(".edit i", this)
-    //         .removeClass('fa-save')
-    //         .addClass('fa-pencil')
-    //         .attr('title', 'Edit');
-
-    //       if (this in pickers) {
-    //         pickers[this].destroy();
-    //         delete pickers[this];
-    //       }
-    //     }
-    //   });
-
-    // });
 
   </script>
 @endsection
