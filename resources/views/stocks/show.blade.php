@@ -28,6 +28,7 @@
                       </label>
                       <div class="col-sm-4">
                         <select name="po" id="PO" class="form-control" disabled >
+                          <option value=""></option>
                           @foreach($pos as $po)
                             <option value="{{$po->po_no}}" >{{$po->po_no}}</option>
                           @endforeach
@@ -389,7 +390,7 @@
       event.preventDefault();
       $('#add-row').remove();
       $('#example').remove();
-      $('#total_amt').val($('#total_amount').text);
+      $('#total_amt').val($('#total_amount').text());
       $('form').submit();
     })
 

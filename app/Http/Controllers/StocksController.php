@@ -301,7 +301,7 @@ class StocksController extends Controller
       return $brands->Brand;
     });
     // dd(Brand::all());
-    $pos = $purchaseOrderModel->where('served', 0)->get();
+    $pos = $purchaseOrderModel->where('served', 0)->orderBy('po_no', 'desc')->get();
     return view('stocks.create',
       [
         'brands' => $brands,
