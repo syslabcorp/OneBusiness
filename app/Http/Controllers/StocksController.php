@@ -14,6 +14,7 @@ use App\PurchaseOrderDetail;
 use App\Corporation;
 use App\Brand;
 use App\ProductLine;
+use DB;
 
 class StocksController extends Controller
 {
@@ -75,7 +76,9 @@ class StocksController extends Controller
     $purchaseOrderDetailModel->setConnection($company->database_name);
 
     $stock = $stockModel->find($request->stock); 
-
+    $stock->Supp_ID = $request->Supp_ID;
+    $stock->RcvDate = $request->RcvDate;
+    $stock->save();
     foreach ($request->type as $key => $value)
     {
       $stock_detail = $stockDetailModel->find($key);
@@ -264,6 +267,11 @@ class StocksController extends Controller
     }
     
     $vendors = Vendor::orderBy('VendorName')->get();
+    setcookie('last_index_url' , route('stocks.index', [
+      'corpID' => $request->corpID,
+      'vendor' => $request->vendor,
+      'vendorID' => $vendor_ID
+    ]));
     return view('stocks.index',
       [
         'corpID' => $request->corpID,
@@ -324,7 +332,6 @@ class StocksController extends Controller
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
 
-    // dd($request);
     $stock = $stockModel;
     $stock->RR_No = $request->RR_No;
     $stock->RcvDate = $request->RcvDate;
@@ -356,18 +363,18 @@ class StocksController extends Controller
         }
       }
 
-      if($success && $request->po && ($request->po != ""))
-      {
-        $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
-        $purchaseOrderDetailModel->setConnection($company->database_name);
-        $detail = $purchaseOrderDetailModel;
-        $detail->item_id = intval($request->add_item_id[$key]);
-        $detail->ItemCode = $request->add_ItemCode[$key];
-        $detail->po_no = $request->po;
-        $detail->Qty = floatval($request->add_Qty[$key]);
-        $detail->cost = $request->add_Cost[$key];
-        $detail->save();
-      }
+      // if($success && $request->po && ($request->po != ""))
+      // {
+      //   $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+      //   $purchaseOrderDetailModel->setConnection($company->database_name);
+      //   $detail = $purchaseOrderDetailModel;
+      //   $detail->item_id = intval($request->add_item_id[$key]);
+      //   $detail->ItemCode = $request->add_ItemCode[$key];
+      //   $detail->po_no = $request->po;
+      //   $detail->Qty = floatval($request->add_Qty[$key]);
+      //   $detail->cost = $request->add_Cost[$key];
+      //   $detail->save();
+      // }
     }
 
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
@@ -389,6 +396,41 @@ class StocksController extends Controller
     $detail = $stockDetailModel->find($request->detail_id);
     $detail->delete();
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
+  }
+
+  public function get_details(Request $request)
+  {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
+    $company = Corporation::findOrFail($request->corpID);
+    $purchaseOrderModel = new \App\PurchaseOrder;
+    $purchaseOrderModel->setConnection($company->database_name);
+    $details = $purchaseOrderModel->find( $request->po )->purchase_order_details;
+
+    $result = [];
+    foreach($details as $key => $value)
+    {
+      $item = StockItem::find($value->item_id);
+      
+      $array = [];
+      $array['Brand'] = $item->brand->Brand;
+      $array['Prod_Line'] = $item->product_line->Product;
+      $array ['Unit']  = $item->Unit;
+      $array['Description']  = $item->Description;
+      $array['item_id']  = $value->item_id;
+      $array['ItemCode']  = $value->ItemCode;
+      $array['Qty']  = $value->Qty;
+      $array['ServedQty']  = $value->ServedQty;
+      $array['Cost'] = $value->cost;
+      
+      array_push($result, $array);
+    }
+    return response()->json([
+      'details'=> $result
+    ]);
   }
 
   public function destroy(Request $request)

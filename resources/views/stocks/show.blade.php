@@ -265,7 +265,7 @@
 
             <div class="row">
               <div class="col-md-6">
-                <a type="button" class="btn btn-default" href="{{ route('stocks.index', [ 'corpID' => $corpID]) }}">
+                <a type="button" class="btn btn-default" href="{{  $_COOKIE['last_index_url'] }}">
                   <i class="fa fa-reply"></i> Back
                 </a>
               </div>
@@ -652,7 +652,7 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_itemcode').text().includes( $parent.find('.input_ItemCode').val() ) )
+          if ( $(this).find('.recommend_itemcode').text().toUpperCase().includes( $parent.find('.input_ItemCode').val().toUpperCase() ) )
           {
           }
           else
@@ -666,7 +666,7 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_brand').text().includes( $parent.find(".input_Brand").val()) )
+          if ( $(this).find('.recommend_brand').text().toUpperCase().includes( $parent.find(".input_Brand").val().toUpperCase() ) )
           {
           }
           else
@@ -680,7 +680,7 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_prod_line').text().includes( $parent.find(".input_Prod_Line").val())  )
+          if ( $(this).find('.recommend_prod_line').text().toUpperCase().includes( $parent.find(".input_Prod_Line").val().toUpperCase() )  )
           {
           }
           else

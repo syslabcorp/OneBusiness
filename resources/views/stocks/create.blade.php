@@ -413,6 +413,75 @@
       }
     });
 
+    $('#PO').on('change', function()
+    {
+      if( $('#PO').val() != ""  )
+      {
+        var _token = $("meta[name='csrf-token']").attr("content");
+        var po = $('#PO').val();
+        $(".editable:not(#example)").remove();
+        $.ajax({
+        url: "{{ route('stocks.get_details', [ 'corpID' => $corpID]) }}",
+        type: "POST",
+        data: {_token,po},
+        success: function(res){
+          $.each(res.details , function($index, $value)
+          {
+            var $add_row = $('#add-row');
+            var new_element = $('#example').clone();
+            new_element.css("display", "").removeAttr('id');
+
+            $('.editable').last().after(new_element);
+            
+            //ItemCode
+            new_element.find('.input_item_id').val($value.item_id);
+            new_element.find('.input_ItemCode').val($value.ItemCode);
+            new_element.find('.value_ItemCode').text($value.ItemCode);
+            
+            //ProductLine
+            new_element.find('.value_Prod_Line').text($value.Prod_Line);
+            new_element.find('.input_Prod_Line').val($value.Prod_Line);
+
+            //Brand
+            new_element.find('.value_Brand').text($value.Brand);
+            new_element.find('.input_Brand').val($value.Brand);
+
+            //Description
+            new_element.find('.value_Description').text($value.Description);
+
+            //Cost/Unit
+            new_element.find('.value_Cost').text($value.Cost);
+            new_element.find('.input_Cost').val($value.Cost);
+
+            //Served
+            new_element.find('.value_ServedQty').text($value.ServedQty);
+            
+            //Qty
+            new_element.find('.value_Qty').text($value.Qty);
+            new_element.find('.input_Qty').val($value.Qty);
+            
+            //Subtotal
+            new_element.find('.value_Sub').text(($value.Cost * $value.Qty).toFixed(2));
+            new_element.find('.input_Sub').val(($value.Cost * $value.Qty).toFixed(2));
+
+            //Unit
+            new_element.find('.value_Unit').text($value.Unit);
+
+
+            $('#add-row').find('input').val('');
+            $('#add-row').find('.input_Qty').val('1');
+            $('#add-row').find('.input_Unit').text('');
+            $('#add-row').css('display', 'none');
+            $('.recommend_row').removeClass('row-highlight');
+            
+          }
+          );
+          refresh_sub();
+          }
+        });
+      }
+
+    });
 
     $('.recommend_row').click(function(){
       $('.recommend_row').removeClass('row-highlight');
