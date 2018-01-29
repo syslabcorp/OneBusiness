@@ -76,30 +76,58 @@ class StocksController extends Controller
 
     $stock = $stockModel->find($request->stock); 
 
-    if($request->item_id){
-      $stock_detail = $stockDetailModel;
-      $stock_detail->item_id = intval($request->item_id);
-      $stock_detail->ItemCode = $request->ItemCode;
-      $stock_detail->ServedQty = intval($request->ServedQty);
-      $stock_detail->Qty = floatval($request->Qty);
-      $stock_detail->Bal = floatval($request->Qty);
-      $stock_detail->RR_No = $request->RR_No;
-      $stock_detail->RcvDate = $request->RcvDate;
-      $stock_detail->Cost = $request->Cost;
-      $success = $stock_detail->save();
-
-      if($success && $request->po && ($request->po != ""))
+    foreach ($request->type as $key => $value)
+    {
+      $stock_detail = $stockDetailModel->find($key);
+      
+      //edit row
+      if($value == "none")
       {
-        $detail = $purchaseOrderDetailModel;
-        $detail->item_id = intval($request->item_id);
-        $detail->ItemCode = $request->ItemCode;
-        $detail->po_no = $request->po;
-        $detail->Qty = floatval($request->Qty);
-        $detail->ServedQty = intval($request->ServedQty);
-        $detail->cost = $request->Cost;
-        $detail->save();
+        if($request->old_item_id[$key] != $request->item_id[$key])
+        {
+          $stock_detail->item_id = intval($request->item_id[$key]);
+        }
+        $stock_detail->ItemCode = $request->ItemCode[$key];
+        $stock_detail->Qty = floatval($request->Qty[$key]) ;
+        $stock_detail->Bal = floatval($request->Qty[$key]);
+        $stock_detail->Cost = floatval($request->Cost[$key]);
+        $stock_detail->save();
+      }
+
+      //delete row
+      if($value == "deleted")
+      {
+        $stock_detail->delete();
       }
     }
+
+    if($request->add_type)
+    {
+      foreach ($request->add_type as $key => $value)
+      {
+        $stockDetailModel = new \App\StockDetail;
+        $stockDetailModel->setConnection($company->database_name);
+
+        $stock_detail = $stockDetailModel;
+        
+        //add row
+        if($value == "add" && $request->add_item_id[$key] )
+        {
+          $stock_detail->item_id = intval($request->add_item_id[$key]);
+          $stock_detail->ItemCode = $request->add_ItemCode[$key];
+          $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
+          $stock_detail->Bal = floatval($request->add_Qty[$key]);
+          $stock_detail->Cost = floatval($request->add_Cost[$key]);
+          $stock_detail->RcvDate = $request->RcvDate;
+          $stock_detail->RR_No = $request->RR_No;
+          
+          $stock_detail->save();
+        }
+      }
+    }
+
+    $stock->TotalAmt = $request->total_amt;
+    $stock->save();
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
@@ -125,7 +153,7 @@ class StocksController extends Controller
       $stock_detail = $stockDetailModel;
       $stock_detail->item_id = intval($request->item_id);
       $stock_detail->ItemCode = $request->ItemCode;
-      $stock_detail->ServedQty = intval($request->ServedQty);
+      // $stock_detail->ServedQty = intval($request->ServedQty);
       $stock_detail->Qty = floatval($request->Qty);
       $stock_detail->Bal = floatval($request->Qty);
       $stock_detail->RR_No = $request->RR_No;
@@ -249,41 +277,41 @@ class StocksController extends Controller
 
   public function create(Request $request)
   {
-    // if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
-    //   \Session::flash('error', "You don't have permission"); 
-    //   return redirect("/home"); 
-    // }
-    // $company = Corporation::findOrFail($request->corpID);
-    // $stockModel = new \App\Stock;
-    // $stockModel->setConnection($company->database_name);
-    // $purchaseOrderModel = new \App\PurchaseOrder;
-    // $purchaseOrderModel->setConnection($company->database_name);
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+    $company = Corporation::findOrFail($request->corpID);
+    $stockModel = new \App\Stock;
+    $stockModel->setConnection($company->database_name);
+    $purchaseOrderModel = new \App\PurchaseOrder;
+    $purchaseOrderModel->setConnection($company->database_name);
 
-    // $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
-    // $vendors = Vendor::all();
+    $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
+    $vendors = Vendor::all();
 
-    // $brands = Brand::all();
+    $brands = Brand::all();
 
-    // $prod_lines = ProductLine::all();
+    $prod_lines = ProductLine::all();
 
-    // $prod_lines = $prod_lines->map(function ($prod_lines) {
-    //   return $prod_lines->Product;
-    // });
-    // $brands = $brands->map(function ($brands) {
-    //   return $brands->Brand;
-    // });
-    // // dd(Brand::all());
-    // $pos = $purchaseOrderModel->where('served', 0)->get();
-    // return view('stocks.create',
-    //   [
-    //     'brands' => $brands,
-    //     'prod_lines' => $prod_lines,
-    //     'corpID' => $request->corpID,
-    //     'vendors' => $vendors,
-    //     'pos' => $pos,
-    //     'stockitems' => $stockitems
-    //   ]
-    // )->with('corpID', $request->corpID);
+    $prod_lines = $prod_lines->map(function ($prod_lines) {
+      return $prod_lines->Product;
+    });
+    $brands = $brands->map(function ($brands) {
+      return $brands->Brand;
+    });
+    // dd(Brand::all());
+    $pos = $purchaseOrderModel->where('served', 0)->get();
+    return view('stocks.create',
+      [
+        'brands' => $brands,
+        'prod_lines' => $prod_lines,
+        'corpID' => $request->corpID,
+        'vendors' => $vendors,
+        'pos' => $pos,
+        'stockitems' => $stockitems
+      ]
+    )->with('corpID', $request->corpID);
   }
 
   public function store(Request $request)
@@ -295,13 +323,54 @@ class StocksController extends Controller
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
+
+    // dd($request);
     $stock = $stockModel;
     $stock->RR_No = $request->RR_No;
     $stock->RcvDate = $request->RcvDate;
     $stock->TotalAmt = $request->TotalAmt;
     $stock->Supp_ID = $request->Supp_ID;
-    $stock->save();
-    return redirect()->route('stocks.index', ['corpID' => $request->corpID ]);
+    $success = $stock->save();
+
+    if($success && $request->add_type)
+    {
+      foreach ($request->add_type as $key => $value)
+      {
+        $stockDetailModel = new \App\StockDetail;
+        $stockDetailModel->setConnection($company->database_name);
+
+        $stock_detail = $stockDetailModel;
+        
+        //add row
+        if($value == "add" && $request->add_item_id[$key] )
+        {
+          $stock_detail->item_id = intval($request->add_item_id[$key]);
+          $stock_detail->ItemCode = $request->add_ItemCode[$key];
+          $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
+          $stock_detail->Bal = floatval($request->add_Qty[$key]);
+          $stock_detail->Cost = floatval($request->add_Cost[$key]);
+          $stock_detail->RcvDate = $request->RcvDate;
+          $stock_detail->RR_No = $stock->RR_No;
+          $stock->TotalAmt = $request->total_amt;
+          $stock_detail->save();
+        }
+      }
+
+      if($success && $request->po && ($request->po != ""))
+      {
+        $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+        $purchaseOrderDetailModel->setConnection($company->database_name);
+        $detail = $purchaseOrderDetailModel;
+        $detail->item_id = intval($request->add_item_id[$key]);
+        $detail->ItemCode = $request->add_ItemCode[$key];
+        $detail->po_no = $request->po;
+        $detail->Qty = floatval($request->add_Qty[$key]);
+        $detail->cost = $request->add_Cost[$key];
+        $detail->save();
+      }
+    }
+
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
   public function destroy_detail(Request $request)
