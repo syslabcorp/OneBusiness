@@ -292,10 +292,14 @@
       $( ".editable" ).each(function() {
         if(!$(this).is(':hidden'))
         {
-          sub += parseFloat($(this).find('.input_Sub').val());
+          if( $(this).find('.input_Sub').val() != 0 )
+          {
+            sub += parseFloat($(this).find('.input_Sub').val());
+          }
         }
       });
       $('#total_amount').text(sub.numberFormat(2));
+      $('#total_amt').val(sub.numberFormat(2));
     }
 
     function update_old_sub()
@@ -553,7 +557,14 @@
         self.parents('.editable').find('.value_Brand').text(self.parents('.editable').find('.input_Brand').val());
         self.parents('.editable').find('.value_Cost').text(self.parents('.editable').find('.input_Cost').val() );
         self.parents('.editable').find('.value_Qty').text(self.parents('.editable').find('.input_Qty').val() );
-        self.parents('.editable').find('.value_Sub').text(self.parents('.editable').find('.input_Sub').val());
+        if( self.parents('.editable').find('.input_Sub').val() != "" )
+        {
+          self.parents('.editable').find('.value_Sub').text(self.parents('.editable').find('.input_Sub').val());
+        }
+        else
+        {
+          self.parents('.editable').find('.value_Sub').text("0");
+        }
         $(this).parents('.editable').find( ".input_type" ).val('none') ;
         
         $('#recommend-table').css('display', "none");
@@ -588,7 +599,7 @@
       $('#recommend-table').css('display', "");
     });
 
-    $('.input_Cost ,.input_Qty, .input_Sub').on( 'change paste keyup', function()
+    $('body').on( 'change paste keyup', '.input_Cost ,.input_Qty, .input_Sub', function()
     {
       $self = $(this);
       if ($self.parents('#add-row').length) 
@@ -606,13 +617,12 @@
         {
           var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
           $parent.find('.input_Sub').val(val);
-          var newtotal = (old_total + parseFloat($parent.find('.input_Sub').val()));
-          $('#total_amount').text(newtotal.numberFormat(2));
+          refresh_sub();
         }
         else
         {
           $parent.find('.input_Sub').val('');
-          $('#total_amount').text(old_total.numberFormat(2));
+          refresh_sub();
         }
       }
 
@@ -622,17 +632,17 @@
         {
           var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
           $parent.find('.input_Cost').val(val);
-
+          refresh_sub();
         }
         else
         {
-          $('#total_amount').text(old_total.numberFormat(2));
+          refresh_sub();
         }
 
         if($parent.find('.input_Sub').val() != "" )
         {
           var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
-          $('#total_amount').text(newtotal.numberFormat(2));
+          refresh_sub();
         }
       }
       
@@ -655,7 +665,8 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_itemcode').text().includes( $parent.find('.input_ItemCode').val() ) )
+          if ( $(this).find('.recommend_itemcode').text().toUpperCase().includes( $parent.find('.input_ItemCode').val().toUpperCase() ) ) 
+          
           {
           }
           else
