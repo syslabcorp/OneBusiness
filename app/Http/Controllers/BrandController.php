@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Brand;
 use Illuminate\Http\Request;
+use DB;
 
 class BrandController extends Controller
 {
@@ -100,15 +101,13 @@ class BrandController extends Controller
             return redirect("/home");
         }
 
-        //validate request
-        $this->validate($request, [
-            'editBrandName' => 'required',
-        ]);
-
         //if validator passed store service item
         $brand = Brand::where('Brand_ID', $brand->Brand_ID)->first();
         $brand->Brand = $request->input('editBrandName');
         $brand->save();
+
+        //updates s_changes table
+        DB::table('s_changes')->update(['brands' => 1]);
 
         \Session::flash('success', "Brand updated successfully");
         return redirect()->route('brands.index');

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
@@ -109,10 +109,10 @@
 
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
-                    @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
-                    @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @if(Session::has('success'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                    @elseif(Session::has('error'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div id="result" style="display: none;"></div>
                     <div class="col-md-12 col-xs-12">
@@ -160,14 +160,15 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">New Bank Account Number</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/bank-accounts') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/bank-accounts') }}" id="form2" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="bankCode">Bank Code:</label>
                                     <div class="col-md-9">
-                                        <select name="bankCode" class="form-control input-md bankCode" id="">
+                                        <select name="bankCode" class="form-control input-md bankCode" id=""
+                                                data-parsley-required-message="Bank Code is required" required>
                                             <option value="">Select Bank:</option>
                                             @foreach($selectBank as $bank)
                                                 <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
@@ -184,7 +185,8 @@
                             <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                 <label class="col-md-3 control-label" for="corpName">Corporation:</label>
                                 <div class="col-md-9">
-                                    <select name="corpName" class="form-control input-md corpName" id="">
+                                    <select name="corpName" class="form-control input-md corpName" id=""
+                                            data-parsley-required-message="Corporation is required" required>
                                         <option value="">Select Corporation:</option>
                                         @foreach($selectCorp as $corp)
                                             <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
@@ -193,17 +195,41 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="branchName">Branch:</label>
+                                    <div class="col-md-7">
+                                        <select name="branchName" class="form-control input-md branchName" id="">
+                                            <option value="">Select Branch:</option>
+                                            @if(is_object($satelliteBranch))
+                                            @foreach($satelliteBranch as $branch)
+                                                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                                            @endforeach
+                                                @endif
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
+                                    <input type="checkbox" name="mainStatus" class="pull-left mainStatus" name="" id="">
+                                    <label for="mainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankAccountNumber" name="bankAccountNumber" type="text" class="form-control input-md" required="">
+                                <input id="bankAccountNumber" name="bankAccountNumber" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Account number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -226,18 +252,24 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add Bank</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/banks') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/banks') }}" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankName">Bank Name:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankName" name="bankName" type="text" class="form-control input-md" required="">
+                                <input id="bankName" name="bankName" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Bank Name is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 20 characters"
+                                       data-parsley-maxlength="20" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankName">Description:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankDescription" name="bankDescription" type="text" class="form-control input-md" required="">
+                                <input id="bankDescription" name="bankDescription" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Description is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 100 characters"
+                                       data-parsley-maxlength="100" required="">
                             </div>
                         </div>
                         <hr class="wide">
@@ -279,7 +311,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  data-toggle="modal"
-                                        data-target="#addNewAccount"><i class="fa fa-reply"></i>&nbspBack</button>
+                                        data-target="#addNewAccount"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -336,20 +368,26 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankDescriptionEdit">Bank Name:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankNameEdit" name="bankNameEdit" type="text" class="form-control input-md" required="">
+                                <input id="bankNameEdit" name="bankNameEdit" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Bank Name is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 20 characters"
+                                       data-parsley-maxlength="20" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankDescriptionEdit">Description:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="bankDescriptionEdit" name="bankDescriptionEdit" type="text" class="form-control input-md" required="">
+                                <input id="bankDescriptionEdit" name="bankDescriptionEdit" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Description is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 100 characters"
+                                       data-parsley-maxlength="100" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -378,7 +416,8 @@
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
                             <div class="col-md-7 col-xs-12">
-                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id="" required>
+                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id=""
+                                        data-parsley-required-message="Bank Code is required" required>
                                     <option value="">Select Bank:</option>
                                     @foreach($selectBank as $bank)
                                         <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
@@ -390,7 +429,8 @@
                             <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                 <label class="col-md-3 control-label" for="editCorpName">Corporation:</label>
                                 <div class="col-md-9">
-                                    <select name="editCorpName" class="form-control input-md editCorpName" id="">
+                                    <select name="editCorpName" class="form-control input-md editCorpName" id=""
+                                            data-parsley-required-message="Corporation is required" required>
                                         <option value="">Select Corporation:</option>
                                         @foreach($selectCorp as $corp)
                                             <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
@@ -403,14 +443,16 @@
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumberEdit">Account Number:</label>
                             <div class="col-md-7 col-xs-12">
                                 <input id="bankAccountNumberEdit" name="bankAccountNumberEdit" type="text" class="form-control input-md"
-                                       data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
+                                       data-parsley-required-message="Account number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 <input type="hidden" class="accountID" name="accountID">
@@ -479,15 +521,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
     <script>
-        $('#editAccountModalForm').parsley();
         (function($){
+            $('#editAccountModalForm, #editBankModalForm, #form1, #form2').parsley();
             var __data = "";
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif">@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
+                    @if(is_object($corporations))
                     @foreach($corporations as $key => $val)
                     if(cntCorp != 0){
                         corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
@@ -495,12 +538,14 @@
                     cntCorp++;
 
                     @endforeach
+                        @endif
                     var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
-                    var branches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->Branch }}">{{ $satelliteBranch[0]->ShortName }}</option></select>')
+                    var branches = $('<select class="form-control"><option value="@if(isset($satelliteBranch[0]->Branch)){{ $satelliteBranch[0]->Branch }} @endif">@if(isset($satelliteBranch[0]->ShortName)){{ $satelliteBranch[0]->ShortName }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
+                    @if(is_object($satelliteBranch))
                     @foreach($satelliteBranch as $key => $val)
                     if(cntBranches != 0){
                         branches.append('<option value="{{ $val->Branch }}">{{ $val->ShortName }}</option>');
@@ -508,6 +553,7 @@
                     cntBranches++;
 
                     @endforeach
+                        @endif
                     var mainStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
                         .appendTo('#example_ddl5');
                 },
@@ -518,8 +564,10 @@
                     url: "banks/get-banks-list",
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
+                        @if(isset($corporations[0]->corp_id))
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
                         d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
+                        @endif
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
                     }
@@ -611,6 +659,14 @@
 
 
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
+
+            $(document).on('click', '.mainStatus', function () {
+                if($('.mainStatus').is(':checked')){
+                    $('.branchName').attr('disabled', true).css({"background-color":"#dddddd", "color":"#dddddd"});
+                }else{
+                    $('.branchName').attr('disabled', false).css({"background-color":"#FFF", "color":"#333"});
+                }
+            });
 
 
             $(document).on('click', '.delete', function (e) {
@@ -760,7 +816,6 @@
                 var accountNum = $('#bankAccountNumberEdit').val();
                 var accountID = $('.accountID').val();
                 var corpId = $('.editCorpName option:selected').val();
-                alert(corpId+'test');
 
                 $.ajax({
                     url: "/OneBusiness/bank-accounts/update",
@@ -770,14 +825,14 @@
                         if(data == "success"){
                             $('#editAccountModal').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspAccount updated successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#editAccountModal').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -785,7 +840,7 @@
                     },
                     error: function () {
                         $('#editAccountModal').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
@@ -818,14 +873,14 @@
                         if(data == "success"){
                             $('#confirm-delete-account').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspAccount deleted successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#confirm-delete-account').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -833,7 +888,7 @@
                     },
                     error: function () {
                         $('#confirm-delete-account').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
@@ -845,6 +900,32 @@
             $(document).on('change', '.bankCode', function () {
                 var id = $('.bankCode option:selected').val();
                 $('.pcBranchId').val(id);
+            })
+
+            $(document).on('change', '.corpName', function () {
+                var corpId = $('.corpName option:selected').val();
+                var options = $('.branchName');
+
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: '/OneBusiness/vendors/get-branches',
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
             })
 
             })(jQuery);

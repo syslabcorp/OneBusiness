@@ -20,7 +20,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -42,35 +42,52 @@ class CheckbookController extends Controller
             ->distinct()
             ->get();
 
-        //get records from t_sysdata
-        $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
-            ->where('Active', 1)
-            ->where('corp_id', $corporations[0]->corp_id)
-            ->get();
+        if(isset($corporations[0]->corp_id)) {
 
-        //get records
-        $checkbooks = Checkbook::orderBy('used', 'ASC')
-            ->orderBy('order_num', 'ASC')
-            ->get();
+            //get records from t_sysdata
+            $tSysdata = DB::table('t_sysdata')
+                ->orderBy('Branch', 'ASC')
+                ->where('Active', 1)
+                ->where('corp_id', $corporations[0]->corp_id)
+                ->get();
 
-        $banks = DB::table('cv_banks')
-            ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
-            ->join('t_sysdata', 't_sysdata.Branch', '=', 'cv_bank_acct.branch')
-            ->where('cv_bank_acct.corp_id', $corporations[0]->corp_id)
-            ->where('cv_bank_acct.branch', $tSysdata[0]->Branch)
-            ->where('t_sysdata.Active', 1)
-            ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
-                'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
-            ->orderBy('cv_banks.bank_code', 'ASC')
-            ->get();
 
+            $banks = DB::table('cv_banks')
+                ->join('cv_bank_acct', 'cv_banks.bank_id', '=', 'cv_bank_acct.bank_id')
+                ->join('t_sysdata', 't_sysdata.Branch', '=', 'cv_bank_acct.branch')
+                ->where('cv_bank_acct.corp_id', $corporations[0]->corp_id)
+                ->where('cv_bank_acct.branch', $tSysdata[0]->Branch)
+                ->where('t_sysdata.Active', 1)
+                ->select("cv_bank_acct.bank_acct_id", DB::raw("CONCAT(cv_banks.bank_code,' - ',cv_bank_acct.acct_no) AS account_info"),
+                    'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
+                ->orderBy('cv_banks.bank_code', 'ASC')
+                ->get();
+
+        }else{
+            $details = array(
+                0 => [
+                    'Branch' => 'N/A'
+                ]
+            );
+            $tSysdata = $details;
+
+            $corporations = array(
+                0 => [
+                    'corp_id' => 'N/A'
+                ]
+            );
+
+            $banks = array(
+                0 => [
+                    'bank_acct_id' => 'N/A'
+                ]
+            );
+        }
 
 
 
         return view('checkbooks.index')
             ->with('tSysData', $tSysdata)
-            ->with('checkbooks', $checkbooks)
             ->with('branch', $branch)
             ->with('banks', $banks)
             ->with('corporations', $corporations)
@@ -98,7 +115,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -109,7 +126,9 @@ class CheckbookController extends Controller
 
         $bankCode = BankAccount::where('bank_acct_id', $acctId)->first();
 
-        $numRow = DB::table('cv_chkbk_series')->select(DB::raw('MAX(order_num) as num_row'))->first();
+        $numRow = DB::table('cv_chkbk_series')->select(DB::raw('MAX(order_num) as num_row'))
+            ->where('bank_acct_id', $acctId)
+            ->first();
 
         //create new instance
         $checkbook = new Checkbook;
@@ -122,10 +141,10 @@ class CheckbookController extends Controller
         $success = $checkbook->save();
 
         if($success) {
-            \Session::flash('alert-class', "Checkbook added successfully");
+            \Session::flash('success', "Checkbook added successfully");
             return redirect()->route('checkbooks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('checkbooks.index');
     }
 
@@ -161,7 +180,7 @@ class CheckbookController extends Controller
     {
         if(!\Auth::user()->checkAccessById(28, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -192,7 +211,7 @@ class CheckbookController extends Controller
 
         if(!\Auth::user()->checkAccessById(28, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -374,8 +393,8 @@ class CheckbookController extends Controller
         $row1 = $request->input('order_num');
         $row2 = $request->input('order_num2');
 
-        DB::table('cv_chkbk_series')->where('txn_no', $rowId)->update(['order_num' => $row1]);
-        DB::table('cv_chkbk_series')->where('txn_no', $rowId2)->update(['order_num' => $row2]);
+        DB::table('cv_chkbk_series')->where('txn_no', $rowId)->update(['order_num' => $row2]);
+        DB::table('cv_chkbk_series')->where('txn_no', $rowId2)->update(['order_num' => $row1]);
 
 
         return response()->json("success", 200);

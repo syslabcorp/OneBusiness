@@ -11,6 +11,6 @@ class Service extends Model
     public $timestamps = false;
 
     protected $fillable = [
-      'Serv_Code', 'Description'
+      'Serv_Code', 'Description', 'Active'
     ];
 }

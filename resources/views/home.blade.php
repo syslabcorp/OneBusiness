@@ -18,7 +18,7 @@
       <!-- Page content -->
       <div id="page-content-togle-sidebar-sec">
 		@if(\Session::get('error'))
-            <div class="alert alertfade alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don't have permission" ? "no-close" : ""}}" style="border-radius: 3px;margin-top: 15px;">
+            <div class="alert alertfade alert-danger col-md-8 col-md-offset-2 {{ \Session::get('error') == "You don`t have permission" ? "no-close" : ""}}" style="border-radius: 3px;margin-top: 15px;">
                 <span class="fa fa-close"></span> <em>{{ \Session::get('error') }}</em>
             </div>
             @elseif(\Session::get('success'))

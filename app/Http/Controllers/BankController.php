@@ -20,7 +20,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -44,15 +44,20 @@ class BankController extends Controller
             ->distinct()
             ->get();
 
-        //todo 1 maybe some corporations don't exists need to be checked
 
-        //get records from t_sysdata
-        $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
-            ->where('Active', 1)
-            ->where('corp_id', $corporations[0]->corp_id)
-            ->select('t_sysdata.ShortName', 't_sysdata.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
-            ->get();
+        if(isset($corporations[0]->corp_id)) {
+
+            //get records from t_sysdata
+            $tSysdata = DB::table('t_sysdata')
+                ->orderBy('Branch', 'ASC')
+                ->where('Active', 1)
+                ->where('corp_id', $corporations[0]->corp_id)
+                ->select('t_sysdata.ShortName', 't_sysdata.Active', 't_sysdata.Branch', 't_sysdata.corp_id')
+                ->get();
+        }else{
+            $tSysdata[] = null;
+        }
+
 
 
         //get banks from db
@@ -96,7 +101,7 @@ class BankController extends Controller
                 ->where('t_sysdata.Active', $statusData)
                 ->where('t_sysdata.corp_id', $corpID)
                 ->select('cv_bank_acct.default_acct', 'cv_bank_acct.date_created', 'cv_banks.bank_code', 'cv_bank_acct.acct_no',
-                    'cv_bank_acct.corp_id')
+                    'cv_bank_acct.corp_id', 'cv_bank_acct.bank_acct_id', 'cv_bank_acct.bank_id')
                 ->orderBy($columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
@@ -107,7 +112,7 @@ class BankController extends Controller
                 ->join('cv_banks', 'cv_bank_acct.bank_id', '=', 'cv_banks.bank_id')
                 ->where('cv_bank_acct.branch', -1)
                 ->select('cv_bank_acct.default_acct', 'cv_bank_acct.date_created', 'cv_banks.bank_code', 'cv_bank_acct.acct_no',
-                    'cv_bank_acct.corp_id')
+                    'cv_bank_acct.corp_id', 'cv_bank_acct.bank_acct_id', 'cv_bank_acct.bank_id')
                 ->orderBy($columnName, $orderDirection)
                 ->skip($start)
                 ->take($length)
@@ -146,7 +151,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -161,10 +166,10 @@ class BankController extends Controller
         $success = $bank->save();
 
         if($success){
-            \Session::flash('alert-class', "Bank created successfully");
+            \Session::flash('success', "Bank created successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('banks.index');
     }
 
@@ -201,7 +206,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -216,10 +221,10 @@ class BankController extends Controller
         ]);
 
         if($success){
-            \Session::flash('alert-class', "Bank updated successfully");
+            \Session::flash('success', "Bank updated successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('banks.index');
 
     }
@@ -234,7 +239,7 @@ class BankController extends Controller
     {
         if(!\Auth::user()->checkAccessById(27, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -242,10 +247,10 @@ class BankController extends Controller
         $success = Bank::where('bank_id', $id)->delete();
 
         if($success){
-            \Session::flash('alert-class', "Bank deleted successfully");
+            \Session::flash('success', "Bank deleted successfully");
             return redirect()->route('banks.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('banks.index');
     }
 

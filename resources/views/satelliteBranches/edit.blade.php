@@ -49,10 +49,10 @@
 
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
-                    @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-                    @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @if(Session::has('success'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                    @elseif(Session::has('error'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Edit Satellite Branch</h3>
@@ -77,7 +77,9 @@
                                                     <label class="col-md-3 control-label" for="branchName">Satellite Branch:</label>
                                                     <div class="col-md-5">
                                                         <input id="branchName" name="branchName" type="text" value="{{ $satelliteBranch->short_name }}"
-                                                               data-parsley-required-message="Branch name is required" class="form-control input-md" required>
+                                                               data-parsley-required-message="Branch name is required" class="form-control input-md"
+                                                               data-parsley-maxlength-message="The template name may not be greater than 30 characters"
+                                                               data-parsley-maxlength="30"  required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">

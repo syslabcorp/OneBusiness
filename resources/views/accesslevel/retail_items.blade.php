@@ -15,7 +15,7 @@
 		@else
 			@foreach ($s_invtry_hdr as $s_invtry) 
 	        <tr>
-	            <td><input class="retail" type="checkbox" name="item_id[]" id="item_id" value="{{ $s_invtry->item_id }}" {{ (isset($proitems_ids) && in_array($s_invtry->item_id, $proitems_ids)) ? "checked" : "" }}></td>
+	            <td><input class="retail retailidArray" type="checkbox" name="item_id[]" id="item_id" value="{{ $s_invtry->item_id }}" onchange="enablecheckbox()" {{ (isset($proitems_ids) && in_array($s_invtry->item_id, $proitems_ids)) ? "checked" : "" }} {{ (isset($retail_itemsArray) && in_array($s_invtry->item_id, $retail_itemsArray)) ? "checked" : "" }}></td>
 	            <td>{{ $s_invtry->ItemCode }}</td>
 	            <td>{{ isset($brandname[$s_invtry->Brand_ID]) ? $brandname[$s_invtry->Brand_ID] : ''}}</td>
 	            <td>{{ $s_invtry->Packaging }}</td>
@@ -31,13 +31,16 @@
 $("#retailall").change(function(){
     if(this.checked){ 
         $(".retail").each(function(){
+        	retail_itemsArray.push($(this).val());   
             this.checked=true;
         });         
     }else{
         $(".retail").each(function(){
+        	retail_itemsArray.pop($(this).val());
             this.checked=false;
         });              
     }
+    enablecheckbox();  
 });
 $(function(){
     var isSelected = [];
@@ -53,5 +56,12 @@ $(function(){
     		$(".retail-all").attr("checked", true);
     	}	
 	}
+});
+$('.retailidArray').change(function(){ 
+    if ($(this).is(":checked")) {
+        retail_itemsArray.push($(this).val());   
+    } else {
+        retail_itemsArray.pop($(this).val());
+    }
 });
 </script>

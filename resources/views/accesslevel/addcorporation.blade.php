@@ -25,6 +25,8 @@
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="" id ="corporationform">
                         {{ csrf_field() }}
+                        <input type="hidden" name="old_db_name"  value="{{isset($detail_edit->database_name) ? $detail_edit->database_name : "" }}">
+                        
                         <div class="form-group{{ $errors->has('corp_name') ? ' has-error' : '' }}">
                             <label for="Corporation" class="col-md-4 control-label">Corporation</label>
                             <div class="col-md-6">
@@ -32,6 +34,17 @@
                                 @if ($errors->has('corporation_title'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('corporation_title') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('db_name') ? ' has-error' : '' }}">
+                            <label for="Database" class="col-md-4 control-label">Database Name</label>
+                            <div class="col-md-6">
+                                <input id="database_name" type="text" class="form-control required" name="database_name"  value="{{isset($detail_edit->database_name) ? $detail_edit->database_name : "" }}"autofocus>
+                                @if ($errors->has('database_name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('database_name') }}</strong>
                                     </span>
                                 @endif
                             </div>

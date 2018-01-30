@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Service;
+use DB;
 
 class ServiceController extends Controller
 {
@@ -114,6 +115,9 @@ class ServiceController extends Controller
         $service->Serv_Code = $request->input('serviceCode');
         $service->Description = $request->input('serviceDescription');
         $service->save();
+
+        //updates s_changes table
+        DB::table('s_changes')->update(['services' => 1]);
 
         \Session::flash('success', "Service updated successfully");
         return redirect()->route('services.index');

@@ -17,7 +17,7 @@ class VendorController extends Controller
     {
         /*if(!\Auth::user()->checkAccessById(29, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }*/
 
@@ -46,7 +46,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -63,7 +63,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -93,10 +93,10 @@ class VendorController extends Controller
         $success = $vendor->save();
 
         if($success){
-            \Session::flash('alert-class', "Vendor created successfully");
+            \Session::flash('success', "Vendor created successfully");
             return redirect()->route('vendors.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.index');
     }
 
@@ -111,7 +111,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -172,7 +172,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -190,7 +190,7 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "E"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -220,10 +220,10 @@ class VendorController extends Controller
         ]);
 
         if($success){
-            \Session::flash('alert-class', "Vendor created successfully");
+            \Session::flash('success', "Vendor updated successfully");
             return redirect()->route('vendors.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.index');
     }
 
@@ -237,17 +237,17 @@ class VendorController extends Controller
     {
         if(!\Auth::user()->checkAccessById(29, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
 
         $success = $vendor->delete();
         if($success){
-            \Session::flash('alert-class', "Vendor deleted successfully");
+            \Session::flash('success', "Vendor deleted successfully");
             return redirect()->route('vendors.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.index');
     }
 
@@ -263,6 +263,7 @@ class VendorController extends Controller
         $tSysdata = DB::table('t_sysdata')
             ->orderBy('Branch', 'ASC')
             ->where('corp_id', intval($corpId))
+            ->where('Active', 1)
             ->select('Branch', 'ShortName')
             ->get();
 

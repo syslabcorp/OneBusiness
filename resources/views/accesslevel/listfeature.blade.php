@@ -31,8 +31,11 @@
                             @else
                                 <?php $desc = $module_desc->description; ?>
                                     <a href="{{ URL('list_module') }}" >{{ $desc }}</a>
-                            @endif   
-                            <a href="{{ URL('add_feature'.(($module_id) ? ('/0/'.$module_id) : '' )) }}" class="pull-right">Add Feature</a></div>
+                            @endif  
+                            @if(\Auth::user()->checkAccessById(12, "A")) 
+                            <a href="{{ URL('add_feature'.(($module_id) ? ('/0/'.$module_id) : '' )) }}" class="pull-right">Add Feature</a>
+                            @endif
+                            </div>
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table id="list_featur" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
@@ -49,13 +52,13 @@
                                         <tbody>
                                             @foreach($detailfeature as $key=>$detail)
                                                 <tr>
-                                                    <td>{{ $detail->feature_id }}</td>
+                                                    <td><span class="dispnone">{{ isset($detail->description) ? $detail->description : 'System Module' }} {{ $detail->feature }}</span>{{ $detail->feature_id }}</td>
                                                     @if(!isset($module_id))
                                                         <td>{{ isset($detail->description) ? $detail->description : 'System Module' }}</td>
                                                     @endif
                                                     <td>{{ $detail->feature }}</td>
-                                                    <td><a class="btn btn-primary btn-md blue-tooltip" data-title="Edit" href="{{ URL::to('add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Delete Feature" feature-name="{{ $detail->feature }}" id="{{ $detail->feature_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(12, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Delete Feature" feature-name="{{ $detail->feature }}" id="{{ $detail->feature_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach
                                         </tbody>

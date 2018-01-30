@@ -44,15 +44,14 @@ class BankAccountController extends Controller
         //get input
         $bankID = $request->input('bankCode');
         $bankAccountNumber = $request->input('bankAccountNumber');
-        $pcBranch = $request->input('pcBranchId');
+        $pcBranch = $request->input('branchName');
         $corpId = $request->input('corpName');
-
-
+        $mainStatus = $request->input('mainStatus');
         //create new instance
         $account = new BankAccount;
         $account->bank_id = $bankID;
         $account->acct_no = $bankAccountNumber;
-        $account->branch = $pcBranch;
+        $account->branch = $mainStatus == "on" ? -1 : $pcBranch;
         $account->corp_id = $corpId;
         $account->date_created = \Carbon\Carbon::now();
         $success = $account->save();

@@ -22,21 +22,11 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "V"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
-        //user access rights
-        $articles = DB::table('s_invtry_hdr')
-            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
-            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
-            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
-            ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
-                's_invtry_type.type_desc')
-            ->orderBy('s_invtry_hdr.item_id', 'DESC')
-            ->get();
-
-        return view('inventory.index', ['articles' => $articles]);
+        return view('inventory.index');
     }
 
     /**
@@ -48,7 +38,7 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -79,7 +69,7 @@ class InventoryController extends Controller
 
         if(!\Auth::user()->checkAccessById(19, "A"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -114,7 +104,7 @@ class InventoryController extends Controller
         $inventory->Active = ($request->itemActive) ? 1 : 0;
         $inventory->save();
 
-        \Session::flash('alert-class', "Item added successfully");
+        \Session::flash('success', "Item added successfully");
         return redirect()->route('inventory.index');
 
     }
@@ -139,7 +129,7 @@ class InventoryController extends Controller
     public function edit($id)
     {
         if(!\Auth::user()->checkAccessById(19, "E")) {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -172,7 +162,7 @@ class InventoryController extends Controller
     public function update(Request $request, $id)
     {
         if(!\Auth::user()->checkAccessById(19, "E")) {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
@@ -205,27 +195,17 @@ class InventoryController extends Controller
         $inventory->TrackThis = ($request->itemTrackIventory) ? 1 : 0;
         $inventory->Print_This = ($request->itemPrintStub) ? 1 : 0;
         $inventory->Active = ($request->itemActive) ? 1 : 0;
-        $inventory->save();
+        $success = $inventory->save();
 
 
-        //check if item exists in the s_changes table
-        $inventoryItem = InventoryChange::where('invtry_hdr', $inventory->id)->first();
-        if($inventoryItem){
-            $inventoryItem->invtry_hdr = 1;
-           $success = $inventoryItem->save();
-
-        }else{
-            $inventoryChange = new InventoryChange;
-            $inventoryChange->invtry_hdr = 1;
-            $success = $inventoryChange->save();
-
-        }
+        //update inventory table
+        DB::table('s_changes')->update(['invtry_hdr' => 1]);
 
         if($success){
-            \Session::flash('alert-class', "Item updated successfully");
+            \Session::flash('success', "Item updated successfully");
             return redirect()->route('inventory.index');
         }
-        \Session::flash('flash_message', "Something went wrong!");
+        \Session::flash('error', "Something went wrong!");
         return back()->withInput();
 
     }
@@ -240,14 +220,91 @@ class InventoryController extends Controller
     {
         if(!\Auth::user()->checkAccessById(19, "D"))
         {
-            \Session::flash('flash_message', "You don't have permission");
+            \Session::flash('error', "You don't have permission");
             return redirect("/home");
         }
 
         $inventoryItem = Inventory::where("item_id", $id)->delete();
         if($inventoryItem) {
-            \Session::flash('alert-class', "Item deleted successfully");
+            \Session::flash('success', "Item deleted successfully");
             return redirect()->route('inventory.index');
         }
+    }
+
+    public function getInventoryList(Request $request){
+
+        $draw = $request->input('draw');
+        $start = $request->input('start');
+        $length = $request->input('length');
+        $columns = $request->input('columns');
+        $orderable = $request->input('order');
+        $orderNumColumn = $orderable[0]['column'];
+        $orderDirection = $orderable[0]['dir'];
+        $columnName = $columns[$orderNumColumn]['data'];
+        $search = $request->input('search');
+
+        $articlesCount = DB::table('s_invtry_hdr')
+            ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+            ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+            ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+            ->count();
+
+        if($search['value'] == ""){
+            //user access rights
+            $articles = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
+                    's_invtry_type.type_desc')
+                ->orderBy('s_invtry_hdr.'.$columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $pagination = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->count();
+        }else if($search['value'] != ""){
+            //user access rights
+            $articles = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<2; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->select('s_invtry_hdr.*','s_invtry_hdr.Active as Active', 's_prodline.Product as Product', 's_brands.Brand as Brand',
+                    's_invtry_type.type_desc')
+                ->orderBy('s_invtry_hdr.'.$columnName, $orderDirection)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            $pagination = DB::table('s_invtry_hdr')
+                ->join('s_prodline', 's_invtry_hdr.Prod_Line', '=', 's_prodline.ProdLine_ID')
+                ->join('s_brands', 's_invtry_hdr.Brand_ID', '=', 's_brands.Brand_ID')
+                ->join('s_invtry_type', 's_invtry_hdr.Type', '=', 's_invtry_type.inv_type')
+                ->where(function ($q) use ($search, $columns){
+                    for($i = 0; $i<2; $i++){
+                        $q->orWhere($columns[$i]['data'], 'LIKE',  '%'.$search['value'].'%');
+                    }
+                })
+                ->count();
+        }
+
+
+        $columns = array(
+            "draw" => $draw,
+            "recordsTotal" => $articlesCount,
+            "recordsFiltered" =>  isset($pagination) && ($pagination != "") ? $pagination : 0,
+            "data" => ($articles != null) ? $articles : 0
+        );
+
+        return response()->json($columns, 200);
     }
 }

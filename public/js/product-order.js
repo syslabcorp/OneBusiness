@@ -1,3 +1,4 @@
+var retail_itemsArray = [];
 $(function(){
     $("#potemplateform").validate({
 		errorPlacement: function(error, element) {
@@ -25,7 +26,10 @@ function get_pro_branch(city_id){
 function GetSelectedproduct() {
     $('.retail-items').html('Please select a product line first.');
     var product_id = $('#proid').val();
+    var corp_id = $('#corp_id').val();
     var _token = $("meta[name='csrf-token']").attr("content");
+    var count_checked_branch = $("[name='branch[]']:checked").length; 
+    var count_checked_product = $("[name='product_active[]']:checked").length;
     var ids = []
     $("input.product_active:checked").each(function ()
     {
@@ -35,9 +39,13 @@ function GetSelectedproduct() {
           $.ajax({
             url: ajax_url+'/retail_items',
             type: "POST",
-            data: {_token,ids,product_id },
+            data: {_token, ids, product_id, corp_id ,retail_itemsArray},
             success: function(response){ 
                 $('.retail-items').html(response);
+                var count_checked_retailitem = $("[name='item_id[]']:checked").length;
+                if(count_checked_branch > 0 && count_checked_retailitem > 0 && count_checked_product > 0){   
+                    $(".save_button").removeAttr("disabled"); 
+                }
             }
         });
     }
@@ -62,6 +70,7 @@ $("#purchaseall").change(function(){
      
         });              
     }
+    enablecheckbox();  
 });
 $(function(){
     var isSelected = [];
@@ -79,3 +88,13 @@ $(function(){
     }
 });
 
+function enablecheckbox(){
+    var count_checked_branch = $("[name='branch[]']:checked").length; 
+    var count_checked_retailitem = $("[name='item_id[]']:checked").length;
+    var count_checked_product = $("[name='product_active[]']:checked").length;
+    if(count_checked_branch > 0 && count_checked_retailitem > 0 && count_checked_product > 0){   
+        $(".save_button").removeAttr("disabled");   
+    }else{
+        $(".save_button").attr('disabled', true); 
+    }
+}

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
+    <link href="css/parsley.css" rel="stylesheet" >
     <style>
         thead:before, thead:after { display: none; }
         tbody:before, tbody:after { display: none; }
@@ -42,10 +43,10 @@
 
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
-                    @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
-                    @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @if(Session::has('success'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                    @elseif(Session::has('error'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Brands</h3>
@@ -103,19 +104,22 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add New Brand</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/brands') }}" METHOD="POST">
+                <form class="form-horizontal" action="{{ url('/brands') }}" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="brandName">Brand Name</label>
                             <div class="col-md-8">
-                                <input id="brandName" name="brandName" type="text" class="form-control input-md" required="">
+                                <input id="brandName" name="brandName" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Brand Name person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -137,19 +141,22 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Edit Brand</h5>
                 </div>
-                <form class="form-horizontal" action="" METHOD="post">
+                <form class="form-horizontal" action="" id="form2" METHOD="post">
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="editBrandName">Brand Name</label>
                             <div class="col-md-8">
-                                <input id="editBrandName" name="editBrandName" type="text" class="form-control input-md editBrandName" required="">
+                                <input id="editBrandName" name="editBrandName" type="text" class="form-control input-md editBrandName"
+                                       data-parsley-required-message="Brand Name person is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 50 characters"
+                                       data-parsley-maxlength="50" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
@@ -196,8 +203,12 @@
 @endsection
 
 @section('footer-scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
         (function($){
+
+            $('#form1, #form2').parsley();
+
             $('#myTable').DataTable({
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +

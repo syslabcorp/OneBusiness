@@ -45,10 +45,10 @@
 
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
-                    @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
-                    @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @if(Session::has('success'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
+                    @elseif(Session::has('error'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Edit Inventory</h3>
@@ -135,7 +135,7 @@
                                                     <label class="col-md-4 control-label" for="itemDescription">Description:</label>
                                                     <div class="col-md-8">
                                             <textarea class="form-control" rows="3" id="itemDescription"
-                                                      name="itemDescription" value="{{ $inventory->Description }}" placeholder="{{ $inventory->Description }}"></textarea>
+                                                      name="itemDescription" value="{{ $inventory->Description }}">{{ $inventory->Description }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>

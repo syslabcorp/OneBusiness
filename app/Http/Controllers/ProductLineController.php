@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ProductLine;
 use Illuminate\Http\Request;
-
+use DB;
 class ProductLineController extends Controller
 {
     /**
@@ -62,7 +62,7 @@ class ProductLineController extends Controller
         $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
 
-        \Session::flash('success', "Product Line added successfully");
+        \Session::flash('alert-class', "Product Line added successfully");
         return back()->withInput();
     }
 
@@ -101,16 +101,13 @@ class ProductLineController extends Controller
             return redirect("/home");
         }
 
-        //validate request
-        $this->validate($request, [
-            'editProductLineName' => 'required',
-        ]);
-
         //if validator passed store service item
         $product = ProductLine::where('ProdLine_ID', $id)->first();
         $product->Product = $request->input('editProductLineName');
         $product->Active = $request->input('editActiveCheck') == "on" ? 1 : 0;
         $product->save();
+
+        DB::table('s_changes')->update(['prodline' => 1]);
 
         \Session::flash('success', "Product Line updated successfully");
         return redirect()->route('productlines.index');

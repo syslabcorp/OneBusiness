@@ -1,3 +1,154 @@
+@if($branch->company->corp_type == 'INN')
+  <form action="{{ route('branchs.misc', [$branch, '#misc']) }}" method="POST" class="col-md-12" novalidate>
+    {{ csrf_field() }}
+    <input type="hidden" name="_method" value="PUT">
+    <div class="row">
+        <div class="col-md-6">
+          <h3>CHARGING OPTIONS</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group {{ $errors->has('CancelAllowance') ? 'has-error' : '' }}">
+                <div class="row">
+                  <div class="col-xs-9">
+                    <label class=" control-label">Cancel Check-in Allowance: (mins)</label>
+                  </div>
+                  <div class="col-xs-3">
+                    <input type="text" class="form-control"  name="CancelAllowance" value="{{ !empty(old("CancelAllowance")) ? old("CancelAllowance") : $branch->CancelAllowance }}"
+                      {{ \Auth::user()->checkAccessById(4, "E") ? "" : "readonly" }}>
+                  </div>
+                </div>
+                @if($errors->has('CancelAllowance'))
+                  <span class="help-block">Input must be a number</span>
+                @endif
+              </div>
+              <div class="form-group {{ $errors->has('TrnsfrAllowance') ? 'has-error' : '' }}">
+                <div class="row">
+                  <div class="col-xs-9">
+                    <label class=" control-label">Transfer Room Allowance: (mins)</label>
+                  </div>
+                  <div class="col-xs-3">
+                    <input type="text" class="form-control"  name="TrnsfrAllowance" value="{{ !empty(old("TrnsfrAllowance")) ? old("TrnsfrAllowance") : $branch->TrnsfrAllowance }}"
+                      {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                  </div>
+                </div>
+                @if($errors->has('TrnsfrAllowance'))
+                  <span class="help-block">Input must be a number</span>
+                @endif
+              </div>
+              <div class="form-group {{ $errors->has('RmTimerAlert') ? 'has-error' : '' }}">
+                <div class="row">
+                  <div class="col-xs-9">
+                    <label class=" control-label">Alert Room Time Expires Before: (mins)</label>
+                  </div>
+                  <div class="col-xs-3">
+                    <input type="text" class="form-control"  name="RmTimerAlert" value="{{ !empty(old("RmTimerAlert")) ? old("RmTimerAlert") : $branch->RmTimerAlert }}"
+                      {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                  </div>
+                </div>
+                @if($errors->has('RmTimerAlert'))
+                  <span class="help-block">Input must be a number</span>
+                @endif
+              </div>
+              <div class="form-group {{ $errors->has('RmOffAllowance') ? 'has-error' : '' }}">
+                <div class="row">
+                  <div class="col-xs-9">
+                    <label class=" control-label">Room Power Off Delay: (mins)</label>
+                  </div>
+                  <div class="col-xs-3">
+                    <input type="text" class="form-control"  name="RmOffAllowance" value="{{ !empty(old("RmOffAllowance")) ? old("RmOffAllowance") : $branch->RmOffAllowance }}"
+                      {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                  </div>
+                </div>
+                @if($errors->has('RmOffAllowance'))
+                  <span class="help-block">Input must be a number</span>
+                @endif
+              </div>
+
+              <div class="form-group {{ $errors->has('CarryOverMins') ? 'has-error' : '' }}">
+                <div class="row">
+                  <div class="col-xs-9">
+                    <label class=" control-label">Charge Next Hour Allowance: (mins)</label>
+                  </div>
+                  <div class="col-xs-3">
+                    <input type="text" class="form-control"  name="CarryOverMins" value="{{ !empty(old("CarryOverMins")) ? old("CarryOverMins") : $branch->CarryOverMins }}"
+                      {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                  </div>
+                </div>
+                @if($errors->has('CarryOverMins'))
+                  <span class="help-block">Input must be a number</span>
+                @endif
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group {{ $errors->has('MinimumChrg_Mins') ? 'has-error' : '' }}">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <input id="Chrg_Min" type="checkbox" name="Chrg_Min" {{ $branch->Chrg_Min == 1 ? "checked" : "" }} value="1"
+                        {{ \Auth::user()->checkAccessById(4, "E") ? "" : "disabled" }}/>
+                    <label class="control-label" for="Chrg_Min">Charge Minimum (mins):</label>
+
+                    <input type="text" style="width: 80px;display:inline-block;" class="form-control"  name="MinimumChrg_Mins" value="{{ !empty(old("MinimumChrg_Mins")) ? old("MinimumChrg_Mins") : $branch->MinimumChrg_Mins }}"
+                      {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+                  </div>
+                </div>
+                @if($errors->has('MinimumChrg_Mins'))
+                  <span class="help-block">Input must be a number</span>
+                @endif
+              </div>
+              <div class="form-group">
+                <input type="checkbox" name="ChkInOveride" id="ChkInOveride" {{ $branch->ChkInOveride == 1 ? 'checked' : ''}} value="1"
+                    {{ \Auth::user()->checkAccessById(4, "E") ? "" : "disabled" }}>
+                <label for="ChkInOveride">Check-in Override Request</label>
+              </div>
+              <div class="form-group">
+                <input type="checkbox" name="ChkOutOveride" id="ChkOutOveride" {{ $branch->ChkOutOveride == 1 ? 'checked' : ''}} value="1"
+                    {{ \Auth::user()->checkAccessById(4, "E") ? "" : "disabled" }}>
+                <label for="ChkOutOveride">Check-out Override Request</label>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-6">
+          <h3>STUB SETTINGS</h3>
+          <div class="form-group {{ $errors->has('StubHdr') ? 'has-error' : '' }}">
+            <label class="control-label">Stub Header:</label>
+            <input type="text" class="form-control"  name="StubHdr" value="{{ !empty(old("StubHdr")) ? old("StubHdr") : $branch->StubHdr }}"
+                {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>
+            @if($errors->has('StubHdr'))
+                <span class="help-block">{{ preg_replace("/stub hdr/", "Stub Header",$errors->first("StubHdr")) }}</span>
+            @endif
+          </div>
+          <div class="form-group">
+            <label class="control-label">Stub Message:</label>
+            <textarea name="StubMsg" cols="30" rows="5" class="form-control"
+                {{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "" : "readonly" }}>{{ $branch->StubMsg }}</textarea>
+          </div>
+          <div class="form-group">
+            <div class="control-checkbox">
+                @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E") )
+                <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}} >
+                @else
+                <input type="checkbox" onclick="return false;" name="StubPrint" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                @endif
+
+                <label for="{{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "print-active" : "" }}">Enable Stub Printing</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12" style="margin-bottom: 15px;">
+            <hr>
+            <a href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}" class="btn btn-default pull-left">
+                <i class="fa fa-reply"></i> Back
+            </a>
+            @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E"))
+                <button type="submit" class="btn btn-success pull-right">Update</button>
+            @endif
+        </div>
+    </div>
+  </form>
+@else
 <form action="{{ route('branchs.misc', [$branch, '#misc']) }}" method="POST" class="col-md-12" novalidate>
     {{ csrf_field() }}
     <input type="hidden" name="_method" value="PUT">
@@ -19,7 +170,11 @@
             </div>
             <div class="form-group">
                 <div class="control-checkbox">
-                    <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                     @if(\Auth::user()->checkAccess("Miscellaneous Settings", "E") )
+                    <input type="checkbox" id="print-active" name="StubPrint" value="1" {{ $branch->StubPrint == 1 ? 'checked' : ''}} >
+                    @else
+                    <input type="checkbox" onclick="return false;" name="StubPrint" {{ $branch->StubPrint == 1 ? 'checked' : ''}}>
+                    @endif
                     <label for="{{ \Auth::user()->checkAccess("Miscellaneous Settings", "E") ? "print-active" : "" }}">Enable Stub Printing</label>
                 </div>
             </div>
@@ -146,5 +301,5 @@
             @endif
         </div>
     </div>
-    
 </form>
+@endif

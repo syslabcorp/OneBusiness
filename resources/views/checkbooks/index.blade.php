@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('header-scripts')
-    <link href="/css/parsley.css" rel="stylesheet" >
+    <link href="css/parsley.css" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <style>
         thead:before, thead:after { display: none; }
@@ -71,10 +71,10 @@
 
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
-                    @if(Session::has('alert-class'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('alert-class') !!}</em></div>
-                    @elseif(Session::has('flash_message'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
+                    @if(Session::has('success'))
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                    @elseif(Session::has('error'))
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
                         <div id="result" style="display: none;"></div>
                     <div class="col-md-12 col-xs-12">
@@ -124,35 +124,41 @@
                         <div class="row">
                             <div class="col-md-12 nopadding">
                                 <label for="">Account Number:</label>
-                                <span class="accNO">{{ $banks[0]->accountNo }}</span>
+                                <span class="accNO">@if(isset($banks[0]->accountNo)){{ $banks[0]->accountNo }} @endif</span>
                             </div>
                             <div class="col-md-12 nopadding">
                                 <label for="">Bank Code</label>
-                                <span class="bankCO">{{ $banks[0]->bankNameCode }}</span>
+                                <span class="bankCO">@if(isset($banks[0]->bankNameCode)) {{ $banks[0]->bankNameCode }} @endif</span>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="startingNum">Starting Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="startingNum" name="startingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="startingNum" name="startingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Starting Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="endingNum">Ending Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="endingNum" name="endingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="endingNum" name="endingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Ending Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="accountId" value="{{ $banks[0]->bank_acct_id }}">
+                                <input type="hidden" name="accountId" value=" @if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }}  @endif">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -177,35 +183,41 @@
                         <div class="row">
                             <div class="col-md-12 nopadding">
                                 <label for="">Account Number:</label>
-                                <span class="accNO">{{ $banks[0]->accountNo }}</span>
+                                <span class="accNO"> @if(isset($banks[0]->accountNo)){{ $banks[0]->accountNo }} @endif</span>
                             </div>
                             <div class="col-md-12 nopadding">
                                 <label for="">Bank Code</label>
-                                <span class="bankCO">{{ $banks[0]->bankNameCode }}</span>
+                                <span class="bankCO">@if(isset($banks[0]->bankNameCode)){{ $banks[0]->bankNameCode }} @endif</span>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="editStartingNum">Starting Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="editStartingNum" name="editStartingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="editStartingNum" name="editStartingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Starting Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="editEndingNum">Ending Number:</label>
                             <div class="col-md-6 col-xs-10">
-                                <input id="editEndingNum" name="editEndingNum" type="text" class="form-control input-md" data-parsley-type="digits" required="">
+                                <input id="editEndingNum" name="editEndingNum" type="text" class="form-control input-md" data-parsley-type="digits"
+                                       data-parsley-required-message="Ending Number is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 8 characters"
+                                       data-parsley-maxlength="8" required="">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="row">
                             <div class="col-sm-6">
-                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-reply"></i>&nbspBack</button>
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="editAccountId" value="{{ $banks[0]->bank_acct_id }}">
+                                <input type="hidden" name="editAccountId" value="@if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }}  @endif">
                                 <button type="submit" class="btn btn-success pull-right">Update</button>
                             </div>
                         </div>
@@ -258,19 +270,22 @@
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}" selected>{{ $corporations[0]->corp_name }}</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
+                    @if(is_object($corporations))
                     @foreach($corporations as $key => $val)
                     if(cntCorp != 0){
                         corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
                     }
                     cntCorp++;
                             @endforeach
+                        @endif
 
-                    var satelliteBranches = $('<select class="form-control"><option value="{{ $satelliteBranch[0]->Branch }}">{{ $satelliteBranch[0]->ShortName }}</option></select>')
+                    var satelliteBranches = $('<select class="form-control"><option value="@if(isset($satelliteBranch[0]->Branch)){{ $satelliteBranch[0]->Branch }} @endif">@if(isset($satelliteBranch[0]->ShortName)){{ $satelliteBranch[0]->ShortName }} @else N/A @endif</option></select>')
                             .appendTo('#example_ddl1');
                     var cntSatellite = 0;
+                    @if(is_object($satelliteBranch))
                     @foreach($satelliteBranch as $key => $val)
                     if(cntSatellite != 0){
                         satelliteBranches.append('<option value="{{ $val->Branch }}">{{ $val->ShortName }}</option>');
@@ -278,6 +293,7 @@
                     cntSatellite++;
 
                             @endforeach
+                        @endif
 
 
 
@@ -286,15 +302,17 @@
                             .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
 
-                    var branches = $('<select class="form-control"><option value="{{ $banks[0]->bank_acct_id }}">{{ $banks[0]->account_info }}</option></select>')
+                    var branches = $('<select class="form-control"><option value="@if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }} @endif">@if(isset($banks[0]->account_info)){{ $banks[0]->account_info }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
+                    @if(is_object($banks))
                     @foreach($banks as $key => $val)
                         if(cntBranches != 0){
                         branches.append('<option value="{{ $val->bank_acct_id }}">{{ $val->account_info }}</option>');
                     }
                     cntBranches++;
                     @endforeach
+                        @endif
 
                     var mainStatus = $('<input class="" type="checkbox"><label value="">Main</label>')
                             .appendTo('#example_ddl5');
@@ -305,11 +323,13 @@
                     type: "POST",
                     url: "checkbooks/get-checkbooks",
                     data: function (d) {
+                        @if(is_object($corporations))
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
                         d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
                         d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
+                        @endif
                     }
                 },
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
@@ -321,7 +341,7 @@
                         "render": function ( data, type, row ) {
                             var checked = "";
                             if(row.used == 1) checked = "checked";
-                            return '<input type="checkbox" '+ checked +'>';
+                            return '<input type="checkbox" '+ checked +' disabled>';
                         },
                         "targets": 0
                     },
@@ -359,13 +379,15 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(26, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccess = '<?php  if(\Auth::user()->checkAccessById(28, "E")) {  echo 1; }else{ echo 0; } ?>';
+                            var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(28, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
+                            var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccessDel == 0) { optionClassDel = 'disabled' };
                             return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClass+'">'+
-                                '<i class="glyphicon glyphicon-trash"></i></a>';
+                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
                         "targets": 4
@@ -383,7 +405,7 @@
                 'drawCallback': function (settings) {
 
                     var info = mainTable.page.info();
-                    if(info.page == info.pages) $('#myTable tr:last .dtMoveDown').remove();
+                    $('#myTable tr:last .dtMoveDown').remove();
 
                     // Remove previous binding before adding it
                     $('.dtMoveUp').unbind('click');
@@ -420,13 +442,13 @@
                 }
 
                 var data1 = mainTable.row(index).data();
-                data1.order_num += order;
+                //data1.order_num += order;
 
                 var rowId = data1.txn_no;
                 var order_num = data1.order_num;
 
                 var data2 = mainTable.row(index + order).data();
-                data2.order_num -= order;
+                //data2.order_num -= order;
 
                 var rowId2 = data2.txn_no;
                 var order_num2 = data2.order_num;
@@ -689,14 +711,14 @@
                         if(data == "success"){
                             $('#confirm-delete-account').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspCheck book series deleted successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#confirm-delete-account').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -704,7 +726,7 @@
                     },
                     error: function () {
                         $('#confirm-delete-account').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");
@@ -743,14 +765,14 @@
                         if(data == "success"){
                             $('#editCheckbook').modal("toggle");
 
-                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspAccount updated successfully!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
                             mainTable.ajax.reload();
                         }else{
                             $('#editCheckbook').modal("toggle");
-                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                            $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                                 '</span><em>&nbspSomething went wrong!</em></div></div>');
                             $('#result').fadeIn();
                             $("#result").delay(3000).fadeOut("slow");
@@ -758,7 +780,7 @@
                     },
                     error: function () {
                         $('#editCheckbook').modal("toggle");
-                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="fa fa-close">' +
+                        $("#result").html('<div class="alert alert-danger col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
                             '</span><em>&nbspSomething went wrong!</em></div></div>');
                         $('#result').fadeIn();
                         $("#result").delay(3000).fadeOut("slow");

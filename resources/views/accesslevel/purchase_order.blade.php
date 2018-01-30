@@ -35,11 +35,12 @@
                             <form class="form-horizontal form" role="form" method="POST" action="" id ="potemplateform">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="proid" id="proid" value="{{isset($detail_edit_temp_hdr->po_tmpl8_id) ? $detail_edit_temp_hdr->po_tmpl8_id : '' }}">
+                                <input type="hidden" id="corp_id" value="{{ $corp_id }}">
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
                                         <div class="col-md-8">
-                                            <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : "" }}"autofocus>
+                                            <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : old('po_tmpl8_desc') }}"autofocus>
                                             @if ($errors->has('temp_name'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('temp_name') }}</strong>
@@ -75,7 +76,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <label class="control-label mt-checkbox">
-                                                    <input class="purchase-all" type="checkbox" id="purchaseall"> Product Line
+                                                    <input class="purchase-all" type="checkbox" id="purchaseall" > Product Line
                                                 </label>
                                             </div>
                                             <div class="panel-body puchase-panel">
@@ -83,7 +84,8 @@
                                             <tbody>
                                                 @foreach ($product_line as $pro_line) 
                                                 <tr>
-                                                    <td><input class="product_active select" type="checkbox" name="product_active[]" id="product_active" value="{{ $pro_line->ProdLine_ID }}" onclick="GetSelectedproduct()" {{ (isset($proline_ids) && in_array($pro_line->ProdLine_ID, $proline_ids)) ? "checked" : "" }}></td>
+                                                    <td class="product_linecheckbox"><input class="product_active select" type="checkbox" name="product_active[]" id="product_active" value="{{ $pro_line->ProdLine_ID }}" onclick="GetSelectedproduct()"
+                                                    onchange="enablecheckbox()" {{ (isset($proline_ids) && in_array($pro_line->ProdLine_ID, $proline_ids)) ? "checked" : "" }}></td>
                                                     <td>{{ $pro_line->Product }}</td>
                                                 </tr> 
                                                 @endforeach  
@@ -100,15 +102,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                
                                 <div class="form-group row">
                                   <div class="col-md-6">
-                                      <a type="button" class="btn btn-default back-button" href="{{ URL('list_purchase_order') }}">
+                                      <a type="button" class="btn btn-default back-button" href="{{ URL('list_purchase_order?corpID='.(isset($corp_id) ? $corp_id : 0)) }}">
                                       Back
                                       </a>
                                   </div>
                                   <div class="col-md-6">
-                                      <button type="submit" {{ ($is_branch_exist) ? '' : 'disabled' }} class="btn btn-primary pull-right save_button">
+                                      <button type="submit" {{ ($is_branch_exist) ? '' : 'disabled' }} class="btn btn-primary pull-right save_button" disabled>
                                         {{isset($detail_edit_temp_hdr->po_tmpl8_id) ? "Save " : "Create " }}
                                         </button>
                                   </div>
