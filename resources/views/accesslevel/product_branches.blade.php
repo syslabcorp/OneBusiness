@@ -12,7 +12,7 @@
 		    	@else
 		    		@foreach ($branches as $branch) 
 			        <tr>
-			            <td><input class="branchselect" type="checkbox" name="branch[]" id="branchselect" value="{{ $branch->Branch }}" {{ (isset($probranch_ids) && in_array($branch->Branch, $probranch_ids)) ? "checked" : "" }}></td>
+			            <td><input class="branchselect" type="checkbox" name="branch[]" id="branchselect" value="{{ $branch->Branch }}" onchange="enablecheckbox()" {{ (isset($probranch_ids) && in_array($branch->Branch, $probranch_ids)) ? "checked" : "" }} ></td>
 			            <td>{{ $branch->ShortName }}</td>
 			        </tr> 
 			        @endforeach  
@@ -33,6 +33,7 @@ $("#branchall").change(function(){
             this.checked=false;
         });              
     }
+    enablecheckbox();   
 });
 $(function(){
     var isSelected = [];
@@ -40,7 +41,7 @@ $(function(){
 	    if ($(this).is(":checked")) {
 	        isSelected.push("true");
 	    } else {
-	        isSelected.push("false");
+	        isSelected.push("false");  
 	    }
 	});
 	if ($.inArray("false", isSelected) < 0) {

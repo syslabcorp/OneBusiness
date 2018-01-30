@@ -472,4 +472,36 @@ $(function()
 
     return result.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+
+  $('input[name="vendor"]').change(function(){
+    if ($('input[name="vendor"]:checked').attr('id')  == "one")
+    {
+      $('#select-vendor').removeAttr('disabled');
+      $("#select-vendor  option[value='option1'] ").remove();
+      // $("#selectBox option[value='option1']").remove();
+    }
+    else
+    {
+      $('#form-search').submit();
+      $('#select-vendor').attr('disabled', true);
+    }
+  });
+
+  $('#select-vendor').change(function(event){
+    $('#form-search').submit();
+  });
+
+
+  Number.prototype.numberFormat = function(decimals, dec_point, thousands_sep) {
+    dec_point = typeof dec_point !== 'undefined' ? dec_point : '.';
+    thousands_sep = typeof thousands_sep !== 'undefined' ? thousands_sep : ',';
+
+    var parts = this.toFixed(decimals).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands_sep);
+
+    return parts.join(dec_point);
+}
+  
 });
+

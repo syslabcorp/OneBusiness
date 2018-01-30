@@ -43,6 +43,14 @@ Route::resource('checkbooks', 'CheckbookController', ['middleware' => 'auth']);
 Route::resource('vendors', 'VendorController', ['middleware' => 'auth']);
 Route::resource('vendor-management', 'VendorManagementController', ['middleware' => 'auth']);
 
+// feature: service & retail item price configuration
+Route::resource('retail-items-price-conf', 'RetailItemPriceConfController', ['middleware' => 'auth']);
+Route::resource('services-price-conf', 'ServicePriceConfController', ['middleware' => 'auth']);
+Route::get('/ajax/branches/{corp_id?}', ['as'=>'ajax.fetch.branches', 'uses'=>'AjaxController@fetchBrances']);
+Route::get('/ajax/services/{service_id_csv?}', ['as'=>'ajax.fetch.services', 'uses'=>'AjaxController@fetchServices']);
+Route::get('/ajax/retail-items/{product_id_csv?}', ['as'=>'ajax.fetch.retail-items', 'uses'=>'AjaxController@fetchRetailItems']);
+// end of routes for feature: service & retail item price configuration
+
 Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth']);
 Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middleware' => 'auth']);
 Route::post('/banks/get-branches', 'BankController@getBranches')->middleware('auth');
@@ -139,8 +147,10 @@ Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity')
 Route::any('/purchase_order/{corp_id}/{city_id}/{id?}', 'PurchaseOrderController@purchase_order');
 Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order');
 
-Route::any('/product_branch', 'AccessLevelController@product_branch');
-Route::any('/retail_items', 'AccessLevelController@retail_items');
+Route::any('/product_branch', 'PurchaseOrderController@product_branch');
+Route::any('/retail_items', 'PurchaseOrderController@retail_items');
+
+Route::any('/501', 'PurchaseOrderController@module_not_found');
 
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
@@ -151,7 +161,12 @@ Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@u
        ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
+Route::post('/stocks/{stock_id}/update_detail', 'StocksController@update_detail')->middleware('auth')->name('stocks.update_detail');
+Route::post('/stocks/{stock_id}/save_new_row_ajax', 'StocksController@save_new_row_ajax')->middleware('auth')->name('stocks.save_new_row_ajax');
+Route::post('/stocks/get_details', 'StocksController@get_details')->middleware('auth')->name('stocks.get_details');
 
+Route::resource('stocks', 'StocksController', ['middleware' => 'auth']);
+Route::any('/stocks/{stock_id}/{detail_id}' , 'StocksController@destroy_detail')->middleware('auth')->name('stocks.delete_detail');
 
 Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
 Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');

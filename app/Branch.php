@@ -122,4 +122,9 @@ class Branch extends Model
     public function company() {
         return $this->belongsTo(\App\Company::class, "corp_id", "corp_id");
     }
+
+    public function services () {
+      return $this->belongsToMany(\App\Service::class, "srv_item_cfg", "Branch", "Serv_ID")->withPivot('Amount');
+    }
+    
 }

@@ -8,6 +8,7 @@ class Vendor extends Model
 {
     protected $table = 's_vendors';
     protected $primaryKey = 'Supp_ID';
+    protected $connection = 'mysql';
     protected $fillable = [
         'VendorName', 'PayTo', 'Address', 'ContactPerson', 'TelNo', 'OfficeNo', 'CelNo',
         'x_check', 'petty_visible', 'withTracking'

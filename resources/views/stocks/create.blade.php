@@ -1,0 +1,712 @@
+@extends('layouts.custom')
+
+@section('content')
+<section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-9">
+                <h4>Stock Receiving</h4>
+              </div>
+              <div class="col-xs-3">
+
+              </div>
+            </div>
+          </div>
+        <form class="form-horizontal" action="{{ route('stocks.store', [ 'corpID' => $corpID]) }}" method="POST" >
+            {{ csrf_field() }}
+            <input type="hidden" name="corpID" value="{{$corpID}}" >
+          <div class="panel-body" style="margin: 30px 0px;">
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <label class="control-label col-sm-2">
+                        P.O#:
+                      </label>
+                      <div class="col-sm-4">
+                        <select name="po" id="PO" class="form-control"  >
+                          <option value=""></option>
+                          @foreach($pos as $po)
+                            <option value="{{$po->po_no}}" >{{$po->po_no}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <label class="control-label col-sm-2">
+                      D.R#:
+                    </label>
+                    <div class="col-sm-5">
+                      <input type="text" class="form-control" name="RR_No"   >
+                    </div>
+
+                    <label class="control-label col-sm-1">
+                      Date
+                    </label>
+                    <div class="col-sm-4">
+                      <input type="date" class="form-control" name="RcvDate" id="" value="{{date('Y-m-d')}}" >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <label class="control-label col-sm-2">
+                      VENDOR
+                    </label>
+                    <div class="col-sm-10">
+                      <select name="Supp_ID" class="form-control" >
+                        <option value=""></option>
+                        @foreach($vendors as $vendor)
+                          <option value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <a class="pull-right btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " id="pressF2" >
+                    Add Row
+                    <br>
+                    (F2)
+                    </a>
+                  </div>
+                </div>
+                
+            </div>
+            <div class="table-responsive">
+              <table id="table_editable" class="table table-bordered" style="width: 100% !important; dispaly: table;" >
+                <tbody>
+                  <tr>
+                    <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Item Code</th>
+                    <th>Product Line</th>
+                    <th>Brand</th>
+                    <th>Description</th>
+                    <th>Cost/Unit</th>
+                    <th>Served</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                    <th>Unit</th>
+                    <th style="min-width: 100px;">Action</th>
+                  </tr>
+
+                  <tr class="editable" id="example" data-id="" style="display: none;">
+                    <input type="hidden" name="add_type[]" class="input_type" value="add">
+                    <td class="edit_ItemCode"  data-field="ItemCode" >
+                      <span class="value_ItemCode"></span>
+                      <input class="input_old_item_id" type="hidden" name="add_old_item_id[]" value="" >
+                      <input class="input_item_id" type="hidden" name="add_item_id[]" value="" >
+                      <input class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
+                    </td>
+                    <td class="edit_Prod_Line" data-field="Prod_Line" >
+                      <span class="value_Prod_Line"></span>
+                      <input class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
+                    </td>
+                    <td class="edit_Brand" data-field="Brand" >
+                      <span class="value_Brand"></span>
+                      <input class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
+                    </td>
+                    <td class="edit_Description" >
+                      <span class="value_Description"></span>
+                    </td>
+                    <td class="edit_Cost text-right" data-field="Cost" >
+                    <span class="value_Cost"></span>
+                      <input type="hidden" class="input_Cost" name="add_Cost[]" id="" value="" >
+                    </td>
+                    <td class="edit_ServedQty text-right" >
+                      <span class="value_ServedQty"></span>
+                    </td>
+                    <td class="edit_Qty text-right" data-field="Qty" >
+                      <span class="value_Qty"></span>
+                      <input type="hidden" class="input_Qty" name="add_Qty[]" id="" value="" >
+                    </td>
+                    <td class="edit_Sub text-right" >
+                      <span class="value_Sub"></span>
+                      <input type="hidden" class="input_Sub" name="add_Sub[]" id="" value="" >
+                    </td>
+                    <td class="edit_Unit" >
+                      <span class="value_Unit"></span>
+                    </td>
+                    <td class="text-center" >
+                      <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " >
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                      <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " >
+                        <i class="fa fa-trash"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr class="" id="add-row" style="display: none;">
+                    <input type="hidden" name="item_id" value="" class="input_item_id">
+                    <td> <input type="text" name="ItemCode" class="form-control check_focus input_ItemCode"> </td>
+                    <td> <input type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
+                    <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
+                    <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
+                    <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
+                    <td>0</td>
+                    <td> <input type="text" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
+                    <td> <input type="text" name="Sub" id="" class="input_Sub form-control"> </td>
+                    <td class="input_Unit" ></td>
+                    <td class="text-center" >
+                      <a data-href="#"  class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" >
+                        <i class="fa fa-check"></i>
+                      </a>
+                      <a data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" >
+                        <i class="fa fa-trash"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+
+            <table class="table table-bordered" id="recommend-table" style=" display: none; " >
+              <thead>
+                <tr style="display:table;width:99%;table-layout:fixed; background:  #f27b82" >
+                  <th>Item Code</th>
+                  <th>Product Line</th>
+                  <th>Brand</th>
+                  <th>Description</th>
+                  <th>Unit</th>
+                  <th>Unit Cost</th>
+                </tr>
+              </thead>
+              <tbody style="display:block; max-height:300px; overflow-y:scroll; background: #f4b2b6;">
+                @foreach($stockitems as $stockitem )
+                  <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" >
+                    <td class="recommend_item_id" style="display: none;">{{$stockitem->item_id}} </td>
+                    <td class="recommend_itemcode" >{{$stockitem->ItemCode}}</td>
+                    <td class="recommend_prod_line" >{{$stockitem->product_line->Product}} </td>
+                    <td class="recommend_prod_line_id" style="display: none;" >{{$stockitem->Prod_Line}} </td>
+                    <td class="recommend_brand"  >{{$stockitem->brand->Brand}}</td>
+                    <td class="recommend_brand_id" style="display: none;" >{{$stockitem->Brand_ID}}</td>
+                    <td class="recommend_description">{{$stockitem->Description}}</td>
+                    <td class="recommend_unit">{{$stockitem->Unit}}</td>
+                    <td class="recommend_cost">{{$stockitem->LastCost}}</td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+
+            <div class="row" style="margin-top: 200px;">
+              <div class="col-sm-3 pull-right">
+                <h4>
+                  <strong>TOTAL AMOUNT:</strong>
+                  <span id="total_amount" style="color:red">0.00</span>
+                  <input type="hidden" name="total_amt" id="total_amt">
+                </h4>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <a type="button" class="btn btn-default" href="{{ route('stocks.index', [ 'corpID' => $corpID]) }}">
+                  <i class="fa fa-reply"></i> Back
+                </a>
+              </div>
+              <div class="col-md-6">
+                <button type="button" data-toggle="modal" data-target="#confirm_save" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
+                  Save
+                </button>
+              </div>
+            </div>
+
+                <!-- Modal alert -->
+                <div class="modal fade" id="confirm_save" role="dialog">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                          <strong>Confirm Save</strong>
+                        </h4>
+                      </div>
+                      <div class="modal-body">
+                        <p> Are you sure you want to save? </p>
+                        <div class="checkbox">
+                          <label> <input type="checkbox" name="PrintRR" id=""> Print RR Stub </label>
+                        </div>
+                      </div>
+                      <div class="modal-footer" style="margin-top: 100px;">
+                        <div class="col-md-6">
+                          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
+                            <i class="fa fa-reply"></i> Back  
+                          </button>
+                        </div>
+                        <div class="col-md-6">
+                          <button class="btn btn-primary" id="submit-form" type="submit">Save</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End modal alert -->
+
+
+          </div>
+        </form>
+          
+        </div>
+      </div>
+    </div>
+</section>
+
+<!-- Modal alert -->
+<div class="modal fade" id="alert" role="dialog" >
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">
+          <strong>EDIT DR</strong>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p>Some or all of the items on this DR have been transferred already. You cannot edit or delete this anymore...</p>
+      </div>
+      <div class="modal-footer" style="margin-top: 100px;">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End modal alert -->
+
+@endsection
+
+@section('pageJS')
+  <script>
+
+    var old_total = parseFloat($('#total_amount').text().replace(",", ""));
+  
+    function refresh_sub()
+    {
+      var sub = 0;
+      $( ".editable" ).each(function() {
+        if(!$(this).is(':hidden'))
+        {
+          sub += parseFloat($(this).find('.input_Sub').val());
+        }
+      });
+      $('#total_amount').text(sub.numberFormat(2));
+    }
+
+    function update_old_sub()
+    {
+      var sub = 0;
+      $( ".editable" ).each(function() {
+        if(!$(this).is(':hidden'))
+        {
+          sub += parseFloat($(this).find('.input_Sub').val());
+        }
+      });
+      old_total = sub;
+    }
+
+    $('body').on('click', '.delete_row', function(event)
+    {
+      event.preventDefault();
+      $self = $(this);
+      if($self.parents('.editable').find('.input_type').val() == 'add')
+      {
+        $self.parents('.editable').remove();
+      }
+      else
+      {
+        $self.parents('.editable').find('.input_type').val('deleted');
+        $self.parents('.editable').css('display', 'none');
+      }
+      refresh_sub();
+      update_old_sub();
+    });
+
+    $('#submit-form').on('click', function(event)
+    {
+      event.preventDefault();
+      $('#add-row').remove();
+      $('#example').remove();
+      $('#total_amt').val($('#total_amount').text());
+      $('form').submit();
+    })
+
+    $('.add_detail').on('click', function()
+    {
+      var $add_row = $('#add-row');
+      var new_element = $('#example').clone();
+      new_element.css("display", "").removeAttr('id');
+
+      $('.editable').last().after(new_element);
+      
+      //ItemCode
+      new_element.find('.input_item_id').val($add_row.find('.input_item_id').val());
+      new_element.find('.input_ItemCode').val($add_row.find('.input_ItemCode').val());
+      new_element.find('.value_ItemCode').text($add_row.find('.input_ItemCode').val());
+      
+      //ProductLine
+      new_element.find('.value_Prod_Line').text($add_row.find('.input_Prod_Line').val());
+      new_element.find('.input_Prod_Line').val($add_row.find('.input_Prod_Line').val());
+
+      //Brand
+      new_element.find('.value_Brand').text($add_row.find('.input_Brand').val());
+      new_element.find('.input_Brand').val($add_row.find('.input_Brand').val());
+
+      //Description
+      new_element.find('.value_Description').text($add_row.find('.input_Description').val());
+
+      //Cost/Unit
+      new_element.find('.value_Cost').text($add_row.find('.input_Cost').val());
+      new_element.find('.input_Cost').val($add_row.find('.input_Cost').val());
+
+      //Served
+      new_element.find('.value_ServedQty').text("0");
+      
+      //Qty
+      new_element.find('.value_Qty').text($add_row.find('.input_Qty').val());
+      new_element.find('.input_Qty').val($add_row.find('.input_Qty').val());
+      
+      //Subtotal
+      new_element.find('.value_Sub').text($add_row.find('.input_Sub').val());
+      new_element.find('.input_Sub').val($add_row.find('.input_Sub').val());
+
+      //Unit
+      new_element.find('.value_Unit').text($add_row.find('.input_Unit').text());
+
+
+      $('#add-row').find('input').val('');
+      $('#add-row').find('.input_Qty').val('1');
+      $('#add-row').find('.input_Unit').text('');
+      $('#add-row').css('display', 'none');
+      $('.recommend_row').removeClass('row-highlight');
+      
+      //reupdate sub total
+      update_old_sub();
+    });
+
+    $('body').on('focus', '.editable input' , function()
+    {
+      $('.last_focus').removeClass('last_focus');
+      $(this).addClass('last_focus');
+    }
+    );
+
+    $('body').on('focus', '.check_focus' , function()
+    {
+      $('.last_focus').removeClass('last_focus');
+      $(this).addClass('last_focus');
+    }
+    );
+
+    $('.show_suggest').on('change paste keyup', function()
+    {
+      if($(this).val() == "")
+      {
+        $('#recommend-table').css('display', "");
+        $('.recommend_row').css('display', "table");
+        $('.recommend_row').removeClass('row-highlight');
+      }
+    });
+
+    $('#PO').on('change', function()
+    {
+      if( $('#PO').val() != ""  )
+      {
+        var _token = $("meta[name='csrf-token']").attr("content");
+        var po = $('#PO').val();
+        $(".editable:not(#example)").remove();
+        $.ajax({
+        url: "{{ route('stocks.get_details', [ 'corpID' => $corpID]) }}",
+        type: "POST",
+        data: {_token,po},
+        success: function(res){
+          $.each(res.details , function($index, $value)
+          {
+            var $add_row = $('#add-row');
+            var new_element = $('#example').clone();
+            new_element.css("display", "").removeAttr('id');
+
+            $('.editable').last().after(new_element);
+            
+            //ItemCode
+            new_element.find('.input_item_id').val($value.item_id);
+            new_element.find('.input_ItemCode').val($value.ItemCode);
+            new_element.find('.value_ItemCode').text($value.ItemCode);
+            
+            //ProductLine
+            new_element.find('.value_Prod_Line').text($value.Prod_Line);
+            new_element.find('.input_Prod_Line').val($value.Prod_Line);
+
+            //Brand
+            new_element.find('.value_Brand').text($value.Brand);
+            new_element.find('.input_Brand').val($value.Brand);
+
+            //Description
+            new_element.find('.value_Description').text($value.Description);
+
+            //Cost/Unit
+            new_element.find('.value_Cost').text($value.Cost);
+            new_element.find('.input_Cost').val($value.Cost);
+
+            //Served
+            new_element.find('.value_ServedQty').text($value.ServedQty);
+            
+            //Qty
+            new_element.find('.value_Qty').text($value.Qty);
+            new_element.find('.input_Qty').val($value.Qty);
+            
+            //Subtotal
+            new_element.find('.value_Sub').text(($value.Cost * $value.Qty).toFixed(2));
+            new_element.find('.input_Sub').val(($value.Cost * $value.Qty).toFixed(2));
+
+            //Unit
+            new_element.find('.value_Unit').text($value.Unit);
+
+
+            $('#add-row').find('input').val('');
+            $('#add-row').find('.input_Qty').val('1');
+            $('#add-row').find('.input_Unit').text('');
+            $('#add-row').css('display', 'none');
+            $('.recommend_row').removeClass('row-highlight');
+            
+          }
+          );
+          refresh_sub();
+          }
+        });
+      }
+
+    });
+
+    $('.recommend_row').click(function(){
+      $('.recommend_row').removeClass('row-highlight');
+      if($('.last_focus').hasClass('check_focus'))
+      {
+        $parent = $('.last_focus').parents('#add-row');
+        $(this).addClass('row-highlight');
+        $('#add-row').find('.input_ItemCode').val($(this).find('.recommend_itemcode').text());
+        $('#add-row').find('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
+        $('#add-row').find('.input_Brand').val($(this).find('.recommend_brand').text());
+        $('#add-row').find('.input_Description').val($(this).find('.recommend_description').text());
+        $('#add-row').find('.input_Cost').val($(this).find('.recommend_cost').text());
+        if($(this).find('.recommend_cost').text() != "")
+        {
+          $('#add-row').find('.input_Cost').val($(this).find('.recommend_cost').text());
+          if( ($('#add-row').find('.input_Cost').val() != "" ) && ($('#add-row').find('.input_Qty').val() != "" ) )
+          {
+            var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
+            $('#add-row').find('.input_Sub').val(val);
+          }
+        }
+        $parent.find('.input_Unit').text($(this).find('.recommend_unit').text());
+        $parent.find('.input_item_id').val($(this).find('.recommend_item_id').text());
+        $('#recommend-table').css('display', "none");
+      }
+      else
+      {
+        $parent = $('.last_focus').parents('.editable');
+        $(this).addClass('row-highlight');
+        $('.last_focus').parents('.editable').find('.edit_ItemCode').find(".input_ItemCode").val($(this).find('.recommend_itemcode').text());
+        $('.last_focus').parents('.editable').find('.edit_ItemCode').find(".input_item_id").val($(this).find('.recommend_item_id').text());
+        $('.last_focus').parents('.editable').find('.edit_Brand').find(".input_Brand").val($(this).find('.recommend_brand').text());
+        $('.last_focus').parents('.editable').find('.edit_Prod_Line').find(".input_Prod_Line").val($(this).find('.recommend_prod_line').text());
+        $('.last_focus').parents('.editable').find('.edit_Description').find(".value_Description").text($(this).find('.recommend_description').text());
+        $('.last_focus').parents('.editable').find('.edit_Unit').find(".value_Unit").text($(this).find('.recommend_unit').text());
+        $('.last_focus').parents('.editable').find('.edit_ItemCode').find(".input_Cost").val($(this).find('.recommend_cost').text());
+        
+        $('#recommend-table').css('display', "none");
+        if($(this).find('.recommend_cost').text() != "")
+        {
+          $parent.find('.input_Cost').val($(this).find('.recommend_cost').text());
+          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
+          {
+            var val = parseFloat( $parent.find('.input_Cost').val() ) * parseFloat($parent.find('.input_Qty').val());
+            $parent.find('.input_Sub').val("abcd");
+          }
+        }
+      }
+    });
+
+    $('body').on('click', '.edit', function(){
+      var self = $(this);
+      if($(this).find('i').hasClass('fa-pencil'))
+      {
+        $(this).find('i').removeClass('fa-pencil').addClass('fa-save');
+        $(this).parents('.editable').find( ".input_ItemCode" ).val($(this).parents('.editable').find('.value_ItemCode').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Prod_Line" ).val($(this).parents('.editable').find('.value_Prod_Line').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Brand" ).val($(this).parents('.editable').find('.value_Brand').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Qty" ).val($(this).parents('.editable').find('.value_Qty').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Cost" ).val($(this).parents('.editable').find('.value_Cost').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Sub" ).val($(this).parents('.editable').find('.value_Sub').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_type" ).val('editting') ;
+        $(this).parents('.editable').find('.value_ItemCode, .value_Prod_Line, .value_Brand, .value_Qty, .value_Cost, .value_Sub').text("");
+      }
+      else
+      {
+        self.parents('.editable').find('.value_ItemCode').text(self.parents('.editable').find('.input_ItemCode').val() );
+        self.parents('.editable').find('.value_Prod_Line').text(self.parents('.editable').find('.input_Prod_Line').val() );
+        self.parents('.editable').find('.value_Brand').text(self.parents('.editable').find('.input_Brand').val());
+        self.parents('.editable').find('.value_Cost').text(self.parents('.editable').find('.input_Cost').val() );
+        self.parents('.editable').find('.value_Qty').text(self.parents('.editable').find('.input_Qty').val() );
+        self.parents('.editable').find('.value_Sub').text(self.parents('.editable').find('.input_Sub').val());
+        $(this).parents('.editable').find( ".input_type" ).val('none') ;
+        
+        $('#recommend-table').css('display', "none");
+
+        $(this).find('i').addClass('fa-pencil').removeClass('fa-save');
+        
+        $(this).parents('.editable').find( ".input_ItemCode" ).attr("type", "hidden");
+        $(this).parents('.editable').find( ".input_Cost" ).attr("type", "hidden");
+        $(this).parents('.editable').find( ".input_Prod_Line" ).attr("type", "hidden");
+        $(this).parents('.editable').find( ".input_Brand" ).attr("type", "hidden");
+        $(this).parents('.editable').find( ".input_Qty" ).attr("type", "hidden");
+        $(this).parents('.editable').find( ".input_Sub" ).attr("type", "hidden");
+        
+      }
+      
+    });
+
+    $(document).keydown(function(e) {
+      if(e.which == 113) {
+        $('#add-row').css('display' , ''); 
+        $('#no-item').css('display', 'none');
+        return false;
+      }
+    });
+
+    $('#pressF2').click(function(){
+      $('#add-row').css('display' , ''); 
+      $('#no-item').css('display', 'none');
+    });
+
+    $('body').on('click', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(){
+      $('#recommend-table').css('display', "");
+    });
+
+    $('.input_Cost ,.input_Qty, .input_Sub').on( 'change paste keyup', function()
+    {
+      $self = $(this);
+      if ($self.parents('#add-row').length) 
+      {
+        $parent = $self.parents('#add-row');
+      }
+      else
+      {
+        $parent = $self.parents('.editable');
+      }
+
+      if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
+      {
+        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
+        {
+          var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
+          $parent.find('.input_Sub').val(val);
+          var newtotal = (old_total + parseFloat($parent.find('.input_Sub').val()));
+          $('#total_amount').text(newtotal.numberFormat(2));
+        }
+        else
+        {
+          $parent.find('.input_Sub').val('');
+          $('#total_amount').text(old_total.numberFormat(2));
+        }
+      }
+
+      if ($self.hasClass('input_Sub'))
+      {
+        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
+        {
+          var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
+          $parent.find('.input_Cost').val(val);
+
+        }
+        else
+        {
+          $('#total_amount').text(old_total.numberFormat(2));
+        }
+
+        if($parent.find('.input_Sub').val() != "" )
+        {
+          var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
+          $('#total_amount').text(newtotal.numberFormat(2));
+        }
+      }
+      
+    });
+
+    $('body').on( 'change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(){
+      $('.recommend_row').css('display', 'table');
+      $self = $(this);
+
+      if ($self.parents('#add-row').length) 
+      {
+        $parent = $self.parents('#add-row');
+      }
+      else
+      {
+        $parent = $self.parents('.editable');
+      }
+      
+      if ($self.hasClass('input_ItemCode'))
+      {
+        $('.recommend_row').each(function()
+        {
+          if ( $(this).find('.recommend_itemcode').text().includes( $parent.find('.input_ItemCode').val() ) )
+          {
+          }
+          else
+          {
+            $(this).css('display' , 'none');
+          }
+        });
+      }
+
+      if(($self.hasClass('input_Brand')))
+      {
+        $('.recommend_row').each(function()
+        {
+          if ( $(this).find('.recommend_brand').text().includes( $parent.find(".input_Brand").val()) )
+          {
+          }
+          else
+          {
+            $(this).css('display' , 'none');
+          }
+        });
+      }
+
+      if($self.hasClass('input_Prod_Line'))
+      {
+        $('.recommend_row').each(function()
+        {
+          if ( $(this).find('.recommend_prod_line').text().includes( $parent.find(".input_Prod_Line").val())  )
+          {
+          }
+          else
+          {
+            $(this).css('display' , 'none');
+          }
+        });
+      }
+    });
+
+    $('.delete_add_detail').on('click', function()
+    {
+      $('#add-row').css('display' , 'none'); 
+      $('.recommend_row').removeClass('row-highlight');
+      $('.input_ItemCode').val('');
+      $('.input_Prod_Line').val('');
+      $('.input_Brand').val('');
+      $('.input_Description').val('');
+      $('.input_Cost').val('');
+      $('.input_Unit').text('');
+      $('.input_item_id').val('');
+      $('#recommend-table').css('display', "none");
+    });
+
+  </script>
+@endsection
