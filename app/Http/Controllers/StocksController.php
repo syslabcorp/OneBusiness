@@ -33,7 +33,7 @@ class StocksController extends Controller
     $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
     $stock = $stockModel->find($request->stock);
     $stock_details = $stock->stock_details;
-    $vendors = Vendor::all();
+    $vendors = Vendor::orderBy('VendorName')->get();
 
     $brands = Brand::all();
 
@@ -78,6 +78,7 @@ class StocksController extends Controller
     $stock = $stockModel->find($request->stock); 
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvDate = $request->RcvDate;
+    
     $stock->save();
     foreach ($request->type as $key => $value)
     {
@@ -90,7 +91,7 @@ class StocksController extends Controller
         {
           $stock_detail->item_id = intval($request->item_id[$key]);
         }
-        $stock_detail->ItemCode = $request->ItemCode[$key];
+        //$stock_detail->ItemCode = $request->ItemCode[$key];
         $stock_detail->Qty = floatval($request->Qty[$key]) ;
         $stock_detail->Bal = floatval($request->Qty[$key]);
         $stock_detail->Cost = floatval($request->Cost[$key]);
@@ -117,7 +118,7 @@ class StocksController extends Controller
         if($value == "add" && $request->add_item_id[$key] )
         {
           $stock_detail->item_id = intval($request->add_item_id[$key]);
-          $stock_detail->ItemCode = $request->add_ItemCode[$key];
+          //$stock_detail->ItemCode = $request->add_ItemCode[$key];
           $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
           $stock_detail->Bal = floatval($request->add_Qty[$key]);
           $stock_detail->Cost = floatval($request->add_Cost[$key]);
@@ -129,8 +130,9 @@ class StocksController extends Controller
       }
     }
 
-    $stock->TotalAmt = $request->total_amt;
+    $stock->TotalAmt = floatval($request->total_amt);
     $stock->save();
+    \Session::flash('success', "D.R #$stock->RR_No is successfully updated");
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 
@@ -155,7 +157,7 @@ class StocksController extends Controller
     if($request->item_id){
       $stock_detail = $stockDetailModel;
       $stock_detail->item_id = intval($request->item_id);
-      $stock_detail->ItemCode = $request->ItemCode;
+      //$stock_detail->ItemCode = $request->ItemCode;
       // $stock_detail->ServedQty = intval($request->ServedQty);
       $stock_detail->Qty = floatval($request->Qty);
       $stock_detail->Bal = floatval($request->Qty);
@@ -183,7 +185,7 @@ class StocksController extends Controller
       return response()->json([
         'status' => true,
         'item_id' => $stock_detail->item_id,
-        'ItemCode' => $stock_detail->ItemCode,
+        'ItemCode' => $stock_detail->stock_item->ItemCode,
         'ServedQty' => $stock_detail->ServedQty,
         'Qty' => $stock_detail->Qty,
         'Cost' => number_format( $stock_detail->Cost, 2),
@@ -296,7 +298,7 @@ class StocksController extends Controller
     $purchaseOrderModel->setConnection($company->database_name);
 
     $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
-    $vendors = Vendor::all();
+    $vendors = Vendor::orderBy('VendorName')->get();
 
     $brands = Brand::all();
 
@@ -335,7 +337,7 @@ class StocksController extends Controller
     $stock = $stockModel;
     $stock->RR_No = $request->RR_No;
     $stock->RcvDate = $request->RcvDate;
-    $stock->TotalAmt = $request->TotalAmt;
+    $stock->TotalAmt = floatval($request->total_amt);
     $stock->Supp_ID = $request->Supp_ID;
     $success = $stock->save();
 
@@ -352,13 +354,12 @@ class StocksController extends Controller
         if($value == "add" && $request->add_item_id[$key] )
         {
           $stock_detail->item_id = intval($request->add_item_id[$key]);
-          $stock_detail->ItemCode = $request->add_ItemCode[$key];
+          //$stock_detail->ItemCode = $request->add_ItemCode[$key];
           $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
           $stock_detail->Bal = floatval($request->add_Qty[$key]);
           $stock_detail->Cost = floatval($request->add_Cost[$key]);
           $stock_detail->RcvDate = $request->RcvDate;
           $stock_detail->RR_No = $stock->RR_No;
-          $stock->TotalAmt = $request->total_amt;
           $stock_detail->save();
         }
       }
@@ -376,7 +377,7 @@ class StocksController extends Controller
       //   $detail->save();
       // }
     }
-
+    \Session::flash('success', "D.R #$stock->RR_No is successfully created");
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
   }
 

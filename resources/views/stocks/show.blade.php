@@ -100,7 +100,7 @@
                       <tr class="editable" data-id="{{$detail->Movement_ID}}">
                         <input type="hidden" name="type[{{$detail->Movement_ID}}]" class="input_type" value="none">
                         <td class="edit_ItemCode"  data-field="ItemCode" >
-                          <span class="value_ItemCode">{{$detail->stock_item ? $detail->stock_item->ItemCode : $detail->ItemCode}}</span>
+                          <span class="value_ItemCode">{{$detail->stock_item ? $detail->stock_item->ItemCode : ""}}</span>
                           <input type="hidden" class="input_old_item_id" name="old_item_id[{{$detail->Movement_ID}}]" value="{{$detail->item_id}}" >
                           <input type="hidden" class="input_item_id" name="item_id[{{$detail->Movement_ID}}]" value="{{$detail->item_id}}" >
                           <input class="show_suggest input_ItemCode" type="hidden" name="ItemCode[{{$detail->Movement_ID}}]" id="" value="{{$detail->stock_item ? $detail->stock_item->ItemCode : ""}}" >
@@ -354,6 +354,7 @@
         }
       });
       $('#total_amount').text(sub.numberFormat(2));
+      $('#total_amt').val(sub.numberFormat(2));
     }
 
     function update_old_sub()
@@ -548,7 +549,14 @@
         self.parents('.editable').find('.value_Brand').text(self.parents('.editable').find('.input_Brand').val());
         self.parents('.editable').find('.value_Cost').text(self.parents('.editable').find('.input_Cost').val() );
         self.parents('.editable').find('.value_Qty').text(self.parents('.editable').find('.input_Qty').val() );
-        self.parents('.editable').find('.value_Sub').text(self.parents('.editable').find('.input_Sub').val());
+        if( self.parents('.editable').find('.input_Sub').val() != "" )
+        {
+          self.parents('.editable').find('.value_Sub').text(self.parents('.editable').find('.input_Sub').val());
+        }
+        else
+        {
+          self.parents('.editable').find('.value_Sub').text("0");
+        }
         $(this).parents('.editable').find( ".input_type" ).val('none') ;
         
         $('#recommend-table').css('display', "none");
@@ -585,7 +593,7 @@
       $('#recommend-table').css('display', "");
     });
 
-    $('.input_Cost ,.input_Qty, .input_Sub').on( 'change paste keyup', function()
+    $('body').on( 'change paste keyup', '.input_Cost ,.input_Qty, .input_Sub', function()
     {
       $self = $(this);
       if ($self.parents('#add-row').length) 
