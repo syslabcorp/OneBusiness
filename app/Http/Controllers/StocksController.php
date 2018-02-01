@@ -15,6 +15,8 @@ use App\Corporation;
 use App\Brand;
 use App\ProductLine;
 use DB;
+use Validator;
+use Datetime;
 
 class StocksController extends Controller
 {
@@ -66,7 +68,8 @@ class StocksController extends Controller
     if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
-    }
+    }    
+    $request->RcvDate = new Datetime($request->RcvDate);
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -80,31 +83,33 @@ class StocksController extends Controller
     $stock->RcvDate = $request->RcvDate;
     
     $stock->save();
-    foreach ($request->type as $key => $value)
+    if($request->type)
     {
-      $stock_detail = $stockDetailModel->find($key);
-      
-      //edit row
-      if($value == "none")
+      foreach ($request->type as $key => $value)
       {
-        if($request->old_item_id[$key] != $request->item_id[$key])
+        $stock_detail = $stockDetailModel->find($key);
+        
+        //edit row
+        if($value == "none")
         {
-          $stock_detail->item_id = intval($request->item_id[$key]);
+          if($request->old_item_id[$key] != $request->item_id[$key])
+          {
+            $stock_detail->item_id = intval($request->item_id[$key]);
+          }
+          //$stock_detail->ItemCode = $request->ItemCode[$key];
+          $stock_detail->Qty = floatval($request->Qty[$key]) ;
+          $stock_detail->Bal = floatval($request->Qty[$key]);
+          $stock_detail->Cost = floatval($request->Cost[$key]);
+          $stock_detail->save();
         }
-        //$stock_detail->ItemCode = $request->ItemCode[$key];
-        $stock_detail->Qty = floatval($request->Qty[$key]) ;
-        $stock_detail->Bal = floatval($request->Qty[$key]);
-        $stock_detail->Cost = floatval($request->Cost[$key]);
-        $stock_detail->save();
-      }
-
-      //delete row
-      if($value == "deleted")
-      {
-        $stock_detail->delete();
+  
+        //delete row
+        if($value == "deleted")
+        {
+          $stock_detail->delete();
+        }
       }
     }
-
     if($request->add_type)
     {
       foreach ($request->add_type as $key => $value)
@@ -330,10 +335,11 @@ class StocksController extends Controller
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }
+    $request->RcvDate = new Datetime($request->RcvDate);
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
-
+    
     $stock = $stockModel;
     $stock->RR_No = $request->RR_No;
     $stock->RcvDate = $request->RcvDate;
@@ -445,9 +451,12 @@ class StocksController extends Controller
     $stockModel->setConnection($company->database_name);
 
     $stock = $stockModel->find($request->stock);
+    $dr = $stock->RR_No;
+
     $success = $stock->delete();
     if($success){
-      return redirect()->route('stocks.index', ['corpID' => $request->corpID]);
+      \Session::flash('success', "D.R. # $dr has been deleted"); 
+      return back();
     }
   }
 }
