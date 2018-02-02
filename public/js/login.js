@@ -502,6 +502,10 @@ $(function()
 
     return parts.join(dec_point);
 }
+
+  $(function () {
+    $('#datetimepicker').datetimepicker();
+  });
   
 });
 

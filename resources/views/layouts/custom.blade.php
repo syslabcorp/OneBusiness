@@ -24,7 +24,8 @@
     <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
 	
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -148,7 +149,9 @@
 	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
     <script src="{{ URL('/js/colorpicker.js') }}"></script>
     <script src="{{ URL('/js/table-edits.min.js') }}"></script>
-    
+    <script src="{{ URL('/js/momentjs.min.js') }}"></script>
+    <script src="{{ URL('/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 	<script>
 		if($("#treeview_json").length){
 			/* var curr_url  = window.location.href;

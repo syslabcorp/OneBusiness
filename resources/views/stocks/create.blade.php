@@ -42,14 +42,14 @@
                       D.R#:
                     </label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" name="RR_No"   >
+                      <input type="text" data-validation="required,length" data-validation-length="max12" class="form-control" name="RR_No"   >
                     </div>
 
                     <label class="control-label col-sm-1">
                       Date
                     </label>
                     <div class="col-sm-4">
-                      <input type="date" class="form-control" name="RcvDate" id="" value="{{date('Y-m-d')}}" >
+                      <input type="text" id="datetimepicker" class="form-control" name="RcvDate" id="" value="{{date('m/d/Y')}}" >
                     </div>
                   </div>
                 </div>
@@ -61,7 +61,6 @@
                     </label>
                     <div class="col-sm-10">
                       <select name="Supp_ID" class="form-control" >
-                        <option value=""></option>
                         @foreach($vendors as $vendor)
                           <option value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>
                         @endforeach
@@ -115,18 +114,18 @@
                     </td>
                     <td class="edit_Cost text-right" data-field="Cost" >
                     <span class="value_Cost"></span>
-                      <input type="hidden" class="input_Cost" name="add_Cost[]" id="" value="" >
+                      <input type="hidden" class="input_Cost" data-validation="number" data-validation-allowing="float" name="add_Cost[]" id="" value="" >
                     </td>
                     <td class="edit_ServedQty text-right" >
                       <span class="value_ServedQty"></span>
                     </td>
                     <td class="edit_Qty text-right" data-field="Qty" >
                       <span class="value_Qty"></span>
-                      <input type="hidden" class="input_Qty" name="add_Qty[]" id="" value="" >
+                      <input type="hidden" class="input_Qty" data-validation="number" name="add_Qty[]" id="" value="" >
                     </td>
                     <td class="edit_Sub text-right" >
                       <span class="value_Sub"></span>
-                      <input type="hidden" class="input_Sub" name="add_Sub[]" id="" value="" >
+                      <input type="hidden" class="input_Sub" data-validation="number" data-validation-allowing="float" name="add_Sub[]" id="" value="" >
                     </td>
                     <td class="edit_Unit" >
                       <span class="value_Unit"></span>
@@ -147,10 +146,10 @@
                     <td> <input type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
                     <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
-                    <td> <input type="text" name="Cost" id="" class="form-control input_Cost"> </td>
+                    <td> <input type="text" name="Cost" id="" data-validation="number" data-validation-allowing="float" class="form-control input_Cost"> </td>
                     <td>0</td>
-                    <td> <input type="text" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
-                    <td> <input type="text" name="Sub" id="" class="input_Sub form-control"> </td>
+                    <td> <input type="text" name="Qty" id="" data-validation="number" value="1" class="input_Qty form-control"> </td>
+                    <td> <input type="text" name="Sub" id="" data-validation="number" data-validation-allowing="float" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
                       <a data-href="#"  class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" >
@@ -284,6 +283,10 @@
 @section('pageJS')
   <script>
 
+    $.validate({
+      form : 'form'
+    });
+
     var old_total = parseFloat($('#total_amount').text().replace(",", ""));
   
     function refresh_sub()
@@ -298,6 +301,17 @@
           }
         }
       });
+
+      $( "#add-row" ).each(function() {
+        if(!$(this).is(':hidden'))
+        {
+          if( $(this).find('.input_Sub').val() != 0 )
+          {
+            sub += parseFloat($(this).find('.input_Sub').val());
+          }
+        }
+      });
+
       $('#total_amount').text(sub.numberFormat(2));
       $('#total_amt').val(sub.numberFormat(2));
     }
@@ -344,6 +358,9 @@
     {
       var $add_row = $('#add-row');
       var new_element = $('#example').clone();
+      $.validate({
+        form : 'form'
+      });
       new_element.css("display", "").removeAttr('id');
 
       $('.editable').last().after(new_element);
@@ -365,19 +382,44 @@
       new_element.find('.value_Description').text($add_row.find('.input_Description').val());
 
       //Cost/Unit
-      new_element.find('.value_Cost').text($add_row.find('.input_Cost').val());
-      new_element.find('.input_Cost').val($add_row.find('.input_Cost').val());
+      if ($add_row.find('.input_Cost').val() != '')
+      {
+        new_element.find('.value_Cost').text( parseFloat($add_row.find('.input_Cost').val()).toFixed(2) );
+        new_element.find('.input_Cost').val( parseFloat($add_row.find('.input_Cost').val()).toFixed(2) );
+      }
+      else
+      {
+        new_element.find('.value_Cost').text('0');
+        new_element.find('.input_Cost').val('0');
+      }
 
       //Served
       new_element.find('.value_ServedQty').text("0");
       
       //Qty
-      new_element.find('.value_Qty').text($add_row.find('.input_Qty').val());
-      new_element.find('.input_Qty').val($add_row.find('.input_Qty').val());
+      if($add_row.find('.input_Qty').val() != '')
+      {
+        new_element.find('.value_Qty').text( parseInt($add_row.find('.input_Qty').val()) );
+        new_element.find('.input_Qty').val( parseInt($add_row.find('.input_Qty').val()) );
+      }
+      else
+      {
+        new_element.find('.value_Qty').text( '0' );
+        new_element.find('.input_Qty').val( '0' );
+      }
+
       
       //Subtotal
-      new_element.find('.value_Sub').text($add_row.find('.input_Sub').val());
-      new_element.find('.input_Sub').val($add_row.find('.input_Sub').val());
+      if( $add_row.find('.input_Sub').val() != '' )
+      {
+        new_element.find('.value_Sub').text( parseFloat($add_row.find('.input_Sub').val()).toFixed(2) );
+        new_element.find('.input_Sub').val( parseFloat($add_row.find('.input_Sub').val()).toFixed(2) );
+      }
+      else
+      {
+        new_element.find('.value_Sub').text( '0' );
+        new_element.find('.input_Sub').val( '0' );
+      }
 
       //Unit
       new_element.find('.value_Unit').text($add_row.find('.input_Unit').text());
@@ -391,6 +433,7 @@
       
       //reupdate sub total
       update_old_sub();
+      refresh_sub();
     });
 
     $('body').on('focus', '.editable input' , function()
@@ -534,6 +577,7 @@
           }
         }
       }
+      refresh_sub();
     });
 
     $('body').on('click', '.edit', function(){
@@ -555,11 +599,28 @@
         self.parents('.editable').find('.value_ItemCode').text(self.parents('.editable').find('.input_ItemCode').val() );
         self.parents('.editable').find('.value_Prod_Line').text(self.parents('.editable').find('.input_Prod_Line').val() );
         self.parents('.editable').find('.value_Brand').text(self.parents('.editable').find('.input_Brand').val());
-        self.parents('.editable').find('.value_Cost').text(self.parents('.editable').find('.input_Cost').val() );
-        self.parents('.editable').find('.value_Qty').text(self.parents('.editable').find('.input_Qty').val() );
+
+        if( self.parents('.editable').find('.input_Cost').val() != "" )
+        {
+          self.parents('.editable').find('.value_Cost').text( parseFloat(self.parents('.editable').find('.input_Cost').val()).toFixed(2) );
+        }
+        else
+        {
+          self.parents('.editable').find('.value_Cost').text("0");
+        }
+
+        if( self.parents('.editable').find('.input_Qty').val() != "" )
+        {
+          self.parents('.editable').find('.value_Qty').text( parseInt(self.parents('.editable').find('.input_Qty').val()) );
+        }
+        else
+        {
+          self.parents('.editable').find('.value_Qty').text('0');
+        }
+
         if( self.parents('.editable').find('.input_Sub').val() != "" )
         {
-          self.parents('.editable').find('.value_Sub').text(self.parents('.editable').find('.input_Sub').val());
+          self.parents('.editable').find('.value_Sub').text(parseFloat(self.parents('.editable').find('.input_Sub').val()).toFixed(2));
         }
         else
         {
@@ -579,7 +640,7 @@
         $(this).parents('.editable').find( ".input_Sub" ).attr("type", "hidden");
         
       }
-      
+      refresh_sub();
     });
 
     $(document).keydown(function(e) {
@@ -617,12 +678,10 @@
         {
           var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
           $parent.find('.input_Sub').val(val);
-          refresh_sub();
         }
         else
         {
           $parent.find('.input_Sub').val('');
-          refresh_sub();
         }
       }
 
@@ -632,20 +691,17 @@
         {
           var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
           $parent.find('.input_Cost').val(val);
-          refresh_sub();
         }
         else
         {
-          refresh_sub();
         }
 
         if($parent.find('.input_Sub').val() != "" )
         {
           var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
-          refresh_sub();
         }
       }
-      
+      refresh_sub();
     });
 
     $('body').on( 'change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(){
