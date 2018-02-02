@@ -34,9 +34,6 @@
 
                   <div class="form-group">
                     <select class="form-control" style="min-width: 200px;" name="vendorID" id="select-vendor" {{ $one_vendor ? "" : "disabled" }} >
-                      @if( !$one_vendor )
-                        <option value="" selected></option>
-                      @endif
                       @foreach($vendors as $vendor)
                         <option {{ $vendor_ID == $vendor->Supp_ID ? "selected": "" }} value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>
                       @endforeach
@@ -95,11 +92,16 @@
                 </tbody>
               </table>
             </div>
-            @if($one_vendor)
-            {{ $stocks->appends(array('corpID'=>$corpID, 'vendor'=>'one', 'vendorID'=>$vendor_ID))->links() }}
-            @else
-              {{ $stocks->appends(array('corpID'=>$corpID))->links() }}
-            @endif
+            <div class="col-md-6">
+              Show {{ $stocks->firstItem()  }} to {{ $stocks->lastItem()  }} of {{ $stocks->total() }} 
+            </div>
+            <div class="col-md-6 text-right">
+              @if($one_vendor)
+                {{ $stocks->appends(array('corpID'=>$corpID, 'vendor'=>'one', 'vendorID'=>$vendor_ID))->links() }}
+              @else
+                {{ $stocks->appends(array('corpID'=>$corpID))->links() }}
+              @endif
+            </div>
           </div>
         </div>
       </div>
