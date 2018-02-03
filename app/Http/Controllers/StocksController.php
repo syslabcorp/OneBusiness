@@ -452,6 +452,9 @@ class StocksController extends Controller
 
     $stock = $stockModel->find($request->stock);
     $dr = $stock->RR_No;
+    $stockDetailModel = new \App\StockDetail;
+    $stockDetailModel->setConnection($company->database_name);
+    $stockDetailModel->where('RR_No', $dr)->delete();
 
     $success = $stock->delete();
     if($success){
