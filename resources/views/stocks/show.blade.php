@@ -566,7 +566,7 @@
           if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
           {
             var val = parseFloat( $parent.find('.input_Cost').val() ) * parseFloat($parent.find('.input_Qty').val());
-            $parent.find('.input_Sub').val("abcd");
+            $parent.find('.input_Sub').val(val);
           }
         }
       }
@@ -677,7 +677,7 @@
 
       console.log(!$parent.find('.error').length);
 
-      if( $self.val().match(/^\d+$/) || $self.val() == '' )
+      if( $self.val().match(/^-?\d+(?:[.]\d*?)?$/) || $self.val() == '' )
       {
 
         if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
@@ -695,10 +695,11 @@
 
         if ($self.hasClass('input_Sub'))
         {
-          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
+          if( ($parent.find('.input_Qty').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
           {
             var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
             $parent.find('.input_Cost').val(val);
+            console.log('aaa');
           }
           else
           {
