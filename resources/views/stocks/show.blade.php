@@ -352,14 +352,14 @@
     {
       var sub = 0;
       $( ".editable" ).each(function() {
-        if(!$(this).is(':hidden'))
+        if(!$(this).is(':hidden') && $(this).find('.input_Sub').val() != '' )
         {
           sub += parseFloat($(this).find('.input_Sub').val());
         }
       });
 
       $( "#add-row" ).each(function() {
-        if(!$(this).is(':hidden'))
+        if(!$(this).is(':hidden') && $(this).find('.input_Sub').val() != '' )
         {
           sub += parseFloat($(this).find('.input_Sub').val());
         }
@@ -664,6 +664,7 @@
 
     $('body').on( 'change paste keyup', '.input_Cost ,.input_Qty, .input_Sub', function()
     {
+
       $self = $(this);
       if ($self.parents('#add-row').length) 
       {
@@ -674,49 +675,46 @@
         $parent = $self.parents('.editable');
       }
 
-      if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
-      {
-        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
-        {
-          var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
-          $parent.find('.input_Sub').val(val);
-          var newtotal = (old_total + parseFloat($parent.find('.input_Sub').val()));
-          $('#total_amount').text(newtotal.numberFormat(2));
-        }
-        else
-        {
-          $parent.find('.input_Sub').val('');
-          $('#total_amount').text(old_total.numberFormat(2));
-        }
-      }
+      console.log(!$parent.find('.error').length);
 
-      if ($self.hasClass('input_Sub'))
+      if( $self.val().match(/^\d+$/) || $self.val() == '' )
       {
-        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
-        {
-          var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
-          $parent.find('.input_Cost').val(val);
 
-        }
-        else
+        if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
         {
-          if($parent.find('.input_Cost').val() == "" )
+          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
           {
-
+            var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
+            $parent.find('.input_Sub').val(val);
           }
-          $('#total_amount').text(old_total.numberFormat(2));
+          else
+          {
+            $parent.find('.input_Sub').val('0');
+          }
         }
 
-        if($parent.find('.input_Sub').val() != "" )
+        if ($self.hasClass('input_Sub'))
         {
-          var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
-          $('#total_amount').text(newtotal.numberFormat(2));
+          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
+          {
+            var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
+            $parent.find('.input_Cost').val(val);
+          }
+          else
+          {
+            if($parent.find('.input_Cost').val() == "" )
+            {
+            }
+          }
+
+          if($parent.find('.input_Sub').val() == "" )
+          {
+            $parent.find('.input_Cost').val('0');
+          }
         }
+
+        refresh_sub();
       }
-
-      
-
-      refresh_sub();
     });
 
     $('body').on( 'change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(){
@@ -787,6 +785,7 @@
       $('.input_Unit').text('');
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
+      refresh_sub();
     });
 
   </script>

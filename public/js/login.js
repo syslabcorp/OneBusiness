@@ -480,6 +480,7 @@ $(function()
       $('#select-vendor').removeAttr('disabled');
       $("#select-vendor  option[value='option1'] ").remove();
       // $("#selectBox option[value='option1']").remove();
+      $('#form-search').submit();
     }
     else
     {
