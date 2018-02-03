@@ -118,18 +118,18 @@
                         </td>
                         <td class="edit_Cost text-right" data-field="Cost" >
                         <span class="value_Cost">{{number_format($detail->Cost,2)}}</span>
-                          <input type="hidden" data-validation="number" data-validation-allowing="float" class="input_Cost" name="Cost[{{$detail->Movement_ID}}]" id="" value="{{number_format($detail->Cost,2)}}" >
+                          <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="input_Cost" name="Cost[{{$detail->Movement_ID}}]" id="" value="{{number_format($detail->Cost,2)}}" >
                         </td>
                         <td class="edit_ServedQty text-right" >
                           <span class="value_ServedQty">{{$detail->ServedQty }}</span>
                         </td>
                         <td class="edit_Qty text-right" data-field="Qty" >
                           <span class="value_Qty">{{$detail->Qty }}</span>
-                          <input type="hidden" data-validation="number" class="input_Qty" name="Qty[{{$detail->Movement_ID}}]" id="" value="{{$detail->Qty }}" >
+                          <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number"  data-validation-optional="true" class="input_Qty" name="Qty[{{$detail->Movement_ID}}]" id="" value="{{$detail->Qty }}" >
                         </td>
                         <td class="edit_Sub text-right">
                           <span class="value_Sub">{{ number_format( $detail->Cost * $detail->Qty , 2) }}</span>
-                          <input type="hidden" data-validation="number" data-validation-allowing="float" class="input_Sub" name="Sub[{{$detail->Movement_ID}}]" id="" value="{{ number_format( $detail->Cost * $detail->Qty , 2) }} " >
+                          <input type="hidden"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub" name="Sub[{{$detail->Movement_ID}}]" id="" value="{{ number_format( $detail->Cost * $detail->Qty , 2) }} " >
                         </td>
                         <td class="edit_Unit" >
                           <span class="value_Unit">{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</span>
@@ -173,18 +173,18 @@
                     </td>
                     <td class="edit_Cost text-right" data-field="Cost" >
                     <span class="value_Cost"></span>
-                      <input type="hidden" data-validation="number" data-validation-allowing="float" class="input_Cost" name="add_Cost[]" id="" value="" >
+                      <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number." data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="input_Cost" name="add_Cost[]" id="" value="" >
                     </td>
                     <td class="edit_ServedQty text-right" >
                       <span class="value_ServedQty"></span>
                     </td>
                     <td class="edit_Qty text-right" data-field="Qty" >
                       <span class="value_Qty"></span>
-                      <input type="hidden" data-validation="number" class="input_Qty" name="add_Qty[]" id="" value="" >
+                      <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-optional="true" class="input_Qty" name="add_Qty[]" id="" value="" >
                     </td>
                     <td class="edit_Sub text-right" >
                       <span class="value_Sub"></span>
-                      <input type="hidden" data-validation="number" data-validation-allowing="float" class="input_Sub" name="add_Sub[]" id="" value="" >
+                      <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub" name="add_Sub[]" id="" value="" >
                     </td>
                     <td class="edit_Unit" >
                       <span class="value_Unit"></span>
@@ -205,10 +205,10 @@
                     <td> <input type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
                     <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
-                    <td> <input type="text" data-validation="number" data-validation-allowing="float" name="Cost" id="" class="form-control input_Cost"> </td>
+                    <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="Cost" id="" class="form-control input_Cost"> </td>
                     <td>0</td>
-                    <td> <input type="text" data-validation="number" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
-                    <td> <input type="text" data-validation="number" data-validation-allowing="float" name="Sub" id="" class="input_Sub form-control"> </td>
+                    <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-optional="true" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
+                    <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="Sub" id="" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
                       <a data-href="#"  class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" >
@@ -409,6 +409,8 @@
 
     $('.add_detail').on('click', function()
     {
+      if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error') )
+      {
       var $add_row = $('#add-row');
       var new_element = $('#example').clone();
       $.validate({
@@ -442,8 +444,8 @@
       }
       else
       {
-        new_element.find('.value_Cost').text('0');
-        new_element.find('.input_Cost').val('0');
+        new_element.find('.value_Cost').text('0.00');
+        new_element.find('.input_Cost').val('0.00');
       }
 
       //Served
@@ -457,8 +459,8 @@
       }
       else
       {
-        new_element.find('.value_Qty').text( '0' );
-        new_element.find('.input_Qty').val( '0' );
+        new_element.find('.value_Qty').text( '0.00' );
+        new_element.find('.input_Qty').val( '0.00' );
       }
 
       
@@ -470,8 +472,8 @@
       }
       else
       {
-        new_element.find('.value_Sub').text( '0' );
-        new_element.find('.input_Sub').val( '0' );
+        new_element.find('.value_Sub').text( '0.00' );
+        new_element.find('.input_Sub').val( '0.00' );
       }
 
       //Unit
@@ -487,6 +489,7 @@
       //reupdate sub total
       update_old_sub();
       refresh_sub();
+      }
     });
 
     @if($stock->check_transfered())
@@ -572,6 +575,9 @@
 
     $('body').on('click', '.edit', function(){
       var self = $(this);
+      $.validate({
+        form : 'form'
+      });
       if($(this).find('i').hasClass('fa-pencil'))
       {
         $(this).find('i').removeClass('fa-pencil').addClass('fa-save');
@@ -586,6 +592,8 @@
       }
       else
       {
+        if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error') )
+        {
         self.parents('.editable').find('.value_ItemCode').text(self.parents('.editable').find('.input_ItemCode').val() );
         self.parents('.editable').find('.value_Prod_Line').text(self.parents('.editable').find('.input_Prod_Line').val() );
         self.parents('.editable').find('.value_Brand').text(self.parents('.editable').find('.input_Brand').val());
@@ -596,7 +604,7 @@
         }
         else
         {
-          self.parents('.editable').find('.value_Cost').text("0");
+          self.parents('.editable').find('.value_Cost').text('0.00');
         }
 
         if( self.parents('.editable').find('.input_Qty').val() != "" )
@@ -614,22 +622,23 @@
         }
         else
         {
-          self.parents('.editable').find('.value_Sub').text("0");
+          self.parents('.editable').find('.value_Sub').text('0.00');
         }
 
-        $(this).parents('.editable').find( ".input_type" ).val('none') ;
+        self.parents('.editable').find( ".input_type" ).val('none') ;
         
         $('#recommend-table').css('display', "none");
 
-        $(this).find('i').addClass('fa-pencil').removeClass('fa-save');
+        self.find('i').addClass('fa-pencil').removeClass('fa-save');
         
-        $(this).parents('.editable').find( ".input_ItemCode" ).attr("type", "hidden");
-        $(this).parents('.editable').find( ".input_Cost" ).attr("type", "hidden");
-        $(this).parents('.editable').find( ".input_Prod_Line" ).attr("type", "hidden");
-        $(this).parents('.editable').find( ".input_Brand" ).attr("type", "hidden");
-        $(this).parents('.editable').find( ".input_Qty" ).attr("type", "hidden");
-        $(this).parents('.editable').find( ".input_Sub" ).attr("type", "hidden");
+        self.parents('.editable').find( ".input_ItemCode" ).attr("type", "hidden");
+        self.parents('.editable').find( ".input_Cost" ).attr("type", "hidden");
+        self.parents('.editable').find( ".input_Prod_Line" ).attr("type", "hidden");
+        self.parents('.editable').find( ".input_Brand" ).attr("type", "hidden");
+        self.parents('.editable').find( ".input_Qty" ).attr("type", "hidden");
+        self.parents('.editable').find( ".input_Sub" ).attr("type", "hidden");
         
+        }
       }
       
     });
