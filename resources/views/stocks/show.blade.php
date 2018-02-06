@@ -103,15 +103,15 @@
                           <span class="value_ItemCode">{{$detail->stock_item ? $detail->stock_item->ItemCode : ""}}</span>
                           <input type="hidden" class="input_old_item_id" name="old_item_id[{{$detail->Movement_ID}}]" value="{{$detail->item_id}}" >
                           <input type="hidden" class="input_item_id" name="item_id[{{$detail->Movement_ID}}]" value="{{$detail->item_id}}" >
-                          <input class="show_suggest input_ItemCode" type="hidden" name="ItemCode[{{$detail->Movement_ID}}]" id="" value="{{$detail->stock_item ? $detail->stock_item->ItemCode : ""}}" >
+                          <input autocomplete="off" class="show_suggest input_ItemCode" type="hidden" name="ItemCode[{{$detail->Movement_ID}}]" id="" value="{{$detail->stock_item ? $detail->stock_item->ItemCode : ""}}" >
                         </td>
                         <td class="edit_Prod_Line" data-field="Prod_Line" >
                           <span class="value_Prod_Line">{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}</span>
-                          <input class="show_suggest input_Prod_Line" type="hidden"  name="Prod_Line[{{$detail->Movement_ID}}]" value="{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}" >
+                          <input autocomplete="off" class="show_suggest input_Prod_Line" type="hidden"  name="Prod_Line[{{$detail->Movement_ID}}]" value="{{$detail->stock_item ? $detail->stock_item->product_line->Product : ""}}" >
                         </td>
                         <td class="edit_Brand" data-field="Brand" >
                           <span class="value_Brand">{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}</span>
-                          <input class="show_suggest input_Brand" type="hidden" name="Brand[{{$detail->Movement_ID}}]" id="" value="{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}" >
+                          <input autocomplete="off" class="show_suggest input_Brand" type="hidden" name="Brand[{{$detail->Movement_ID}}]" id="" value="{{$detail->stock_item ? $detail->stock_item->brand->Brand : ""}}" >
                         </td>
                         <td class="edit_Description" >
                           <span class="value_Description" >{{$detail->stock_item ? $detail->stock_item->Description : ""}}</span>
@@ -125,7 +125,7 @@
                         </td>
                         <td class="edit_Qty text-right" data-field="Qty" >
                           <span class="value_Qty">{{$detail->Qty }}</span>
-                          <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number"  data-validation-optional="true" class="input_Qty" name="Qty[{{$detail->Movement_ID}}]" id="" value="{{$detail->Qty }}" >
+                          <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Qty" name="Qty[{{$detail->Movement_ID}}]" id="" value="{{$detail->Qty }}" >
                         </td>
                         <td class="edit_Sub text-right">
                           <span class="value_Sub">{{ number_format( $detail->Cost * $detail->Qty , 2) }}</span>
@@ -158,15 +158,15 @@
                       <span class="value_ItemCode"></span>
                       <input class="input_old_item_id" type="hidden" name="add_old_item_id[]" value="" >
                       <input class="input_item_id" type="hidden" name="add_item_id[]" value="" >
-                      <input class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
+                      <input autocomplete="off" class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
                     </td>
                     <td class="edit_Prod_Line" data-field="Prod_Line" >
                       <span class="value_Prod_Line"></span>
-                      <input class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
+                      <input autocomplete="off" class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
                     </td>
                     <td class="edit_Brand" data-field="Brand" >
                       <span class="value_Brand"></span>
-                      <input class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
+                      <input autocomplete="off" class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
                     </td>
                     <td class="edit_Description" >
                       <span class="value_Description"></span>
@@ -180,7 +180,7 @@
                     </td>
                     <td class="edit_Qty text-right" data-field="Qty" >
                       <span class="value_Qty"></span>
-                      <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-optional="true" class="input_Qty" name="add_Qty[]" id="" value="" >
+                      <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Qty" name="add_Qty[]" id="" value="" >
                     </td>
                     <td class="edit_Sub text-right" >
                       <span class="value_Sub"></span>
@@ -201,13 +201,13 @@
 
                   <tr class="" id="add-row" style="display: none;">
                     <input type="hidden" name="item_id" value="" class="input_item_id">
-                    <td> <input type="text" name="ItemCode" class="form-control check_focus input_ItemCode"> </td>
-                    <td> <input type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
-                    <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
+                    <td> <input autocomplete="off" type="text" name="ItemCode" class="form-control check_focus input_ItemCode"> </td>
+                    <td> <input autocomplete="off" type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
+                    <td> <input autocomplete="off" type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
                     <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="Cost" id="" class="form-control input_Cost"> </td>
                     <td>0</td>
-                    <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-optional="true" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
+                    <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="Qty" id="" value="1" class="input_Qty form-control"> </td>
                     <td> <input type="text" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="Sub" id="" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
@@ -675,8 +675,6 @@
         $parent = $self.parents('.editable');
       }
 
-      console.log(!$parent.find('.error').length);
-
       if( $self.val().match(/^-?\d+(?:[.]\d*?)?$/) || $self.val() == '' )
       {
 
@@ -718,7 +716,69 @@
       }
     });
 
-    $('body').on( 'change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(){
+    var ignore_key = false;
+    var key_next = false;
+    var key_prev = false;
+    var key_enter = false;
+    $('body').on('keydown', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(e){
+      ignore_key = false;
+      key_next = false;
+      key_prev = false;
+      key_enter = false;
+
+      if(e.which == 40) {
+        key_prev = true;
+        ignore_key = true;
+      }
+
+      if(e.which == 38) {
+        key_next = true;
+        ignore_key = true;
+      }
+
+      if(e.which == 39) {
+        key_enter = true;
+        ignore_key = true;
+      }
+    }).on( 'click change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(e){
+      if(ignore_key){
+        if(key_prev)
+        {
+          var last = $('.row-highlight');
+          var index = $('.recommend_row:not(:hidden)').index(last);
+          if (last[0] == $('.recommend_row:not(:hidden)').last()[0])
+          {
+            $('.recommend_row:not(:hidden):eq(0)').addClass('row-highlight');
+          }
+          else
+          {
+            $(".recommend_row:not(:hidden):eq("+(index+1)+")").addClass('row-highlight');
+          }
+          last.removeClass('row-highlight');
+        }
+
+        if(key_next)
+        {
+          var last = $('.row-highlight');
+          var index = $('.recommend_row:not(:hidden)').index(last);
+          if (last[0] == $('.recommend_row:not(:hidden)').first()[0])
+          {
+            $('.recommend_row:not(:hidden)').last().addClass('row-highlight');
+          }
+          else
+          {
+            $(".recommend_row:not(:hidden):eq("+(index-1)+")").addClass('row-highlight');
+          }
+          last.removeClass('row-highlight');  
+        }
+
+        if(key_enter)
+        {
+          console.log('aaa');
+          $('.row-highlight').click();
+        }
+        return false;
+      }
       $('.recommend_row').css('display', 'table');
       $self = $(this);
 
@@ -735,7 +795,8 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_itemcode').text().toUpperCase().includes( $parent.find('.input_ItemCode').val().toUpperCase() ) )
+          if ( $(this).find('.recommend_itemcode').text().toUpperCase().includes( $parent.find('.input_ItemCode').val().toUpperCase() ) ) 
+          
           {
           }
           else
@@ -772,6 +833,8 @@
           }
         });
       }
+      $('.recommend_row').removeClass('row-highlight');
+      $('.recommend_row:not(:hidden)').first().addClass('row-highlight');
     });
 
     $('.delete_add_detail').on('click', function()

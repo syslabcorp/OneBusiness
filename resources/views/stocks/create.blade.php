@@ -42,7 +42,7 @@
                       D.R#:
                     </label>
                     <div class="col-sm-5">
-                      <input type="text" data-validation="required,length" data-validation-length="max12" class="form-control" name="RR_No"   >
+                      <input type="text" data-validation="required,length" data-validation-length="max12" data-validation-error-msg="D.R.# is required" data-validation-error-msg-length="D.R.# should not exceed 12 characters" class="form-control" name="RR_No"   >
                     </div>
 
                     <label class="control-label col-sm-1">
@@ -99,15 +99,15 @@
                       <span class="value_ItemCode"></span>
                       <input class="input_old_item_id" type="hidden" name="add_old_item_id[]" value="" >
                       <input class="input_item_id" type="hidden" name="add_item_id[]" value="" >
-                      <input class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
+                      <input autocomplete="off" class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
                     </td>
                     <td class="edit_Prod_Line" data-field="Prod_Line" >
                       <span class="value_Prod_Line"></span>
-                      <input class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
+                      <input autocomplete="off" class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
                     </td>
                     <td class="edit_Brand" data-field="Brand" >
                       <span class="value_Brand"></span>
-                      <input class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
+                      <input autocomplete="off" class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
                     </td>
                     <td class="edit_Description" >
                       <span class="value_Description"></span>
@@ -121,7 +121,7 @@
                     </td>
                     <td class="edit_Qty text-right" data-field="Qty" >
                       <span class="value_Qty"></span>
-                      <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-optional="true" name="add_Qty[]" id="" value="" >
+                      <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="add_Qty[]" id="" value="" >
                     </td>
                     <td class="edit_Sub text-right" >
                       <span class="value_Sub"></span>
@@ -142,13 +142,13 @@
 
                   <tr class="" id="add-row" style="display: none;">
                     <input type="hidden" name="item_id" value="" class="input_item_id">
-                    <td> <input type="text" name="ItemCode" class="form-control check_focus input_ItemCode"> </td>
-                    <td> <input type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
-                    <td> <input type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
+                    <td> <input autocomplete="off" type="text" name="ItemCode" class="form-control check_focus input_ItemCode"> </td>
+                    <td> <input autocomplete="off" type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
+                    <td> <input autocomplete="off" type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                     <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
                     <td> <input type="text" name="Cost" id="" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="form-control input_Cost"> </td>
                     <td>0</td>
-                    <td> <input type="text" name="Qty" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" value="1" data-validation-optional="true" class="input_Qty form-control"> </td>
+                    <td> <input type="text" name="Qty" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" value="1" data-validation-optional="true" class="input_Qty form-control"> </td>
                     <td> <input type="text" name="Sub" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
@@ -715,7 +715,69 @@
       refresh_sub();
     });
 
-    $('body').on( 'change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(){
+    var ignore_key = false;
+    var key_next = false;
+    var key_prev = false;
+    var key_enter = false;
+    $('body').on('keydown', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(e){
+      ignore_key = false;
+      key_next = false;
+      key_prev = false;
+      key_enter = false;
+
+      if(e.which == 40) {
+        key_prev = true;
+        ignore_key = true;
+      }
+
+      if(e.which == 38) {
+        key_next = true;
+        ignore_key = true;
+      }
+
+      if(e.which == 39) {
+        key_enter = true;
+        ignore_key = true;
+      }
+    }).on( 'click change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(e){
+      if(ignore_key){
+        if(key_prev)
+        {
+          var last = $('.row-highlight');
+          var index = $('.recommend_row:not(:hidden)').index(last);
+          if (last[0] == $('.recommend_row:not(:hidden)').last()[0])
+          {
+            $('.recommend_row:not(:hidden):eq(0)').addClass('row-highlight');
+          }
+          else
+          {
+            $(".recommend_row:not(:hidden):eq("+(index+1)+")").addClass('row-highlight');
+          }
+          last.removeClass('row-highlight');
+        }
+
+        if(key_next)
+        {
+          var last = $('.row-highlight');
+          var index = $('.recommend_row:not(:hidden)').index(last);
+          if (last[0] == $('.recommend_row:not(:hidden)').first()[0])
+          {
+            $('.recommend_row:not(:hidden)').last().addClass('row-highlight');
+          }
+          else
+          {
+            $(".recommend_row:not(:hidden):eq("+(index-1)+")").addClass('row-highlight');
+          }
+          last.removeClass('row-highlight');  
+        }
+
+        if(key_enter)
+        {
+          console.log('aaa');
+          $('.row-highlight').click();
+        }
+        return false;
+      }
       $('.recommend_row').css('display', 'table');
       $self = $(this);
 
@@ -747,7 +809,7 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_brand').text().includes( $parent.find(".input_Brand").val()) )
+          if ( $(this).find('.recommend_brand').text().toUpperCase().includes( $parent.find(".input_Brand").val().toUpperCase() ) )
           {
           }
           else
@@ -761,7 +823,7 @@
       {
         $('.recommend_row').each(function()
         {
-          if ( $(this).find('.recommend_prod_line').text().includes( $parent.find(".input_Prod_Line").val())  )
+          if ( $(this).find('.recommend_prod_line').text().toUpperCase().includes( $parent.find(".input_Prod_Line").val().toUpperCase() )  )
           {
           }
           else
@@ -770,6 +832,8 @@
           }
         });
       }
+      $('.recommend_row').removeClass('row-highlight');
+      $('.recommend_row:not(:hidden)').first().addClass('row-highlight');
     });
 
     $('.delete_add_detail').on('click', function()

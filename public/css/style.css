@@ -95,3 +95,12 @@
 #table_editable td{
   min-width: 70px;
 }
+input.error{
+  text-align: left !important;
+}
+.show_none{
+  display: none;
+}
+.show_table{
+  display: table;
+}

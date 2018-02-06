@@ -32,7 +32,7 @@ class StocksController extends Controller
     $purchaseOrderModel = new \App\PurchaseOrder;
     $purchaseOrderModel->setConnection($company->database_name);
 
-    $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
+    $stockitems = StockItem::where( 'Active', 1 )->where('Type', 0)->orderBy('ItemCode')->get();
     $stock = $stockModel->find($request->stock);
     $stock_details = $stock->stock_details;
     $vendors = Vendor::orderBy('VendorName')->get();
@@ -101,6 +101,10 @@ class StocksController extends Controller
           $stock_detail->Bal = floatval($request->Qty[$key]);
           $stock_detail->Cost = floatval($request->Cost[$key]);
           $stock_detail->save();
+
+          $stock_item = StockItem::find($stock_detail->item_id);
+          $stock_item->LastCost = $stock_detail->Cost;
+          $stock_item->save();
         }
   
         //delete row
@@ -131,6 +135,11 @@ class StocksController extends Controller
           $stock_detail->RR_No = $request->RR_No;
           
           $stock_detail->save();
+
+          $stock_item = StockItem::find($stock_detail->item_id);
+          $stock_item->LastCost = $stock_detail->Cost;
+          $stock_item->save();
+
         }
       }
     }
@@ -367,6 +376,10 @@ class StocksController extends Controller
           $stock_detail->RcvDate = $request->RcvDate;
           $stock_detail->RR_No = $stock->RR_No;
           $stock_detail->save();
+
+          $stock_item = StockItem::find($stock_detail->item_id);
+          $stock_item->LastCost = $stock_detail->Cost;
+          $stock_item->save();
         }
       }
 
