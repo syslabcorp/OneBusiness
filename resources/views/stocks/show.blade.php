@@ -518,7 +518,7 @@
       {
         $('#recommend-table').css('display', "");
         $('.recommend_row').css('display', "table");
-        $('.recommend_row').removeClass('row-highlight');
+        // $('.recommend_row').removeClass('row-highlight');
       }
     });
 
@@ -664,7 +664,7 @@
 
     $('body').on( 'change paste keyup', '.input_Cost ,.input_Qty, .input_Sub', function()
     {
-
+      
       $self = $(this);
       if ($self.parents('#add-row').length) 
       {
@@ -674,10 +674,11 @@
       {
         $parent = $self.parents('.editable');
       }
-
-      if( $self.val().match(/^-?\d+(?:[.]\d*?)?$/) || $self.val() == '' )
+      if( ($parent.find('.input_Cost').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Cost').val() == "" ) && 
+      ($parent.find('.input_Qty').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Qty').val() == "" ) &&
+      ($parent.find('.input_Sub').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Sub').val() == "" ) )
       {
-
+        $('.save_button').removeAttr('disabled');
         if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
         {
           if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
@@ -687,32 +688,31 @@
           }
           else
           {
-            $parent.find('.input_Sub').val('0');
+            $parent.find('.input_Sub').val('');
           }
         }
 
         if ($self.hasClass('input_Sub'))
         {
-          if( ($parent.find('.input_Qty').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
+          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
           {
             var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
             $parent.find('.input_Cost').val(val);
-            console.log('aaa');
           }
           else
           {
-            if($parent.find('.input_Cost').val() == "" )
-            {
-            }
           }
 
-          if($parent.find('.input_Sub').val() == "" )
+          if($parent.find('.input_Sub').val() != "" )
           {
-            $parent.find('.input_Cost').val('0');
+            var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
           }
         }
-
         refresh_sub();
+      }
+      else
+      {
+        $('.save_button').attr('disabled', true);
       }
     });
 
@@ -720,12 +720,9 @@
     var key_next = false;
     var key_prev = false;
     var key_enter = false;
-    $('body').on('keydown', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(e){
-      ignore_key = false;
-      key_next = false;
-      key_prev = false;
-      key_enter = false;
-
+    var last;
+    var index;
+    $('body').on('keydown', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(e){      
       if(e.which == 40) {
         key_prev = true;
         ignore_key = true;
@@ -741,11 +738,11 @@
         ignore_key = true;
       }
     }).on( 'click change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(e){
-      if(ignore_key){
+        if(ignore_key){
         if(key_prev)
         {
-          var last = $('.row-highlight');
-          var index = $('.recommend_row:not(:hidden)').index(last);
+          last = $('.row-highlight');
+          index = $('.recommend_row:not(:hidden)').index(last);
           if (last[0] == $('.recommend_row:not(:hidden)').last()[0])
           {
             $('.recommend_row:not(:hidden):eq(0)').addClass('row-highlight');
@@ -755,12 +752,16 @@
             $(".recommend_row:not(:hidden):eq("+(index+1)+")").addClass('row-highlight');
           }
           last.removeClass('row-highlight');
+          $('.row-highlight')[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center" 
+          });
         }
 
         if(key_next)
         {
-          var last = $('.row-highlight');
-          var index = $('.recommend_row:not(:hidden)').index(last);
+          last = $('.row-highlight');
+          index = $('.recommend_row:not(:hidden)').index(last);
           if (last[0] == $('.recommend_row:not(:hidden)').first()[0])
           {
             $('.recommend_row:not(:hidden)').last().addClass('row-highlight');
@@ -769,14 +770,22 @@
           {
             $(".recommend_row:not(:hidden):eq("+(index-1)+")").addClass('row-highlight');
           }
-          last.removeClass('row-highlight');  
+          last.removeClass('row-highlight'); 
+          $('.row-highlight')[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center" 
+          }); 
         }
 
         if(key_enter)
         {
-          console.log('aaa');
           $('.row-highlight').click();
         }
+        ignore_key = false;
+        key_next = false;
+        key_prev = false;
+        key_enter = false;
+
         return false;
       }
       $('.recommend_row').css('display', 'table');
