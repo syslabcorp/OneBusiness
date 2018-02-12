@@ -46,15 +46,51 @@
             <div class="table-responsive">
               <table class="table table-striped table-bordered" id="stocks_table">
                 <thead>
-                  <tr>
-                    <th>SRR #</th>
-                    <th>D.R.#</th>
-                    <th>Date</th>
-                    <th>Total Amount</th>
-                    <th>Vendor Name</th>
-                    <th>Date Saved</th>
-                    <th>Action</th>
-                  </tr>
+                  @if( true )
+                    <tr>
+                      <th>
+                        <a href="{{route('stocks.index', ['corpID' => $corpID, 'sortBy' => 'txn_no', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ]  )}}">
+                          SRR #
+                          <span class="text-right fa fa-sort">
+                          </span> 
+                        </a>
+                      </th>
+                      <th>
+                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RR_No', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
+                          D.R.#
+                          <span class="text-right fa fa-sort">
+                        </a>
+                      </th>
+                      <th>
+                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RcvDate', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
+                          Date
+                          <span class="text-right fa fa-sort">
+                        </a>
+                      </th>
+                      <th>
+                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'TotalAmt', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
+                          Total Amount
+                          <span class="text-right fa fa-sort">
+                        </a>
+                      </th>
+                      <th>
+                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'Supp_ID', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
+                          Vendor Name
+                          <span class="text-right fa fa-sort">
+                        </a>
+                      </th>
+                      <th>
+                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'DateSaved', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
+                          Date Saved
+                          <span class="text-right fa fa-sort">
+                        </a>
+                      </th>
+                      <th>Action</th>
+                    </tr>
+                  @else
+
+
+                  @endif
                 </thead>
                 <tbody>
                   @php $checkCountZero = true; @endphp
@@ -97,9 +133,9 @@
             </div>
             <div class="col-md-6 text-right">
               @if($one_vendor)
-                {{ $stocks->appends(array('corpID'=>$corpID, 'vendor'=>'one', 'vendorID'=>$vendor_ID))->links() }}
+                {{ $stocks->appends(request()->except('page'))->links() }}
               @else
-                {{ $stocks->appends(array('corpID'=>$corpID))->links() }}
+                {{ $stocks->appends(request()->except('page'))->links() }}
               @endif
             </div>
           </div>
@@ -186,17 +222,17 @@
       $('#alert-dr').text( $(e.relatedTarget).data('dr'));
     });
 
-    $('#stocks_table').dataTable({
-      "bPaginate": false,
-      "bLengthChange": false,
-      "bFilter": false,
-      "aaSorting": [[ 0, "asc" ]],
-      "columnDefs": [ {
-        "targets": 6,
-        "orderable": false
-        } ],
-      "bInfo": false,
-      "bAutoWidth": false
-    });
+    // $('#stocks_table').dataTable({
+    //   "bPaginate": false,
+    //   "bLengthChange": false,
+    //   "bFilter": false,
+    //   "aaSorting": [[ 0, "asc" ]],
+    //   "columnDefs": [ {
+    //     "targets": 6,
+    //     "orderable": false
+    //     } ],
+    //   "bInfo": false,
+    //   "bAutoWidth": false
+    // });
   </script>
 @endsection

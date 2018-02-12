@@ -461,7 +461,7 @@
       {
         $('#recommend-table').css('display', "");
         $('.recommend_row').css('display', "table");
-        $('.recommend_row').removeClass('row-highlight');
+        // $('.recommend_row').removeClass('row-highlight');
       }
     });
 
@@ -682,49 +682,55 @@
       {
         $parent = $self.parents('.editable');
       }
-
-      if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
+      if( ($parent.find('.input_Cost').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Cost').val() == "" ) && 
+      ($parent.find('.input_Qty').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Qty').val() == "" ) &&
+      ($parent.find('.input_Sub').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Sub').val() == "" ) )
       {
-        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
+        $('.save_button').removeAttr('disabled');
+        if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
         {
-          var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
-          $parent.find('.input_Sub').val(val);
+          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
+          {
+            var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
+            $parent.find('.input_Sub').val(val);
+          }
+          else
+          {
+            $parent.find('.input_Sub').val('');
+          }
         }
-        else
-        {
-          $parent.find('.input_Sub').val('');
-        }
-      }
 
-      if ($self.hasClass('input_Sub'))
+        if ($self.hasClass('input_Sub'))
+        {
+          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
+          {
+            var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
+            $parent.find('.input_Cost').val(val);
+          }
+          else
+          {
+          }
+
+          if($parent.find('.input_Sub').val() != "" )
+          {
+            var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
+          }
+        }
+        refresh_sub();
+      }
+      else
       {
-        if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
-        {
-          var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
-          $parent.find('.input_Cost').val(val);
-        }
-        else
-        {
-        }
-
-        if($parent.find('.input_Sub').val() != "" )
-        {
-          var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
-        }
+        $('.save_button').attr('disabled', true);
       }
-      refresh_sub();
     });
 
     var ignore_key = false;
     var key_next = false;
     var key_prev = false;
     var key_enter = false;
-    $('body').on('keydown', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(e){
-      ignore_key = false;
-      key_next = false;
-      key_prev = false;
-      key_enter = false;
-
+    var last;
+    var index;
+    $('body').on('keydown', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(e){      
       if(e.which == 40) {
         key_prev = true;
         ignore_key = true;
@@ -740,11 +746,11 @@
         ignore_key = true;
       }
     }).on( 'click change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(e){
-      if(ignore_key){
+        if(ignore_key){
         if(key_prev)
         {
-          var last = $('.row-highlight');
-          var index = $('.recommend_row:not(:hidden)').index(last);
+          last = $('.row-highlight');
+          index = $('.recommend_row:not(:hidden)').index(last);
           if (last[0] == $('.recommend_row:not(:hidden)').last()[0])
           {
             $('.recommend_row:not(:hidden):eq(0)').addClass('row-highlight');
@@ -754,12 +760,16 @@
             $(".recommend_row:not(:hidden):eq("+(index+1)+")").addClass('row-highlight');
           }
           last.removeClass('row-highlight');
+          $('.row-highlight')[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center" 
+          });
         }
 
         if(key_next)
         {
-          var last = $('.row-highlight');
-          var index = $('.recommend_row:not(:hidden)').index(last);
+          last = $('.row-highlight');
+          index = $('.recommend_row:not(:hidden)').index(last);
           if (last[0] == $('.recommend_row:not(:hidden)').first()[0])
           {
             $('.recommend_row:not(:hidden)').last().addClass('row-highlight');
@@ -768,14 +778,22 @@
           {
             $(".recommend_row:not(:hidden):eq("+(index-1)+")").addClass('row-highlight');
           }
-          last.removeClass('row-highlight');  
+          last.removeClass('row-highlight'); 
+          $('.row-highlight')[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center" 
+          }); 
         }
 
         if(key_enter)
         {
-          console.log('aaa');
           $('.row-highlight').click();
         }
+        ignore_key = false;
+        key_next = false;
+        key_prev = false;
+        key_enter = false;
+
         return false;
       }
       $('.recommend_row').css('display', 'table');

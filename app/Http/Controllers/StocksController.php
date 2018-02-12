@@ -81,6 +81,7 @@ class StocksController extends Controller
     $stock = $stockModel->find($request->stock); 
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvDate = $request->RcvDate;
+    $stock->RcvdBy = \Auth::user()->UserID;
     
     $stock->save();
     if($request->type)
@@ -272,21 +273,48 @@ class StocksController extends Controller
 
     $one_vendor = false;
     $vendor_ID = "";
+    if ($request->order == 'asc')
+    {
+      $next_order = 'desc';
+    }
+    else
+    {
+      $next_order = 'asc';
+    }
 
     if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != "")) {
-      $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy('txn_no','desc')->paginate(100);
-      $one_vendor = true;
-      $vendor_ID = $request->vendorID;
+      if($request->sortBy && $request->order)
+      {
+        $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy($request->sortBy,$request->order)->paginate(100);
+        $one_vendor = true;
+        $vendor_ID = $request->vendorID;
+      }
+      else
+      {
+        $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy('RcvDate','desc')->paginate(100);
+        $one_vendor = true;
+        $vendor_ID = $request->vendorID;
+      }
     }
-    else{
-      $stocks = $stockModel->orderBy('txn_no','desc')->paginate(100);
+    else
+    {
+      if( $request->sortBy && $request->order)
+      {
+        $stocks = $stockModel->orderBy($request->sortBy,$request->order)->paginate(100);
+      }
+      else
+      {
+        $stocks = $stockModel->orderBy('RcvDate','desc')->paginate(100);
+      }
     }
     
     $vendors = Vendor::orderBy('VendorName')->get();
     setcookie('last_index_url' , route('stocks.index', [
       'corpID' => $request->corpID,
       'vendor' => $request->vendor,
-      'vendorID' => $vendor_ID
+      'vendorID' => $vendor_ID,
+      'sortBy' => $request->sortBy,
+      'order' => $request->order
     ]));
     return view('stocks.index',
       [
@@ -294,7 +322,9 @@ class StocksController extends Controller
         'stocks' => $stocks,
         'vendors' => $vendors,
         'one_vendor' => $one_vendor,
-        'vendor_ID' => $vendor_ID
+        'vendor_ID' => $vendor_ID,
+        'vendor_list_type' => $request->vendor,
+        'next_order' => $next_order
       ]
     );
   }
@@ -354,6 +384,7 @@ class StocksController extends Controller
     $stock->RcvDate = $request->RcvDate;
     $stock->TotalAmt = floatval($request->total_amt);
     $stock->Supp_ID = $request->Supp_ID;
+    $stock->RcvdBy = \Auth::user()->UserID;
     $success = $stock->save();
 
     if($success && $request->add_type)
