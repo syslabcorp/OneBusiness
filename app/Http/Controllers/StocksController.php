@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Stock;
 use App\StockItem;
+use App\StockType;
 use App\StockDetail;
 use App\Vendor;
 use App\PurchaseOrder;
@@ -31,8 +32,10 @@ class StocksController extends Controller
     $stockModel->setConnection($company->database_name);
     $purchaseOrderModel = new \App\PurchaseOrder;
     $purchaseOrderModel->setConnection($company->database_name);
+    $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
+    $typeID = [0,$retailID];
 
-    $stockitems = StockItem::where( 'Active', 1 )->where('Type', 0)->orderBy('ItemCode')->get();
+    $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
     $stock = $stockModel->find($request->stock);
     $stock_details = $stock->stock_details;
     $vendors = Vendor::orderBy('VendorName')->get();
@@ -340,8 +343,10 @@ class StocksController extends Controller
     $stockModel->setConnection($company->database_name);
     $purchaseOrderModel = new \App\PurchaseOrder;
     $purchaseOrderModel->setConnection($company->database_name);
+    $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
+    $typeID = [0,$retailID];
 
-    $stockitems = StockItem::where( 'Active', 1 )->orderBy('ItemCode')->get();
+    $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
     $vendors = Vendor::orderBy('VendorName')->get();
 
     $brands = Brand::all();
