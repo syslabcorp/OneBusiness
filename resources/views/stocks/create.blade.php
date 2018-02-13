@@ -49,7 +49,7 @@
                       Date
                     </label>
                     <div class="col-sm-4">
-                      <input type="text" id="datetimepicker" class="form-control" name="RcvDate" id="" value="{{date('m/d/Y')}}" >
+                      <input type="text" id="datetimepicker" class="form-control" name="RcvDate" id="" value="{{date('m/d/Y h:i A')}}" >
                     </div>
                   </div>
                 </div>
@@ -211,7 +211,7 @@
                 </a>
               </div>
               <div class="col-md-6">
-                <button type="button" data-toggle="modal" data-target="#confirm_save" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
+                <button type="button" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
                   Save
                 </button>
               </div>
@@ -297,7 +297,7 @@
         {
           if( $(this).find('.input_Sub').val() != 0 )
           {
-            sub += parseFloat($(this).find('.input_Sub').val());
+            sub += parseFloat($(this).find('.input_Sub').val().replace(',', '') );
           }
         }
       });
@@ -307,13 +307,13 @@
         {
           if( $(this).find('.input_Sub').val() != 0 )
           {
-            sub += parseFloat($(this).find('.input_Sub').val());
+            sub += parseFloat($(this).find('.input_Sub').val().replace(',', '') );
           }
         }
       });
 
       $('#total_amount').text(sub.numberFormat(2));
-      $('#total_amt').val(sub.numberFormat(2));
+      $('#total_amt').val(sub);
     }
 
     function update_old_sub()
@@ -350,7 +350,7 @@
       event.preventDefault();
       $('#add-row').remove();
       $('#example').remove();
-      $('#total_amt').val($('#total_amount').text());
+      // $('#total_amt').val($('#total_amount').text());
       $('form').submit();
     })
 
@@ -597,8 +597,8 @@
         $(this).parents('.editable').find( ".input_Prod_Line" ).val($(this).parents('.editable').find('.value_Prod_Line').text()).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_Brand" ).val($(this).parents('.editable').find('.value_Brand').text()).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_Qty" ).val($(this).parents('.editable').find('.value_Qty').text()).attr("type", "text") ;
-        $(this).parents('.editable').find( ".input_Cost" ).val($(this).parents('.editable').find('.value_Cost').text()).attr("type", "text") ;
-        $(this).parents('.editable').find( ".input_Sub" ).val($(this).parents('.editable').find('.value_Sub').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Cost" ).val($(this).parents('.editable').find('.value_Cost').text().replace(',', '')).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Sub" ).val($(this).parents('.editable').find('.value_Sub').text().replace(',', '')).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_type" ).val('editting') ;
         $(this).parents('.editable').find('.value_ItemCode, .value_Prod_Line, .value_Brand, .value_Qty, .value_Cost, .value_Sub').text("");
       }
@@ -686,7 +686,6 @@
       ($parent.find('.input_Qty').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Qty').val() == "" ) &&
       ($parent.find('.input_Sub').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Sub').val() == "" ) )
       {
-        $('.save_button').removeAttr('disabled');
         if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
         {
           if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
@@ -720,7 +719,6 @@
       }
       else
       {
-        $('.save_button').attr('disabled', true);
       }
     });
 
@@ -866,6 +864,14 @@
       $('.input_Unit').text('');
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
+    });
+
+    $('.save_button').on('click', function(event)
+    {
+      if( $('form').isValid(false) )
+      {
+        $('#confirm_save').modal('show');
+      }
     });
 
   </script>

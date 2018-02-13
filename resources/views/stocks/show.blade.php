@@ -118,7 +118,7 @@
                         </td>
                         <td class="edit_Cost text-right" data-field="Cost" >
                         <span class="value_Cost">{{number_format($detail->Cost,2)}}</span>
-                          <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="input_Cost" name="Cost[{{$detail->Movement_ID}}]" id="" value="{{number_format($detail->Cost,2)}}" >
+                          <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="input_Cost" name="Cost[{{$detail->Movement_ID}}]" id="" value="{{ str_replace( ',', '', number_format($detail->Cost,2) ) }}" >
                         </td>
                         <td class="edit_ServedQty text-right" >
                           <span class="value_ServedQty">{{$detail->ServedQty }}</span>
@@ -129,7 +129,7 @@
                         </td>
                         <td class="edit_Sub text-right">
                           <span class="value_Sub">{{ number_format( $detail->Cost * $detail->Qty , 2) }}</span>
-                          <input type="hidden"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub" name="Sub[{{$detail->Movement_ID}}]" id="" value="{{ number_format( $detail->Cost * $detail->Qty , 2) }} " >
+                          <input type="hidden"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub" name="Sub[{{$detail->Movement_ID}}]" id="" value="{{ str_replace(',', '', number_format( $detail->Cost * $detail->Qty , 2)) }} " >
                         </td>
                         <td class="edit_Unit" >
                           <span class="value_Unit">{{$detail->stock_item ? $detail->stock_item->Unit : ""}}</span>
@@ -354,19 +354,19 @@
       $( ".editable" ).each(function() {
         if(!$(this).is(':hidden') && $(this).find('.input_Sub').val() != '' )
         {
-          sub += parseFloat($(this).find('.input_Sub').val());
+          sub += parseFloat($(this).find('.input_Sub').val().replace(',', '') );
         }
       });
 
       $( "#add-row" ).each(function() {
         if(!$(this).is(':hidden') && $(this).find('.input_Sub').val() != '' )
         {
-          sub += parseFloat($(this).find('.input_Sub').val());
+          sub += parseFloat($(this).find('.input_Sub').val().replace(',', '') );
         }
       });
 
       $('#total_amount').text(sub.numberFormat(2));
-      $('#total_amt').val(sub.numberFormat(2));
+      $('#total_amt').val(sub);
     }
 
     function update_old_sub()
@@ -585,8 +585,8 @@
         $(this).parents('.editable').find( ".input_Prod_Line" ).val($(this).parents('.editable').find('.value_Prod_Line').text()).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_Brand" ).val($(this).parents('.editable').find('.value_Brand').text()).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_Qty" ).val($(this).parents('.editable').find('.value_Qty').text()).attr("type", "text") ;
-        $(this).parents('.editable').find( ".input_Cost" ).val($(this).parents('.editable').find('.value_Cost').text()).attr("type", "text") ;
-        $(this).parents('.editable').find( ".input_Sub" ).val($(this).parents('.editable').find('.value_Sub').text()).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Cost" ).val($(this).parents('.editable').find('.value_Cost').text().replace(',', '')).attr("type", "text") ;
+        $(this).parents('.editable').find( ".input_Sub" ).val($(this).parents('.editable').find('.value_Sub').text().replace(',', '')).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_type" ).val('editting') ;
         $(this).parents('.editable').find('.value_ItemCode, .value_Prod_Line, .value_Brand, .value_Qty, .value_Cost, .value_Sub').text("");
       }
@@ -678,7 +678,6 @@
       ($parent.find('.input_Qty').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Qty').val() == "" ) &&
       ($parent.find('.input_Sub').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Sub').val() == "" ) )
       {
-        $('.save_button').removeAttr('disabled');
         if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
         {
           if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
@@ -712,7 +711,6 @@
       }
       else
       {
-        $('.save_button').attr('disabled', true);
       }
     });
 
@@ -859,6 +857,14 @@
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
       refresh_sub();
+    });
+
+    $('.save_button').on('click', function(event)
+    {
+      if( $(form).isValid(false) )
+      {
+        event.preventDefault();
+      }
     });
 
   </script>
