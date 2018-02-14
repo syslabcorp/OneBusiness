@@ -49,7 +49,7 @@
                       Date
                     </label>
                     <div class="col-sm-4">
-                      <input type="text" id="datetimepicker" class="form-control" name="RcvDate" id="" value="{{date('m/d/Y h:i A')}}" >
+                      <input type="date" class="form-control" name="RcvDate" id="" value="{{date('Y-m-d')}}" >
                     </div>
                   </div>
                 </div>
