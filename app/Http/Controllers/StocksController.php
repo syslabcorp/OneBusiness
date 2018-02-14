@@ -73,6 +73,7 @@ class StocksController extends Controller
       return redirect("/home"); 
     }    
     $request->RcvDate = new Datetime($request->RcvDate);
+    $request->RcvDate->setTime( date('H'), date('i'));
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -380,6 +381,7 @@ class StocksController extends Controller
       return redirect("/home"); 
     }
     $request->RcvDate = new Datetime($request->RcvDate);
+    $request->RcvDate->setTime( date('H'), date('i'));
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);

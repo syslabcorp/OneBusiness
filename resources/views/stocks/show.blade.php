@@ -51,7 +51,7 @@
                       Date
                     </label>
                     <div class="col-sm-4">
-                      <input type="text" id="datetimepicker" class="form-control" name="RcvDate" id="" value="{{$stock->RcvDate->format("m/d/Y H:i A")}}" {{ $stock->check_transfered() ? "disabled" : "" }} >
+                      <input type="date" class="form-control" name="RcvDate" id="" value="{{$stock->RcvDate->format("Y-m-d")}}" {{ $stock->check_transfered() ? "disabled" : "" }} >
                     </div>
                   </div>
                 </div>
@@ -742,13 +742,8 @@
         key_next = true;
         ignore_key = true;
       }
-
-      if(e.which == 39) {
-        key_enter = true;
-        ignore_key = true;
-      }
     }).on( 'click change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(e){
-        if(ignore_key){
+        if(ignore_key || (e.which == 13)){
         if(key_prev)
         {
           last = $('.row-highlight');
@@ -787,9 +782,10 @@
           }); 
         }
 
-        if(key_enter)
+        if(e.which == 13)
         {
           $('.row-highlight').click();
+          $('body').focus();
         }
         ignore_key = false;
         key_next = false;
