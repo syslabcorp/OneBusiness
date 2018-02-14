@@ -190,7 +190,7 @@ class StocksController extends Controller
       {
         $detail = $purchaseOrderDetailModel;
         $detail->item_id = intval($request->item_id);
-        $detail->ItemCode = $request->ItemCode;
+        // $detail->ItemCode = $request->ItemCode;
         $detail->po_no = $request->po;
         $detail->Qty = floatval($request->Qty);
         $detail->ServedQty = intval($request->ServedQty);

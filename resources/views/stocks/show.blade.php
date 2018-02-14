@@ -688,6 +688,14 @@
           else
           {
             $parent.find('.input_Sub').val('');
+            if( $self.hasClass('input_Cost') )
+            {
+              $parent.find('.input_Sub').val('0');
+            }
+            else
+            {
+              $parent.find('.input_Sub').val('0');
+            }
           }
         }
 
@@ -705,6 +713,10 @@
           if($parent.find('.input_Sub').val() != "" )
           {
             var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
+          }
+          else
+          {
+            $parent.find('.input_Cost').val('0');
           }
         }
         refresh_sub();
@@ -861,9 +873,9 @@
 
     $('.save_button').on('click', function(event)
     {
-      if( $(form).isValid(false) )
+      if( $('form').isValid(false) )
       {
-        event.preventDefault();
+        $('#confirm_save').modal('show');
       }
     });
 
