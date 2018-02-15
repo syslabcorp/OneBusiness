@@ -287,6 +287,12 @@
       form : 'form'
     });
 
+    $('form').on('keypress', function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+
     var old_total = parseFloat($('#total_amount').text().replace(",", ""));
   
     function refresh_sub()
@@ -658,6 +664,7 @@
       if(e.which == 113) {
         $('#add-row').css('display' , ''); 
         $('#no-item').css('display', 'none');
+        $('#alert_nothing').remove();
         return false;
       }
     });
@@ -665,6 +672,7 @@
     $('#pressF2').click(function(){
       $('#add-row').css('display' , ''); 
       $('#no-item').css('display', 'none');
+      $('#alert_nothing').remove();
     });
 
     $('body').on('click', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(){
@@ -750,13 +758,8 @@
         key_next = true;
         ignore_key = true;
       }
-
-      if(e.which == 39) {
-        key_enter = true;
-        ignore_key = true;
-      }
     }).on( 'click change paste keyup', '.input_ItemCode ,.input_Prod_Line, .input_Brand' ,function(e){
-        if(ignore_key){
+        if(ignore_key || (e.which == 13)){
         if(key_prev)
         {
           last = $('.row-highlight');
@@ -795,9 +798,10 @@
           }); 
         }
 
-        if(key_enter)
+        if(e.which == 13)
         {
           $('.row-highlight').click();
+          $('body').focus();
         }
         ignore_key = false;
         key_next = false;
@@ -882,7 +886,19 @@
     {
       if( $('form').isValid(false) )
       {
-        $('#confirm_save').modal('show');
+        if( $('.editable').length == 1 )
+        {
+          $('#alert_nothing').remove();
+          $("<tr> <td colspan='10' id='alert_nothing' class='text-center' style='color:red;'> Please select an item </td>  </tr>").insertAfter( $('#table_editable').find('tr').last() );
+          alert('Nothing to save!');
+          setTimeout(function () {
+            $("#alert_nothing").remove();
+          }, 10000);
+        }
+        else
+        {
+          $('#confirm_save').modal('show');
+        }
       }
     });
 
