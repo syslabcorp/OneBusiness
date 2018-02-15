@@ -270,7 +270,7 @@
                 </a>
               </div>
               <div class="col-md-6">
-                <button type="button" data-toggle="modal" data-target="#confirm_save" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
+                <button type="button" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                   Save
                 </button>
               </div>
