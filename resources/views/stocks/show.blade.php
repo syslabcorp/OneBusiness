@@ -346,6 +346,12 @@
       form : 'form'
     });
 
+    $('form').on('keypress', function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+
     var old_total = parseFloat($('#total_amount').text().replace(",", ""));
   
     function refresh_sub()
