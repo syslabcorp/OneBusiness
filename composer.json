@@ -10,7 +10,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "nexmo/laravel": "^0.4.0",
-        "yajra/laravel-datatables-oracle": "~6.0"
+        "yajra/laravel-datatables-oracle": "~8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

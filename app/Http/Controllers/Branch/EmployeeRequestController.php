@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Branch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Branch\EmployeeRequestHelper;
+use Datatables;
 
 class EmployeeRequestController extends Controller
 {
