@@ -51,38 +51,63 @@
                       <th>
                         <a href="{{route('stocks.index', ['corpID' => $corpID, 'sortBy' => 'txn_no', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ]  )}}">
                           SRR #
-                          <span class="text-right fa fa-sort">
-                          </span> 
+                          @if($sortBy == 'txn_no')
+                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right">
+                            </span> 
+                          @else
+                            <span class="text-right fa fa-sort pull-right">
+                            </span> 
+                          @endif
                         </a>
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RR_No', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           D.R.#
-                          <span class="text-right fa fa-sort">
+                          @if($sortBy == 'RR_No')
+                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
+                          @else
+                            <span class="text-right fa fa-sort pull-right"></span> 
+                          @endif
                         </a>
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RcvDate', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           Date
-                          <span class="text-right fa fa-sort">
+                          @if($sortBy == 'RcvDate')
+                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
+                          @else
+                            <span class="text-right fa fa-sort pull-right"></span> 
+                          @endif
                         </a>
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'TotalAmt', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           Total Amount
-                          <span class="text-right fa fa-sort">
+                          @if($sortBy == 'TotalAmt')
+                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
+                          @else
+                            <span class="text-right fa fa-sort pull-right"></span> 
+                          @endif
                         </a>
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'Supp_ID', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           Vendor Name
-                          <span class="text-right fa fa-sort">
+                          @if($sortBy == 'Supp_ID')
+                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
+                          @else
+                            <span class="text-right fa fa-sort pull-right"></span> 
+                          @endif
                         </a>
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'DateSaved', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           Date Saved
-                          <span class="text-right fa fa-sort">
+                          @if($sortBy == 'DateSaved')
+                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
+                          @else
+                            <span class="text-right fa fa-sort pull-right"></span> 
+                          @endif
                         </a>
                       </th>
                       <th>Action</th>
