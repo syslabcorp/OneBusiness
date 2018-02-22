@@ -174,4 +174,5 @@ Route::post('users/verify-otp', 'UsersController@verifyOTP')->middleware('auth')
 
 // Branch Request Module Routes
 Route::get("branchRequest/{corpId}", "Branch\EmployeeRequestController@index")->middleware('auth');
+Route::post("branchRequest/getEmployeeRequests", "Branch\EmployeeRequestController@getEmployeeRequests")->middleware('auth');
 
