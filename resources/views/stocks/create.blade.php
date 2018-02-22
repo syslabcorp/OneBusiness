@@ -365,12 +365,20 @@
       $.validate({
         form : 'form'
       });
+      $trParent = $(this).parents('tr');
+      $trParent.find('td:eq(0) .error').remove();
+      if($trParent.find('input[name="item_id"]').val() == "") {
+        $trParent.find('td:eq(0)').append("<span class='error'>Please select an item.</span>");
+        return;
+      }
+      
       if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error')  )
         {
           var $add_row = $('#add-row');
           var new_element = $('#example').clone();
 
           new_element.css("display", "").removeAttr('id');
+
 
           $('.editable').last().after(new_element);
           
@@ -584,7 +592,7 @@
           if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
           {
             var val = parseFloat( $parent.find('.input_Cost').val() ) * parseFloat($parent.find('.input_Qty').val());
-            $parent.find('.input_Sub').val("abcd");
+            // $parent.find('.input_Sub').val("abcd");
           }
         }
       }
@@ -880,6 +888,7 @@
       $('.input_Unit').text('');
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
+      refresh_sub();
     });
 
     $('.save_button').on('click', function(event)
@@ -888,10 +897,18 @@
       {
         if( $('.editable').length == 1 )
         {
+          $('.alert-nothing').remove();
           $('#alert_nothing').remove();
           $("<tr> <td colspan='10' id='alert_nothing' class='text-center' style='color:red;'> Please select an item </td>  </tr>").insertAfter( $('#table_editable').find('tr').last() );
-          alert('Nothing to save!');
+          $('#page-content-togle-sidebar-sec').prepend('\
+          <div class="row alert-nothing">\
+            <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+              <span class="fa fa-close"></span> <em>Nothing to save!</em>\
+            </div>\
+          </div>\
+          ');
           setTimeout(function () {
+            $('.alert-nothing').slideUp(400);
             $("#alert_nothing").remove();
           }, 10000);
         }
