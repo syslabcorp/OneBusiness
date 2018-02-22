@@ -12,15 +12,14 @@ use App\Corporation;
 class EmployeeRequestController extends Controller
 {
 	public function index(EmployeeRequestHelper $employeeRequest, $id){
-		// $employeeRequestModel = $employeeRequest->getRequestModelByCorpId($id);
-		// $unapprovedRequest = $employeeRequestModel::get();
 		return view("branchs.employeeRequest.index");
 	}
 
-	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest)
+	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request)
 	{
-		$employeeRequestModel = $employeeRequest->getRequestModelByCorpId(7);
-		$unapprovedRequest = $employeeRequestModel::get();
-	    	return Datatables::of(Corporation::query())->make(true);
+		$employeeRequestModel = $employeeRequest->getRequestModelByCorpId($request->input("corpId"));
+		// $unapprovedRequest = $employeeRequestModel::with('user:UserID,uname', 'branch_from')->get();
+		$unapprovedRequest = $employeeRequestModel::with('user:UserID,uname', 'from_branch:Branch,ShortName', 'to_branch:Branch,ShortName')->get();
+	    	return $unapprovedRequest;
 	}
 }
