@@ -14,11 +14,19 @@ use Illuminate\Support\Facades\DB;
 class EmployeeRequestController extends Controller
 {
 	public function index(EmployeeRequestHelper $employeeRequest, $id){
-		return view("branchs.employeeRequest.index", ["corpId" => $id]);
+		try{
+			$employeeRequest->setCorpId($id);
+			$databaseName = $employeeRequest->getDatabaseName();
+			$query1 = DB::select('SELECT sysdata.ShortName as "branch", sysdata.Active from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch');
+			$query1 = array_filter($query1, function ($item){ return $item->Active == 1; });
+			usort($query1, function($a,$b){ return strcmp($a->branch, $b->branch); });
+			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $query1]);
+		} catch(\Exception $ex){
+			return abort(404);
+		}
 	}
 
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
-		// dd($request->corpId);
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
 		$query1 = DB::select('SELECT users.uname as "username", sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');

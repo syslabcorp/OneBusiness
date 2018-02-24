@@ -5,7 +5,9 @@
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control branch-filter">
                            <option value="any">All Branches</option>
-                           <option value="NX New test">NX New test</option>
+                           @foreach($branches as $branch)
+                                <option value="{{ $branch->branch }}">{{ $branch->branch }}</option>
+                           @endforeach
                    </select>
                    <select style="width: 128px; display: inline;" class="form-control active-filter">
                            <option value="any">Any Status</option>
