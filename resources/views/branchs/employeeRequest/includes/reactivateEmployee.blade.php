@@ -1,6 +1,13 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
+            <div id="filters" style="margin-bottom: 14px;">
+                  Filters <select style="width: 128px; display: inline;" class="form-control branch-filter">
+                           <option value="any">All Branches</option>
+                           <option value="NX New test">NX New test</option>
+                   </select>
+           </div>
+
             <table id="reactivateEmployeeDatatable" class="table table-bordered">
                 <thead>
                     <tr>
@@ -23,7 +30,9 @@
                 serverSide: true,
                 "ajax": {
                         url: "{{ url('getEmployeeRequests2') }}",
-                        data: {}
+                        data: function (d) {
+                                d.branch_name = $('.branch-filter').val();
+                        }
                 },
                 columns: [
                         {data: 'username', name: 'username'},
@@ -31,5 +40,8 @@
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
+        });
+        $('.branch-filter').on('change', function () {
+                reactivateEmployeeDatatable.draw();
         });
 </script>
