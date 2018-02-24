@@ -17,28 +17,6 @@ class EmployeeRequestController extends Controller
 		return view("branchs.employeeRequest.index");
 	}
 
-	// public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request)
-	// {
-	// 	$employeeRequestModel = $employeeRequest->getRequestModelByCorpId($request->input("corpId"));
-	// 	// $unapprovedRequest = $employeeRequestModel::with('user:UserID,uname', 'branch_from')->get();
-	// 	$unapprovedRequest = $employeeRequestModel::with('user:UserID,uname', 'from_branch:Branch,ShortName', 'to_branch:Branch,ShortName')->get();
-	//     	return $unapprovedRequest;
-	// }
-
-
-	// public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
-	// 	$employeeRequestModel = $employeeRequest->getRequestModelByCorpId(12);
- //            $employeeRequests = $employeeRequestModel::with('user:UserID,uname', 'from_branch:Branch,ShortName', 'to_branch:Branch,ShortName');
- //            return Datatables::of($employeeRequests)
- //                ->filter(function ($query) use ($request) {
-
- //                })
- //                ->addColumn('action', function ($con) {
- //                    return "<a class='btn btn-success'>See Message</a>";
- //                })
- //                ->make('true');
-	// }
-	
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId(12);
 		$databaseName = $employeeRequest->getDatabaseName();
@@ -74,9 +52,6 @@ class EmployeeRequestController extends Controller
 			});
 		}
             return Datatables::of($query1)
-            	   ->filter(function ($query) use ($request) {
-                    // $query->where("from_branch", "=" , $request->branch_id);
-                })
                 ->addColumn('action', function ($con) {
                     return '<img style="width:30px;" src="'.url("public/images/approve.png").'">';
                 })
