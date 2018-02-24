@@ -21,6 +21,8 @@
                         <th>Approved</th>
                         <th>Uploaded</th>
                         <th>Sex</th>
+                        <th>SSS</th>
+                        <th>PHIC</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -52,6 +54,8 @@
                         {data: 'approved', name: 'approved'},
                         {data: 'executed', name: 'executed'},
                         {data: 'sex', name: 'sex'},
+                        {data: 'SSS', name: 'SSS'},
+                        {data: 'PHIC', name: 'PHIC'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
         });

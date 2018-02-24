@@ -22,6 +22,7 @@
                         <th>Username</th>
                         <th>Branch</th>
                         <th>Last Unfrm Paid</th>
+                        <th>Free Mins</th>
                         <th>Active</th>
                         <th>Action</th>
                     </tr>
@@ -48,6 +49,7 @@
                         {data: 'username', name: 'username'},
                         {data: 'from_branch', name: 'from_branch'},
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
+                        {data: 'AllowedMins', name: 'AllowedMins'},
                         {data: 'Active', name: 'Active'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
