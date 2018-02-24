@@ -27,7 +27,6 @@
                 <tfoot>
                 </tfoot>
             </table>
-
         </div>
       </div>
 </section>
@@ -40,6 +39,7 @@
                         data: function (d) {
                                 d.branch_name = $('.branch-filter').val();
                                 d.isActive = $('.active-filter').val();
+                                d.corpId = {{ $corpId }};
                         }
                 },
                 columns: [

@@ -14,11 +14,12 @@ use Illuminate\Support\Facades\DB;
 class EmployeeRequestController extends Controller
 {
 	public function index(EmployeeRequestHelper $employeeRequest, $id){
-		return view("branchs.employeeRequest.index");
+		return view("branchs.employeeRequest.index", ["corpId" => $id]);
 	}
 
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
-		$employeeRequest->setCorpId(12);
+		// dd($request->corpId);
+		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
 		$query1 = DB::select('SELECT users.uname as "username", sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
             return Datatables::of($query1)
@@ -43,7 +44,7 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
-		$employeeRequest->setCorpId(12);
+		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
 		$query1 = DB::select('SELECT users.uname as "username", users.LastUnfrmPaid, users.Active, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){

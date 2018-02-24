@@ -29,7 +29,9 @@
                 serverSide: true,
                 "ajax": {
                         url: "{{ url('getEmployeeRequests') }}",
-                        data: {}
+                        data: function (d) {
+                                d.corpId = {{ $corpId }};
+                        }
                 },
                 columns: [
                         {data: 'username', name: 'username'},
