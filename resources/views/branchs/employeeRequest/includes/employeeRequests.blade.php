@@ -1,6 +1,14 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
+            <div id="filters" style="margin-bottom: 14px;">
+                  Filters 
+                  <select style="width: 128px; display: inline;" class="form-control approved-filter">
+                           <option value="any">All Requests</option>
+                           <option value="0">For Approval</option>
+                           <option value="1">Approved</option>
+                   </select>
+           </div>
             <table id="employeeRequestsDatatable" class="table table-bordered">
                 <thead>
                     <tr>
@@ -30,6 +38,7 @@
                 "ajax": {
                         url: "{{ url('getEmployeeRequests') }}",
                         data: function (d) {
+                                d.approved = $(".approved-filter").val();
                                 d.corpId = {{ $corpId }};
                         }
                 },
@@ -45,5 +54,8 @@
                         {data: 'sex', name: 'sex'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
+        });
+        $('.approved-filter').on('change', function () {
+                employeeRequestsDatatable.draw();
         });
 </script>

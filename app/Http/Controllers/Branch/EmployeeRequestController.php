@@ -22,6 +22,11 @@ class EmployeeRequestController extends Controller
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
 		$query1 = DB::select('SELECT users.uname as "username", sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
+		if(!is_null($request->approved) && $request->approved != "any"){
+			$query1 = array_filter($query1, function ($arr) use ($request){
+				return $arr->approved == $request->approved;
+			});
+		}
             return Datatables::of($query1)
                 ->filter(function ($query) use ($request) {
 
