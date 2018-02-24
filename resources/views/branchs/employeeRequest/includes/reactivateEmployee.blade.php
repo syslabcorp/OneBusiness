@@ -1,0 +1,1 @@
+Reactivate table goes here
