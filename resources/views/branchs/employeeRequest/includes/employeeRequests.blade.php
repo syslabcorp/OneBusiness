@@ -1,7 +1,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <table id="messages-datatable" class="table table-bordered">
+            <table id="employeeRequestsDatatable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -24,7 +24,7 @@
       </div>
 </section>
 <script>
-        let table = $('#messages-datatable').DataTable({
+        let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
                 processing: true,
                 serverSide: true,
                 "ajax": {
