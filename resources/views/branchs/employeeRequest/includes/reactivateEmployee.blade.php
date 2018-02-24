@@ -2,9 +2,15 @@
     <div class="row">
         <div class="col-md-12">
             <div id="filters" style="margin-bottom: 14px;">
-                  Filters <select style="width: 128px; display: inline;" class="form-control branch-filter">
+                  Filters 
+                  <select style="width: 128px; display: inline;" class="form-control branch-filter">
                            <option value="any">All Branches</option>
                            <option value="NX New test">NX New test</option>
+                   </select>
+                   <select style="width: 128px; display: inline;" class="form-control active-filter">
+                           <option value="any">Any Status</option>
+                           <option value="1">Active</option>
+                           <option value="0">Inactive</option>
                    </select>
            </div>
 
@@ -14,6 +20,7 @@
                         <th>Username</th>
                         <th>Branch</th>
                         <th>Last Unfrm Paid</th>
+                        <th>Active</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -32,16 +39,18 @@
                         url: "{{ url('getEmployeeRequests2') }}",
                         data: function (d) {
                                 d.branch_name = $('.branch-filter').val();
+                                d.isActive = $('.active-filter').val();
                         }
                 },
                 columns: [
                         {data: 'username', name: 'username'},
                         {data: 'from_branch', name: 'from_branch'},
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
+                        {data: 'Active', name: 'Active'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
         });
-        $('.branch-filter').on('change', function () {
+        $('.branch-filter, .active-filter').on('change', function () {
                 reactivateEmployeeDatatable.draw();
         });
 </script>
