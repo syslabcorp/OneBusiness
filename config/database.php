@@ -101,20 +101,6 @@ return [
             'strict' => true,
             'engine' => null,
         ),
-        'k_master' => array(
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DBCORP_7', 'forge'),
-            'username' => env('DBUSER_7', 'forge'),
-            'password' => env('DBPSWRD_7', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-        ),
 
         'pgsql' => [
             'driver' => 'pgsql',
