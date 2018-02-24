@@ -62,4 +62,57 @@
         $('.approved-filter').on('change', function () {
                 employeeRequestsDatatable.draw();
         });
+
+        function sendApproveRequest(requestId){
+            $.ajax({
+                method: "POST", 
+                url : "{{ url('approveEmployeeRequest') }}",
+                data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
+            }).done(function (response){
+                if(response == "true") { setTimeout(function(){showAlertModal("Success", "The Employee Request Was Approved!")}, 500); }
+                else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
+            });
+        }
+
+        function sendDeleteRequest(requestId){
+            $.ajax({
+                method: "POST", 
+                url : "{{ url('deleteEmployeeRequest') }}",
+                data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
+            }).done(function (response){
+                if(response == "true") { showAlertModal("Success", "The Employee Request Was Deleted!") }
+                else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
+            });
+        }
+
+        function approveRequest(requestId){
+            showConfirmModal("Request Confirmation", "Are you sure you want to approve this request?", function(){ sendApproveRequest(requestId) });
+        } 
+
+        function deleteRequest(requestId){
+            showConfirmModal("Request Confirmation", "Are you sure you want to delete this request?", function(){ sendDeleteRequest(requestId) });
+        }
+
+        function showConfirmModal(title, message, callbackFunction){
+            bootbox.confirm({
+            title: title,
+            message: message,
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: callbackFunction
+            });
+        }
+
+        function showAlertModal(title, message){
+            bootbox.alert({
+                title: title,
+                message: message
+            });
+        }
 </script>

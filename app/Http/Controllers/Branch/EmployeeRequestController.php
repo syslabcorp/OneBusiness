@@ -55,8 +55,8 @@ class EmployeeRequestController extends Controller
                 	if($employeeRequest->executed) { $checked = "checked"; }
                 	return '<input type=checkbox '. $checked .' disabled name=' .$employeeRequest->id. '>';
                 })
-                ->addColumn('action', function ($con) {
-                    return '<img style="width:30px;" src="'.url("public/images/approve.png").'"><img style="width:30px;" src="'.url("public/images/delete.png").'">';
+                ->addColumn('action', function ($employeeRequest) {
+                    return '<img onclick="approveRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/approve.png").'"><img onclick="deleteRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/delete.png").'">';
                 })
                 ->rawColumns(['approved', "action", "executed"])
                 ->make('true');
@@ -85,5 +85,28 @@ class EmployeeRequestController extends Controller
                 })
                 ->rawColumns(["action"])
                 ->make('true');
+	}
+
+	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
+		$employeeRequest->setCorpId($request->corpId);
+		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
+		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		if(!is_null($employeeRequest)) {
+			$employeeRequest->approved = "1";
+			$employeeRequest->save();
+			return "true";
+		}
+		return "false";
+	}
+
+	public function deleteEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
+		$employeeRequest->setCorpId($request->corpId);
+		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
+		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		if(!is_null($employeeRequest)) {
+			$employeeRequest->delete();
+			return "true";
+		}
+		return "false";
 	}
 }

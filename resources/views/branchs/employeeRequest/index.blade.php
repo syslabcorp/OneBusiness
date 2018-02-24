@@ -4,6 +4,7 @@
 <head>
 <link href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" rel="stylesheet">
 <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="{{ url('public/js/bootbox.min.js') }}"></script>
 </head>
 
   <ul class="nav nav-tabs" style="margin-bottom:15px;">
