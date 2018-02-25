@@ -1,7 +1,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div id="filters" style="margin-bottom: 14px;">
+            <div id="filters" style="margin-bottom: 7px;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control approved-filter">
                            <option value="any">All Requests</option>
@@ -57,7 +57,17 @@
                         {data: 'SSS', name: 'SSS'},
                         {data: 'PHIC', name: 'PHIC'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
-                ]
+                ],
+                initComplete: function () {
+                    this.api().columns().every(function () {
+                        var column = this;
+                        var input = document.createElement("input");
+                        $(input).appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            column.search($(this).val(), false, false, true).draw();
+                        });
+                    });
+                }
         });
         $('.approved-filter').on('change', function () {
                 employeeRequestsDatatable.draw();
@@ -69,8 +79,8 @@
                 url : "{{ url('approveEmployeeRequest') }}",
                 data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
             }).done(function (response){
-                if(response == "true") { setTimeout(function(){showAlertModal("Success", "The Employee Request Was Approved!")}, 500); }
-                else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
+                if(response == "true") { setTimeout(function(){showAlertModal("Success", "The employee request was approved!")}, 500); }
+                else { showAlertModal("Error", "Something went wrong, please contact administration") }
             });
         }
 
@@ -80,17 +90,19 @@
                 url : "{{ url('deleteEmployeeRequest') }}",
                 data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
             }).done(function (response){
-                if(response == "true") { setTimeout(function(){showAlertModal("Success", "The Employee Request Was Deleted!")}, 500); }
+                if(response == "true") { setTimeout(function(){showAlertModal("Success", "The employee request was deleted!")}, 500); }
                 else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
             });
         }
 
         function approveRequest(requestId){
-            showConfirmModal("Request Confirmation", "Are you sure you want to approve this request?", function(){ sendApproveRequest(requestId) });
+            showConfirmModal("Request Confirmation", "Are you sure you want to approve this request?", function(result){ 
+                if( result == true ) { sendApproveRequest(requestId)} });
         } 
 
         function deleteRequest(requestId){
-            showConfirmModal("Request Confirmation", "Are you sure you want to delete this request?", function(){ sendDeleteRequest(requestId) });
+            showConfirmModal("Request Confirmation", "Are you sure you want to delete this request?", function(result){ 
+                if( result == true ) { sendDeleteRequest(requestId)} });
         }
 
         function showConfirmModal(title, message, callbackFunction){
@@ -109,10 +121,4 @@
             });
         }
 
-        function showAlertModal(title, message){
-            bootbox.alert({
-                title: title,
-                message: message
-            });
-        }
 </script>

@@ -17,8 +17,8 @@ class EmployeeRequestController extends Controller
 		try{
 			$employeeRequest->setCorpId($id);
 			$databaseName = $employeeRequest->getDatabaseName();
-			$query1 = DB::select('SELECT sysdata.ShortName as "branch", sysdata.Active from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch');
-			$query1 = array_filter($query1, function ($item){ return $item->Active == 1; });
+			$query1 = DB::select('SELECT sysdata.ShortName as "branch", sysdata.Active from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
+			// $query1 = array_filter($query1, function ($item){ return $item->Active == 1; });
 
 			$corporations = Corporation::has("branches")->with("branches")->get();
 			usort($query1, function($a,$b){ return strcmp($a->branch, $b->branch); });
@@ -58,7 +58,7 @@ class EmployeeRequestController extends Controller
                 	return '<input type=checkbox '. $checked .' disabled name=' .$employeeRequest->id. '>';
                 })
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<img onclick="approveRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/approve.png").'"><img onclick="deleteRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/delete.png").'">';
+                    return '<img class="actionButton" onclick="approveRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/approve.png").'"><img class="actionButton" onclick="deleteRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/delete.png").'">';
                 })
                 ->rawColumns(['approved', "action", "executed"])
                 ->make('true');
@@ -80,7 +80,7 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<img onclick="reactivateEmployee(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/activate.png").'">';
+                    return '<img class="actionButton" onclick="reactivateEmployee(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/activate.png").'">';
                 })
                 ->editColumn("Active", function ($query){
                 	return $query->Active == 1?"Yes":"No";

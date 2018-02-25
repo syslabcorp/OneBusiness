@@ -1,7 +1,7 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div id="filters" style="margin-bottom: 14px;">
+            <div id="filters" style="margin-bottom: 7px;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control branch-filter">
                            <option value="any">All Branches</option>
@@ -45,29 +45,33 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="row">
-            <span class="col-md-6">
-                <label>Username: </label>
-                <input type="text" value="test" disabled="">
-            </span>
-            <span class="col-md-6">
-                <label>Start Date: </label>
-                <input style="line-height: initial;" type="date" name="start_date">
-            </span>
-            <span class="col-md-12" style="margin-top: 8px;">
-                    <label>Password: </label>
-                    <input style="margin-left: 2px;" type="password" name="password">
-            </span>
-            <input type="hidden" name="requestId">
+
+      <div class="form-group row">
+        <label style="margin-top: 7px;" class="col-sm-2 col-form-label">Username</label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control plaintext" value="Juan">
         </div>
+        <label style="margin-top: 7px;" for="start_date" class="col-sm-2 col-form-label">Start Date</label>
+        <div class="col-sm-4">
+          <input type="date" required name="start_date" class="form-control plaintext">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 7px;" for="password" class="col-sm-2 col-form-label">Password</label>
+        <div class="col-sm-4">
+          <input type="password" name="password" class="form-control">
+        </div>
+      </div>
+        <input type="hidden" name="requestId">
         <hr>
-        <label>Branch Assignment: </label>
+        <label style="margin: 0 0 12px 14px;">Branch Assignment: </label>
             <div class="row branchAssignment">
             @foreach($corporations as $corporation)
-                <div>
+                <div style="height: 33px;">
                     <span class="col-md-3">{{ $corporation->corp_name }}</span>
                      <input class="col-md-1" type="checkbox">
-                    <select class="col-md-8">
+                    <select class="col-md-8" style="margin-top:-4px;">
+                    <option value="null"></option>
                     @foreach($corporation->branches as $branch)
                     <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                     @endforeach
@@ -124,8 +128,31 @@
                 data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : $("input[name='requestId']").val(),  corpId : {{ $corpId }} }
             }).done(function (response){
                 if(response == "true") {
-                    console.log("Success");
+                    $('#reactivateModal').modal('hide');
+                    setTimeout(function (){
+                        showAlertModal("Success", "The employee reactivated successfully");
+                    }, 1000);
                 }
             });
+        });
+
+        $('#reactivateEmployeeForm input[type="checkbox"]').on('change', function() {
+            if(!$(this).is(":checked")) {
+                $(this).next("select").prop("disabled", true);
+                $(this).next("select").css("background-color", "#ebebe4");
+                $(this).next("select").prepend('<option value="null"></option>');
+                $(this).next("select").val("null");
+             } else {
+                $(this).next("select").prop("disabled", false);
+                $(this).next("select").css("background-color", "#ffffff");
+                $(this).next("select").find("option[value='null']").remove();
+             }
+             $('#reactivateEmployeeForm input[type="checkbox"]').not(this).each(function (iterator, value){
+                $(value).prop('checked', false);  
+                $(value).next("select").prop("disabled", "disabled");
+                $(value).next("select").css("background-color", "#ebebe4");
+                $(value).next("select").prepend('<option value="null"></option>');
+                $(value).next("select").val("null");
+             });
         });
 </script>
