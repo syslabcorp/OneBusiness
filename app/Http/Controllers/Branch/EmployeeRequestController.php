@@ -19,8 +19,10 @@ class EmployeeRequestController extends Controller
 			$databaseName = $employeeRequest->getDatabaseName();
 			$query1 = DB::select('SELECT sysdata.ShortName as "branch", sysdata.Active from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch');
 			$query1 = array_filter($query1, function ($item){ return $item->Active == 1; });
+
+			$corporations = Corporation::has("branches")->with("branches")->get();
 			usort($query1, function($a,$b){ return strcmp($a->branch, $b->branch); });
-			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $query1]);
+			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $query1, "corporations" => $corporations]);
 		} catch(\Exception $ex){
 			return abort(404);
 		}
@@ -77,8 +79,8 @@ class EmployeeRequestController extends Controller
 			});
 		}
             return Datatables::of($query1)
-                ->addColumn('action', function ($con) {
-                    return '<img style="width:30px;" src="'.url("public/images/activate.png").'">';
+                ->addColumn('action', function ($employeeRequest) {
+                    return '<img onclick="reactivateEmployee(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/activate.png").'">';
                 })
                 ->editColumn("Active", function ($query){
                 	return $query->Active == 1?"Yes":"No";
@@ -105,6 +107,22 @@ class EmployeeRequestController extends Controller
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->delete();
+			return "true";
+		}
+		return "false";
+	}
+
+	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
+		$employeeRequest->setCorpId($request->corpId);
+		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
+		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		if(!is_null($employeeRequest)) {
+			$employeeRequest->to_branch = $request->branch_id;
+			$employeeRequest->date_start = $request->start_date;
+			$employeeRequest->save();
+			if($request->password != ""){
+				// Password change should go here
+			}
 			return "true";
 		}
 		return "false";

@@ -80,7 +80,7 @@
                 url : "{{ url('deleteEmployeeRequest') }}",
                 data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
             }).done(function (response){
-                if(response == "true") { showAlertModal("Success", "The Employee Request Was Deleted!") }
+                if(response == "true") { setTimeout(function(){showAlertModal("Success", "The Employee Request Was Deleted!")}, 500); }
                 else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
             });
         }
