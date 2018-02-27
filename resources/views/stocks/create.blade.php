@@ -886,6 +886,8 @@
       $('.input_Description').val('');
       $('.input_Cost').val('');
       $('.input_Unit').text('');
+      $('.input_Qty').val('');
+      $('.input_Sub').val('');
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
       refresh_sub();
