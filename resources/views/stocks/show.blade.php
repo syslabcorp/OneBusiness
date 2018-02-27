@@ -894,7 +894,11 @@
         $(this).parents('.editable').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
       });
 
-      if($('#table_editable input[value="editting"]').length > 0) {
+      if($('#add-row').is(':visible')) {
+        $('#add-row').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
+      }
+
+      if($('#table_editable input[value="editting"]').length > 0 || $('#add-row').is(':visible')) {
         return;
       }
 
