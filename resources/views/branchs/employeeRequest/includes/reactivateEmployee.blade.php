@@ -23,6 +23,7 @@
                         <th>Branch</th>
                         <th>Last Unfrm Paid</th>
                         <th>Free Mins</th>
+                        <th>No. of Times</th>
                         <th>Active</th>
                         <th>Action</th>
                     </tr>
@@ -49,7 +50,7 @@
       <div class="form-group row">
         <label style="margin-top: 7px;" class="col-sm-2 col-form-label">Username</label>
         <div class="col-sm-4">
-          <input type="text" readonly class="form-control plaintext" value="Juan">
+          <input name="reactivationName" type="text" readonly class="form-control plaintext" value="Juan">
         </div>
         <label style="margin-top: 7px;" for="start_date" class="col-sm-2 col-form-label">Start Date</label>
         <div class="col-sm-4">
@@ -63,6 +64,7 @@
         </div>
       </div>
         <input type="hidden" name="requestId">
+        <input type="hidden" name="username">
         <hr>
         <label style="margin: 0 0 12px 14px;">Branch Assignment: </label>
             <div class="row branchAssignment">
@@ -104,6 +106,7 @@
                         {data: 'from_branch', name: 'from_branch'},
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
                         {data: 'AllowedMins', name: 'AllowedMins'},
+                        {data: 'LoginsLeft', name: 'LoginsLeft'},
                         {data: 'Active', name: 'Active'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
@@ -112,8 +115,9 @@
                 reactivateEmployeeDatatable.draw();
         });
 
-        function reactivateEmployee(requestId){
+        function reactivateEmployee(requestId, username){
             $("input[name='requestId']").val(requestId);
+            $("input[name='reactivationName']").val(username);
             $('#reactivateModal').modal('show');
         }
 
@@ -129,9 +133,10 @@
             }).done(function (response){
                 if(response == "true") {
                     $('#reactivateModal').modal('hide');
-                    setTimeout(function (){
-                        showAlertModal("Success", "The employee reactivated successfully");
-                    }, 1000);
+                    location.reload();
+                    // setTimeout(function (){
+                    //     showAlertModal("Success", "The employee reactivated successfully");
+                    // }, 1000);
                 }
             });
         });

@@ -89,18 +89,29 @@ function sendApproveRequest(requestId){
         url : "{{ url('approveEmployeeRequest') }}",
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
-        if(response == "true") { setTimeout(function(){showAlertModal("Success", "The employee request was approved!")}, 500); }
+        if(response == "true") { 
+            location.reload();
+            // setTimeout(function(){
+            //     showAlertModal("Success", "The employee request was approved!");
+            // }, 500); 
+        }
         else { showAlertModal("Error", "Something went wrong, please contact administration") }
     });
 }
 
-function sendDeleteRequest(requestId){
+function sendDeleteRequest(requestId, element){
     $.ajax({
         method: "POST", 
         url : "{{ url('deleteEmployeeRequest') }}",
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
-        if(response == "true") { setTimeout(function(){showAlertModal("Success", "The employee request was deleted!")}, 500); }
+        if(response == "true") { 
+            location.reload();
+            // setTimeout(function(){ 
+            //     showAlertModal("Success", "The employee request was deleted!"); 
+            //     $(element).closest("tr").remove();
+            // }, 500); 
+        }
         else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
     });
 }
@@ -110,8 +121,8 @@ function approveRequest(requestId){
         if( result == true ) { sendApproveRequest(requestId)} });
 } 
 
-function deleteRequest(requestId){
+function deleteRequest(requestId, element){
     showConfirmModal("Request Confirmation", "Are you sure you want to delete this request?", function(result){ 
-        if( result == true ) { sendDeleteRequest(requestId)} });
+        if( result == true ) { sendDeleteRequest(requestId, element)} });
 }
 </script>

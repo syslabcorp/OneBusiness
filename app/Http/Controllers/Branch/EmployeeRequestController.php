@@ -10,6 +10,7 @@ use App\Corporation;
 use Yajra\Datatables\Datatables;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class EmployeeRequestController extends Controller
 {
@@ -32,7 +33,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.uname as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
+		$query1 = DB::select('SELECT employeeRequest.UserName as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
 		if(!is_null($request->approved) && $request->approved != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->approved == $request->approved;
@@ -73,7 +74,7 @@ class EmployeeRequestController extends Controller
                 	return '<input type=checkbox '. $checked .' disabled name=' .$employeeRequest->id. '>';
                 })
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<img class="actionButton" onclick="approveRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/approve.png").'"><img class="actionButton" onclick="deleteRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/delete.png").'">';
+                    return '<img class="actionButton" onclick="approveRequest(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/approve.png").'"><img class="actionButton" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)" style="width:30px;" src="'.url("public/images/delete.png").'">';
                 })
                 ->rawColumns(['approved', "action", "executed"])
                 ->make('true');
@@ -82,7 +83,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.uname as "username", users.LastUnfrmPaid, users.Active, users.AllowedMins, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
+		$query1 = DB::select('SELECT employeeRequest.UserName as "username", users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->from_branch == $request->branch_name;
@@ -95,10 +96,17 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<img class="actionButton" onclick="reactivateEmployee(\''.$employeeRequest->id.'\')" style="width:30px;" src="'.url("public/images/activate.png").'">';
+                    return '<img class="actionButton" onclick="reactivateEmployee(\''.$employeeRequest->id.'\', \''.$employeeRequest->username.'\')" style="width:30px;" src="'.url("public/images/activate.png").'">';
                 })
                 ->editColumn("Active", function ($query){
                 	return $query->Active == 1?"Yes":"No";
+                })
+                ->editColumn("LastUnfrmPaid", function ($query){
+                	if($query->LastUnfrmPaid != "" && $query->LastUnfrmPaid != null){
+                		$day = (new Carbon($query->LastUnfrmPaid))->format("d");
+                		if($day > 15) return "16th";
+               		else { return "1st"; }
+                	}
                 })
                 ->rawColumns(["action"])
                 ->make('true');
