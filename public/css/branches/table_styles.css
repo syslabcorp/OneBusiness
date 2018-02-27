@@ -28,9 +28,10 @@
 #employeeRequestsDatatable th 
 {
     text-align: left;
-    background-color: #2556ff;
-    color: white;
-    white-space: nowrap;
+    /*background-color: #2556ff;*/
+    color: black;
+    /*white-space: nowrap;*/
+    vertical-align: middle;
     padding-right: 14px;
     text-align: center;
 }
