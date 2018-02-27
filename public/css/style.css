@@ -60,6 +60,10 @@
   background-color:#f27b82 !important ;
 }
 
+#stocks_table thead tr th a, #stocks_table thead tr th {
+  color: #555;
+  font-weight: normal;
+}
 
 
 

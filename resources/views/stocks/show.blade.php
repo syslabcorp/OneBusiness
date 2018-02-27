@@ -422,6 +422,14 @@
       $.validate({
         form : 'form'
       });
+
+      $trParent = $(this).parents('tr');
+      $trParent.find('td:eq(0) .error').remove();
+      if($trParent.find('input[name="item_id"]').val() == "") {
+        $trParent.find('td:eq(0)').append("<span class='error'>Please select an item.</span>");
+        return;
+      }
+      
       new_element.css("display", "").removeAttr('id');
 
       $('.editable').last().after(new_element);

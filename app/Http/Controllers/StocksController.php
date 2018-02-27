@@ -102,6 +102,7 @@ class StocksController extends Controller
             $stock_detail->item_id = intval($request->item_id[$key]);
           }
           //$stock_detail->ItemCode = $request->ItemCode[$key];
+          $stock_detail->RcvDate = $stock->DateSaved;
           $stock_detail->Qty = floatval($request->Qty[$key]) ;
           $stock_detail->Bal = floatval($request->Qty[$key]);
           $stock_detail->Cost = floatval($request->Cost[$key]);
@@ -136,9 +137,8 @@ class StocksController extends Controller
           $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
           $stock_detail->Bal = floatval($request->add_Qty[$key]);
           $stock_detail->Cost = floatval($request->add_Cost[$key]);
-          $stock_detail->RcvDate = $request->RcvDate;
+          $stock_detail->RcvDate = $stock->DateSaved;
           $stock_detail->RR_No = $request->RR_No;
-          
           $stock_detail->save();
 
           $stock_item = StockItem::find($stock_detail->item_id);

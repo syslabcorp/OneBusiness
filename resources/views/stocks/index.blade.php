@@ -55,7 +55,7 @@
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right">
                             </span> 
                           @else
-                            <span class="text-right fa fa-sort pull-right">
+                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right">
                             </span> 
                           @endif
                         </a>
@@ -66,7 +66,7 @@
                           @if($sortBy == 'RR_No')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
-                            <span class="text-right fa fa-sort pull-right"></span> 
+                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
                           @endif
                         </a>
                       </th>
@@ -76,7 +76,7 @@
                           @if($sortBy == 'RcvDate')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
-                            <span class="text-right fa fa-sort pull-right"></span> 
+                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
                           @endif
                         </a>
                       </th>
@@ -86,7 +86,7 @@
                           @if($sortBy == 'TotalAmt')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
-                            <span class="text-right fa fa-sort pull-right"></span> 
+                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
                           @endif
                         </a>
                       </th>
@@ -96,7 +96,7 @@
                           @if($sortBy == 'Supp_ID')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
-                            <span class="text-right fa fa-sort pull-right"></span> 
+                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
                           @endif
                         </a>
                       </th>
@@ -106,7 +106,7 @@
                           @if($sortBy == 'DateSaved')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
-                            <span class="text-right fa fa-sort pull-right"></span> 
+                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
                           @endif
                         </a>
                       </th>
