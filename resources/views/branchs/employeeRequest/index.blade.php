@@ -29,6 +29,22 @@
           message: message
       });
   }
+
+  function showConfirmModal(title, message, callbackFunction){
+    bootbox.confirm({
+    title: title,
+    message: message,
+    buttons: {
+        cancel: {
+            label: '<i class="fa fa-times"></i> Cancel'
+        },
+        confirm: {
+            label: '<i class="fa fa-check"></i> Confirm'
+        }
+    },
+    callback: callbackFunction
+    });
+}
   $(document).ready(function (){
     $("[type='search']").addClass("form-control");
     $("[name='employeeRequestsDatatable_length'],[name='reactivateEmployeeDatatable_length']").addClass("form-control");

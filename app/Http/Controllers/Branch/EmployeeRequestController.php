@@ -18,9 +18,10 @@ class EmployeeRequestController extends Controller
 			$employeeRequest->setCorpId($id);
 			$databaseName = $employeeRequest->getDatabaseName();
 			$query1 = DB::select('SELECT sysdata.ShortName as "branch", sysdata.Active from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
-			// $query1 = array_filter($query1, function ($item){ return $item->Active == 1; });
 
-			$corporations = Corporation::has("branches")->with("branches")->get();
+			$corpType = Corporation::find($id)->corp_type;
+
+			$corporations = Corporation::where("corp_type", $corpType)->has("branches")->with("branches")->get();
 			usort($query1, function($a,$b){ return strcmp($a->branch, $b->branch); });
 			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $query1, "corporations" => $corporations]);
 		} catch(\Exception $ex){
@@ -31,10 +32,16 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.uname as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
+		$query1 = DB::select('SELECT users.uname as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch');
 		if(!is_null($request->approved) && $request->approved != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->approved == $request->approved;
+			});
+		}
+
+		if(!is_null($request->uploaded) && $request->uploaded != "any"){
+			$query1 = array_filter($query1, function ($arr) use ($request){
+				return $arr->executed == $request->uploaded;
 			});
 		}
             return Datatables::of($query1)
@@ -42,10 +49,18 @@ class EmployeeRequestController extends Controller
 
                 })
                 ->editColumn("sex", function($employeeRequest){
-                	if($employeeRequest->sex == "M") { $sex = "Male"; } else 
-                	if($employeeRequest->sex == "F") { $sex = "Female"; } else 
-                	{ $sex = ""; }
+                	$sex = "";
+                	if($employeeRequest->sex == "M") { $sex = "Male"; }
+                	if($employeeRequest->sex == "F") { $sex = "Female"; }
                 	return $sex;
+                })
+                ->editColumn("type", function($employeeRequest){
+                	$type = "";
+                	if($employeeRequest->type == "1") { $type = "Transfer"; }
+                	if($employeeRequest->type == "2") { $type = "End of Contract"; }
+                	if($employeeRequest->type == "3") { $type = "New"; }
+                	if($employeeRequest->type == "4") { $type = "Re-enroll Biometric"; }
+                	return $type;
                 })
                 ->editColumn("approved", function($employeeRequest){
                 	$checked = "";
