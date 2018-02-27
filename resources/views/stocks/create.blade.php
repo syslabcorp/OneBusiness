@@ -152,10 +152,11 @@
                     <td> <input type="text" name="Sub" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
-                      <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" >
+                      <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" 
+                        href="javascript:void(0);">
                         <i class="fa fa-check"></i>
                       </a>
-                      <a data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" >
+                      <a type="button" data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" href="javascript:void(0);">
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
@@ -371,6 +372,8 @@
         $trParent.find('td:eq(0)').append("<span class='error'>Please select an item.</span>");
         return;
       }
+
+      $('#recommend-table').css('display', "none");
       
       if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error')  )
         {
@@ -550,6 +553,7 @@
     });
 
     $('.recommend_row').click(function(){
+      $('#table_editable td span.error').remove();
       $('.recommend_row').removeClass('row-highlight');
       if($('.last_focus').hasClass('check_focus'))
       {
@@ -583,8 +587,9 @@
         $('.last_focus').parents('.editable').find('.edit_Prod_Line').find(".input_Prod_Line").val($(this).find('.recommend_prod_line').text());
         $('.last_focus').parents('.editable').find('.edit_Description').find(".value_Description").text($(this).find('.recommend_description').text());
         $('.last_focus').parents('.editable').find('.edit_Unit').find(".value_Unit").text($(this).find('.recommend_unit').text());
-        $('.last_focus').parents('.editable').find('.edit_ItemCode').find(".input_Cost").val($(this).find('.recommend_cost').text());
-        
+        $('.last_focus').parents('.editable').find(".input_Cost").val($(this).find('.recommend_cost').text());
+        $('.last_focus').parents('.editable').find(".input_Cost").change();
+
         $('#recommend-table').css('display', "none");
         if($(this).find('.recommend_cost').text() != "")
         {
@@ -592,7 +597,6 @@
           if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
           {
             var val = parseFloat( $parent.find('.input_Cost').val() ) * parseFloat($parent.find('.input_Qty').val());
-            // $parent.find('.input_Sub').val("abcd");
           }
         }
       }
@@ -618,6 +622,7 @@
       }
       else
       {
+        $(this).parents('tr').find('.error').remove();
         if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error')  )
         {
         self.parents('.editable').find('.value_ItemCode').text(self.parents('.editable').find('.input_ItemCode').val() );
@@ -650,7 +655,12 @@
         {
           self.parents('.editable').find('.value_Sub').text('0.00');
         }
-        self.parents('.editable').find( ".input_type" ).val('none') ;
+        if(self.parents('.editable').attr('data-id') == "") {
+          self.parents('.editable').find( ".input_type" ).val('add') ;
+        }else {
+          self.parents('.editable').find( ".input_type" ).val('none') ;
+        }
+        
         
         $('#recommend-table').css('display', "none");
 
@@ -886,15 +896,23 @@
       $('.input_Description').val('');
       $('.input_Cost').val('');
       $('.input_Unit').text('');
-      $('.input_Qty').val('');
+      $('.input_Qty').val(1);
       $('.input_Sub').val('');
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
       refresh_sub();
     });
 
-    $('.save_button').on('click', function(event)
-    {
+    $('.save_button').on('click', function(event) {
+      $('#table_editable td span.error').remove();
+      $('#table_editable input[value="editting"]').each(function() {
+        $(this).parents('.editable').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
+      });
+
+      if($('#table_editable input[value="editting"]').length > 0) {
+        return;
+      }
+
       if( $('form').isValid(false) )
       {
         if( $('.editable').length == 1 )
