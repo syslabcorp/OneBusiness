@@ -86,6 +86,7 @@ class StocksController extends Controller
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvDate = $request->RcvDate;
     $stock->RcvdBy = \Auth::user()->UserID;
+    $stock->DateSaved = date('Y-m-d H:i:s');
     
     $stock->save();
     if($request->type)
@@ -102,7 +103,7 @@ class StocksController extends Controller
             $stock_detail->item_id = intval($request->item_id[$key]);
           }
           //$stock_detail->ItemCode = $request->ItemCode[$key];
-          $stock_detail->RcvDate = $stock->DateSaved;
+          $stock_detail->RcvDate = date('Y-m-d H:i:s');
           $stock_detail->Qty = floatval($request->Qty[$key]) ;
           $stock_detail->Bal = floatval($request->Qty[$key]);
           $stock_detail->Cost = floatval($request->Cost[$key]);
@@ -137,7 +138,7 @@ class StocksController extends Controller
           $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
           $stock_detail->Bal = floatval($request->add_Qty[$key]);
           $stock_detail->Cost = floatval($request->add_Cost[$key]);
-          $stock_detail->RcvDate = $stock->DateSaved;
+          $stock_detail->RcvDate = date('Y-m-d H:i:s');
           $stock_detail->RR_No = $request->RR_No;
           $stock_detail->save();
 
@@ -393,6 +394,7 @@ class StocksController extends Controller
     $stock->TotalAmt = floatval($request->total_amt);
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvdBy = \Auth::user()->UserID;
+    $stock->DateSaved = date('Y-m-d H:i:s');
     $success = $stock->save();
 
     if($success && $request->add_type)

@@ -429,6 +429,8 @@
         $trParent.find('td:eq(0)').append("<span class='error'>Please select an item.</span>");
         return;
       }
+
+      $('#recommend-table').css('display', "none");
       
       new_element.css("display", "").removeAttr('id');
 
@@ -592,6 +594,9 @@
       $.validate({
         form : 'form'
       });
+
+      $('#recommend-table').css('display', "none");
+
       if($(this).find('i').hasClass('fa-pencil'))
       {
         $(this).find('i').removeClass('fa-pencil').addClass('fa-save');
@@ -606,6 +611,7 @@
       }
       else
       {
+        $(this).parents('tr').find('.error').remove();
         if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error') )
         {
         self.parents('.editable').find('.value_ItemCode').text(self.parents('.editable').find('.input_ItemCode').val() );
@@ -883,6 +889,15 @@
 
     $('.save_button').on('click', function(event)
     {
+      $('#table_editable td span.error').remove();
+      $('#table_editable input[value="editting"]').each(function() {
+        $(this).parents('.editable').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
+      });
+
+      if($('#table_editable input[value="editting"]').length > 0) {
+        return;
+      }
+
       if( $('form').isValid(false) )
       {
         $('#confirm_save').modal('show');

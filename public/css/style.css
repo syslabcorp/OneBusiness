@@ -65,6 +65,11 @@
   font-weight: normal;
 }
 
+td span.error {
+  color: #a94442;
+  font-weight: 400;
+}
+
 
 
 
