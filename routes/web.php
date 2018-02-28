@@ -171,3 +171,11 @@ Route::any('/stocks/{stock_id}/{detail_id}' , 'StocksController@destroy_detail')
 Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
 Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');
 Route::post('users/verify-otp', 'UsersController@verifyOTP')->middleware('auth')->name('users.verifyOTP');
+
+// Branch Request Module Routes
+Route::get("getEmployeeRequests", "Branch\EmployeeRequestController@getEmployeeRequests")->middleware('auth');
+Route::get("getEmployeeRequests2", "Branch\EmployeeRequestController@getEmployeeRequests2")->middleware('auth');
+Route::post("approveEmployeeRequest", "Branch\EmployeeRequestController@approveEmployeeRequest")->middleware('auth');
+Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmployeeRequest")->middleware('auth');
+Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
+Route::get("branchRequest/{corpId}", "Branch\EmployeeRequestController@index")->middleware('auth');
