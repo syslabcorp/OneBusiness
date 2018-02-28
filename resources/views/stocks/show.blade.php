@@ -876,13 +876,13 @@
     {
       $('#add-row').css('display' , 'none'); 
       $('.recommend_row').removeClass('row-highlight');
-      $('.input_ItemCode').val('');
-      $('.input_Prod_Line').val('');
-      $('.input_Brand').val('');
-      $('.input_Description').val('');
-      $('.input_Cost').val('');
-      $('.input_Unit').text('');
-      $('.input_item_id').val('');
+      $('#add-row .input_ItemCode').val('');
+      $('#add-row .input_Prod_Line').val('');
+      $('#add-row .input_Brand').val('');
+      $('#add-row .input_Description').val('');
+      $('#add-row .input_Cost').val('');
+      $('#add-row .input_Unit').text('');
+      $('#add-row .input_item_id').val('');
       $('#recommend-table').css('display', "none");
       refresh_sub();
     });
