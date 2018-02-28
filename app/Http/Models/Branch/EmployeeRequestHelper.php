@@ -18,8 +18,8 @@ class EmployeeRequestHelper
 	public function getEmployeeRequestModel(){
 		$database_name = $this->getDatabaseName();
 		if(!is_null($database_name)) {
-				$modelName = "App\Http\Models\Tables\\".$database_name."\EmployeeRequest";
-				return new $modelName;
+			$modelName = "App\Http\Models\Tables\\".$database_name."\EmployeeRequest";
+			return new $modelName;
 		}
 	}
 
