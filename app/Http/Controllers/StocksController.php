@@ -89,17 +89,13 @@ class StocksController extends Controller
     $stock->DateSaved = date('Y-m-d H:i:s');
     
     $stock->save();
-    if($request->type)
-    {
-      foreach ($request->type as $key => $value)
-      {
+    if($request->type) {
+      foreach ($request->type as $key => $value) {
         $stock_detail = $stockDetailModel->find($key);
-        
+
         //edit row
-        if($value == "none")
-        {
-          if($request->old_item_id[$key] != $request->item_id[$key])
-          {
+        if($value == "none") {
+          if($request->old_item_id[$key] != $request->item_id[$key]) {
             $stock_detail->item_id = intval($request->item_id[$key]);
           }
           //$stock_detail->ItemCode = $request->ItemCode[$key];
