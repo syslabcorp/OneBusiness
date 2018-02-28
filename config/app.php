@@ -177,7 +177,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 		Aloha\Twilio\Support\Laravel\ServiceProvider::class,
-		Nexmo\Laravel\NexmoServiceProvider::class
+		Nexmo\Laravel\NexmoServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
 
     ],
 
@@ -228,7 +229,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 		'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
-		'Nexmo' => \Nexmo\Laravel\Facade\Nexmo::class
+		'Nexmo' => \Nexmo\Laravel\Facade\Nexmo::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 
     ],
 
