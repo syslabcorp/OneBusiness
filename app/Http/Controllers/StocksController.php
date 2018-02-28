@@ -110,8 +110,10 @@ class StocksController extends Controller
           $stock_detail->save();
 
           $stock_item = StockItem::find($stock_detail->item_id);
-          $stock_item->LastCost = $stock_detail->Cost;
-          $stock_item->save();
+          if($stock_item) {
+            $stock_item->LastCost = $stock_detail->Cost;
+            $stock_item->save();
+          }
         }
   
         //delete row
