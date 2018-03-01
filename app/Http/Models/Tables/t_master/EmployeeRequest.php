@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmployeeRequest extends Model
 {
     protected $primaryKey = "txn_no";
-    protected $connection = "t_master";
+    protected $connection = "mysql2";
     protected $table = 't_cashr_rqst';
     public $timestamps = false;
 
