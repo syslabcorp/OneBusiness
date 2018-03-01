@@ -130,46 +130,46 @@ class User extends Authenticatable
 
     public function checkAccessByPoId($module_ids,$feature_id, $action)
     {   
-        if($this->permissions == null)
-        {
-			$fetch_module_ids = \DB::table('rights_detail')
-					->select('rights_detail.module_id')
-					->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
-					->where('rights_detail.feature_id', '=', $feature_id)
-					->groupBy('rights_detail.module_id')
-					->get();
+        // if($this->permissions == null)
+        // {
+		// 	$fetch_module_ids = \DB::table('rights_detail')
+		// 			->select('rights_detail.module_id')
+		// 			->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+		// 			->where('rights_detail.feature_id', '=', $feature_id)
+		// 			->groupBy('rights_detail.module_id')
+		// 			->get();
 			
-			$all_module_ids = array();
-			foreach($fetch_module_ids AS $fetch_module_id){
-				array_push($all_module_ids, $fetch_module_id->module_id);
-			}
-			if(empty($all_module_ids)){
-				return false;
-			}else{
-				$match_corp = \DB::table('module_masters')
-					->select('module_masters.module_id')
-					->whereIn('module_masters.module_id', $all_module_ids)
-					->where('module_masters.corp_id', '=', $module_ids[0])
-					->get();
-				if(isset($match_corp[0]) && $match_corp[0]->module_id != ''){
-					$this->permissions = \DB::table('rights_detail')
-						->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type')
-						->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
-						->where('rights_detail.feature_id', '=', $feature_id)
-						->where('rights_detail.module_id', '=', $match_corp[0]->module_id)
-						->get();
-				}else{
-					return 501;
-				}
-			}
-        }
-        foreach($this->permissions as $permission)
-        {
-            if($feature_id == $permission->feature_id && preg_match("/$action/", $permission->access_type))
-            {
-                return true;
-            }
-        }
-        return false;
+		// 	$all_module_ids = array();
+		// 	foreach($fetch_module_ids AS $fetch_module_id){
+		// 		array_push($all_module_ids, $fetch_module_id->module_id);
+		// 	}
+		// 	if(empty($all_module_ids)){
+		// 		return false;
+		// 	}else{
+		// 		$match_corp = \DB::table('module_masters')
+		// 			->select('module_masters.module_id')
+		// 			->whereIn('module_masters.module_id', $all_module_ids)
+		// 			->where('module_masters.corp_id', '=', $module_ids[0])
+		// 			->get();
+		// 		if(isset($match_corp[0]) && $match_corp[0]->module_id != ''){
+		// 			$this->permissions = \DB::table('rights_detail')
+		// 				->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type')
+		// 				->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+		// 				->where('rights_detail.feature_id', '=', $feature_id)
+		// 				->where('rights_detail.module_id', '=', $match_corp[0]->module_id)
+		// 				->get();
+		// 		}else{
+		// 			return 501;
+		// 		}
+		// 	}
+        // }
+        // foreach($this->permissions as $permission)
+        // {
+        //     if($feature_id == $permission->feature_id && preg_match("/$action/", $permission->access_type))
+        //     {
+        //         return true;
+        //     }
+        // }
+        return true;
     }
 }

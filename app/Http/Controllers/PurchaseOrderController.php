@@ -232,6 +232,22 @@ class PurchaseOrderController extends Controller
     public function module_not_found(){
         return view('accesslevel.501');
     }
+
+    public function manual(){
+        return view('purchase_order.manual');
+    }
+
+    public function automate(){
+        return view('purchase_order.automate');
+    }
+
+    public function manual_suggest(){
+        return view('purchase_order.manual_suggest');
+    }
+
+    public function auto_process(){
+        return view('purchase_order.auto_process');
+    }
 }
 
 
