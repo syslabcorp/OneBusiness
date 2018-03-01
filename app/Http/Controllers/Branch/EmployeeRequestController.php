@@ -26,7 +26,7 @@ class EmployeeRequestController extends Controller
 			usort($query1, function($a,$b){ return strcmp($a->branch, $b->branch); });
 			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $query1, "corporations" => $corporations]);
 		} catch(\Exception $ex){
-			return abort(404);
+			return $ex->getMessage();
 		}
 	}
 
