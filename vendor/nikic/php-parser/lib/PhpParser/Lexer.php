@@ -185,17 +185,15 @@ class Lexer
             return;
         }
 
-        if (count($this->tokens) > 0) {
-            // Check for unterminated comment
-            $lastToken = $this->tokens[count($this->tokens) - 1];
-            if ($this->isUnterminatedComment($lastToken)) {
-                $errorHandler->handleError(new Error('Unterminated comment', [
-                    'startLine' => $line - substr_count($lastToken[1], "\n"),
-                    'endLine' => $line,
-                    'startFilePos' => $filePos - \strlen($lastToken[1]),
-                    'endFilePos' => $filePos,
-                ]));
-            }
+        // Check for unterminated comment
+        $lastToken = $this->tokens[count($this->tokens) - 1];
+        if ($this->isUnterminatedComment($lastToken)) {
+            $errorHandler->handleError(new Error('Unterminated comment', [
+                'startLine' => $line - substr_count($lastToken[1], "\n"),
+                'endLine' => $line,
+                'startFilePos' => $filePos - \strlen($lastToken[1]),
+                'endFilePos' => $filePos,
+            ]));
         }
     }
 
@@ -360,7 +358,7 @@ class Lexer
                 if ('T_HASHBANG' === $name) {
                     // HHVM uses a special token for #! hashbang lines
                     $tokenMap[$i] = Tokens::T_INLINE_HTML;
-                } else if (defined($name = Tokens::class . '::' . $name)) {
+                } else if (defined($name = 'PhpParser\Parser\Tokens::' . $name)) {
                     // Other tokens can be mapped directly
                     $tokenMap[$i] = constant($name);
                 }

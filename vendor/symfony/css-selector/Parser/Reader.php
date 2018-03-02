@@ -23,37 +23,71 @@ namespace Symfony\Component\CssSelector\Parser;
  */
 class Reader
 {
+    /**
+     * @var string
+     */
     private $source;
+
+    /**
+     * @var int
+     */
     private $length;
+
+    /**
+     * @var int
+     */
     private $position = 0;
 
-    public function __construct(string $source)
+    /**
+     * @param string $source
+     */
+    public function __construct($source)
     {
         $this->source = $source;
         $this->length = strlen($source);
     }
 
-    public function isEOF(): bool
+    /**
+     * @return bool
+     */
+    public function isEOF()
     {
         return $this->position >= $this->length;
     }
 
-    public function getPosition(): int
+    /**
+     * @return int
+     */
+    public function getPosition()
     {
         return $this->position;
     }
 
-    public function getRemainingLength(): int
+    /**
+     * @return int
+     */
+    public function getRemainingLength()
     {
         return $this->length - $this->position;
     }
 
-    public function getSubstring(int $length, int $offset = 0): string
+    /**
+     * @param int $length
+     * @param int $offset
+     *
+     * @return string
+     */
+    public function getSubstring($length, $offset = 0)
     {
         return substr($this->source, $this->position + $offset, $length);
     }
 
-    public function getOffset(string $string)
+    /**
+     * @param string $string
+     *
+     * @return int
+     */
+    public function getOffset($string)
     {
         $position = strpos($this->source, $string, $this->position);
 
@@ -61,9 +95,11 @@ class Reader
     }
 
     /**
-     * @return array|false
+     * @param string $pattern
+     *
+     * @return bool
      */
-    public function findPattern(string $pattern)
+    public function findPattern($pattern)
     {
         $source = substr($this->source, $this->position);
 
@@ -74,7 +110,10 @@ class Reader
         return false;
     }
 
-    public function moveForward(int $length)
+    /**
+     * @param int $length
+     */
+    public function moveForward($length)
     {
         $this->position += $length;
     }

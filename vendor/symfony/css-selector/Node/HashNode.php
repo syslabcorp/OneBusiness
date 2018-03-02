@@ -23,21 +23,38 @@ namespace Symfony\Component\CssSelector\Node;
  */
 class HashNode extends AbstractNode
 {
+    /**
+     * @var NodeInterface
+     */
     private $selector;
+
+    /**
+     * @var string
+     */
     private $id;
 
-    public function __construct(NodeInterface $selector, string $id)
+    /**
+     * @param NodeInterface $selector
+     * @param string        $id
+     */
+    public function __construct(NodeInterface $selector, $id)
     {
         $this->selector = $selector;
         $this->id = $id;
     }
 
-    public function getSelector(): NodeInterface
+    /**
+     * @return NodeInterface
+     */
+    public function getSelector()
     {
         return $this->selector;
     }
 
-    public function getId(): string
+    /**
+     * @return string
+     */
+    public function getId()
     {
         return $this->id;
     }
@@ -45,7 +62,7 @@ class HashNode extends AbstractNode
     /**
      * {@inheritdoc}
      */
-    public function getSpecificity(): Specificity
+    public function getSpecificity()
     {
         return $this->selector->getSpecificity()->plus(new Specificity(1, 0, 0));
     }
@@ -53,7 +70,7 @@ class HashNode extends AbstractNode
     /**
      * {@inheritdoc}
      */
-    public function __toString(): string
+    public function __toString()
     {
         return sprintf('%s[%s#%s]', $this->getNodeName(), $this->selector, $this->id);
     }

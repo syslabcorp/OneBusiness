@@ -3,6 +3,7 @@
 namespace App\Http\Models\Branch;
 
 use App\Corporation;
+use \Exception;
 
 class EmployeeRequestHelper
 {
@@ -17,13 +18,15 @@ class EmployeeRequestHelper
 
 	public function getEmployeeRequestModel(){
 		$database_name = $this->getDatabaseName();
-		if(!is_null($database_name)) {
-			$modelName = "App\Http\Models\Tables\\".$database_name."\EmployeeRequest";
-			return new $modelName;
-		}
+		$modelName = "App\Http\Models\Tables\\".$database_name."\EmployeeRequest";
+		return new $modelName;
 	}
 
 	public function getDatabaseName(){
-		return Corporation::select("database_name")->where("corp_id", $this->corpId)->first()->database_name;
+		if($this->corpId != "6" & $this->corpId != "7") throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
+		// This database name definition should be done dynamic
+		if($this->corpId == "6") { return "t_master"; }
+		if($this->corpId == "7") { return "k_master"; }
+		// return Corporation::select("database_name")->where("corp_id", $this->corpId)->first()->database_name;
 	}
 }
