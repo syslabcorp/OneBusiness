@@ -1,28 +1,24 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div id="filters" style="margin-bottom: 7px;">
+            <div id="employee_filters" style="margin-bottom: 7px; clear: both;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control approved-filter">
                            <option value="any">All Requests</option>
-                           <option value="0">For Approval</option>
-                           <option value="1">Approved</option>
-                   </select>
-                   <select style="width: 170px; display: inline;" class="form-control uploaded-filter">
-                           <option value="any">Any Upload Status</option>
-                           <option value="0">Not Uploaded Yet</option>
-                           <option value="1">Uploaded</option>
+                           <option value="uploaded">Uploaded</option>
+                           <option value="approved">Approved</option>
+                           <option value="for_approval">For Approval</option>
                    </select>
            </div>
-            <table id="employeeRequestsDatatable" class="table table-bordered">
+            <table id="employeeRequestsDatatable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Type</th>
                         <th>From Branch</th>
                         <th>Last Duty</th>
                         <th>To Branch</th>
                         <th>Start Duty</th>
-                        <th>Type</th>
                         <th>Approved</th>
                         <th>Uploaded</th>
                         <th>Sex</th>
@@ -48,17 +44,16 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
                 url: "{{ url('getEmployeeRequests') }}",
                 data: function (d) {
                         d.approved = $(".approved-filter").val();
-                        d.uploaded = $(".uploaded-filter").val();
                         d.corpId = {{ $corpId }};
                 }
         },
         columns: [
                 {data: 'username', name: 'username'},
+                {data: 'type', name: 'type'},
                 {data: 'from_branch', name: 'from_branch'},
                 {data: 'date_end', name: 'date_end'},
                 {data: 'to_branch', name: 'to_branch'},
                 {data: 'date_start', name: 'date_start'},
-                {data: 'type', name: 'type'},
                 {data: 'approved', name: 'approved'},
                 {data: 'executed', name: 'executed'},
                 {data: 'sex', name: 'sex'},
@@ -79,7 +74,7 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
             });
         }
 });
-$('.approved-filter, .uploaded-filter').on('change', function () {
+$('.approved-filter').on('change', function () {
         employeeRequestsDatatable.draw();
 });
 
@@ -90,10 +85,10 @@ function sendApproveRequest(requestId){
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
         if(response == "true") { 
-            location.reload();
-            // setTimeout(function(){
-            //     showAlertModal("Success", "The employee request was approved!");
-            // }, 500); 
+            setTimeout(function(){
+                $(".approved_td[name='"+requestId+"']").prop('checked', true);
+                showAlertModal("Success", "The employee request was approved!");
+            }, 300); 
         }
         else { showAlertModal("Error", "Something went wrong, please contact administration") }
     });
@@ -106,23 +101,54 @@ function sendDeleteRequest(requestId, element){
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
         if(response == "true") { 
-            location.reload();
-            // setTimeout(function(){ 
-            //     showAlertModal("Success", "The employee request was deleted!"); 
-            //     $(element).closest("tr").remove();
-            // }, 500); 
+            setTimeout(function(){ 
+                $("[data-id='"+requestId+"']").closest("tr").remove();
+                showAlertModal("Success", "The employee request was deleted!"); 
+            }, 300); 
         }
         else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
     });
 }
 
 function approveRequest(requestId){
-    showConfirmModal("Request Confirmation", "Are you sure you want to approve this request?", function(result){ 
-        if( result == true ) { sendApproveRequest(requestId)} });
+    bootbox.confirm({
+    title: "Request Confirmation",
+    message: "Are you sure you want to approve this request?",
+    buttons: {
+        cancel: {
+            label: '<i class="fa fa-times"></i> Back', 
+            className: "btn-default modal-back"
+        },
+        confirm: {
+            label: '<i class="fa fa-check"></i> Approve', 
+            className: "btn-success"
+        }
+    },
+    callback: function(result){ 
+        if( result == true ) { sendApproveRequest(requestId)} }
+    });
 } 
 
 function deleteRequest(requestId, element){
-    showConfirmModal("Request Confirmation", "Are you sure you want to delete this request?", function(result){ 
-        if( result == true ) { sendDeleteRequest(requestId, element)} });
+    bootbox.confirm({
+    title: "Request Confirmation",
+    message: "Are you sure you want to delete this request?",
+    buttons: {
+        cancel: {
+            label: '<i class="fa fa-times"></i> Back',
+            className: 'btn-default modal-back'
+        },
+        confirm: {
+            label: '<i class="fa fa-check"></i> Delete',
+            className: 'btn-danger'
+        }
+    },
+    callback: function(result){ 
+        if( result == true ) { sendDeleteRequest(requestId, element)} }
+    });
 }
+
+$(document).ready(function (){
+    $("#employee_filters").insertAfter("#employeeRequestsDatatable_filter");
+});
 </script>
