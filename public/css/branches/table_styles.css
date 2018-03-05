@@ -8,20 +8,34 @@
 #reactivateEmployeeDatatable td, #reactivateEmployeeDatatable th,
 #employeeRequestsDatatable td, #employeeRequestsDatatable th 
 {
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     padding: 8px;
+}
+
+#employeeRequestsDatatable thead tr th, #reactivateEmployeeDatatable thead tr th {
+    border-bottom: 2px solid #ddd !important;
+}
+
+table#employeeRequestsDatatable, table#reactivateEmployeeDatatable{
+    border: 1px solid #ddd;
 }
 
 #reactivateEmployeeDatatable tr:nth-child(even),
 #employeeRequestsDatatable tr:nth-child(even)
 {
-    background-color: #f2f2f2;
+    /*background-color: #f2f2f2;*/
+}
+
+#employeeRequestsDatatable thead tr, #reactivateEmployeeDatatable thead tr {
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
 }
 
 #reactivateEmployeeDatatable tr:hover,
 #employeeRequestsDatatable tr:hover
 {
-    background-color: #ddd;
+    /*background-color: #ddd;*/
 }
 
 #reactivateEmployeeDatatable th,
@@ -65,7 +79,7 @@ th:after {
 }
 
 .tab-content, table, .nav, .modal {
-    font-family: 'Nunito', sans-serif !important;
+    /*font-family: 'Nunito', sans-serif !important;*/
 }
 
 td {
@@ -75,4 +89,8 @@ td {
 
 #reactivateModal label {
     font-weight: initial;
+}
+
+.modal-back {
+    float: left;
 }

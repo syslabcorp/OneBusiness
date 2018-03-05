@@ -1,30 +1,30 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
-            <div id="filters" style="margin-bottom: 7px;">
+            <div id="reactivate_filters" style="margin-bottom: 7px; clear: both;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control branch-filter">
-                           <option value="any">All Branches</option>
                            @foreach($branches as $branch)
-                                <option value="{{ $branch->branch }}">{{ $branch->branch }}</option>
+                                <option @if ($loop->first) selected @endif value="{{ $branch->ShortName }}">{{ $branch->ShortName }}</option>
                            @endforeach
                    </select>
                    <select style="width: 128px; display: inline;" class="form-control active-filter">
                            <option value="any">Any Status</option>
-                           <option value="1">Active</option>
+                           <option value="1" selected>Active</option>
                            <option value="0">Inactive</option>
                    </select>
+                   <input type="checkbox" name="all-branches"> All Branches
            </div>
 
             <table id="reactivateEmployeeDatatable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Username</th>
-                        <th>Branch</th>
-                        <th>Last Unfrm Paid</th>
-                        <th>Free Mins</th>
+                        <th>NX</th>
+                        <th>SQ</th>
                         <th>No. of Times</th>
-                        <th>Active</th>
+                        <th>Free Mins</th>
+                        <th>Last Unfrm Paid</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -83,7 +83,11 @@
             </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <!-- <button data-bb-handler="cancel" type="button" class="btn btn-default modal-back"><i class="fa fa-times"></i> Back</button> -->
+        <button type="button" class="btn btn-default modal-back" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fa fa-times"></i> Back</span>
+        </button>
+        <button type="submit" class="btn btn-success">Reactivate</button>
       </div>
     </div>
   </div>
@@ -103,11 +107,11 @@
                 },
                 columns: [
                         {data: 'username', name: 'username'},
-                        {data: 'from_branch', name: 'from_branch'},
-                        {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
-                        {data: 'AllowedMins', name: 'AllowedMins'},
+                        {data: 'nx', name: 'nx'},
+                        {data: 'sq', name: 'sq'},
                         {data: 'LoginsLeft', name: 'LoginsLeft'},
-                        {data: 'Active', name: 'Active'},
+                        {data: 'AllowedMins', name: 'AllowedMins'},
+                        {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
                 ]
         });
@@ -123,20 +127,23 @@
 
         $("#reactivateEmployeeForm").submit(function (event){
             event.preventDefault();
-            branch_id = $(":checkbox:checked").next("select").val();
+            var requestId = $("input[name='requestId']").val();
+            branch_id = $("#reactivateModal :checkbox:checked").next("select").val();
+            branch_name = $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 
-                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : $("input[name='requestId']").val(),  corpId : {{ $corpId }} }
+                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : {{ $corpId }} }
             }).done(function (response){
                 if(response == "true") {
                     $('#reactivateModal').modal('hide');
-                    location.reload();
-                    // setTimeout(function (){
-                    //     showAlertModal("Success", "The employee reactivated successfully");
-                    // }, 1000);
+                    setTimeout(function (){
+                      $("[date_start_id='"+requestId+"']").html(start_date);
+                      $("[to_branch_id='"+requestId+"']").html(branch_name);
+                      showAlertModal("Success", "The employee reactivated successfully");
+                    }, 500);
                 }
             });
         });
@@ -160,4 +167,20 @@
                 $(value).next("select").val("null");
              });
         });
+$(document).ready(function (){
+    $("#reactivate_filters").insertAfter("#reactivateEmployeeDatatable_filter");
+});
+
+$('[name="all-branches"]').change(function (){
+  if($(this).is(":checked")){
+    $(".branch-filter").prepend("<option value='any'></option>");
+    $(".branch-filter").val("any");
+    $(".branch-filter").attr("disabled", "disabled");
+    $(".branch-filter").trigger("change");
+  } else {
+    $(".branch-filter option[value='any']").remove();
+    $(".branch-filter").removeAttr("disabled");
+    $(".branch-filter").trigger("change");
+  }
+});
 </script>
