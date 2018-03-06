@@ -85,14 +85,16 @@ function sendApproveRequest(requestId){
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
         if(response == "true") { 
-            setTimeout(function(){
                 $(".approved_td[name='"+requestId+"']").prop('checked', true);
                 $("[data-approve-id='"+requestId+"']").attr("disabled", "disabled");
                 $("[data-delete-id='"+requestId+"']").attr("disabled", "disabled");
-                showAlertModal("Success", "The employee request was approved!");
-            }, 300); 
+                showSuccessAlert(" The employee request successfully approved!");
+                // showAlertModal("Success", "The employee request was approved!");
         }
-        else { showAlertModal("Error", "Something went wrong, please contact administration") }
+        else { 
+            showDangerAlert("Something went wrong, please contact administration"); 
+            // showAlertModal("Error", "Something went wrong, please contact administration") 
+        }
     });
 }
 
@@ -103,13 +105,15 @@ function sendDeleteRequest(requestId, element){
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
         if(response == "true") { 
-            setTimeout(function(){ 
                 $("[data-delete-id='"+requestId+"']").closest("tr").remove();
                 $("[data-reactivate-id='"+requestId+"']").closest("tr").remove();
-                showAlertModal("Success", "The employee request was deleted!"); 
-            }, 300); 
+                showSuccessAlert(" The employee request successfully deleted!");
+                // showAlertModal("Success", "The employee request was deleted!"); 
         }
-        else { showAlertModal("Error", "Something Went Wrong, Please Contact Administration") }
+        else { 
+            showDangerAlert("Something Went Wrong, Please Contact Administration");
+            // showAlertModal("Error", "Something Went Wrong, Please Contact Administration") 
+        }
     });
 }
 

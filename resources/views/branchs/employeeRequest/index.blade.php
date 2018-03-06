@@ -18,6 +18,8 @@
                         <h4>Employee Requests</h4>
                 </div>
             </div>
+            <div style="display: none;" class="alert-dismissible alert alert-success alertfade"><span class="fa fa-close"> </span><em> </em></div>
+            <div style="display: none;" class="alert alert-danger alertfade"><span class="fa fa-close"> </span><em> </em></div>
             <div class="panel-body">
               <ul class="nav nav-tabs" style="margin-bottom:15px;">
                 <li class="active"><a data-toggle="tab" href="#EmployeeRequests">Employee Requests</a></li>
@@ -46,6 +48,20 @@
           title: title,
           message: message
       });
+  }
+
+  function showSuccessAlert(message){
+    $(".alert-success em").html(message);
+    $(".alert-success").fadeIn();
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+    setTimeout(function (){ $(".alert-success").fadeOut(); }, 3000);
+  }
+
+  function showDangerAlert(message){
+    $(".alert-danger em").html(message);
+    $(".alert-danger").fadeIn();
+    $("html, body").animate({ scrollTop: 0 }, "normal");
+    setTimeout(function (){ $(".alert-danger").fadeOut(); }, 3000);
   }
   
   $(document).ready(function (){

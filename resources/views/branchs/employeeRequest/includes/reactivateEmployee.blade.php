@@ -139,11 +139,12 @@
             }).done(function (response){
                 if(response == "true") {
                     $('#reactivateModal').modal('hide');
-                    setTimeout(function (){
                       $("[date_start_id='"+requestId+"']").html(start_date);
                       $("[to_branch_id='"+requestId+"']").html(branch_name);
-                      showAlertModal("Success", "The employee reactivated successfully");
-                    }, 500);
+                      showSuccessAlert(" The employee reactivated successfully");
+                      // showAlertModal("Success", "The employee reactivated successfully");
+                } else {
+                  showDangerAlert("Something Went Wrong, Please Contact Administration");
                 }
             });
         });
