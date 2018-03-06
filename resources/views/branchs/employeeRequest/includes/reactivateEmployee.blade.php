@@ -72,7 +72,7 @@
                 <div style="height: 33px;">
                     <span class="col-md-3">{{ $corporation->corp_name }}</span>
                      <input class="col-md-1" type="checkbox">
-                    <select class="col-md-8" style="margin-top:-4px;">
+                    <select disabled class="col-md-8" style="margin-top:-4px; background-color: rgb(235, 235, 228);">
                     <option value="null"></option>
                     @foreach($corporation->branches as $branch)
                     <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
