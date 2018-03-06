@@ -87,6 +87,8 @@ function sendApproveRequest(requestId){
         if(response == "true") { 
             setTimeout(function(){
                 $(".approved_td[name='"+requestId+"']").prop('checked', true);
+                $("[data-approve-id='"+requestId+"']").attr("disabled", "disabled");
+                $("[data-delete-id='"+requestId+"']").attr("disabled", "disabled");
                 showAlertModal("Success", "The employee request was approved!");
             }, 300); 
         }
@@ -102,7 +104,8 @@ function sendDeleteRequest(requestId, element){
     }).done(function (response){
         if(response == "true") { 
             setTimeout(function(){ 
-                $("[data-id='"+requestId+"']").closest("tr").remove();
+                $("[data-delete-id='"+requestId+"']").closest("tr").remove();
+                $("[data-reactivate-id='"+requestId+"']").closest("tr").remove();
                 showAlertModal("Success", "The employee request was deleted!"); 
             }, 300); 
         }
