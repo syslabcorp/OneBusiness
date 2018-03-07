@@ -20,8 +20,8 @@
                 <thead>
                     <tr>
                         <th>Username</th>
-                        <th>NX</th>
-                        <th>SQ</th>
+                        {!! ($corpId == 6?"<th>NX</th><th>SQ</th>":"") !!}
+                        {!! ($corpId == 7?"<th>OG</th>":"") !!}
                         <th>No. of Times</th>
                         <th>Free Mins</th>
                         <th>Last Unfrm Paid</th>
@@ -54,7 +54,7 @@
         </div>
         <label style="margin-top: 7px;" for="start_date" class="col-sm-2 col-form-label">Start Date</label>
         <div class="col-sm-4">
-          <input type="date" required name="start_date" class="form-control plaintext">
+          <input type="date" required name="start_date" class="form-control plaintext" value="{{ date("Y-m-d") }}">
         </div>
       </div>
       <div class="form-group row">
@@ -70,11 +70,11 @@
             <div class="row branchAssignment">
             @foreach($corporations as $corporation)
                 <div style="height: 33px;">
-                    <span class="col-md-3">{{ $corporation->corp_name }}</span>
+                    <span class="col-md-3">{{ $corporation["corporation"] }}</span>
                      <input class="col-md-1" type="checkbox">
                     <select disabled class="col-md-8" style="margin-top:-4px; background-color: rgb(235, 235, 228);">
                     <option value="null"></option>
-                    @foreach($corporation->branches as $branch)
+                    @foreach($corporation["branches"] as $branch)
                     <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                     @endforeach
                     </select>
@@ -107,8 +107,8 @@
                 },
                 columns: [
                         {data: 'username', name: 'username'},
-                        {data: 'nx', name: 'nx'},
-                        {data: 'sq', name: 'sq'},
+                        {!! ($corpId == 6?"{data: 'nx', name: 'nx'},{data: 'sq', name: 'sq'},":"") !!}
+                        {!! ($corpId == 7?"{data: 'og', name: 'og'},":"") !!}
                         {data: 'LoginsLeft', name: 'LoginsLeft'},
                         {data: 'AllowedMins', name: 'AllowedMins'},
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},

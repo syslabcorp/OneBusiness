@@ -23,18 +23,44 @@ class EmployeeRequestController extends Controller
 
 			$corpType = Corporation::find($id)->corp_type;
 
-			$corporations = Corporation::where("corp_type", $corpType)->has("branches")->with("branches")->get();
-			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $branches, "corporations" => $corporations]);
+			$corpsAndBranches = $this->generateCorpsWithBranches($corpType, $id);
+			$corpsAndBranches = array_filter($corpsAndBranches, function ($item){ return count($item["branches"]) > 0; });
+
+			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $branches, "corporations" => $corpsAndBranches]);
 		} catch(\Exception $ex){
 			return $ex->getMessage();
 			// return abort(404);
 		}
 	}
 
+	private function generateCorpsWithBranches($corpType, $corpId){
+		if($corpType == "INN") {
+			$corpsAndBranches = [
+				[
+					"corporation" => "OG",
+					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%OG%")->orderBy("ShortName", "ASC")->get()
+				]
+			];
+		}
+		if($corpType == "ICAFE") {
+			$corpsAndBranches = [
+				[
+					"corporation" => "NX",
+					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%NX%")->orderBy("ShortName", "ASC")->get()
+				],
+				[
+					"corporation" => "SQ",
+					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%SQ%")->orderBy("ShortName", "ASC")->get()
+				]
+			];
+		}
+		return $corpsAndBranches;
+	}
+
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
 		if(!is_null($request->approved) && $request->approved != "any"){
 			if($request->approved == "uploaded") {
 				$query1 = array_filter($query1, function ($arr){
@@ -96,7 +122,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from global.t_users as users JOIN '.$databaseName.'.t_cashr_rqst employeeRequest ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as "username", users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->from_branch == $request->branch_name;
@@ -112,22 +138,25 @@ class EmployeeRequestController extends Controller
                     return '<span class="btn btn-primary actionButton" data-reactivate-id="'.$employeeRequest->id.'" onclick="reactivateEmployee(\''.$employeeRequest->id.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
-                    return '<input disabled type="checkbox" '.($employeeRequest->SQ_Active == 0?"checked":"").'>';
+                    return '<input disabled type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
                 })
                 ->addColumn('sq', function ($employeeRequest) {
                     return '<input disabled type="checkbox" '.($employeeRequest->SQ_Active == 1?"checked":"").'>';
                 })
+                ->addColumn('og', function ($employeeRequest) {
+                    return '<input disabled type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
+                })
                 ->editColumn("Active", function ($query){
                 	return $query->Active == 1?"Yes":"No";
                 })
-                ->editColumn("LastUnfrmPaid", function ($query){
-                	if($query->LastUnfrmPaid != "" && $query->LastUnfrmPaid != null){
-                		$day = (new Carbon($query->LastUnfrmPaid))->format("d");
-                		if($day > 15) return "16th";
-               		else { return "1st"; }
-                	}
-                })
-                ->rawColumns(["action", "nx", "sq"])
+                // ->editColumn("LastUnfrmPaid", function ($query){
+                // 	if($query->LastUnfrmPaid != "" && $query->LastUnfrmPaid != null){
+                // 		$day = (new Carbon($query->LastUnfrmPaid))->format("d");
+                // 		if($day > 15) return "16th";
+               	// 	else { return "1st"; }
+                // 	}
+                // })
+                ->rawColumns(["action", "nx", "sq", "og"])
                 ->make('true');
 	}
 
