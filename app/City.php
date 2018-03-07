@@ -14,4 +14,9 @@ class City extends Model
     {
         return $this->belongsTo(\App\Province::class, "Prov_ID", "Prov_ID");
     }
+
+    public function branchs()
+    {
+        return $this->hasMany(\App\Branch::class, "City_ID", "City_ID");
+    }
 }

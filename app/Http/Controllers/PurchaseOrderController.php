@@ -11,6 +11,9 @@ use Hash;
 use App\UserArea;
 use App\PoModel;
 use Session;
+use App\City;
+use App\Branch;
+use App\ProductLine;
 class PurchaseOrderController extends Controller
 {
 	public function __construct()
@@ -234,7 +237,16 @@ class PurchaseOrderController extends Controller
     }
 
     public function manual(){
-        return view('purchase_order.manual');
+        $cities_ID = explode( ',' ,\Auth::user()->area->city );
+        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        $prodlines = ProductLine::where('Active', 1)->get();
+
+        return view('purchase_order.manual',
+        [
+            'cities' => $cities,
+            'prodlines' => $prodlines
+        ]
+        );
     }
 
     public function automate(){
@@ -247,6 +259,14 @@ class PurchaseOrderController extends Controller
 
     public function auto_process(){
         return view('purchase_order.auto_process');
+    }
+
+    public function ajax_render_branch_by_city()
+    {
+      $branchs = Branch::where( 'City_ID', Request::all()['City_ID'] )->where('Active', 1)->get();
+      return response()->json([
+        'branchs' => $branchs
+      ]);
     }
 }
 
