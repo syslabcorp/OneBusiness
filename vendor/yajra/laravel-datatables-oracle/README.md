@@ -6,44 +6,36 @@
 
 [![Laravel 4.2|5.x](https://img.shields.io/badge/Laravel-4.2|5.x-orange.svg)](http://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Build Status](https://travis-ci.org/yajra/laravel-datatables.svg?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yajra/laravel-datatables/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yajra/laravel-datatables/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
+[![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
 This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
-use Yajra\Datatables\Facades\Datatables;
+return datatables()->of(User::query())->toJson();
+return datatables()->of(DB::table('users'))->toJson();
+return datatables()->of(User::all())->toJson();
 
-// Using Eloquent
-return Datatables::eloquent(User::query())->make(true);
+return datatables()->eloquent(User::query())->toJson();
+return datatables()->query(DB::table('users'))->toJson();
+return datatables()->collection(User::all())->toJson();
 
-// Using Query Builder
-return Datatables::queryBuilder(DB::table('users'))->make(true);
-
-// Using Collection or Array
-return Datatables::collection(User::all())->make(true);
-return Datatables::collection([
-    ['id' => 1, 'name' => 'Foo'],
-    ['id' => 2, 'name' => 'Bar'],
-])->make(true);
-
-// Using the Engine Factory
-return Datatables::of(User::query())->make(true);
-return Datatables::of(DB::table('users'))->make(true);
-return Datatables::of(User::all())->make(true);
-return Datatables::of(DB::select('select * from users'))->make(true);
+return datatables(User::query())->toJson();
+return datatables(DB::table('users'))->toJson();
+return datatables(User::all())->toJson();
 ```
 
 ## Requirements
-- [PHP >= 5.6.4](http://php.net/)
-- [Laravel 5.4+](https://github.com/laravel/framework)
+- [PHP >= 7.0](http://php.net/)
+- [Laravel 5.4|5.5](https://github.com/laravel/framework)
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
-- [Laravel Datatables Documentation](http://yajrabox.com/docs/laravel-datatables)
-- [Laravel Datatables API](http://yajra.github.io/laravel-datatables/api/)
+- [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
+- [Laravel DataTables API](https://datatables.net/reference/api/)
 - [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
 - [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
@@ -56,26 +48,35 @@ return Datatables::of(DB::select('select * from users'))->make(true);
  5.1.x    | 6.x
  5.2.x    | 6.x
  5.3.x    | 6.x
- 5.4.x    | 7.x
+ 5.4.x    | 7.x, 8.x
+ 5.5.x    | 8.x
 
-## Laravel 5.4 Upgrade Guide
-There are breaking changes since Laravel 5.4 and Datatables v7.0.
-If you are upgrading from v6.x to v7.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/7.0/upgrade).
+## DataTables 8.x Upgrade Guide
+There are breaking changes since DataTables v8.x.
+If you are upgrading from v7.x to v8.x, please see [upgrade guide](https://yajrabox.com/docs/laravel-datatables/master/upgrade).
 
 ## Quick Installation
 ```bash
-$ composer require yajra/laravel-datatables-oracle:^7.5
+$ composer require yajra/laravel-datatables-oracle:"~8.0"
 ```
 
-#### Service Provider
-`Yajra\Datatables\DatatablesServiceProvider::class`
+#### Service Provider & Facade (Optional on Laravel 5.5)
+Register provider and facade on your `config/app.php` file.
+```php
+'providers' => [
+    ...,
+    Yajra\DataTables\DataTablesServiceProvider::class,
+]
 
-#### Facade
-`Datatables` facade is automatically registered as an alias for `Yajra\Datatables\Facades\Datatables` class. 
+'aliases' => [
+    ...,
+    'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+]
+```
 
-#### Configuration and Assets
+#### Configuration (Optional)
 ```bash
-$ php artisan vendor:publish --provider="Yajra\Datatables\DatatablesServiceProvider"
+$ php artisan vendor:publish --provider=Yajra\DataTables\DataTablesServiceProvider
 ```
 
 And that's it! Start building out some awesome DataTables!
@@ -89,7 +90,7 @@ To enable debugging mode, just set `APP_DEBUG=true` and the package will include
 Please avoid using `php artisan serve` when developing with the package. 
 There are known bugs when using this where Laravel randomly returns a redirect and 401 (Unauthorized) if the route requires authentication and a 404 NotFoundHttpException on valid routes.
 
-It is advise to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
+It is advised to use [Homestead](https://laravel.com/docs/5.4/homestead) or [Valet](https://laravel.com/docs/5.4/valet) when working with the package.
 
 ## Contributing
 
@@ -110,4 +111,5 @@ If you discover any security related issues, please email [aqangeles@gmail.com](
 The MIT License (MIT). Please see [License File](https://github.com/yajra/laravel-datatables/blob/master/LICENSE.md) for more information.
 
 ## Buy me a coffee
-<a href='https://pledgie.com/campaigns/29515'><img alt='Click here to lend your support to: Laravel Datatables and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/29515.png?skin_name=chrome' border='0' ></a>
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/yajra)
+<a href='https://www.patreon.com/bePatron?u=4521203'><img alt='Become a Patron' src='https://s3.amazonaws.com/patreon_public_assets/toolbox/patreon.png' border='0' width='200px' ></a>
