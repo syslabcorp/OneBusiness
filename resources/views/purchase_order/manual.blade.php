@@ -34,15 +34,17 @@
 
         <div class="row purchase_header_form">
           <form class="form-inline" action="/action_page.php">
-            <div class="form-group">
+            <div id="city-list" class="form-group">
               <label>City</label>
               <select class="form-control" style="width: 300px;" name="" id="">
                 <option value=""></option>
-                <option value=""></option>
+                @foreach($cities as $city)
+                  <option value="{{$city->City_ID}}">{{$city->City}}</option>
+                @endforeach
               </select>
             </div>
             <div class="checkbox">
-              <label><input type="checkbox"> All Cities</label>
+              <label><input type="checkbox" id="all_cities_checkbox"> All Cities</label>
             </div>
           </form>
         </div>
@@ -54,6 +56,13 @@
               </div>
 
               <div class="panel-body first">
+                <div>
+                  <ul id="selectable">
+
+                  </ul>
+
+                </div>
+
               </div>
             </div>
 
@@ -103,6 +112,13 @@
               </div>
 
               <div class="panel-body">
+                <ul>
+                  @foreach($prodlines as $prodline)
+                    <li class="ui-widget-content">
+                      <label class="label-control"><input type="checkbox" value="{{$prodline->ProdLine_ID}}">{{ $prodline->Product }}</label>
+                    </li>
+                  @endforeach
+                </ul>
               </div>
             </div>
           </div>

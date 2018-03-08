@@ -301,4 +301,9 @@ class BranchsController extends Controller
         \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
         return redirect(route('branchs.edit', [$branch]));
     }
+
+    public function getBranchsByCity(Request $request){
+        $branchs = Branch::where('City_ID', $request->City_ID)->where('Active', 1)->get();
+        return response()->json( $branchs );
+    }
 }

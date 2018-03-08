@@ -150,6 +150,7 @@ Route::any('/purchase_order/create_manual' ,'PurchaseOrderController@manual')->m
 Route::any('/purchase_order/create_automate' ,'PurchaseOrderController@automate')->middleware('auth')->name('purchase_order.create_automate');
 Route::any('/purchase_order/manual_suggest' ,'PurchaseOrderController@manual_suggest')->middleware('auth');
 Route::any('/purchase_order/auto_process' ,'PurchaseOrderController@auto_process')->middleware('auth');
+Route::any('/purchase_order/ajax_render_branch_by_city', 'PurchaseOrderController@ajax_render_branch_by_city');
 
 Route::any('/product_branch', 'PurchaseOrderController@product_branch');
 Route::any('/retail_items', 'PurchaseOrderController@retail_items');

@@ -503,10 +503,30 @@ $(function()
 
     return parts.join(dec_point);
 }
-
-  $(function () {
-    $('#datetimepicker').datetimepicker();
-  });
   
 });
 
+$(function () {
+  $('#datetimepicker').datetimepicker();
+});
+
+$(function() {
+  $('#city-list').on('change', function(){
+    var _token = $("meta[name='csrf-token']").attr('content');
+    var City_ID = $('#city-list option:selected').val();
+    $.ajax({
+      url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
+      data: {_token, City_ID},
+      method: "POST",
+      type: 'POST',
+      success: function(res){
+        $('#selectable').html('');
+        $.each(res.branchs, function( index, value ) {
+          $('#selectable').append("<li class='ui-widget-content'>"+value.ShortName+"</li>");
+        });
+      }
+    });
+  })
+});
+
+$( "#selectable" ).selectable();

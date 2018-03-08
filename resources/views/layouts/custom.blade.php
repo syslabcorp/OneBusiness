@@ -27,6 +27,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 	
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -140,7 +141,6 @@
 		var ajax_url = "{{ URL('/') }}";
 		var biometric_url = "{{ URL('/biomertic-login') }}";
     </script>
-	<script src="{{ asset('js/login.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
@@ -152,6 +152,9 @@
     <script src="{{ URL('/js/momentjs.min.js') }}"></script>
     <script src="{{ URL('/js/bootstrap-datetimepicker.min.js') }}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<script src="{{ asset('js/login.js') }}"></script>
 	<script>
 		if($("#treeview_json").length){
 			/* var curr_url  = window.location.href;
