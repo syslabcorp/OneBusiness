@@ -1,8 +1,14 @@
 <?php
 
-namespace Yajra\DataTables\Contracts;
+namespace Yajra\Datatables\Contracts;
 
-interface DataTable
+/**
+ * Interface DataTableEngineContract
+ *
+ * @package Yajra\Datatables\Contracts
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
+interface DataTableEngineContract
 {
     /**
      * Get results.
@@ -14,14 +20,14 @@ interface DataTable
     /**
      * Count results.
      *
-     * @return int
+     * @return integer
      */
     public function count();
 
     /**
      * Count total items.
      *
-     * @return int
+     * @return integer
      */
     public function totalCount();
 
@@ -29,11 +35,11 @@ interface DataTable
      * Set auto filter off and run your own filter.
      * Overrides global search.
      *
-     * @param callable $callback
-     * @param bool     $globalSearch
+     * @param \Closure $callback
+     * @param bool $globalSearch
      * @return $this
      */
-    public function filter(callable $callback, $globalSearch = false);
+    public function filter(\Closure $callback, $globalSearch = false);
 
     /**
      * Perform global search.
@@ -69,5 +75,5 @@ interface DataTable
      * @param bool $mDataSupport
      * @return \Illuminate\Http\JsonResponse
      */
-    public function make($mDataSupport = true);
+    public function make($mDataSupport = false);
 }

@@ -1,13 +1,40 @@
 <?php
 
-namespace Yajra\DataTables;
+namespace Yajra\Datatables;
 
-use Yajra\DataTables\Utilities\Config;
 use Illuminate\Support\ServiceProvider;
-use Yajra\DataTables\Utilities\Request;
+use League\Fractal\Manager;
+use League\Fractal\Serializer\DataArraySerializer;
 
-class DataTablesServiceProvider extends ServiceProvider
+/**
+ * Class DatatablesServiceProvider.
+ *
+ * @package Yajra\Datatables
+ * @author  Arjay Angeles <aqangeles@gmail.com>
+ */
+class DatatablesServiceProvider extends ServiceProvider
 {
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
+
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/config/datatables.php', 'datatables');
+
+        $this->publishes([
+            __DIR__ . '/config/datatables.php' => config_path('datatables.php'),
+        ], 'datatables');
+    }
+
     /**
      * Register the service provider.
      *
@@ -16,58 +43,31 @@ class DataTablesServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->isLumen()) {
-            require_once 'lumen.php';
+            require_once 'fallback.php';
         }
 
-        $this->setupAssets();
+        $this->app->singleton('datatables.fractal', function () {
+            $fractal = new Manager;
+            $config  = $this->app['config'];
+            $request = $this->app['request'];
 
-        $this->app->alias('datatables', DataTables::class);
-        $this->app->singleton('datatables', function () {
-            return new DataTables;
-        });
-
-        $this->app->singleton('datatables.request', function () {
-            return new Request;
-        });
-
-        $this->app->singleton('datatables.config', Config::class);
-    }
-
-    /**
-     * Boot the instance, add macros for datatable engines.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $engines = config('datatables.engines');
-        foreach ($engines as $engine => $class) {
-            $engine = camel_case($engine);
-
-            if (! method_exists(DataTables::class, $engine) && ! DataTables::hasMacro($engine)) {
-                DataTables::macro($engine, function () use ($class) {
-                    if (! call_user_func_array([$class, 'canCreate'], func_get_args())) {
-                        throw new \InvalidArgumentException();
-                    }
-
-                    return call_user_func_array([$class, 'create'], func_get_args());
-                });
+            $includesKey = $config->get('datatables.fractal.includes', 'include');
+            if ($request->get($includesKey)) {
+                $fractal->parseIncludes($request->get($includesKey));
             }
-        }
-    }
 
-    /**
-     * Setup package assets.
-     *
-     * @return void
-     */
-    protected function setupAssets()
-    {
-        $this->mergeConfigFrom($config = __DIR__ . '/config/datatables.php', 'datatables');
+            $serializer = $config->get('datatables.fractal.serializer', DataArraySerializer::class);
+            $fractal->setSerializer(new $serializer);
 
-        if ($this->app->runningInConsole()) {
-            $this->publishes([$config => config_path('datatables.php')], 'datatables');
-        }
+            return $fractal;
+        });
+
+        $this->app->alias('datatables', Datatables::class);
+        $this->app->singleton('datatables', function () {
+            return new Datatables(new Request(app('request')));
+        });
+
+        $this->registerAliases();
     }
 
     /**
@@ -78,5 +78,26 @@ class DataTablesServiceProvider extends ServiceProvider
     protected function isLumen()
     {
         return str_contains($this->app->version(), 'Lumen');
+    }
+
+    /**
+     * Create aliases for the dependency.
+     */
+    protected function registerAliases()
+    {
+        if (class_exists('Illuminate\Foundation\AliasLoader')) {
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias('Datatables', \Yajra\Datatables\Facades\Datatables::class);
+        }
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return string[]
+     */
+    public function provides()
+    {
+        return ['datatables', 'datatables.fractal'];
     }
 }
