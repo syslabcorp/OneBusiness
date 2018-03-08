@@ -1,18 +1,16 @@
 <?php
 
-namespace Yajra\DataTables\Facades;
+namespace Yajra\Datatables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @mixin \Yajra\DataTables\DataTables
- * @method static \Yajra\DataTables\EloquentDatatable eloquent($builder)
- * @method static \Yajra\DataTables\QueryDataTable query($builder)
- * @method static \Yajra\DataTables\CollectionDataTable collection($collection)
+ * Class Datatables.
  *
- * @see \Yajra\DataTables\DataTables
+ * @package Yajra\Datatables\Facades
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
-class DataTables extends Facade
+class Datatables extends Facade
 {
     /**
      * Get the registered name of the component.

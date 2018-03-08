@@ -1,16 +1,18 @@
 <?php
 
-namespace Yajra\DataTables\Utilities;
+namespace Yajra\Datatables;
+
+use Exception;
+use Illuminate\Http\Request as IlluminateRequest;
 
 /**
- * @method mixed input($key, $default = null)
- * @method mixed get($key, $default = null)
- * @method mixed query($key, $default = null)
- * @method mixed has($key)
- * @method mixed merge(array $values)
- * @method bool wantsJson()
- * @method bool ajax()
- * @method array all()
+ * Class Request.
+ *
+ * @package Yajra\Datatables
+ * @method input($key, $default = null)
+ * @method has($key)
+ * @method query($key, $default = null)
+ * @author  Arjay Angeles <aqangeles@gmail.com>
  */
 class Request
 {
@@ -21,10 +23,12 @@ class Request
 
     /**
      * Request constructor.
+     *
+     * @param \Illuminate\Http\Request $request
      */
-    public function __construct()
+    public function __construct(IlluminateRequest $request)
     {
-        $this->request = app('request');
+        $this->request = $request;
     }
 
     /**
@@ -39,6 +43,8 @@ class Request
         if (method_exists($this->request, $name)) {
             return call_user_func_array([$this->request, $name], $arguments);
         }
+
+        return null;
     }
 
     /**
@@ -63,7 +69,21 @@ class Request
     }
 
     /**
-     * Check if DataTables is searchable.
+     * Check if request uses legacy code
+     *
+     * @throws Exception
+     */
+    public function checkLegacyCode()
+    {
+        if (! $this->request->input('draw') && $this->request->input('sEcho')) {
+            throw new Exception('DataTables legacy code is not supported! Please use DataTables 1.10++ coding convention.');
+        } elseif (! $this->request->input('draw') && ! $this->request->input('columns')) {
+            throw new Exception('Insufficient parameters');
+        }
+    }
+
+    /**
+     * Check if Datatables is searchable.
      *
      * @return bool
      */
@@ -73,10 +93,10 @@ class Request
     }
 
     /**
-     * Check if DataTables must uses regular expressions.
+     * Check if Datatables must uses regular expressions
      *
-     * @param int $index
-     * @return bool
+     * @param integer $index
+     * @return string
      */
     public function isRegex($index)
     {
@@ -84,7 +104,7 @@ class Request
     }
 
     /**
-     * Get orderable columns.
+     * Get orderable columns
      *
      * @return array
      */
@@ -107,7 +127,7 @@ class Request
     }
 
     /**
-     * Check if DataTables ordering is enabled.
+     * Check if Datatables ordering is enabled.
      *
      * @return bool
      */
@@ -119,16 +139,16 @@ class Request
     /**
      * Check if a column is orderable.
      *
-     * @param  int $index
+     * @param  integer $index
      * @return bool
      */
     public function isColumnOrderable($index)
     {
-        return $this->request->input("columns.$index.orderable", 'true') == 'true';
+        return $this->request->input("columns.$index.orderable", "true") == 'true';
     }
 
     /**
-     * Get searchable column indexes.
+     * Get searchable column indexes
      *
      * @return array
      */
@@ -147,81 +167,60 @@ class Request
     /**
      * Check if a column is searchable.
      *
-     * @param int $i
-     * @param bool    $column_search
+     * @param integer $i
+     * @param bool $column_search
      * @return bool
      */
     public function isColumnSearchable($i, $column_search = true)
     {
         if ($column_search) {
-            return $this->request->input("columns.$i.searchable", 'true') === 'true' && $this->columnKeyword($i) != '';
+            return $this->request->input("columns.$i.searchable", "true") === 'true' && $this->columnKeyword($i) != '';
         }
 
-        return $this->request->input("columns.$i.searchable", 'true') === 'true';
+        return $this->request->input("columns.$i.searchable", "true") === 'true';
     }
 
     /**
      * Get column's search value.
      *
-     * @param int $index
+     * @param integer $index
      * @return string
      */
     public function columnKeyword($index)
     {
-        $keyword = $this->request->input("columns.$index.search.value");
-
-        return $this->prepareKeyword($keyword);
+        return $this->request->input("columns.$index.search.value");
     }
 
     /**
-     * Prepare keyword string value.
-     *
-     * @param string|array $keyword
-     * @return string
-     */
-    protected function prepareKeyword($keyword)
-    {
-        if (is_array($keyword)) {
-            return implode(' ', $keyword);
-        }
-
-        return $keyword;
-    }
-
-    /**
-     * Get global search keyword.
+     * Get global search keyword
      *
      * @return string
      */
     public function keyword()
     {
-        $keyword = $this->request->input('search.value');
-
-        return $this->prepareKeyword($keyword);
+        return $this->request->input('search.value');
     }
 
     /**
      * Get column identity from input or database.
      *
-     * @param int $i
+     * @param integer $i
      * @return string
      */
     public function columnName($i)
     {
         $column = $this->request->input("columns.$i");
 
-        return isset($column['name']) && $column['name'] != '' ? $column['name'] : $column['data'];
+        return isset($column['name']) && $column['name'] <> '' ? $column['name'] : $column['data'];
     }
 
     /**
-     * Check if DataTables allow pagination.
+     * Check if Datatables allow pagination.
      *
      * @return bool
      */
     public function isPaginationable()
     {
-        return ! is_null($this->request->input('start')) &&
-            ! is_null($this->request->input('length')) &&
-            $this->request->input('length') != -1;
+        return ! is_null($this->request->input('start')) && ! is_null($this->request->input('length')) && $this->request->input('length') != -1;
     }
 }

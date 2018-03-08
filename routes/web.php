@@ -15,15 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('stocktransfer','StocktransferController@index');
-
-Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
-
-Route::get('{item}/markToserved', 'StocktransferController@markToserved');
-
 Auth::routes();
-
-
 
 Route::get('/home', 'HomeController@index');
 Route::any('/home_ajax_action', 'HomeController@home_ajax_action');
@@ -154,6 +146,11 @@ Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity')
 #Purchase Order Module
 Route::any('/purchase_order/{corp_id}/{city_id}/{id?}', 'PurchaseOrderController@purchase_order');
 Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order');
+Route::any('/purchase_order/create_manual' ,'PurchaseOrderController@manual')->middleware('auth')->name('purchase_order.create_manual');
+Route::any('/purchase_order/create_automate' ,'PurchaseOrderController@automate')->middleware('auth')->name('purchase_order.create_automate');
+Route::any('/purchase_order/manual_suggest' ,'PurchaseOrderController@manual_suggest')->middleware('auth');
+Route::any('/purchase_order/auto_process' ,'PurchaseOrderController@auto_process')->middleware('auth');
+Route::any('/purchase_order/ajax_render_branch_by_city', 'PurchaseOrderController@ajax_render_branch_by_city');
 
 Route::any('/product_branch', 'PurchaseOrderController@product_branch');
 Route::any('/retail_items', 'PurchaseOrderController@retail_items');
@@ -179,3 +176,11 @@ Route::any('/stocks/{stock_id}/{detail_id}' , 'StocksController@destroy_detail')
 Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
 Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');
 Route::post('users/verify-otp', 'UsersController@verifyOTP')->middleware('auth')->name('users.verifyOTP');
+
+// Branch Request Module Routes
+Route::get("getEmployeeRequests", "Branch\EmployeeRequestController@getEmployeeRequests")->middleware('auth');
+Route::get("getEmployeeRequests2", "Branch\EmployeeRequestController@getEmployeeRequests2")->middleware('auth');
+Route::post("approveEmployeeRequest", "Branch\EmployeeRequestController@approveEmployeeRequest")->middleware('auth');
+Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmployeeRequest")->middleware('auth');
+Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
+Route::get("branchRequest/{corpId}", "Branch\EmployeeRequestController@index")->middleware('auth');

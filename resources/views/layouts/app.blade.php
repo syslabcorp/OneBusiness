@@ -40,7 +40,7 @@
 	<![endif]-->
 
 	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
-       @yield('header_styles')
+
 
 	<style>
 		.dispnone{display:none !important}
