@@ -15,8 +15,9 @@ use Carbon\Carbon;
 
 class EmployeeRequestController extends Controller
 {
-	public function index(EmployeeRequestHelper $employeeRequest, $id){
+	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
 		try{
+			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
 			$databaseName = $employeeRequest->getDatabaseName();
 			$branches = Branch::where(["corp_id" => $id, "Active" => "1"])->orderBy("ShortName", "asc")->select("ShortName")->get();

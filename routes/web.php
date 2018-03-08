@@ -178,4 +178,4 @@ Route::get("getEmployeeRequests2", "Branch\EmployeeRequestController@getEmployee
 Route::post("approveEmployeeRequest", "Branch\EmployeeRequestController@approveEmployeeRequest")->middleware('auth');
 Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmployeeRequest")->middleware('auth');
 Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
-Route::get("branchRequest/{corpId}", "Branch\EmployeeRequestController@index")->middleware('auth');
+Route::get("branchRequest", "Branch\EmployeeRequestController@index")->middleware('auth');
