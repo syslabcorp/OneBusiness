@@ -1,17 +1,10 @@
 <?php
 
-namespace Yajra\Datatables\Processors;
+namespace Yajra\DataTables\Processors;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Config;
-use Yajra\Datatables\Helper;
+use Yajra\DataTables\Utilities\Helper;
 
-/**
- * Class DataProcessor.
- *
- * @package Yajra\Datatables
- * @author  Arjay Angeles <aqangeles@gmail.com>
- */
 class DataProcessor
 {
     /**
@@ -27,7 +20,7 @@ class DataProcessor
     protected $escapeColumns = [];
 
     /**
-     * Processed data output
+     * Processed data output.
      *
      * @var array
      */
@@ -72,7 +65,7 @@ class DataProcessor
      * @param mixed $results
      * @param array $columnDef
      * @param array $templates
-     * @param int $start
+     * @param int   $start
      */
     public function __construct($results, array $columnDef, array $templates, $start)
     {
@@ -88,7 +81,7 @@ class DataProcessor
     }
 
     /**
-     * Process data to output on browser
+     * Process data to output on browser.
      *
      * @param bool $object
      * @return array
@@ -96,7 +89,7 @@ class DataProcessor
     public function process($object = false)
     {
         $this->output = [];
-        $indexColumn  = Config::get('datatables.index_column', 'DT_Row_Index');
+        $indexColumn  = config('datatables.index_column', 'DT_Row_Index');
 
         foreach ($this->results as $row) {
             $data  = Helper::convertToArray($row);

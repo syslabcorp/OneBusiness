@@ -178,7 +178,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 		Aloha\Twilio\Support\Laravel\ServiceProvider::class,
 		Nexmo\Laravel\NexmoServiceProvider::class,
-        Yajra\Datatables\DatatablesServiceProvider::class,
+
+        // add datatables 
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 
@@ -230,6 +232,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 		'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
 		'Nexmo' => \Nexmo\Laravel\Facade\Nexmo::class,
+
+        //add datatables
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 
     ],
