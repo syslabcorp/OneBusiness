@@ -33,30 +33,6 @@ class EmployeeRequestController extends Controller
 		}
 	}
 
-	private function generateCorpsWithBranches($corpType, $corpId){
-		if($corpType == "INN") {
-			$corpsAndBranches = [
-				[
-					"corporation" => "OG",
-					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%OG%")->orderBy("ShortName", "ASC")->get()
-				]
-			];
-		}
-		if($corpType == "ICAFE") {
-			$corpsAndBranches = [
-				[
-					"corporation" => "NX",
-					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%NX%")->orderBy("ShortName", "ASC")->get()
-				],
-				[
-					"corporation" => "SQ",
-					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%SQ%")->orderBy("ShortName", "ASC")->get()
-				]
-			];
-		}
-		return $corpsAndBranches;
-	}
-
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
@@ -160,16 +136,66 @@ class EmployeeRequestController extends Controller
                 ->make('true');
 	}
 
-	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
-		$employeeRequest->setCorpId($request->corpId);
-		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
+	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		$employeeRequestHelper->setCorpId($request->corpId);
+		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		if($employeeRequest->type == "3"){
+			$user = new User();
+			$user->UserName = $employeeRequest->LastName . " " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
+			$user->uname = ""; 
+			$user->mobile_no = "";
+			$user->email = "";
+			$user->Bday = $employeeRequest->bday;
+			$user->Hired = $employeeRequest->date_start;
+			$user->Sex = ($employeeRequest->sex == "F"?"Female":"Male");
+			$user->Position = "Attendant";
+			$user->SSS = ($employeeRequest->sss != null?$employeeRequest->sss:"0");
+			$user->PHIC = ($employeeRequest->phic != null?$employeeRequest->phic:"0");
+			$user->Pagibig = ($employeeRequest->pagibig != null?$employeeRequest->pagibig:"0");
+			$user->Rate = 0;
+			$user->FullRate = 0;
+			$user->PayBasis = 3;
+			$user->Status_Tbl = "Z";
+			$user->Level = 1;
+			$user->level_id = 1;
+			$user->passwrd = ($employeeRequest->pswd != null?(md5($employeeRequest->pswd)):null);
+			$user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
+			$user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
+			$user->LastUnfrmPaid = $this->getLastUnfrmPaid();
+			$user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
+			$user->Active = ($employeeRequest->to_branch != null?"1":"0");
+			$user->TechActive = 0;
+			$user->save();
+
+			$t_emp_pos = $employeeRequestHelper->getT_emp_posModel();
+			$t_emp_pos->level_id = "1";
+			$t_emp_pos->pos_from = $employeeRequest->date_start;
+			$t_emp_pos->emp_id = $user->UserID;
+			$t_emp_pos->save();
+
+			$t_emp_rate = $employeeRequestHelper->getT_emp_rateModel();
+			$t_emp_rate->pay_basis = "3";
+			$t_emp_rate->rate = "0";
+			$t_emp_rate->emp_id = $user->UserID;
+			$t_emp_rate->effect_date = $employeeRequest->date_start;
+			$t_emp_rate->save();
+		}
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->approved = "1";
 			$employeeRequest->save();
 			return "true";
 		}
 		return "false";
+	}
+
+	private function getLastUnfrmPaid(){
+		// if($LastUnfrmPaid != "" && $LastUnfrmPaid != null){
+                	// 	$day = (Carbon::now())->format("d");
+                	// 	if($day > 15) return "16th";
+               		// else { return "1st"; }
+                	// }
+                	return null;
 	}
 
 	public function deleteEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
@@ -197,5 +223,29 @@ class EmployeeRequestController extends Controller
 			return "true";
 		}
 		return "false";
+	}
+
+	private function generateCorpsWithBranches($corpType, $corpId){
+		if($corpType == "INN") {
+			$corpsAndBranches = [
+				[
+					"corporation" => "OG",
+					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%OG%")->orderBy("ShortName", "ASC")->get()
+				]
+			];
+		}
+		if($corpType == "ICAFE") {
+			$corpsAndBranches = [
+				[
+					"corporation" => "NX",
+					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%NX%")->orderBy("ShortName", "ASC")->get()
+				],
+				[
+					"corporation" => "SQ",
+					"branches" => Branch::where(["corp_id" => $corpId, "Active" => "1"])->where("ShortName", "like", "%SQ%")->orderBy("ShortName", "ASC")->get()
+				]
+			];
+		}
+		return $corpsAndBranches;
 	}
 }
