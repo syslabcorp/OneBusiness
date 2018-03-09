@@ -14,6 +14,12 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('stocktransfer','StocktransferController@index');
+
+Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
+
+Route::get('{item}/markToserved', 'StocktransferController@markToserved');
+
 
 Auth::routes();
 
