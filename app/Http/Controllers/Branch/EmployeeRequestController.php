@@ -37,7 +37,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as users_username, users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
 		if(!is_null($request->approved) && $request->approved != "any"){
 			if($request->approved == "uploaded") {
 				$query1 = array_filter($query1, function ($arr){
@@ -92,6 +92,10 @@ class EmployeeRequestController extends Controller
                 ->addColumn('action', function ($employeeRequest) {
                     return '<span class="btn btn-success actionButton" '.($employeeRequest->approved == 1?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span>';
                 })
+                ->addColumn('username', function ($employeeRequest) {
+                	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
+                	else { return $employeeRequest->users_username; }
+                })
                 ->rawColumns(['approved', "action", "executed", "date_start", "to_branch"])
                 ->make('true');
 	}
@@ -143,7 +147,7 @@ class EmployeeRequestController extends Controller
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
 		if($employeeRequest->type == "3"){
 			$user = new User();
-			$user->UserName = $employeeRequest->LastName . " " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
+			$user->UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
 			$user->uname = ""; 
 			$user->mobile_no = "";
 			$user->email = "";

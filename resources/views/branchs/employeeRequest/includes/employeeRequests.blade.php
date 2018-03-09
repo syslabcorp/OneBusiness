@@ -4,7 +4,7 @@
             <div id="employee_filters" style="margin-bottom: 7px; clear: both;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control approved-filter">
-                           <option value="any">All Requests</option>
+                           <!-- <option value="any">All Requests</option> -->
                            <option value="uploaded">Uploaded</option>
                            <option value="approved">Approved</option>
                            <option value="for_approval">For Approval</option>
@@ -75,8 +75,25 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
         }
 });
 $('.approved-filter').on('change', function () {
+        if($(this).val() == "for_approval") {
+            show_table_columns();
+        } else {
+            hide_table_columns();
+        }
         employeeRequestsDatatable.draw();
 });
+
+function hide_table_columns(){
+    var column = employeeRequestsDatatable.column( 11 ); column.visible( false );
+    var column2 = employeeRequestsDatatable.column( 10 ); column2.visible( false );
+    var column3 = employeeRequestsDatatable.column( 12 ); column3.visible( false );
+}
+
+function show_table_columns(){
+    var column = employeeRequestsDatatable.column( 11 ); column.visible( true );
+    var column4 = employeeRequestsDatatable.column( 10 ); column4.visible( true );
+    var column5 = employeeRequestsDatatable.column( 12); column5.visible( true );
+}
 
 function sendApproveRequest(requestId){
     $.ajax({
@@ -157,5 +174,7 @@ function deleteRequest(requestId, element){
 
 $(document).ready(function (){
     $("#employee_filters").insertAfter("#employeeRequestsDatatable_filter");
+    hide_table_columns();
+    // hide_table_columns();
 });
 </script>

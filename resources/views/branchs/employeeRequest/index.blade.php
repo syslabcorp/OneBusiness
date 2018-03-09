@@ -11,8 +11,8 @@
 
 <div class="row">
   <div class="col-md-12">
-    <div style="" class="alert-dismissible alert alert-success alertfade"><span class="fa fa-close"> </span><em> </em></div>
-    <div style="" class="alert alert-danger alertfade"><span class="fa fa-close"> </span><em> </em></div>
+    <div style="display: none;" class="alert-dismissible alert alert-success alertfade"><span class="fa fa-close"> </span><em> </em></div>
+    <div style="display: none;" class="alert alert-danger alertfade"><span class="fa fa-close"> </span><em> </em></div>
   </div>
 </div>
 <section class="content">
