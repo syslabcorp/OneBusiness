@@ -76,9 +76,9 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
 });
 $('.approved-filter').on('change', function () {
         if($(this).val() == "for_approval") {
-            show_table_columns();
+            // show_table_columns();
         } else {
-            hide_table_columns();
+            // hide_table_columns();
         }
         employeeRequestsDatatable.draw();
 });
@@ -174,7 +174,7 @@ function deleteRequest(requestId, element){
 
 $(document).ready(function (){
     $("#employee_filters").insertAfter("#employeeRequestsDatatable_filter");
-    hide_table_columns();
+    // hide_table_columns();
     // hide_table_columns();
 });
 </script>
