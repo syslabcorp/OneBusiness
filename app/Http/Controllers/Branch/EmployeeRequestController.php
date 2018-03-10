@@ -37,7 +37,9 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as users_username, users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as "users_username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+
+		// if($request->search["value"]) { $query1 = $this->applySearchToArray($query1, $request->search["value"]); }
 		if(!is_null($request->approved) && $request->approved != "any"){
 			if($request->approved == "uploaded") {
 				$query1 = array_filter($query1, function ($arr){
@@ -56,9 +58,9 @@ class EmployeeRequestController extends Controller
 			}
 		}
             return Datatables::of($query1)
-                ->filter(function ($query) use ($request) {
+                // ->filter(function ($query) use ($request) {
 
-                })
+                // })
                 ->editColumn("sex", function($employeeRequest){
                 	$sex = "";
                 	if($employeeRequest->sex == "M") { $sex = "Male"; }
@@ -98,6 +100,14 @@ class EmployeeRequestController extends Controller
                 })
                 ->rawColumns(['approved', "action", "executed", "date_start", "to_branch"])
                 ->make('true');
+	}
+
+	private function applySearchToArray($arr, $value){
+		$arr = array_filter($arr, function ($item) use ($value){
+			// return strpos($item->users_username, $value) !== false;
+			return strpos($item->users_username, $value) !== false or strpos($item->request_username, $value) !== false or strpos($item->type, $value) !== false;
+		});
+		return $arr;
 	}
 
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
