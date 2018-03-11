@@ -105,6 +105,7 @@
                                 d.corpId = {{ $corpId }};
                         }
                 },
+                "order": [],
                 columns: [
                         {data: 'username', name: 'username'},
                         {!! ($corpId == 6?"{data: 'nx', name: 'nx'},{data: 'sq', name: 'sq'},":"") !!}

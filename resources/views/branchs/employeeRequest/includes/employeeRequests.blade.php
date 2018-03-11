@@ -40,6 +40,8 @@
 let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
         processing: true,
         serverSide: true,
+        "order": [],
+        // "aaSorting": [],
         "ajax": {
                 url: "{{ url('getEmployeeRequests') }}",
                 data: function (d) {

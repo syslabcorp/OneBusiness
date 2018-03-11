@@ -111,7 +111,7 @@ td {
 }
 
 @media screen and (max-width: 537) {
-    #employeeRequests .dataTables_filter {
+    div#employeeRequestsDatatable_filter {
         float:left !important;
     }
 }
@@ -181,6 +181,10 @@ td {
     #employeeRequestsDatatable .actionButton {
         margin-top: -10px;
     }
+}
+
+#employeeRequestsDatatable td:before {
+    font-weight: bold;
 }
 
 @media screen and (max-width: 1400) {
