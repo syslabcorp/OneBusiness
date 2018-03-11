@@ -140,8 +140,8 @@
             }).done(function (response){
                 if(response == "true") {
                     $('#reactivateModal').modal('hide');
-                      $("[date_start_id='"+requestId+"']").html(start_date);
-                      $("[to_branch_id='"+requestId+"']").html(branch_name);
+                      // $("[date_start_id='"+requestId+"']").html(start_date);
+                      // $("[to_branch_id='"+requestId+"']").html(branch_name);
                       showSuccessAlert(" The employee reactivated successfully");
                       // showAlertModal("Success", "The employee reactivated successfully");
                 } else {
