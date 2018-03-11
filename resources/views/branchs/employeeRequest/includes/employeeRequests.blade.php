@@ -125,7 +125,7 @@ function sendDeleteRequest(requestId, element){
     }).done(function (response){
         if(response == "true") { 
                 $("[data-delete-id='"+requestId+"']").closest("tr").remove();
-                $("[data-reactivate-id='"+requestId+"']").closest("tr").remove();
+                // $("[data-reactivate-id='"+requestId+"']").closest("tr").remove();
                 showSuccessAlert(" The employee request successfully deleted!");
                 // showAlertModal("Success", "The employee request was deleted!"); 
         }
