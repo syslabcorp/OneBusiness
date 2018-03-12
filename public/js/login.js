@@ -520,13 +520,69 @@ $(function() {
       method: "POST",
       type: 'POST',
       success: function(res){
-        $('#selectable').html('');
+        $('#branch').html('');
         $.each(res.branchs, function( index, value ) {
-          $('#selectable').append("<li class='ui-widget-content'>"+value.ShortName+"</li>");
+          $('#branch').append("<li class='ui-widget-content'>"+value.ShortName+"</li>");
         });
       }
     });
   })
+
+  $('.prodline_item').on('change', function()
+  {
+    var ProdLine = $(this).val();
+    var _token = $("meta[name='csrf-token']").attr('content');
+    if($(this).is(":checked")) 
+    {
+      $.ajax({
+        url: ajax_url+'/purchase_order/ajax_render_item_by_prodline',
+        data: {_token, ProdLine},
+        type: 'POST',
+        success: function(res){
+          $.each(res.items, function( index, value ) {
+            $('#item_code').append("<li class='ui-widget-content id_"+ProdLine+ "  '>"+value.ItemCode+"</li>");
+          });
+        }
+      });
+    }
+    else
+    {
+      $(".id_" + ProdLine).remove();
+    }
+  });
+
+  $("input[name='branch_type']").change(function() {
+    var self = $(this);
+    if(!(this.checked)) {
+      $('#branch').find('.ui-widget-content').each(function( index ) {
+        if($(this).text().startsWith( self.val() ) )
+        {
+          $(this).remove();
+        }
+      });
+    }
+  });
+
+  $("#all_cities_checkbox").on('change', function(){
+    var _token = $("meta[name='csrf-token']").attr('content');
+    if(this.checked){
+      $.ajax({
+        url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
+        data: {_token},
+        type: 'POST',
+        success: function(res){
+          $('#branch').html('');
+          $.each(res.branchs, function( index, value ) {
+            $('#branch').append("<li class='ui-widget-content'>"+value.ShortName+"</li>");
+          });
+        }
+      });
+    }
+    else
+    {
+      $('#branch').html('');
+    }
+  });
 });
 
-$( "#selectable" ).selectable();
+$( ".selectable" ).selectable();

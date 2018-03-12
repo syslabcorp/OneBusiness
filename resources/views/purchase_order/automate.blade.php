@@ -22,7 +22,7 @@
         <div class="row purchase_menu" style="margin-bottom: 20px;">
             <ul class="purchase_order_style navbar-nav" >
                 <li class="">
-                    <a href="{{route('purchase_order.create_manual') }}">Manual P.O.</a>
+                    <a href="{{route('purchase_order.create_manual',['corpID' => $corpID]) }}">Manual P.O.</a>
                 </li>
 
                 <li class="active">
@@ -36,13 +36,15 @@
           <form class="form-inline" action="/action_page.php">
             <div class="form-group">
               <label>City</label>
-              <select class="form-control" style="width: 300px;" name="" id="">
+              <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
                 <option value=""></option>
-                <option value=""></option>
+                @foreach($cities as $city)
+                  <option value="{{$city->City_ID}}">{{$city->City}}</option>
+                @endforeach
               </select>
             </div>
             <div class="checkbox">
-              <label><input type="checkbox"> All Cities</label>
+              <label><input id="all_cities_checkbox_auto" type="checkbox"> All Cities</label>
             </div>
           </form>
         </div>
@@ -54,19 +56,8 @@
                 <th>Ave Cycle</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>DFGDFG</td>
-                <td>30</td>
-              </tr>
-              <tr>
-                <td>DVO-NX-temp1</td>
-                <td>30</td>
-              </tr>
-              <tr>
-                <td>nx-dvo-adm-pr</td>
-                <td>30</td>
-              </tr>
+            <tbody id="render_template">
+
             </tbody>
           </table>
         </div>
@@ -89,4 +80,49 @@
 
 </section>
 
+@endsection
+
+@section('pageJS')
+  <script>
+    $('#auto_city_list').on('change', function(){
+      var _token = $("meta[name='csrf-token']").attr('content');
+      var City_ID = $('#auto_city_list option:selected').val();
+      var corpID = {{$corpID}};
+      $.ajax({
+        url: ajax_url+'/purchase_order/ajax_render_template_by_city',
+        data: {_token, City_ID, corpID},
+        method: "POST",
+        type: 'POST',
+        success: function(res){
+          $('#render_template').html('');
+          $.each(res.POTemplates, function( index, value ) {
+            $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+            // <li class='ui-widget-content'>"+value.ShortName+"</li>
+          });
+        }
+      });
+    })
+
+    $("#all_cities_checkbox_auto").on('change', function(){
+      var _token = $("meta[name='csrf-token']").attr('content');
+      var corpID = {{$corpID}};
+      if(this.checked){
+        $.ajax({
+          url: ajax_url+'/purchase_order/ajax_render_template_by_all_cities',
+          data: {_token,corpID},
+          type: 'POST',
+          success: function(res){
+            $('#render_template').html('');
+            $.each(res.POTemplates, function( index, value ) {
+              $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+            });
+          }
+        });
+      }
+      else
+      {
+        $('#render_template').html('');
+      }
+    });
+  </script>
 @endsection
