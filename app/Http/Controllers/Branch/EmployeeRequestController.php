@@ -113,7 +113,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users LEFT JOIN global.t_sysdata as sysdata ON users.Branch = sysdata.Branch ');
+		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->ShortName == $request->branch_name;
@@ -126,7 +126,7 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active != 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
+                    return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
                     return '<input disabled type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
