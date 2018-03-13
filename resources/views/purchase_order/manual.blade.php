@@ -26,7 +26,7 @@
                 </li>
 
                 <li class="">
-                    <a href="{{route('purchase_order.create_automate') }}">Auto-generate P.O.</a>
+                    <a href="{{route('purchase_order.create_automate',['corpID' => $corpID]) }}">Auto-generate P.O.</a>
                 </li>
                 <li class="last_item"></li>
             </ul>
@@ -57,8 +57,8 @@
 
               <div class="panel-body first">
                 <div>
-                  <ul id="selectable">
-
+                  <ul class="selectable" id="branch">
+                    
                   </ul>
 
                 </div>
@@ -69,13 +69,13 @@
             <form action="">
               <div class="form-group">
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="">NetExpress
+                  <input type="checkbox" id="NX" name="branch_type" value="NX" checked >NetExpress
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="">Sequel
+                  <input type="checkbox" id="SQ" name="branch_type" value="SQ" checked>Sequel
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="">iSing
+                  <input type="checkbox" id="IS" name="branch_type" value="IS" checked>iSing
                 </label>
               </div>
               <div class="form-group">
@@ -115,7 +115,7 @@
                 <ul>
                   @foreach($prodlines as $prodline)
                     <li class="ui-widget-content">
-                      <label class="label-control"><input type="checkbox" value="{{$prodline->ProdLine_ID}}">{{ $prodline->Product }}</label>
+                      <label class="label-control"><input type="checkbox" class="prodline_item" value="{{$prodline->ProdLine_ID}}">{{ $prodline->Product }}</label>
                     </li>
                   @endforeach
                 </ul>
@@ -130,6 +130,8 @@
               </div>
 
               <div class="panel-body">
+                <ul class="selectable" id="item_code">
+                </ul>
               </div>
             </div>
           </div>

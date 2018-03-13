@@ -14,6 +14,8 @@ use Session;
 use App\City;
 use App\Branch;
 use App\ProductLine;
+use App\StockItem;
+use App\Corporation;
 class PurchaseOrderController extends Controller
 {
 	public function __construct()
@@ -237,20 +239,35 @@ class PurchaseOrderController extends Controller
     }
 
     public function manual(){
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
-        $prodlines = ProductLine::where('Active', 1)->get();
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $stockModel = new \App\Stock;
+      $stockModel->setConnection($company->database_name);
+      
+      $cities_ID = explode( ',' ,\Auth::user()->area->city );
+      $cities = City::whereIn('City_ID', $cities_ID)->get();
+      $prodlines = ProductLine::where('Active', 1)->get();
 
-        return view('purchase_order.manual',
+      return view('purchase_order.manual',
         [
-            'cities' => $cities,
-            'prodlines' => $prodlines
+          'cities' => $cities,
+          'prodlines' => $prodlines,
+          'corpID' => Request::all()['corpID']
         ]
-        );
+      );
     }
 
     public function automate(){
-        return view('purchase_order.automate');
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $stockModel = new \App\Stock;
+      $stockModel->setConnection($company->database_name);
+      
+      $cities_ID = explode( ',' ,\Auth::user()->area->city );
+      $cities = City::whereIn('City_ID', $cities_ID)->get();
+      return view('purchase_order.automate',
+      [
+        'cities' => $cities,
+        'corpID' => Request::all()['corpID']
+      ]);
     }
 
     public function manual_suggest(){
@@ -266,6 +283,57 @@ class PurchaseOrderController extends Controller
       $branchs = Branch::where( 'City_ID', Request::all()['City_ID'] )->where('Active', 1)->get();
       return response()->json([
         'branchs' => $branchs
+      ]);
+    }
+
+    public function ajax_render_branch_by_all_cities()
+    { 
+      $cities_ID = explode( ',' ,\Auth::user()->area->city );
+      $cities = City::whereIn('City_ID', $cities_ID)->get(['City_ID']);
+      $cities = $cities->map(function($item) {
+        return $item['City_ID'];
+      });
+      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->get();
+      return response()->json([
+        'branchs' => $branchs
+      ]);
+    }
+
+    public function ajax_render_template_by_city()
+    {
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $POTemplateModel = new \App\POTemplate;
+      $POTemplateModel->setConnection($company->database_name);
+      
+      $POTemplates = $POTemplateModel->where('Active', 1)->where('city_id', Request::all()['City_ID'])->get();
+      return response()->json([
+        'POTemplates' => $POTemplates
+      ]);
+    }
+
+    public function ajax_render_template_by_all_cities()
+    {
+      $cities_ID = explode( ',' ,\Auth::user()->area->city );
+      $cities = City::whereIn('City_ID', $cities_ID)->get(['City_ID']);
+      $cities = $cities->map(function($item) {
+        return $item['City_ID'];
+      });
+
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $POTemplateModel = new \App\POTemplate;
+      $POTemplateModel->setConnection($company->database_name);
+
+      $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities)->get();
+      return response()->json([
+        'POTemplates' => $POTemplates
+      ]);
+    }
+
+    public function ajax_render_item_by_prodline()
+    {
+      $items = StockItem::where( 'Prod_Line', Request::all()['ProdLine'] )->where('Active', 1)->get();
+      return response()->json([
+        'items' => $items
       ]);
     }
 }
