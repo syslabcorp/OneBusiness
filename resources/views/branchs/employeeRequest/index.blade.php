@@ -2,11 +2,18 @@
 
 @section('content')
 <head>
-  <link href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" rel="stylesheet">
-  <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+  <!-- <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet"> -->
+  <!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
+  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
   <script src="{{ url('public/js/bootbox.min.js') }}"></script>
-  <link rel="stylesheet" type="text/css" href="{{ url("public/css/branches/table_styles.css") }}">
   <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+  <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+  <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="{{ url("public/css/branches/table_styles.css") }}">
+
+  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+  <!-- <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet"> -->
 </head>
 
 <div class="row">

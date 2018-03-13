@@ -1,6 +1,12 @@
+<head>
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+    <!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
+    
+
+</head>
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding: 0; overflow-x: auto;">
             <div id="employee_filters" style="margin-bottom: 7px; clear: both;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control approved-filter">
@@ -65,16 +71,16 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
                 {data: 'pagibig', name: 'pagibig'},
                 {data: 'action', name: 'action', sortable: false, searchable: false}
         ],
-        initComplete: function () {
-            this.api().columns().every(function () {
-                var column = this;
-                var input = document.createElement("input");
-                $(input).appendTo($(column.footer()).empty())
-                .on('change', function () {
-                    column.search($(this).val(), false, false, true).draw();
-                });
-            });
-        }
+        // initComplete: function () {
+        //     this.api().columns().every(function () {
+        //         var column = this;
+        //         var input = document.createElement("input");
+        //         $(input).appendTo($(column.footer()).empty())
+        //         .on('change', function () {
+        //             column.search($(this).val(), false, false, true).draw();
+        //         });
+        //     });
+        // }
 });
 $('.approved-filter').on('change', function () {
         if($(this).val() == "for_approval") {
@@ -175,7 +181,7 @@ function deleteRequest(requestId, element){
 }
 
 $(document).ready(function (){
-    $("#employee_filters").insertAfter("#employeeRequestsDatatable_filter");
+    $("#employee_filters").insertAfter("#employeeRequestsDatatable_wrapper .dataTables_length");
     // hide_table_columns();
     // hide_table_columns();
 });

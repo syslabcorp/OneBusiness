@@ -87,13 +87,8 @@ td {
     text-align: center !important;
 }
 
-#reactivateEmployeeDatatable, #employeeRequestsDatatable, #reactivateEmployeeDatatable thead tr, #employeeRequestsDatatable thead tr 
-{
-        font-size: 11px !important;
-}
-
 .dataTables_length {
-    float:left !important;
+    /*float:left !important;*/
 }
 
 #reactivateModal label {
@@ -104,91 +99,6 @@ td {
     float: left;
 }
 
-@media screen and (max-width: 816) {
-    .employeeRequestsDatatable_filter {
-        float:left;
-    }
-}
-
-@media screen and (max-width: 537) {
-    div#employeeRequestsDatatable_filter {
-        float:left !important;
-    }
-}
-
-@media screen and (max-width: 1300px) {
-    /*#reactivateEmployeeDatatable td, #reactivateEmployeeDatatable th,*/
-    #employeeRequestsDatatable td, #employeeRequestsDatatable th 
-    {
-        /*border: 1px solid #ddd;*/
-        height: 13px;
-        padding-left: 129px;
-    }
-
-    #employeeRequestsDatatable thead tr, #reactivateEmployeeDatatable thead tr {
-        font-size: 12px;
-    }
-
-    #reactivateEmployeeDatatable, #employeeRequestsDatatable {
-        font-size: 12px;
-    }
-
-    #employeeRequestsDatatable table, #employeeRequestsDatatable thead, #employeeRequestsDatatable tbody, #employeeRequestsDatatable th, #employeeRequestsDatatable td, #employeeRequestsDatatable tr {
-        display: block; 
-    }
-    
-    #employeeRequestsDatatable thead tr { 
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    #employeeRequestsDatatable tr { border: 1px solid #ccc; }
-
-    #employeeRequestsDatatable td { 
-        /* Behave  like a "row" */
-        border: none;
-        border-bottom: 1px solid #eee; 
-        position: relative;
-        padding-left: 50%; 
-    }
-
-    #employeeRequestsDatatable td:before { 
-        /* Now like a table header */
-        position: absolute;
-        /* Top/left values mimic padding */
-        top: 6px;
-        left: 6px;
-        width: 45%; 
-        padding-right: 10px; 
-        white-space: nowrap;
-    }
-    #employeeRequestsDatatable td:nth-of-type(1):before { content: "Name"; }
-    #employeeRequestsDatatable td:nth-of-type(2):before { content: "Type"; }
-    #employeeRequestsDatatable td:nth-of-type(3):before { content: "From Branch"; }
-    #employeeRequestsDatatable td:nth-of-type(4):before { content: "Last Duty"; }
-    #employeeRequestsDatatable td:nth-of-type(5):before { content: "To Branch"; }
-    #employeeRequestsDatatable td:nth-of-type(6):before { content: "Start Duty"; }
-    #employeeRequestsDatatable td:nth-of-type(7):before { content: "Approved"; }
-    #employeeRequestsDatatable td:nth-of-type(8):before { content: "Uploaded"; }
-    #employeeRequestsDatatable td:nth-of-type(9):before { content: "Sex"; }
-    #employeeRequestsDatatable td:nth-of-type(10):before { content: "Birthdate"; }
-    #employeeRequestsDatatable td:nth-of-type(11):before { content: "SSS"; }
-    #employeeRequestsDatatable td:nth-of-type(12):before { content: "PHIC"; }
-    #employeeRequestsDatatable td:nth-of-type(13):before { content: "HDMF"; }
-    #employeeRequestsDatatable td:nth-of-type(14):before { content: "Action"; }
-
-    #employeeRequestsDatatable .actionButton {
-        margin-top: -10px;
-    }
-}
-
 #employeeRequestsDatatable td:before {
     font-weight: bold;
-}
-
-@media screen and (max-width: 1400) {
-    #reactivateEmployeeDatatable, #employeeRequestsDatatable {
-        font-size: 11px !important;
-    }
 }
