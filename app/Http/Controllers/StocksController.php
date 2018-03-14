@@ -61,7 +61,8 @@ class StocksController extends Controller
         'stock' => $stock,
         'stock_details' => $stock_details,
         'pos' => $pos,
-        'stockitems' => $stockitems
+        'stockitems' => $stockitems,
+        'print' => $request->print
       ]
     )->with('corpID', $request->corpID);
   }
@@ -73,7 +74,6 @@ class StocksController extends Controller
       return redirect("/home"); 
     }    
     $request->RcvDate = new Datetime($request->RcvDate);
-    // $request->RcvDate->setTime( date('H'), date('i'));
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -151,7 +151,7 @@ class StocksController extends Controller
     $stock->TotalAmt = floatval($request->total_amt);
     $stock->save();
     \Session::flash('success', "D.R #$stock->RR_No is successfully updated");
-    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID, 'print' => $request->print]);
   }
 
   public function save_new_row_ajax(Request $request)
@@ -436,7 +436,7 @@ class StocksController extends Controller
       // }
     }
     \Session::flash('success', "D.R #$stock->RR_No is successfully created");
-    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID, 'print' => $request->print ]);
   }
 
   public function destroy_detail(Request $request)
