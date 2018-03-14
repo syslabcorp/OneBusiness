@@ -234,8 +234,14 @@ class EmployeeRequestController extends Controller
 		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
 		// $employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		// $branch_name = $employeeRequest->to_branch2->ShortName;
 		if(!is_null($user)) {
-			$user->Branch = $request->branch_id;
+			// $user->Branch = $request->branch_id;
+			$branch_name = Branch::where("Branch", $request->branch_id)->first()->ShortName;
+			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
+			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
+			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$request->branch_id:"0");
+			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
 			// $user->date_start = $request->start_date;
 			if($request->password != ""){
 				$user->passwrd = md5($request->password);
