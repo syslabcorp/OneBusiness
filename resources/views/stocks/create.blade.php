@@ -358,6 +358,10 @@
       $('#add-row').remove();
       $('#example').remove();
       // $('#total_amt').val($('#total_amount').text());
+      if($('input[name="PrintRR"]:checked').length > 0) {
+        $('form').attr('action', $('form').attr('action') + "&print=true");
+      }
+
       $('form').submit();
     })
 

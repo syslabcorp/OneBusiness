@@ -70,6 +70,19 @@ td span.error {
   font-weight: 400;
 }
 
+.print-section {
+  display: none;
+}
+
+@media print {
+  .print-section {
+    display: block;
+  }
+
+  .navbar, #sidebar-togle-sidebar-sec, .box-content .content, .alert {
+    display: none;
+  }
+}
 
 
 
