@@ -155,7 +155,9 @@ class EmployeeRequestController extends Controller
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
-		$branch_name = $employeeRequest->to_branch2->ShortName;
+		if($employeeRequest->to_branch2 != null) { $branch_name = $employeeRequest->to_branch2->ShortName; }
+		else { $branch_name = null; }
+		
 		if($employeeRequest->type == "3"){
 			$user = new User();
 			$user->UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
@@ -233,10 +235,11 @@ class EmployeeRequestController extends Controller
 		$employeeRequest->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
-		// $employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
 		// $branch_name = $employeeRequest->to_branch2->ShortName;
 		if(!is_null($user)) {
 			// $user->Branch = $request->branch_id;
+			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
+			if(!is_null($employeeRequest)) { $employeeRequest->date_start = $request->start_date; $employeeRequest->save(); }	
 			$branch_name = Branch::where("Branch", $request->branch_id)->first()->ShortName;
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
