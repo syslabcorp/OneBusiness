@@ -155,6 +155,7 @@ class EmployeeRequestController extends Controller
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		$branch_name = $employeeRequest->to_branch2->ShortName;
 		if($employeeRequest->type == "3"){
 			$user = new User();
 			$user->UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
@@ -175,11 +176,15 @@ class EmployeeRequestController extends Controller
 			$user->Level = 1;
 			$user->level_id = 1;
 			$user->passwrd = ($employeeRequest->pswd != null?(md5($employeeRequest->pswd)):null);
-			$user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			$user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
+			// $user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
+			// $user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
+			// $user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
+			// $user->Active = ($employeeRequest->to_branch != null?"1":"0");
+			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
+			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
+			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
+			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
 			$user->LastUnfrmPaid = $this->getLastUnfrmPaid();
-			$user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			$user->Active = ($employeeRequest->to_branch != null?"1":"0");
 			$user->TechActive = 0;
 			$user->save();
 

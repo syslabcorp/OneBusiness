@@ -15,11 +15,11 @@ class EmployeeRequest extends Model
     	return $this->hasOne("App\User", "UserID", "userid");
     }
 
-    public function from_branch(){
+    public function from_branch2(){
     	return $this->hasOne("App\Branch", "Branch", "from_branch");
     }
 
-    public function to_branch(){
+    public function to_branch2(){
     	return $this->hasOne("App\Branch", "Branch", "to_branch");
     }
 }
