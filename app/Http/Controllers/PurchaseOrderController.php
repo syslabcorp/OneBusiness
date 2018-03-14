@@ -280,7 +280,7 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_branch_by_city()
     {
-      $branchs = Branch::where( 'City_ID', Request::all()['City_ID'] )->where('Active', 1)->get();
+      $branchs = Branch::where( 'City_ID', Request::all()['City_ID'] )->where('Active', 1)->orderBy('ShortName')->get();
       return response()->json([
         'branchs' => $branchs
       ]);
@@ -293,7 +293,7 @@ class PurchaseOrderController extends Controller
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
       });
-      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->get();
+      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->orderBy('ShortName')->get();
       return response()->json([
         'branchs' => $branchs
       ]);
@@ -331,7 +331,7 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_item_by_prodline()
     {
-      $items = StockItem::where( 'Prod_Line', Request::all()['ProdLine'] )->where('Active', 1)->get();
+      $items = StockItem::where( 'Prod_Line', Request::all()['ProdLine'] )->where('Active', 1)->orderBy('ItemCode')->get();
       return response()->json([
         'items' => $items
       ]);

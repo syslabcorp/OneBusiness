@@ -33,26 +33,30 @@
         </div>
 
         <div class="row purchase_header_form">
-          <form class="form-inline" action="/action_page.php">
-            <div id="city-list" class="form-group">
-              <label>City</label>
-              <select class="form-control" style="width: 300px;" name="" id="">
-                <option value=""></option>
-                @foreach($cities as $city)
-                  <option value="{{$city->City_ID}}">{{$city->City}}</option>
-                @endforeach
-              </select>
+          <div class="row">
+            <div class="col-md-12">
+              <form class="form-inline" action="/action_page.php">
+                <div id="city-list" class="form-group">
+                  <label>City</label>
+                  <select class="form-control" style="width: 300px;" name="" id="">
+                    <option value=""></option>
+                    @foreach($cities as $city)
+                      <option value="{{$city->City_ID}}">{{$city->City}}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" id="all_cities_checkbox"> All Cities</label>
+                </div>
+              </form>
             </div>
-            <div class="checkbox">
-              <label><input type="checkbox" id="all_cities_checkbox"> All Cities</label>
-            </div>
-          </form>
+          </div>
         </div>
         <div class="row purchase_choose">
           <div class="col-md-4">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h4>Branch</h4>
+                <h5>Branch</h5>
               </div>
 
               <div class="panel-body first">
@@ -68,15 +72,21 @@
 
             <form action="">
               <div class="form-group">
-                <label class="checkbox-inline">
-                  <input type="checkbox" id="NX" name="branch_type" value="NX" checked >NetExpress
-                </label>
-                <label class="checkbox-inline">
-                  <input type="checkbox" id="SQ" name="branch_type" value="SQ" checked>Sequel
-                </label>
-                <label class="checkbox-inline">
-                  <input type="checkbox" id="IS" name="branch_type" value="IS" checked>iSing
-                </label>
+                <div class="col-md-4">
+                  <label class="checkbox-inline">
+                    <input type="checkbox" id="NX" name="branch_type" value="NX" checked >NetExpress
+                  </label>
+                </div>
+                <div class="col-md-4">
+                  <label class="checkbox-inline">
+                    <input type="checkbox" id="SQ" name="branch_type" value="SQ" checked>Sequel
+                  </label>
+                </div>
+                <div class="col-md-4">
+                  <label class="checkbox-inline">
+                    <input type="checkbox" id="IS" name="branch_type" value="IS" checked>iSing
+                  </label>
+                </div>
               </div>
               <div class="form-group">
                 <label>Date Range</label>
@@ -88,7 +98,7 @@
                 </div>
 
                 <div class="col-md-6">
-                  <label for="">From</label>
+                  <label for="">To</label>
                   <input type="date" name="" id="" class="datepicker">
                 </div>
               </div>
@@ -108,7 +118,7 @@
           <div class="col-md-4">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h4>Product Line</h4>
+                <h5>Product Line</h5>
               </div>
 
               <div class="panel-body">
@@ -126,7 +136,7 @@
           <div class="col-md-4">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h4>Item Code</h4>
+                <h5>Item Code</h5>
               </div>
 
               <div class="panel-body">

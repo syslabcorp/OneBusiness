@@ -33,7 +33,9 @@
         </div>
 
         <div class="row purchase_header_form">
-          <form class="form-inline" action="/action_page.php">
+          <div class="row">
+            <div class="col-md-12">
+            <form class="form-inline" action="/action_page.php">
             <div class="form-group">
               <label>City</label>
               <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
@@ -47,6 +49,8 @@
               <label><input id="all_cities_checkbox_auto" type="checkbox"> All Cities</label>
             </div>
           </form>
+            </div>
+          </div>
         </div>
         <div class="table-responsive">
           <table class="table table-striped table-bordered">
