@@ -1,6 +1,6 @@
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="overflow-x: auto; padding: 0;">
             <div id="reactivate_filters" style="margin-bottom: 7px; clear: both;">
                   Filters 
                   <select style="width: 128px; display: inline;" class="form-control branch-filter">
@@ -170,7 +170,7 @@
              });
         });
 $(document).ready(function (){
-    $("#reactivate_filters").insertAfter("#reactivateEmployeeDatatable_filter");
+    $("#reactivate_filters").insertAfter("#reactivateEmployeeDatatable_wrapper .dataTables_length");
 });
 
 $('[name="all-branches"]').change(function (){

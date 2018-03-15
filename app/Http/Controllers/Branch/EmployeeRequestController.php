@@ -37,7 +37,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "users_username", users.SSS, users.PHIC, sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.pagibig from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
 
 		// if($request->search["value"]) { $query1 = $this->applySearchToArray($query1, $request->search["value"]); }
 		if(!is_null($request->approved) && $request->approved != "any"){
@@ -113,7 +113,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users LEFT JOIN global.t_sysdata as sysdata ON users.Branch = sysdata.Branch ');
+		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->ShortName == $request->branch_name;
@@ -126,7 +126,7 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<span class="btn btn-primary actionButton" data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
+                    return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
                     return '<input disabled type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
@@ -155,6 +155,9 @@ class EmployeeRequestController extends Controller
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		if($employeeRequest->to_branch2 != null) { $branch_name = $employeeRequest->to_branch2->ShortName; }
+		else { $branch_name = null; }
+		
 		if($employeeRequest->type == "3"){
 			$user = new User();
 			$user->UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
@@ -175,11 +178,15 @@ class EmployeeRequestController extends Controller
 			$user->Level = 1;
 			$user->level_id = 1;
 			$user->passwrd = ($employeeRequest->pswd != null?(md5($employeeRequest->pswd)):null);
-			$user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			$user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
+			// $user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
+			// $user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
+			// $user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
+			// $user->Active = ($employeeRequest->to_branch != null?"1":"0");
+			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
+			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
+			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
+			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
 			$user->LastUnfrmPaid = $this->getLastUnfrmPaid();
-			$user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			$user->Active = ($employeeRequest->to_branch != null?"1":"0");
 			$user->TechActive = 0;
 			$user->save();
 
@@ -228,9 +235,16 @@ class EmployeeRequestController extends Controller
 		$employeeRequest->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
-		// $employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+		// $branch_name = $employeeRequest->to_branch2->ShortName;
 		if(!is_null($user)) {
-			$user->Branch = $request->branch_id;
+			// $user->Branch = $request->branch_id;
+			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
+			if(!is_null($employeeRequest)) { $employeeRequest->date_start = $request->start_date; $employeeRequest->save(); }	
+			$branch_name = Branch::where("Branch", $request->branch_id)->first()->ShortName;
+			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
+			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
+			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$request->branch_id:"0");
+			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
 			// $user->date_start = $request->start_date;
 			if($request->password != ""){
 				$user->passwrd = md5($request->password);
