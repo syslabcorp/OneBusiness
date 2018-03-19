@@ -33,6 +33,7 @@ return array(
     'Nexmo\\Laravel\\' => array($vendorDir . '/nexmo/laravel/src'),
     'Nexmo\\' => array($vendorDir . '/nexmo/client/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Mike42\\' => array($vendorDir . '/mike42/escpos-php/src/Mike42'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'Lcobucci\\JWT\\' => array($vendorDir . '/lcobucci/jwt/src'),
     'Laravel\\Tinker\\' => array($vendorDir . '/laravel/tinker/src'),

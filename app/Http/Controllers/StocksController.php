@@ -18,6 +18,8 @@ use App\ProductLine;
 use DB;
 use Validator;
 use Datetime;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\Printer;
 
 class StocksController extends Controller
 {
@@ -52,6 +54,9 @@ class StocksController extends Controller
     });
     // dd(Brand::all());
     $pos = $purchaseOrderModel->where('served', 0)->get();
+
+    if($request->print) $this->print($stock, $stock_details);
+
     return view('stocks.show',
       [
         'brands' => $brands,
@@ -436,7 +441,7 @@ class StocksController extends Controller
       // }
     }
     \Session::flash('success', "D.R #$stock->RR_No is successfully created");
-    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID, 'print' => $request->print ]);
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID]);
   }
 
   public function destroy_detail(Request $request)
@@ -513,5 +518,21 @@ class StocksController extends Controller
       \Session::flash('success', "D.R. # $dr has been deleted"); 
       return back();
     }
+  }
+
+  private function print($stock, $stock_details) {
+    $connector = new FilePrintConnector("/dev/usb/lp0");
+    $printer = new Printer($connector);
+    $printer->text("SSR #:{$stock->txn_no}\n");
+    $printer->text("Date/Time: {$stock->DateSaved->format('m-d-Y h:i:s A')}\n");
+    $printer->text("\n\nPO\n");
+    $printer->text("{$stock->vendor->VendorName}\n");
+    $printer->text("{$stock->RR_No}\n");
+    foreach($stock_details as $detail) {
+      $printer->text("{$detail->stock_item->ItemCode} {$detail->Qty} " . number_format($detail->Cost, 2));
+    }
+    $printer->text("By: " . \Auth::user()->UserName);
+    $printer->cut();
+    $printer->close();
   }
 }

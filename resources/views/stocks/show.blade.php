@@ -336,62 +336,9 @@
   </div>
 </div>
 <!-- End modal alert -->
-@if($print)
-  <div class="print-section">
-    <p>
-      SSR #: {{ $stock->txn_no }} <br>
-      Date/Time: {{ $stock->DateSaved->format('m-d-Y h:i:s A') }}
-    </p>
-    <p>
-      PO <br>
-      {{ $stock->vendor->VendorName }} <br>
-      {{ $stock->RR_No }}
-    </p>
-    <table class="table">
-      <tbody>
-      @php $totalCost = 0 @endphp
-      @foreach($stock_details as $detail)
-        @php $totalCost += $detail->Cost * $detail->Qty @endphp
-        <tr>
-          <td>{{ $detail->stock_item->ItemCode }}</td>
-          <td>{{ $detail->Qty }}</td>
-          <td>
-            {{ number_format($detail->Cost, 2) }}<br>
-            {{ number_format($detail->stock_item->LastCost, 2) }}
-          </td>
-          <td>
-            {{ number_format($detail->Cost * $detail->Qty, 2) }} <br>
-            @if($detail->Cost != $detail->stock_item->LastCost)
-            {{ $detail->stock_item->Cost }}
-              {{ number_format(($detail->Cost - $detail->stock_item->LastCost) / $detail->stock_item->LastCost * 100, 2) }}%
-            @else
-              0.00%
-            @endif
-          </td>
-        </tr>
-      @endforeach
-      <tr>
-        <td colspan="2"></td>
-        <td> <i>TOTAL:</i></td>
-        <td><i>{{ number_format($totalCost, 2) }}</i></td>
-      </tr>
-      </tbody>
-    </table>
-    <p>
-      By: {{ \Auth::user()->UserName }}
-    </p> 
-  </div>
-@endif
-
 @endsection
 
 @section('pageJS')
-  @if($print)
-  <script type="text/javascript">
-    window.print();
-  </script>
-  @endif
-
   <script>
 
     $.validate({
