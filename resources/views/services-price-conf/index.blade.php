@@ -90,7 +90,6 @@
                                 </div>
 
                                 <div v-if="confStep === 1">
-                                    
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="row form-group">
@@ -101,7 +100,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            
+
                                             <hr>
 
                                             <div class="panel panel-default">
@@ -116,10 +115,10 @@
                                                     <div class="clearfix"></div>
                                                 </div>
                                                 <div class="panel-body" id="branchList">
-                                                    <ul v-if="corpBranches.length > 0" id="selectableBranches" class="selectable">
-                                                        <li v-for="branch in corpBranches" :branchid="branch.id" v-if="(showBranchStatus == branch.isActive) || showBranchStatus == 2" :class="(selectedBranchIds.includes(branch.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ branch.name }} </li>
+                                                    <ul v-if="listBranches.length > 0" id="selectableBranches" class="selectable">
+                                                        <li v-for="branch in listBranches" :branchid="branch.id" v-if="(showBranchStatus == branch.isActive) || showBranchStatus == 2" :class="(selectedBranchIds.includes(branch.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ branch.name }} </li>
                                                     </ul>
-                                                    <div v-else style="color: #900;">No branch for this corporation</div>
+                                                    <div v-if="listBranches.length == 0" style="color: #900;">No branch for this corporation</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -427,6 +426,7 @@
                 ],
                 selectedCorporationId: 0,
                 corpBranches: [],
+                listBranches: [],
                 selectedBranchIds: [],
                 services: [],
                 selectedServiceIds: [],
@@ -482,6 +482,13 @@
                     if(filterOption == 0) self.showBranchStatus = 0;
                     else if(filterOption == 1) self.showBranchStatus = 1;
                     else self.showBranchStatus = 2;
+
+                    self.listBranches = [];
+                    for(var i = 0; i < self.corpBranches.length; i++) {
+                      if(self.corpBranches[i].isActive == filterOption || filterOption == 2) {
+                        self.listBranches.push(self.corpBranches[i]);
+                      }
+                    }
                 },
                 filterServiceList: function(event) {
                     var self = this;
@@ -489,7 +496,7 @@
 
                     if(filterOption == 0) self.showServiceStatus = 0;
                     else if(filterOption == 1) self.showServiceStatus = 1;
-                    else self.showServiceStatus = 2;                    
+                    else self.showServiceStatus = 2;
                 },
                 loadBranches: function() {
                     var self = this;
@@ -509,14 +516,21 @@
                             var branches = responsedBranches.data;
 
                             self.corpBranches = [];
+                            self.listBranches = [];
 
                             branches.map(function(branch) {
-                                self.corpBranches.push({
-                                    id: branch.Branch,
-                                    name: branch.ShortName,
-                                    isActive: branch.Active,
-                                });
+                              self.corpBranches.push({
+                                id: branch.Branch,
+                                name: branch.ShortName,
+                                isActive: branch.Active,
+                              });
                             });
+
+                            for(var i = 0; i < self.corpBranches.length; i++) {
+                              if(self.corpBranches[i].isActive == 1) {
+                                self.listBranches.push(self.corpBranches[i]);
+                              }
+                            }
                           })
                           .catch(function (error) {
                             console.log(error);
@@ -572,9 +586,8 @@
                         },
                         stop: function( event, ui ) {
                             if (typeof(Storage) !== "undefined") {
-                                localStorage.setItem("selectedBranchIds", JSON.stringify(self.selectedBranchIds));
+                              localStorage.setItem("selectedBranchIds", JSON.stringify(self.selectedBranchIds));
                             } else {
-                                console.log('Sorry! No Web Storage support..');
                             }
                         },
                     });

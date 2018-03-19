@@ -20,7 +20,10 @@
         .selectable .ui-selecting { background: #b8d4ea; }
         .selectable .ui-selected { background: #76acd6; color: white; }
         .selectable { list-style-type: none; margin: 0; padding: 0; }
-        .selectable li { margin: 5px; padding: 0.4em; font-size: 14px; }
+        .selectable li { padding: 0.4em; font-size: 14px; border-bottom-width: 0px;}
+        .selectable li:last-child {
+          border-bottom-width: 1px;
+        }
         /* end of -------- css for selectable */
         
         /* css for fixed first column of the table (for confStep 2) */
@@ -33,6 +36,22 @@
         table.fixedColumn > thead > tr > th:first-child, table.fixedColumn > tbody > tr > td:first-child  { position: absolute; display: inline-block; background-color: #ccc; width: 140px; vertical-align: middle; }
         table.fixedColumn > tbody > tr > td {padding-bottom: 15px !important;}
         table.fixedColumn > tbody > tr > td:first-child {text-align: center;}
+        table.fixedColumn > thead > tr + tr th {
+          font-weight: normal;
+        }
+        table.fixedColumn .childControl {
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          padding: 3px 0px;
+          min-height: 28px;
+        }
+
+        .selectedRow input {
+          border: none;
+          background: none;
+        }
 
         .selectedRow, tbody > tr:hover {background-color: #b8d4ea !important;}
 
@@ -69,46 +88,49 @@
                     @endif
 
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Retail Items Price Configuration</h3>
+                        <h3 class="text-center">Service Per Branch Configuration</h3>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Price Configuration for Retail Items by Branch
-                                
                             </div>
                             <div class="panel-body">
                                 <div v-if="confStep === 2">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-5">
                                             <div class="row">
                                                 <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Set Active</button>
+                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Set Active</button>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Set Redeemable</button>
+                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Set Redeemable</button>
                                                 </div>
                                             </div>
                                             <div class="row" style="margin-top: 5px;">
                                                 <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Unset Active</button>
+                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Unset Active</button>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Unset Redeemable</button>
+                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Unset Redeemable</button>
                                                 </div>
-                                            </div>    
+                                            </div>
                                         </div>
-                                        <div class="col-sm-8">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <label>Points per peso (SRP)</label><br>
-                                                    <input type="text" name="">
-                                                    <button type="button" class="btn btn-success btn-sm"  style="margin-left: 5px;">Set Points</button>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <label>Price</label><br>
-                                                    <input type="text" name="">
-                                                    <button type="button" class="btn btn-success btn-sm"  style="margin-left: 5px;">Set Price</button>
-                                                </div>
-                                            </div>                                            
+                                        <div class="col-sm-7">
+                                          <div class="row">
+                                            <div class="col-sm-6">
+                                              <div class="form-group">
+                                                <label>Points per peso (SRP)</label>
+                                                <input type="text" class="form-control" name="">
+                                              </div>
+                                              <button type="button" class="btn btn-success btn-sm">Set Points</button>
+                                            </div>
+                                            <div class="col-sm-6">
+                                              <div class="form-group">
+                                                <label>Price</label>
+                                                <input type="text" name="" class="form-control">
+                                              </div>
+                                              <button type="button" class="btn btn-success btn-sm">Set Price</button>
+                                            </div>
+                                          </div>
                                         </div>
                                     </div>
                                     <hr>
@@ -132,14 +154,18 @@
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    Branches for the corporation
-
-                                                    <select class="form-group pull-right" @change="filterBranchList($event)">
+                                                  <div class="row">
+                                                    <div class="col-sm-7">
+                                                      Branches for the corporation
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                      <select class="form-control" @change="filterBranchList($event)">
                                                         <option value="1">Active</option>
                                                         <option value="0">Inactive</option>
                                                         <option value="2">All</option>
-                                                    </select>
-                                                    <div class="clearfix"></div>
+                                                      </select>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                                 <div class="panel-body" id="branchList">
                                                     <ul v-if="corpBranches.length > 0" id="selectableBranches" class="selectable">
@@ -164,14 +190,18 @@
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    Item Codes for this Product 
-
-                                                    <select class="form-group pull-right" @change="filterServiceList($event)">
+                                                  <div class="row">
+                                                    <div class="col-sm-7">
+                                                      Item Codes for this Product
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                      <select class="form-control" @change="filterServiceList($event)">
                                                         <option value="1">Active</option>
                                                         <option value="0">Inactive</option>
                                                         <option value="2">All</option>
-                                                    </select>
-                                                    <div class="clearfix"></div>
+                                                      </select>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
                                                     <div v-if="retailItems.length == 0" style="color: #900;">No items for this product line</div>
@@ -235,7 +265,7 @@
                                                                     <br>
                                                                 </th>
                                                                 <th>
-                                                                    Active
+                                                                  Active
                                                                 </th>
                                                                 <th>
                                                                     Redeem
@@ -423,7 +453,7 @@
 
                             </div>
                             <div class="panel-footer">
-                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
+                                <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
                                     <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
@@ -471,6 +501,7 @@
                 ],
                 selectedProductId: 0,
                 corpBranches: [],
+                listBranches: [],
                 ri_selectedBranchIds: [],
                 retailItems: [],
                 selectedRetailItemIds: [],
@@ -499,16 +530,13 @@
 
                 },
                 confNext: function() {
-                    var self = this;
+                  var self = this;
 
-                    if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
-                        self.confStep = 2;
-
-                    } else {
-                        alert('Please select branch and retail items first, to proceed to next step.');
-                    }
-
-                    
+                  if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
+                    self.confStep = 2;
+                  } else {
+                    alert('Please select branch and retail items first, to proceed to next step.');
+                  }
                 },
                 confBack: function() {
                     var self = this;
