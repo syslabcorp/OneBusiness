@@ -236,6 +236,11 @@ class EmployeeRequestController extends Controller
 		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
 		// $branch_name = $employeeRequest->to_branch2->ShortName;
+		$branch = Branch::where("Branch", $request->branch_id)->first();
+		if(!is_null($branch)) {
+			$branch->Modified = 1;
+			$branch->save();
+		}
 		if(!is_null($user)) {
 			// $user->Branch = $request->branch_id;
 			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
@@ -248,7 +253,7 @@ class EmployeeRequestController extends Controller
 			if((new Carbon($user->LastUnfrmPaid))->diffInDays((new Carbon($request->start_date)), false) >= 255) {
 				$user->LastUnfrmPaid = $request->start_date;
 			}
-			$branch_name = Branch::where("Branch", $request->branch_id)->first()->ShortName;
+			if(!is_null($branch)) { $branch_name = $branch->ShortName; } else { $branch_name = null; }
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
 			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$request->branch_id:"0");
