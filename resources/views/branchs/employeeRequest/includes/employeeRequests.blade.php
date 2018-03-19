@@ -13,7 +13,7 @@
                            <!-- <option value="any">All Requests</option> -->
                            <option value="uploaded">Uploaded</option>
                            <option value="approved">Approved</option>
-                           <option value="for_approval">For Approval</option>
+                           <option value="for_approval" selected>For Approval</option>
                    </select>
            </div>
             <table id="employeeRequestsDatatable" class="table table-striped table-bordered">
