@@ -522,7 +522,14 @@ $(function() {
       success: function(res){
         $('#branch').html('');
         $.each(res.branchs, function( index, value ) {
-          $('#branch').append("<li class='ui-widget-content'>"+value.ShortName+"</li>");
+          $('#branch').append("<li class='ui-widget-content'>\
+            <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
+              <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
+            </div>\
+            <div class='col-xs-10' style='white-space:nowrap;'>\
+              <label class='label-control'>"+value.ShortName+"</label> \
+            </div>\
+          </li>");
         });
       }
     });
@@ -540,7 +547,7 @@ $(function() {
         type: 'POST',
         success: function(res){
           $.each(res.items, function( index, value ) {
-            $('#item_code').append("<li class='ui-widget-content id_"+ProdLine+ "  '>"+value.ItemCode+"</li>");
+            $('#item_code').append("<li class='ui-widget-content id_"+ProdLine+ " ' data-ItemCode-ID="+value.item_id+">"+value.ItemCode+"</li>");
           });
         }
       });
@@ -555,7 +562,7 @@ $(function() {
     var self = $(this);
     if(!(this.checked)) {
       $('#branch').find('.ui-widget-content').each(function( index ) {
-        if($(this).text().startsWith( self.val() ) )
+        if($(this).find('.label-control').html().startsWith( self.val() ) )
         {
           $(this).remove();
         }
@@ -573,7 +580,14 @@ $(function() {
         success: function(res){
           $('#branch').html('');
           $.each(res.branchs, function( index, value ) {
-            $('#branch').append("<li class='ui-widget-content'>"+value.ShortName+"</li>");
+            $('#branch').append("<li class='ui-widget-content'>\
+            <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
+              <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
+            </div>\
+            <div class='col-xs-10' style='white-space:nowrap;'>\
+              <label class='label-control'>"+value.ShortName+"</label> \
+            </div>\
+          </li>");
           });
         }
       });
@@ -583,6 +597,18 @@ $(function() {
       $('#branch').html('');
     }
   });
+
+  $("#manual_generate").on('click', function(event){
+    event.preventDefault();
+    var input;
+    $('#item_code .ui-selected').each(function(el) {
+      input = $("<input>")
+        .attr("type", "hidden")
+        .attr("name", "ItemCode[]").val($(this).data("itemcode-id"));
+      $('#manual_form').append(input);
+    });
+    $('#manual_form').submit();
+  }) 
 });
 
 $( ".selectable" ).selectable();

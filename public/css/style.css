@@ -248,5 +248,5 @@ input.error{
 .selectable .ui-selecting { background: #FECA40; }
 .selectable .ui-selected { background: #F39814; color: white; }
 .selectable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-.selectable li { margin: 3px; padding: 0.4em;  height: 18px; box-sizing: unset; }
-.purchase_choose li { margin: 3px; padding: 0.4em;  height: 18px; box-sizing: unset; }
+.selectable li { margin: 3px; padding: 0px;  height: 22px; box-sizing: unset; }
+.purchase_choose li { margin: 3px; padding: 0px;  height: 22px; box-sizing: unset; }

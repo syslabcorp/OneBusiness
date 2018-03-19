@@ -8,6 +8,7 @@ use URL;
 use Twilio;
 use Nexmo;
 use Hash;
+use Datetime;
 use App\UserArea;
 use App\PoModel;
 use Session;
@@ -271,7 +272,112 @@ class PurchaseOrderController extends Controller
     }
 
     public function manual_suggest(){
-        return view('purchase_order.manual_suggest');
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $stockModel = new \App\Stock;
+      $stockModel->setConnection($company->database_name);
+
+      $from_date = new Datetime(Request::all()['from_date']);
+      $to_date = new Datetime(Request::all()['to_date']);
+
+      // No Of Date
+      $no_of_date = (strtotime(Request::all()['to_date']) - strtotime(Request::all()['from_date']))/86400;
+
+      $items = array();
+      
+      if(Request::all()['branchs'] && count(Request::all()['branchs']) )
+      {
+        foreach(Request::all()['ItemCode'] as $item_id)
+        {
+          if(Request::all()['branchs'] && count(Request::all()['branchs']) )
+          $branchs_by_items = array();
+          {
+            foreach(Request::all()['branchs'] as $branch)
+            {
+              // Total Quantity Sold
+
+              $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
+              FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
+              LEFT JOIN t_shifts ON s_hdr.Shift_ID = t_shifts.Shift_ID AND s_hdr.Branch = t_shifts.Branch 
+              WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND t_shifts.ShiftDate >= ? AND t_shifts.ShiftDate <= ? 
+              GROUP BY item_id", [ $branch, $item_id, $from_date, $to_date ]);
+              //Total Quantity of Stock
+        
+              $total_stock = DB::connection($company->database_name)->select("SELECT s_txfr_detail.item_id, 
+              SUM(IF(NOT s_txfr_hdr.Rcvd, s_txfr_detail.Qty, 0)) AS Txit_Qty,
+              SUM(IF(s_txfr_hdr.Rcvd, s_txfr_detail.Bal, 0)) AS Txfr_Bal 
+              FROM s_txfr_hdr, s_txfr_detail, BussinessOne.s_invtry_hdr 
+              WHERE s_txfr_hdr.Txfr_ID = s_txfr_detail.Txfr_ID AND s_txfr_hdr.Txfr_To_Branch = ?
+              AND BussinessOne.s_invtry_hdr.item_id = s_txfr_detail.item_id AND s_txfr_detail.item_id = ?
+              GROUP BY s_txfr_detail.item_id", [$branch, $item_id]);
+        
+              //Pending PO
+              $pending = DB::connection($company->database_name)->select("SELECT SUM(Qty-ServedQty) as PendingQty FROM s_po_detail 
+              WHERE Branch = ? AND s_po_detail.item_id = ? AND ServedQty < Qty", [$branch, $item_id]);
+              
+              // process ... 
+
+              if($total_sold && ($total_sold > 0))
+              {
+                $total_sold = $total_sold[0]->SoldQty;
+                $daily_sold_qty = $no_of_date / $total_sold;
+                if ($daily_sold_qty > 0 && is_float($daily_sold_qty))
+                {
+                  $daily_sold_qty = intval($daily_sold_qty) + 1;
+                }
+              }
+              else
+              {
+                $daily_sold_qty = 0;
+              }
+
+              if($total_stock && ($total_stock[0]->Txit_Qty))
+              {
+                $quantity_stock =  $total_stock[0]->Txit_Qty + $total_stock[0]->Txfr_Bal;
+              }
+              else
+              {
+                $quantity_stock = 0;
+              }
+
+              if($pending && $pending[0]->PendingQty)
+              {
+                $pending_value = $pending[0]->PendingQty;
+              }
+              else
+              {
+                $pending_value = 0;
+              }
+
+              // Qty for PO
+
+              $QtyPO = ($daily_sold_qty * Request::all()['multiolier']) - $pending_value;
+              $item_packaging = StockItem::find($item_id)->Packaging;
+              if ( is_float($QtyPO / $item_packaging) )
+              {
+                $QtyPO = (intval($QtyPO / $item_packaging) + 1 ) * $item_packaging;
+              }
+
+              $item = array("item_id" => $item_id, "daily_sold_qty" => $daily_sold_qty, "Mult" => Request::all()['multiolier'],
+               "stock" => $quantity_stock, "pending" => $pending_value, "QtyPO" => $QtyPO );
+              $branchs_by_items[$branch] = $item;
+            }
+            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode ]);
+            
+            // $branchs_by_items["ItemCode"] = StockItem::find($item_id)->ItemCode;
+            // $items[$item_id] = $branchs_by_items;
+            // array_push($items, [$item_id => $branchs_by_items]);
+          }
+        }
+      }
+      
+    //   return response()->json([
+    //      Request::all(), $items
+    //   ]);
+      return view('purchase_order.manual_suggest',[
+        'corpID' => Request::all()['corpID'],
+        'items' => $items,
+        'num_branch' => count(Request::all()['branchs'])
+      ]);
     }
 
     public function auto_process(){
