@@ -239,7 +239,15 @@ class EmployeeRequestController extends Controller
 		if(!is_null($user)) {
 			// $user->Branch = $request->branch_id;
 			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
-			if(!is_null($employeeRequest)) { $employeeRequest->date_start = $request->start_date; $employeeRequest->save(); }	
+			if(!is_null($employeeRequest)) { 
+				$employeeRequest->date_start = $request->start_date; $employeeRequest->save(); 
+			}	
+			$user->Hired = $request->start_date;
+			$user->FullRate = "0.00";
+			$user->Rate = "0.00";
+			if((new Carbon($user->LastUnfrmPaid))->diffInDays((new Carbon($request->start_date)), false) >= 255) {
+				$user->LastUnfrmPaid = $request->start_date;
+			}
 			$branch_name = Branch::where("Branch", $request->branch_id)->first()->ShortName;
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
