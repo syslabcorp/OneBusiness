@@ -129,13 +129,13 @@ class EmployeeRequestController extends Controller
                     return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
-                    return '<input disabled type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
+                    return '<input disabled data-NX-id="'.$employeeRequest->UserID.'" type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
                 })
                 ->addColumn('sq', function ($employeeRequest) {
-                    return '<input disabled type="checkbox" '.($employeeRequest->SQ_Active == 1?"checked":"").'>';
+                    return '<input disabled data-SQ-id="'.$employeeRequest->UserID.'" type="checkbox" '.($employeeRequest->SQ_Active == 1?"checked":"").'>';
                 })
                 ->addColumn('og', function ($employeeRequest) {
-                    return '<input disabled type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
+                    return '<input disabled data-OG-id="'.$employeeRequest->UserID.'" type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
                 })
                 ->editColumn("Active", function ($query){
                 	return $query->Active == 1?"Yes":"No";
