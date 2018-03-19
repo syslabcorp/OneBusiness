@@ -27,6 +27,7 @@
     <link href="{{ asset('css/colorpicker.css') }}" rel="stylesheet">
 	<link href="{{ URL('/biomertic-login/assets/css/ajaxmask.css') }}" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"> 
 	<link href="{{ URL('/css/bootstrap.min.css') }}" rel="stylesheet">
