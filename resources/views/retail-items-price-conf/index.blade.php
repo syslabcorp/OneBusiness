@@ -56,6 +56,21 @@
           display: block; 
         }
 
+        table.fixedColumn tr>th:nth-child(1), table.fixedColumn tr>th:nth-child(2),
+        table.fixedColumn tr>td:nth-child(1), table.fixedColumn tr>td:nth-child(2) {
+          position: sticky;
+          background: #FFF;
+          z-index: 999;
+          width: 100px;
+          box-shadow: 1px 0px #ccc;
+        }
+        table.fixedColumn tr>th:nth-child(1), table.fixedColumn tr>td:nth-child(1) {
+          left: 0;
+        }
+        table.fixedColumn tr>th:nth-child(2), table.fixedColumn tr>td:nth-child(2) {
+          left: 100px;
+        }
+
         .selectedRow input {
           border: none;
           background: none;
@@ -213,7 +228,7 @@
                                                             <ul v-if="retailItems[0].activeCounter > 0" id="selectableRetailItems" class="selectable">
                                                                 <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
                                                             </ul>
-                                                            <div v-else style="color: #900;">No active items for this product line</div>
+                                                            <div v-else style="color: #900;">No active items</div>
                                                         </div>
 
                                                         <div v-else-if="showRetailItemStatus == 2">
@@ -228,7 +243,7 @@
                                                             <ul v-if="retailItems[0].inactiveCounter > 0" id="selectableRetailItems" class="selectable">
                                                                 <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="!retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
                                                             </ul>
-                                                            <div v-else style="color: #900;">No inactive items for this product line</div>
+                                                            <div v-else style="color: #900;">No inactive items</div>
                                                         </div>
                                                     </div>
                                                     
@@ -453,7 +468,7 @@
                                 <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
-                                  <button type="button" class="btn btn-success btn-md" v-if="confStep === 1">Copy to Branch</button>
+                                  <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
                                   <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1">Show</button>
                                   <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
                                 </div>
@@ -467,7 +482,26 @@
             </div>
         </div>
     </div>
-    
+  <div class="modal modal-copy fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Copy Configuration to other branch</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped table-bordered">
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button class="pull-left btn btn-default" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
+          <button class="btn btn-primary">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('footer-scripts')
@@ -475,7 +509,33 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <script>
+    <script type="text/javascript">
+      var listBranchs = [];
+      
+      $('body').on('click', '.btn-copy', function(event) {
+        $('.modal-copy .table tbody').html('');
+        
+        var index = 1;
+        for(var i = 0; i < listBranchs.length; i++) {
+          var branch = listBranchs[i];
+          if(branch.Active == 0) {
+            continue;
+          }
+          if(index == 1) $('.modal-copy .table tbody').append('<tr>');
+
+          $('.modal-copy .table tbody tr:last-child').append('<td> <input type="checkbox" />' + branch.ShortName +  '</td>');
+
+          index++;
+          if(i == listBranchs.length -1 ) {
+            $('.modal-copy .table tbody tr:last-child').append('<td colspan="' + (4 - index) + '"></td>');
+          }
+          if(index == 4) {
+            index = 1;
+          }
+        }
+        $('.modal-copy').modal('show');
+      });
+
         var serviceApp = new Vue({
             el: '#retailItemPCAppWrapper',
             data: {
@@ -575,6 +635,7 @@
                         axios.get(fetchUrl)
                           .then(function (responsedBranches) {
                             var branches = responsedBranches.data;
+                            listBranchs = branches;
 
                             self.corpBranches = [];
 
@@ -585,12 +646,14 @@
                                     isActive: branch.Active,
                                 });
                             });
+
+                            setTimeout(function() {
+                              self.activateSelectable();
+                            }, 500);
                           })
                           .catch(function (error) {
                             console.log(error);
                           });
-
-                        self.activateSelectable();
                     }
                 },
                 loadItems: function() {
@@ -649,11 +712,11 @@
                             self.ri_selectedBranchIds = storedBranchIds;
                         },
                         stop: function( event, ui ) {
-                            if (typeof(Storage) !== "undefined") {
-                                localStorage.setItem("ri_selectedBranchIds", JSON.stringify(self.ri_selectedBranchIds));
-                            } else {
-                                console.log('Sorry! No Web Storage support..');
-                            }
+                          if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
+                            $('.btn-copy').prop('disabled', false);
+                          }else {
+                            $('.btn-copy').prop('disabled', true);
+                          }
                         },
                     });
 
@@ -674,11 +737,11 @@
                             self.selectedRetailItemIds = storedSelectedServiceIds;
                         },
                         stop: function( event, ui ) {
-                            if (typeof(Storage) !== "undefined") {
-                                localStorage.setItem("selectedRetailItemIds", JSON.stringify(self.selectedRetailItemIds));
-                            } else {
-                                console.log('Sorry! No Web Storage support..');
-                            }
+                          if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
+                            $('.btn-copy').prop('disabled', false);
+                          }else {
+                            $('.btn-copy').prop('disabled', true);
+                          }
                         },
                     });
 

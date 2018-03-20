@@ -26,25 +26,45 @@ class ServicePriceConfController extends Controller
         return view('services-price-conf.index', compact(['corporations']));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function create (Request $request) {
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SrvItemCfg;
+      $itemModel->setConnection($company->database_name);
+
+      $services = \App\Service::whereIn('Serv_ID', explode(',', $request->service_ids))->get();
+      $branchs = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
+
+      return view('services-price-conf.new', [
+        'services' => $services,
+        'branchs' => $branchs,
+        'itemModel' => $itemModel,
+        'corpID' => $request->corpID,
+        'branch_ids' => $request->branch_ids,
+        'service_ids' => $request->service_ids
+      ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SrvItemCfg;
+      $itemModel->setConnection($company->database_name);
+      
+      foreach($request->items as $Serv_ID => $items) {
+        foreach($items as $Branch => $item) {
+          $itemModel->updateOrCreate([
+            'Serv_ID' => $Serv_ID,
+            'Branch' => $Branch
+          ], $item);
+        }
+      }
+
+      \Session::flash('success', "Service items are successfully updated");
+
+      return redirect(route('services-price-conf.create', [
+        'corpID' => $request->corpID,
+        'branch_ids' => $request->branch_ids,
+        'service_ids' => $request->service_ids
+      ]));
     }
 
     /**
