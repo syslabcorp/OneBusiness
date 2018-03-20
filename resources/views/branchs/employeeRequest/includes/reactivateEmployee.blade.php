@@ -133,6 +133,7 @@
             branch_name = $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
+            corporation_name = $("#reactivateModal :checkbox:checked").prev().html();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 
@@ -142,6 +143,8 @@
                     $('#reactivateModal').modal('hide');
                       // $("[date_start_id='"+requestId+"']").html(start_date);
                       // $("[to_branch_id='"+requestId+"']").html(branch_name);
+                      $("[data-"+corporation_name+"-id='"+requestId+"']").prop('checked', true);
+                      $("[data-reactivate-id='"+requestId+"']").attr("disabled", "disabled");
                       showSuccessAlert(" The employee reactivated successfully");
                       // showAlertModal("Success", "The employee reactivated successfully");
                 } else {
