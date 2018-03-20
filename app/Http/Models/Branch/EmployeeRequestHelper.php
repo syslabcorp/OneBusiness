@@ -34,6 +34,30 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
+	public function getUniformModel(){
+		if($this->corpId == "6") { 
+			$modelName = "App\Http\Models\Tables\payroll\uniform";
+			return new $modelName;
+		}
+		if($this->corpId == "7") { 
+			$modelName = "App\Http\Models\Tables\og_payroll\uniform";
+			return new $modelName;
+		}
+		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
+	}
+
+	public function getEmp_histModel(){
+		if($this->corpId == "6") { 
+			$modelName = "App\Http\Models\Tables\payroll\emp_hist";
+			return new $modelName;
+		}
+		if($this->corpId == "7") { 
+			$modelName = "App\Http\Models\Tables\og_payroll\emp_hist";
+			return new $modelName;
+		}
+		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
+	}
+
 	public function getDatabaseName(){
 		if($this->corpId != "6" & $this->corpId != "7") throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
 		// This database name definition should be done dynamic
