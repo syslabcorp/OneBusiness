@@ -32,12 +32,16 @@
         .rightBorder {border-right: 2px solid #ccc;}
         .priceField {width: 50px; text-align: center;}
 
-        table.fixedColumn > thead > tr { background-color: #ddd; padding-top: 20px; padding-bottom: 20px;}
-        table.fixedColumn > thead > tr > th:first-child, table.fixedColumn > tbody > tr > td:first-child  { position: absolute; display: inline-block; background-color: #ccc; width: 140px; vertical-align: middle; }
-        table.fixedColumn > tbody > tr > td {padding-bottom: 15px !important;}
-        table.fixedColumn > tbody > tr > td:first-child {text-align: center;}
+        table.fixedColumn > thead > tr { padding-top: 20px; padding-bottom: 20px;}
+        table.fixedColumn td:not(.rightBorder), table.fixedColumn th:not(.rightBorder) {
+          border-right: 1px solid #ccc;
+        }
+        table.fixedColumn > tbody > tr > td {text-align: center;}
         table.fixedColumn > thead > tr + tr th {
           font-weight: normal;
+        }
+        table.fixedColumn {
+          border: 1px solid #ccc;
         }
         table.fixedColumn .childControl {
           background-color: #fff;
@@ -47,19 +51,16 @@
           padding: 3px 0px;
           min-height: 28px;
         }
+        table.fixedColumn .min-width {
+          min-width: 80px;
+          display: block; 
+        }
 
         .selectedRow input {
           border: none;
           background: none;
         }
 
-        .selectedRow, tbody > tr:hover {background-color: #b8d4ea !important;}
-
-
-        table.fixedColumn > thead > tr > th:nth-child(2), table.fixedColumn > tbody > tr > td:nth-child(2) { padding-left:150px !important; }
-        /* end of ----------------- css for fixed first column of the table (for confStep 2) */
-
-        
         #retailItemPCAppWrapper, #retailItemPCAppWrapper select, #retailItemPCAppWrapper select option {font-size: 14px !important;}
 
 
@@ -88,10 +89,10 @@
                     @endif
 
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Service Per Branch Configuration</h3>
+                        <h3 class="text-center">Retail Price Configuration</h3>
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                Price Configuration for Retail Items by Branch
+                              Retail Items Pricing
                             </div>
                             <div class="panel-body">
                                 <div v-if="confStep === 2">
@@ -102,7 +103,7 @@
                                                     <button type="button" class="btn btn-success btn-sm" style="width:100%;">Set Active</button>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Set Redeemable</button>
+                                                    <button type="button" class="btn btn-info btn-sm" style="width:100%;">Set Redeemable</button>
                                                 </div>
                                             </div>
                                             <div class="row" style="margin-top: 5px;">
@@ -110,7 +111,7 @@
                                                     <button type="button" class="btn btn-success btn-sm" style="width:100%;">Unset Active</button>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Unset Redeemable</button>
+                                                    <button type="button" class="btn btn-info btn-sm" style="width:100%;">Unset Redeemable</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -240,30 +241,30 @@
                                 <div v-if="confStep === 2">
                                     <div class="table-responsive">
                                         <div class="bootstrap-table">
-                                            <div class="fixed-table-container table-no-bordered" style="padding-bottom: 0px;">
+                                            <div class="fixed-table-container" style="padding-bottom: 0px;">
                                                 <div class="fixed-table-body">
-                                                    <table id="table" class="table table-hover table-no-bordered fixedColumn">
+                                                    <table id="table" class="table table-boderred table-hover fixedColumn">
                                                         <thead>
                                                             <tr>
-                                                                <th>
-                                                                    Item Code
-                                                                </th>
-                                                                <th class="customThCss rightBorder" colspan="6" v-for="todo">
-                                                                    Branch 1
-                                                                </th>
-                                                                <th class="customThCss rightBorder" colspan="6">
-                                                                    Branch 2
-                                                                </th>
-                                                                <th class="customThCss rightBorder" colspan="6">
-                                                                    Branch 3
-                                                                </th>
+                                                              <th>
+                                                                Item Code
+                                                              </th>
+                                                              <th class="rightBorder">
+                                                                Last Cost
+                                                              </th>
+                                                              <th class="customThCss rightBorder" colspan="6" v-for="todo">
+                                                                  Branch 1
+                                                              </th>
+                                                              <th class="customThCss rightBorder" colspan="6">
+                                                                  Branch 2
+                                                              </th>
+                                                              <th class="customThCss rightBorder" colspan="6">
+                                                                  Branch 3
+                                                              </th>
                                                             </tr>
                                                             <tr>
-                                                                <th>
-                                                                    <br>
-                                                                    <br>
-                                                                    <br>
-                                                                </th>
+                                                                <th></th>
+                                                                <th class="rightBorder"></th>
                                                                 <th>
                                                                   Active
                                                                 </th>
@@ -323,10 +324,8 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
-                                                                <td>
-                                                                    ABC-101
-                                                                    <div class="text-center"><i class="glyphicon glyphicon-cog" title="SequelSports Membership Fee"></i> Last Cost: <strong>15.50</strong></div>
-                                                                </td>
+                                                                <td> <span class="min-width">ABC-101</span></td>
+                                                                <td class="rightBorder"> <span class="min-width text-right">15.50</span></td>
                                                                 <td>
                                                                     <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
@@ -383,10 +382,8 @@
                                                                 </td> 
                                                             </tr>
                                                             <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
-                                                                <td>
-                                                                    ABC-102
-                                                                    <div class="text-center"><i class="glyphicon glyphicon-cog" title="SequelSports Membership Fee"></i> Last Cost: <strong>18.00</strong></div>
-                                                                </td>
+                                                                <td> <span class="min-width">ABC-101</span></td>
+                                                                <td class="rightBorder"> <span class="min-width text-right">15.50</span></td>
                                                                 <td>
                                                                     <input type="checkbox" name="" class="childControl" disabled>
                                                                 </td>
@@ -456,8 +453,9 @@
                                 <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
-                                    <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
-                                    <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
+                                  <button type="button" class="btn btn-success btn-md" v-if="confStep === 1">Copy to Branch</button>
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1">Show</button>
+                                  <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
                                 </div>
 
                                 <div class="clearfix"></div>
