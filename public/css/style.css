@@ -65,7 +65,7 @@
   font-weight: normal;
 }
 
-td span.error {
+span.error {
   color: #a94442;
   font-weight: 400;
 }
