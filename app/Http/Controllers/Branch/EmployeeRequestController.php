@@ -186,7 +186,7 @@ class EmployeeRequestController extends Controller
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
 			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
 			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
-			$user->LastUnfrmPaid = $this->getLastUnfrmPaid();
+			$user->LastUnfrmPaid = null;
 			$user->TechActive = 0;
 			$user->save();
 
@@ -231,9 +231,9 @@ class EmployeeRequestController extends Controller
 		return "false";
 	}
 
-	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
-		$employeeRequest->setCorpId($request->corpId);
-		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
+	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		$employeeRequestHelper->setCorpId($request->corpId);
+		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
 		// $branch_name = $employeeRequest->to_branch2->ShortName;
 		$branch = Branch::where("Branch", $request->branch_id)->first();
@@ -264,9 +264,34 @@ class EmployeeRequestController extends Controller
 				// $employeeRequest->user()->update(["passwrd" => md5($request->password)]);
 			}
 			$user->save();
+
+			$emp_hist = $employeeRequestHelper->getEmp_histModel();
+			$emp_hist->Branch = $request->branch_id;
+			$emp_hist->EmpID = $user->UserID;
+			$emp_hist->StartDate = $request->start_date;
+			$emp_hist->for_qc = 0;
+			$emp_hist->Last13_Date = $this->CalculateLast13_Date($request->start_date);
+			$emp_hist->save();
+
+			$uniform = $employeeRequestHelper->getUniformModel();
+			$uniform->EmpID = $user->UserID;
+			$uniform->DateIssued = $request->start_date;
+			$uniform->save();
+
 			return "true";
 		}
 		return "false";
+	}
+
+	public function CalculateLast13_Date($date){
+		$day = (new Carbon($date))->format("d");
+		$month = (new Carbon($date))->format("m");
+		$year = (new Carbon($date))->format("y");
+
+		if($day > 15) { $newDay = "16"; }
+		else { $newDay = "01"; }
+
+		return $year . "-" . $month . "-" . $newDay;
 	}
 
 	private function generateCorpsWithBranches($corpType, $corpId){
