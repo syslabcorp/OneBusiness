@@ -39,7 +39,7 @@ class EmployeeRequestHelper
 			$modelName = "App\Http\Models\Tables\payroll\uniform";
 			return new $modelName;
 		}
-		if($this->corpId == "7") { 
+		if($this->corpId == "7") {
 			$modelName = "App\Http\Models\Tables\og_payroll\uniform";
 			return new $modelName;
 		}
@@ -48,11 +48,11 @@ class EmployeeRequestHelper
 
 	public function getEmp_histModel(){
 		if($this->corpId == "6") { 
-			$modelName = "App\Http\Models\Tables\payroll\emp_hist";
+			$modelName = "App\Http\Models\Tables\payroll\\emp_hist";
 			return new $modelName;
 		}
 		if($this->corpId == "7") { 
-			$modelName = "App\Http\Models\Tables\og_payroll\emp_hist";
+			$modelName = "App\Http\Models\Tables\og_payroll\\emp_hist";
 			return new $modelName;
 		}
 		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");

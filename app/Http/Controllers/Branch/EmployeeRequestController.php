@@ -275,6 +275,7 @@ class EmployeeRequestController extends Controller
 
 			$uniform = $employeeRequestHelper->getUniformModel();
 			$uniform->EmpID = $user->UserID;
+			$uniform->DateIssued = $request->start_date;
 			$uniform->save();
 
 			return "true";
