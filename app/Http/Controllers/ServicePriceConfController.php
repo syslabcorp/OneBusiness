@@ -48,10 +48,10 @@ class ServicePriceConfController extends Controller
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SrvItemCfg;
       $itemModel->setConnection($company->database_name);
-      
+
       foreach($request->items as $Serv_ID => $items) {
         foreach($items as $Branch => $item) {
-          $itemModel->updateOrCreate([
+          $status = $itemModel->updateOrCreate([
             'Serv_ID' => $Serv_ID,
             'Branch' => $Branch
           ], $item);
