@@ -28,14 +28,22 @@ class RetailItemPriceConfController extends Controller
         return view('retail-items-price-conf.index', compact(['corporations', 'products']));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function create(Request $request) {
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SItemCfg;
+      $itemModel->setConnection($company->database_name);
+
+      $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->get();
+      $branches = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
+
+      return view('retail-items-price-conf.new', [
+        'branches' => $branches,
+        'stocks' => $stocks,
+        'itemModel' => $itemModel,
+        'corpID' => $request->corpID,
+        'branch_ids' => $request->branch_ids,
+        'item_ids' => $request->item_ids
+      ]);
     }
 
     /**
@@ -44,9 +52,27 @@ class RetailItemPriceConfController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SItemCfg;
+      $itemModel->setConnection($company->database_name);
+
+      foreach($request->items as $item_id => $items) {
+        foreach($items as $Branch => $item) {
+          $status = $itemModel->updateOrCreate([
+            'item_id' => $item_id,
+            'Branch' => $Branch
+          ], $item);
+        }
+      }
+
+      \Session::flash('success', "Retail items are successfully updated");
+
+      return redirect(route('retail-items-price-conf.create', [
+        'corpID' => $request->corpID,
+        'branch_ids' => $request->branch_ids,
+        'item_ids' => $request->item_ids
+      ]));
     }
 
     /**

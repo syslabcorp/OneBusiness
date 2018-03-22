@@ -34,6 +34,9 @@
         table.fixedColumn > thead > tr + tr th {
           font-weight: normal;
         }
+        table.fixedColumn > thead > tr th {
+          text-align: center;
+        }
         table.fixedColumn {
           border: 1px solid #ccc;
         }
