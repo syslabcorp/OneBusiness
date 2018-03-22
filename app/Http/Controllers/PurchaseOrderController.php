@@ -17,6 +17,7 @@ use App\Branch;
 use App\ProductLine;
 use App\StockItem;
 use App\Corporation;
+use App\StockDetail;
 class PurchaseOrderController extends Controller
 {
 	public function __construct()
@@ -271,7 +272,8 @@ class PurchaseOrderController extends Controller
       ]);
     }
 
-    public function manual_suggest(){
+    public function manual_suggest()
+    {
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
@@ -283,14 +285,26 @@ class PurchaseOrderController extends Controller
       $no_of_date = (strtotime(Request::all()['to_date']) - strtotime(Request::all()['from_date']))/86400;
 
       $items = array();
-      
+      $total_amount = 0;
+      $header_branch = array();
+
       if(Request::all()['branchs'] && count(Request::all()['branchs']) )
       {
+        foreach(Request::all()['branchs'] as $branch)
+        {
+          $header_branch[$branch] = Branch::find($branch)->ShortName; 
+        }
+      }
+      
+      if(Request::all()['ItemCode'] && count(Request::all()['ItemCode']) )
+      {
+        $total_pieces = 0;
         foreach(Request::all()['ItemCode'] as $item_id)
         {
           if(Request::all()['branchs'] && count(Request::all()['branchs']) )
-          $branchs_by_items = array();
           {
+            $branchs_by_items = array();
+            $total = 0;
             foreach(Request::all()['branchs'] as $branch)
             {
               // Total Quantity Sold
@@ -356,13 +370,30 @@ class PurchaseOrderController extends Controller
               {
                 $QtyPO = (intval($QtyPO / $item_packaging) + 1 ) * $item_packaging;
               }
+              $total += $QtyPO;
+              
+              if (StockItem::find($item_id)->LastCost)
+              {
+                $last_cost = StockItem::find($item_id)->LastCost;
+                $itemcost = $QtyPO * StockItem::find($item_id)->LastCost;
+              }
+              else
+              {
+                $itemcost = 0;
+                $last_cost = 0;
+              }
+              $total_amount += $itemcost;
 
               $item = array("item_id" => $item_id, "daily_sold_qty" => $daily_sold_qty, "Mult" => Request::all()['multiolier'],
-               "stock" => $quantity_stock, "pending" => $pending_value, "QtyPO" => $QtyPO );
+               "stock" => $quantity_stock, "pending" => $pending_value, "QtyPO" => $QtyPO , 'cost' => $last_cost);
               $branchs_by_items[$branch] = $item;
             }
-            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode ]);
-            
+
+            $bal = DB::connection($company->database_name)->select(" SELECT SUM(Bal) as Bal from s_rcv_detail
+                                                                     where item_id = ? GROUP BY item_id ", [$item_id] );
+            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode, "Bal" => $bal[0]->Bal,
+            'total' => $total, 'item_id' => $item_id]);
+            $total_pieces += $total;
             // $branchs_by_items["ItemCode"] = StockItem::find($item_id)->ItemCode;
             // $items[$item_id] = $branchs_by_items;
             // array_push($items, [$item_id => $branchs_by_items]);
@@ -370,14 +401,51 @@ class PurchaseOrderController extends Controller
         }
       }
       
-    //   return response()->json([
-    //      Request::all(), $items
-    //   ]);
       return view('purchase_order.manual_suggest',[
         'corpID' => Request::all()['corpID'],
         'items' => $items,
-        'num_branch' => count(Request::all()['branchs'])
+        'num_branch' => count(Request::all()['branchs']),
+        'header_branch' => $header_branch,
+        'total_amount' => $total_amount,
+        'total_pieces' => $total_pieces
       ]);
+    }
+
+    public function manual_save()
+    {
+      // return response()->json(Request::all());
+      
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $PurchaseOrderModel = new \App\PurchaseOrder;
+      $PurchaseOrderModel->setConnection($company->database_name);
+      
+      $PurchaseOrderModel->po_date = Date('Y-m-d H:i:s');
+      $PurchaseOrderModel->tot_pcs = Request::all()['total_pieces'];
+      $PurchaseOrderModel->total_amt = Request::all()['total_amount'];
+      
+      if($PurchaseOrderModel->save())
+      {
+        foreach( Request::all()['ItemCode'] as $item_id => $item_with_branch )
+        {
+          foreach($item_with_branch as $branch => $item_code)
+          {
+            $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+            $PurchaseOrderDetailModel->setConnection($company->database_name);
+            $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
+            $PurchaseOrderDetailModel->Branch = $branch;
+            $PurchaseOrderDetailModel->item_id = $item_id;
+            $PurchaseOrderDetailModel->ItemCode = $item_code;
+            $PurchaseOrderDetailModel->Qty = Request::all()['QtyPO'][$item_id][$branch];
+            $PurchaseOrderDetailModel->cost = Request::all()['cost'][$item_id][$branch];
+            $PurchaseOrderDetailModel->save();
+          }
+        }
+      }
+      return redirect()->route('purchase_order.create_manual', [ 'corpID' => (Request::all()['corpID']) ]);
+      
+      
+      // return view('purchase_order.auto_process');
+      // return redirect('purchase_order/auto_process');
     }
 
     public function auto_process(){

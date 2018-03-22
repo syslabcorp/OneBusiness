@@ -99,6 +99,10 @@
         type: 'POST',
         success: function(res){
           $('#render_template').html('');
+          if(res.POTemplates.length == 0)
+          {
+            $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
+          }
           $.each(res.POTemplates, function( index, value ) {
             $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
             // <li class='ui-widget-content'>"+value.ShortName+"</li>
@@ -107,9 +111,11 @@
       });
     })
 
-    $("#all_cities_checkbox_auto").on('change', function(){
+    $("body").on('change', '#all_cities_checkbox_auto', function(){
       var _token = $("meta[name='csrf-token']").attr('content');
       var corpID = {{$corpID}};
+      // $('#auto_city_list').find('option').removeattr('selected');
+      // $('#auto_city_list').find('option:first').attr('selected',true);
       if(this.checked){
         $.ajax({
           url: ajax_url+'/purchase_order/ajax_render_template_by_all_cities',
@@ -117,6 +123,10 @@
           type: 'POST',
           success: function(res){
             $('#render_template').html('');
+            if(res.POTemplates.length == 0)
+            {
+              $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
+            }
             $.each(res.POTemplates, function( index, value ) {
               $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
             });
