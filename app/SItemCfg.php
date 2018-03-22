@@ -8,6 +8,7 @@ class SItemCfg extends Model {
   protected $table = "s_item_cfg";
   protected $primaryKey = "Branch";
   public $timestamps = false;
+  protected $connection = 'mysql';
 
   protected $fillable = [
     'Branch', 'item_id', 'ItemCode', 'Sell_Price', 'Min_Level', 'Active',

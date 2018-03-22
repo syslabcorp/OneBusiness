@@ -96,9 +96,34 @@ class ServicePriceConfController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, $id) {
+      $branches = \App\Branch::whereIn('Branch', $request->branch_ids)->get();
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SrvItemCfg;
+      $itemModel->setConnection($company->database_name);
+
+      $items = $itemModel->where('Branch', '=', $request->branch_id)->get();
+
+      foreach($branches as $branch) {
+        if($branch->Branch == $request->branch_id) continue;
+
+        $itemModel->setConnection($branch->company->database_name);
+
+        foreach($items as $item) {
+          $itemModel->updateOrCreate([
+            'Serv_ID' => $item->Serv_ID,
+            'Branch' => $branch->Branch
+          ], [
+            'Amount' => $item->Amount,
+            'Active' => $item->Active
+          ]);
+        }
+      }
+
+      \Session::flash('success', "Service items are successfully copied");
+
+      return redirect(route('services-price-conf.index', [
+      ])); 
     }
 
     /**
