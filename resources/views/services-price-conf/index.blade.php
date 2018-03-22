@@ -192,47 +192,53 @@
   <div class="modal modal-copy fade" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Copy Configuration to other branch</h4>
-        </div>
-        <div class="modal-body">
-          <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  @foreach($corporations as $company)
-                    @if($company->branches()->where('Active', '=', 1)->count())
-                    <th>{{ $company->corp_name }}</th>
-                    @endif
-                  @endforeach
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  @foreach($corporations as $company)
-                    @if($company->branches()->where('Active', '=', 1)->count())
-                    <td>
-                      @foreach($company->branches()->where('Active', '=', 1)->orderBy('ShortName','ASC')->get() as $branch)
-                        <div class="form-group">
-                          <label style="font-weight: normal;">
-                            <input type="checkbox">
-                            {{ $branch->ShortName }}
-                          </label>
-                        </div>
-                      @endforeach
-                    </td>
-                    @endif
-                  @endforeach
-                </tr>
-              </tbody>
-            </table>
+        <form action="{{ route('services-price-conf.update', [1]) }}" method="POST">
+          {{ csrf_field() }}
+          <input type="hidden" name="_method" value="PUT">
+          <input type="hidden" name="corpID" value="">
+          <input type="hidden" name="branch_id" value="">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Copy Configuration to other branch</h4>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button class="pull-left btn btn-default" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
-          <button class="btn btn-primary">Copy</button>
-        </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    @foreach($corporations as $company)
+                      @if($company->branches()->where('Active', '=', 1)->count())
+                      <th>{{ $company->corp_name }}</th>
+                      @endif
+                    @endforeach
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    @foreach($corporations as $company)
+                      @if($company->branches()->where('Active', '=', 1)->count())
+                      <td>
+                        @foreach($company->branches()->where('Active', '=', 1)->orderBy('ShortName','ASC')->get() as $branch)
+                          <div class="form-group">
+                            <label style="font-weight: normal;">
+                              <input type="checkbox" name="branch_ids[]" value="{{ $branch->Branch }}">
+                              {{ $branch->ShortName }}
+                            </label>
+                          </div>
+                        @endforeach
+                      </td>
+                      @endif
+                    @endforeach
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="pull-left btn btn-default" type="button" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
+            <button class="btn btn-primary" type="submit">Copy</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -245,8 +251,25 @@
 
     <script type="text/javascript">
       var listBranchs = [];
-      
+
       $('body').on('click', '.btn-copy', function(event) {
+        if($('#selectableBranches .ui-selected').length != 1) {
+          $('#page-content-togle-sidebar-sec').prepend('\
+            <div class="row alert-nothing">\
+              <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                <span class="fa fa-close"></span> <em>Please select only one(1) branch...</em>\
+              </div>\
+            </div>\
+            ');
+            setTimeout(function() {
+              $('.alert-nothing').remove();
+            }, 3000);
+            return;
+        }
+
+        $('.modal-copy input[name="branch_id"]').val($('#selectableBranches .ui-selected').attr('branchid'));
+        $('.modal-copy input[name="corpID"]').val($('select[name="corp_type"]').val());
+        
         $('.modal-copy').modal('show');
       });
 
@@ -309,7 +332,7 @@
                     ');
                     setTimeout(function() {
                       $('.alert-nothing').remove();
-                    }, 3000)
+                    }, 3000);
                   }
                 },
                 confBack: function() {

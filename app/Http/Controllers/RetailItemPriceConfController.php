@@ -31,7 +31,6 @@ class RetailItemPriceConfController extends Controller
     public function create(Request $request) {
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SItemCfg;
-      $itemModel->setConnection($company->database_name);
 
       $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->get();
       $branches = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
@@ -55,7 +54,6 @@ class RetailItemPriceConfController extends Controller
     public function store(Request $request) {
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SItemCfg;
-      $itemModel->setConnection($company->database_name);
 
       foreach($request->items as $item_id => $items) {
         foreach($items as $Branch => $item) {
@@ -104,10 +102,6 @@ class RetailItemPriceConfController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
