@@ -42,3 +42,7 @@ span.error {
   max-height: 60vh;
   overflow: auto;
 }
+
+.modal-backdrop.fade.in {
+  position: fixed;
+}

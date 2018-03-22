@@ -246,223 +246,11 @@
                                                             <div v-else style="color: #900;">No inactive items</div>
                                                         </div>
                                                     </div>
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> <!-- /confStep=1 -->
-                                
-                                <div v-if="confStep === 2">
-                                    <div class="table-responsive">
-                                        <div class="bootstrap-table">
-                                            <div class="fixed-table-container" style="padding-bottom: 0px;">
-                                                <div class="fixed-table-body">
-                                                    <table id="table" class="table table-boderred table-hover fixedColumn">
-                                                        <thead>
-                                                            <tr>
-                                                              <th>
-                                                                Item Code
-                                                              </th>
-                                                              <th class="rightBorder">
-                                                                Last Cost
-                                                              </th>
-                                                              <th class="customThCss rightBorder" colspan="6" v-for="todo">
-                                                                  Branch 1
-                                                              </th>
-                                                              <th class="customThCss rightBorder" colspan="6">
-                                                                  Branch 2
-                                                              </th>
-                                                              <th class="customThCss rightBorder" colspan="6">
-                                                                  Branch 3
-                                                              </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th></th>
-                                                                <th class="rightBorder"></th>
-                                                                <th>
-                                                                  Active
-                                                                </th>
-                                                                <th>
-                                                                    Redeem
-                                                                </th>
-                                                                <th>
-                                                                    Points
-                                                                </th>
-                                                                <th>
-                                                                    SRP
-                                                                </th>
-                                                                <th>
-                                                                    % MarkUp
-                                                                </th>
-                                                                <th class="rightBorder">
-                                                                    Net
-                                                                </th>
-                                                                <th>
-                                                                    Active
-                                                                </th>
-                                                                <th>
-                                                                    Redeem
-                                                                </th>
-                                                                <th>
-                                                                    Points
-                                                                </th>
-                                                                <th>
-                                                                    SRP
-                                                                </th>
-                                                                <th>
-                                                                    % MarkUp
-                                                                </th>
-                                                                <th class="rightBorder">
-                                                                    Net
-                                                                </th>
-                                                                <th>
-                                                                    Active
-                                                                </th>
-                                                                <th>
-                                                                    Redeem
-                                                                </th>
-                                                                <th>
-                                                                    Points
-                                                                </th>
-                                                                <th>
-                                                                    SRP
-                                                                </th>
-                                                                <th>
-                                                                    % MarkUp
-                                                                </th>
-                                                                <th class="rightBorder">
-                                                                    Net
-                                                                </th>
-                                                                
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
-                                                                <td> <span class="min-width">ABC-101</span></td>
-                                                                <td class="rightBorder"> <span class="min-width text-right">15.50</span></td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                            </tr>
-                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
-                                                                <td> <span class="min-width">ABC-101</span></td>
-                                                                <td class="rightBorder"> <span class="min-width text-right">15.50</span></td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                            </tr>
-                                                            
-                                                        </tbody>
-                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="panel-footer">
                                 <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
@@ -490,10 +278,37 @@
           <h4 class="modal-title">Copy Configuration to other branch</h4>
         </div>
         <div class="modal-body">
-          <table class="table table-striped table-bordered">
-            <tbody>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  @foreach($corporations as $company)
+                    @if($company->branches()->where('Active', '=', 1)->count())
+                    <th>{{ $company->corp_name }}</th>
+                    @endif
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  @foreach($corporations as $company)
+                    @if($company->branches()->where('Active', '=', 1)->count())
+                    <td>
+                      @foreach($company->branches()->where('Active', '=', 1)->orderBy('ShortName','ASC')->get() as $branch)
+                        <div class="form-group">
+                          <label style="font-weight: normal;">
+                            <input type="checkbox">
+                            {{ $branch->ShortName }}
+                          </label>
+                        </div>
+                      @endforeach
+                    </td>
+                    @endif
+                  @endforeach
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="pull-left btn btn-default" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
@@ -513,26 +328,6 @@
       var listBranchs = [];
       
       $('body').on('click', '.btn-copy', function(event) {
-        $('.modal-copy .table tbody').html('');
-        
-        var index = 1;
-        for(var i = 0; i < listBranchs.length; i++) {
-          var branch = listBranchs[i];
-          if(branch.Active == 0) {
-            continue;
-          }
-          if(index == 1) $('.modal-copy .table tbody').append('<tr>');
-
-          $('.modal-copy .table tbody tr:last-child').append('<td> <input type="checkbox" />' + branch.ShortName +  '</td>');
-
-          index++;
-          if(i == listBranchs.length -1 ) {
-            $('.modal-copy .table tbody tr:last-child').append('<td colspan="' + (4 - index) + '"></td>');
-          }
-          if(index == 4) {
-            index = 1;
-          }
-        }
         $('.modal-copy').modal('show');
       });
 
@@ -591,9 +386,19 @@
                   var self = this;
 
                   if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
-                    self.confStep = 2;
+                    window.location = "{{ route('retail-items-price-conf.create') }}?branch_ids=" + this.ri_selectedBranchIds + 
+                      "&item_ids=" + this.selectedRetailItemIds + "&corpID=" + this.ri_selectedCorporationId;
                   } else {
-                    alert('Please select branch and retail items first, to proceed to next step.');
+                    $('#page-content-togle-sidebar-sec').prepend('\
+                    <div class="row alert-nothing">\
+                      <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                        <span class="fa fa-close"></span> <em>Please select Branch and Product first...</em>\
+                      </div>\
+                    </div>\
+                    ');
+                    setTimeout(function() {
+                      $('.alert-nothing').remove();
+                    }, 3000)
                   }
                 },
                 confBack: function() {
@@ -749,22 +554,9 @@
                 setLocalStorageVariables: function() {
                     var self = this;
 
-                    if(localStorage.getItem("ri_selectedBranchIds") !== null) {
-                        self.ri_selectedBranchIds = JSON.parse(localStorage.getItem("ri_selectedBranchIds"));
-                    }
-
-                    if(localStorage.getItem("selectedRetailItemIds") !== null) {
-                        self.selectedRetailItemIds = JSON.parse(localStorage.getItem("selectedRetailItemIds"));
-                    }
-
                     if(localStorage.getItem("ri_selectedCorporationId")) {
                         self.ri_selectedCorporationId = localStorage.getItem("ri_selectedCorporationId");
                         self.loadBranches();
-                    }
-
-                    if(localStorage.getItem("selectedProductId")) {
-                        self.selectedProductId = localStorage.getItem("selectedProductId");
-                        self.loadItems();
                     }
                 }
             },
