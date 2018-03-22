@@ -37,3 +37,8 @@ span.error {
   color: #a94442;
   font-weight: 400;
 }
+
+.modal-body {
+  max-height: 60vh;
+  overflow: auto;
+}

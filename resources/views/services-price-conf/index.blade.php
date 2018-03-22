@@ -202,23 +202,27 @@
               <thead>
                 <tr>
                   @foreach($corporations as $company)
-                  <th>{{ $company->corp_name }}</th>
+                    @if($company->branches()->where('Active', '=', 1)->count())
+                    <th>{{ $company->corp_name }}</th>
+                    @endif
                   @endforeach
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   @foreach($corporations as $company)
-                  <td>
-                    @foreach($company->branches as $branch)
-                      <div class="form-group">
-                        <label style="font-weight: normal;">
-                          <input type="checkbox">
-                          {{ $branch->ShortName }}
-                        </label>
-                      </div>
-                    @endforeach
-                  </td>
+                    @if($company->branches()->where('Active', '=', 1)->count())
+                    <td>
+                      @foreach($company->branches()->where('Active', '=', 1)->orderBy('ShortName','ASC')->get() as $branch)
+                        <div class="form-group">
+                          <label style="font-weight: normal;">
+                            <input type="checkbox">
+                            {{ $branch->ShortName }}
+                          </label>
+                        </div>
+                      @endforeach
+                    </td>
+                    @endif
                   @endforeach
                 </tr>
               </tbody>
@@ -296,9 +300,17 @@
                     window.location = "{{ route('services-price-conf.create') }}?branch_ids=" + this.selectedBranchIds + 
                       "&service_ids=" + this.selectedServiceIds + "&corpID=" + this.selectedCorporationId;
                   } else {
-                      alert('Please select branch and services first, to proceed to next step.');
+                    $('#page-content-togle-sidebar-sec').prepend('\
+                    <div class="row alert-nothing">\
+                      <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                        <span class="fa fa-close"></span> <em>Please select Branch and Service first...</em>\
+                      </div>\
+                    </div>\
+                    ');
+                    setTimeout(function() {
+                      $('.alert-nothing').remove();
+                    }, 3000)
                   }
-                    
                 },
                 confBack: function() {
                     var self = this;

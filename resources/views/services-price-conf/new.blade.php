@@ -72,13 +72,15 @@
         }
         .table .price-col .amount {
           min-height: 32px;
+          width: 100px;
+          display: inline-block;
         }
         .table .editable .amount {
           display: none;
         }
         .table .editable .priceField {
-          display: block;
-          width: 100%;
+          display: inline-block;
+          width: 100px;
         }
 
         .rightBorder {border-right: 2px solid #ccc;}
@@ -131,7 +133,7 @@
                                     </div>
                                   </div>
                                   <div class="col-md-8 text-right">
-                                    <button type="button" class="btn btn-primary btn-sm btn-edit"  style="margin-left: 5px;">Edit</button>
+                                    <button type="button" class="btn btn-primary btn-sm btn-edit"  style="margin-left: 5px;">Edit Details</button>
                                     <button type="button" class="btn btn-primary btn-sm btn-set-active"  style="margin-left: 5px;">Set Active</button>
                                     <button type="button" class="btn btn-success btn-sm btn-unset-active" style="margin-left: 5px;">Unset Active</button>
                                   </div>
@@ -241,10 +243,20 @@
   });
 
   $('.btn-edit').click(function(event) {
+    if($('.table .ui-selected').length == 0) {
+      return;
+    }
+
     if($('.table .editable').length > 0) {
+      $('.table .ui-selected.editable input[type="checkbox"]').attr('onclick', 'return false;');
       $('.table .editable').removeClass('editable');
+      $('.btn-set-active, .btn-unset-active, .btn-set-price, input[name="price"]').prop('disabled', false);
+      $(this).text('Edit Details');
     }else {
       $('.table .ui-selected').addClass('editable');
+      $('.table .ui-selected.editable input[type="checkbox"]').attr('onclick', '');
+      $('.btn-set-active, .btn-unset-active, .btn-set-price, input[name="price"]').prop('disabled', true);
+      $(this).text('Save Row');
     }
   });
 
