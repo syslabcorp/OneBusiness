@@ -250,8 +250,9 @@ class EmployeeRequestController extends Controller
 			$user->Hired = $request->start_date;
 			$user->FullRate = "0.00";
 			$user->Rate = "0.00";
-			if((new Carbon($user->LastUnfrmPaid))->diffInDays((new Carbon($request->start_date)), false) >= 255) {
-				$user->LastUnfrmPaid = $request->start_date;
+			// if((new Carbon($user->LastUnfrmPaid))->diffInDays((new Carbon($request->start_date)), false) >= 255) {
+			if($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date) >= 255) {
+				$user->LastUnfrmPaid = $this->CalculateLast13_Date($request->start_date);
 			}
 			if(!is_null($branch)) { $branch_name = $branch->ShortName; } else { $branch_name = null; }
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
@@ -273,10 +274,14 @@ class EmployeeRequestController extends Controller
 			$emp_hist->Last13_Date = $this->CalculateLast13_Date($request->start_date);
 			$emp_hist->save();
 
-			$uniform = $employeeRequestHelper->getUniformModel();
-			$uniform->EmpID = $user->UserID;
-			$uniform->DateIssued = $request->start_date;
-			$uniform->save();
+			if($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date) >= 255) {
+				$deduct_mstr = $employeeRequestHelper->getDeduct_mstrModel();
+				$uniform = $employeeRequestHelper->getUniformModel();
+				$uniform->EmpID = $user->UserID;
+				$uniform->Amount = $deduct_mstr::where("ID_deduct", "3")->total_amt;
+				$uniform->DateIssued = $this->CalculateLast13_Date($request->start_date);
+				$uniform->save();
+			}
 
 			return "true";
 		}
@@ -292,6 +297,11 @@ class EmployeeRequestController extends Controller
 		else { $newDay = "01"; }
 
 		return $year . "-" . $month . "-" . $newDay;
+	}
+
+	public function calculateDifferenceBetweenTwoDates($date1, $date2){
+		if($date1 == null or $date1 == "") { return 256; }
+		return (new Carbon($date1))->diffInDays((new Carbon($date2)), false);
 	}
 
 	private function generateCorpsWithBranches($corpType, $corpId){
