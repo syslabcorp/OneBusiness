@@ -46,6 +46,18 @@ class EmployeeRequestHelper
 		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
 	}
 
+	public function getDeduct_mstrModel(){
+		if($this->corpId == "6") { 
+			$modelName = "App\Http\Models\Tables\payroll\deduct_mstr";
+			return new $modelName;
+		}
+		if($this->corpId == "7") {
+			$modelName = "App\Http\Models\Tables\og_payroll\deduct_mstr";
+			return new $modelName;
+		}
+		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
+	}
+
 	public function getEmp_histModel(){
 		if($this->corpId == "6") { 
 			$modelName = "App\Http\Models\Tables\payroll\\emp_hist";
