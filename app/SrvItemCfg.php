@@ -12,4 +12,12 @@ class SrvItemCfg extends Model {
   protected $fillable = [
     'Amount', 'Active', 'Branch', 'Serv_ID'
   ];
+
+  protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
+  {
+    $query
+    ->where('Serv_ID', '=', $this->Serv_ID)
+    ->where('Branch', '=', $this->Branch);
+    return $query;
+  }
 }

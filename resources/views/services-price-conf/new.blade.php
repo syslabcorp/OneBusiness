@@ -61,6 +61,26 @@
           width: 200px;
         }
 
+        .priceField {
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          padding: 5px 0px;
+          text-align: right;
+          border-radius: 4px;
+          display: none;
+        }
+        .table .price-col .amount {
+          min-height: 32px;
+        }
+        .table .editable .amount {
+          display: none;
+        }
+        .table .editable .priceField {
+          display: block;
+          width: 100%;
+        }
+
         .rightBorder {border-right: 2px solid #ccc;}
 
         #serviceAppWrapper, #serviceAppWrapper select, #serviceAppWrapper select option {font-size: 14px !important;}
@@ -111,6 +131,7 @@
                                     </div>
                                   </div>
                                   <div class="col-md-8 text-right">
+                                    <button type="button" class="btn btn-primary btn-sm btn-edit"  style="margin-left: 5px;">Edit</button>
                                     <button type="button" class="btn btn-primary btn-sm btn-set-active"  style="margin-left: 5px;">Set Active</button>
                                     <button type="button" class="btn btn-success btn-sm btn-unset-active" style="margin-left: 5px;">Unset Active</button>
                                   </div>
@@ -157,11 +178,11 @@
                                                         @foreach($branchs as $branch)
                                                         @php $item = $itemModel->where('Serv_ID', '=', $service->Serv_ID)->where('Branch', '=', $branch->Branch)->first() @endphp
                                                         <td class="text-right price-col">
-                                                          {{ $item ? number_format($item->Amount, 2) : '0.00' }}
+                                                          <input type="number" name="items[{{$service->Serv_ID}}][{{$branch->Branch}}][Amount]" 
+                                                            value="{{ $item ? $item->Amount : '0.00' }}" class="priceField">
+                                                          <span class="amount">{{ $item ? number_format($item->Amount, 2) : '0.00' }}</span>
                                                         </td>
                                                         <td class="rightBorder text-center">
-                                                          <input type="hidden" name="items[{{$service->Serv_ID}}][{{$branch->Branch}}][Amount]" 
-                                                            value="{{ $item ? $item->Amount : '0.00' }}" class="priceField">
                                                           <input type="hidden" name="items[{{$service->Serv_ID}}][{{$branch->Branch}}][Active]" value="0">
                                                           <input type="checkbox" name="items[{{$service->Serv_ID}}][{{$branch->Branch}}][Active]" 
                                                           class="childControl" onclick="return false;" value="1" {{ $item && $item->Active ? 'checked' : '' }}>
@@ -201,7 +222,7 @@
     $('.price-box .error').remove();
     if($.isNumeric($('input[name="price"]').val())) {
       $('.table .ui-selected input.priceField').val(parseFloat($('input[name="price"]').val()).toFixed(2));
-      $('.table .ui-selected .price-col').text(parseFloat($('input[name="price"]').val()).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+      $('.table .ui-selected .price-col .amount').text(parseFloat($('input[name="price"]').val()).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
     }else {
       $('.price-box').append('<span class="error">Please input number</span>');
     }
@@ -217,6 +238,18 @@
 
   $('.btn-save').click(function(event) {
     $('form').submit();
+  });
+
+  $('.btn-edit').click(function(event) {
+    if($('.table .editable').length > 0) {
+      $('.table .editable').removeClass('editable');
+    }else {
+      $('.table .ui-selected').addClass('editable');
+    }
+  });
+
+  $('.table .priceField').change(function(event) {
+    $(this).parents('td').find('.amount').text(parseFloat($(this).val()).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
   });
 </script>
 @endsection

@@ -147,7 +147,7 @@
                                                       List of Services
                                                     </div>
                                                     <div class="col-md-5">
-                                                      <select class="form-control" @change="filterServiceList($event)">
+                                                      <select class="form-control" v-model="serviceStatus" @change="filterServiceList($event)">
                                                         <option value="1">Active</option>
                                                         <option value="0">Inactive</option>
                                                         <option value="2">All</option>
@@ -156,31 +156,15 @@
                                                   </div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
-                                                    <div v-if="services.length == 0" style="color: #900;">No services found</div>
+                                                    <div v-if="listServices.length == 0" style="color: #900;">
+                                                      <span v-if="serviceStatus == 2">No services found</span>
+                                                      <span v-if="serviceStatus == 1">No active services</span>
+                                                      <span v-if="serviceStatus == 0">No inactive services</span>
+                                                    </div>
                                                     <div v-else>
-                                                        <div v-if="showServiceStatus == 1">
-                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices" class="selectable selectableServices">
-                                                                <li v-for="service in services" :serviceid="service.id" v-if="service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">
-                                                                No active services
-                                                            </div>
-                                                        </div>
-
-                                                        <div v-else-if="showServiceStatus == 2">
-                                                            <ul v-if="services[0].activeCounter > 0" id="selectableServices2" class="selectable selectableServices">
-                                                                <li v-for="service in services" :serviceid="service.id" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">No active services found</div>
-                                                        </div>
-                                                        <div v-else>
-                                                            <ul v-if="services[0].inactiveCounter > 0" id="selectableServices3" class="selectable selectableServices">
-                                                              <li v-for="service in services" :serviceid="service.id" v-if="!service.isActive" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">
-                                                              No inactive services
-                                                            </div>
-                                                        </div>
+                                                      <ul id="selectableServices3" class="selectable selectableServices">
+                                                        <li v-for="service in listServices" :serviceid="service.id" :class="(selectedServiceIds.includes(service.id.toString())) ? 'ui-widget-content ui-selected' : 'ui-widget-content'">@{{ service.code }}</li>
+                                                      </ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -213,10 +197,33 @@
           <h4 class="modal-title">Copy Configuration to other branch</h4>
         </div>
         <div class="modal-body">
-          <table class="table table-striped table-bordered">
-            <tbody>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  @foreach($corporations as $company)
+                  <th>{{ $company->corp_name }}</th>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  @foreach($corporations as $company)
+                  <td>
+                    @foreach($company->branches as $branch)
+                      <div class="form-group">
+                        <label style="font-weight: normal;">
+                          <input type="checkbox">
+                          {{ $branch->ShortName }}
+                        </label>
+                      </div>
+                    @endforeach
+                  </td>
+                  @endforeach
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="pull-left btn btn-default" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
@@ -236,26 +243,6 @@
       var listBranchs = [];
       
       $('body').on('click', '.btn-copy', function(event) {
-        $('.modal-copy .table tbody').html('');
-        
-        var index = 1;
-        for(var i = 0; i < listBranchs.length; i++) {
-          var branch = listBranchs[i];
-          if(branch.Active == 0) {
-            continue;
-          }
-          if(index == 1) $('.modal-copy .table tbody').append('<tr>');
-
-          $('.modal-copy .table tbody tr:last-child').append('<td> <input type="checkbox" />' + branch.ShortName +  '</td>');
-
-          index++;
-          if(i == listBranchs.length -1 ) {
-            $('.modal-copy .table tbody tr:last-child').append('<td colspan="' + (4 - index) + '"></td>');
-          }
-          if(index == 4) {
-            index = 1;
-          }
-        }
         $('.modal-copy').modal('show');
       });
 
@@ -276,9 +263,10 @@
                 listBranches: [],
                 selectedBranchIds: [],
                 services: [],
+                listServices: [],
                 selectedServiceIds: [],
                 showBranchStatus: 1,
-                showServiceStatus: 1
+                serviceStatus: 1
             },
             methods: {
                 toggleRowToEditable: function(event) {
@@ -320,27 +308,33 @@
 
                 },
                 filterBranchList: function(event) {
-                    var self = this;
-                    var filterOption = event.target.value;
+                  var self = this;
+                  var filterOption = event.target.value;
 
-                    if(filterOption == 0) self.showBranchStatus = 0;
-                    else if(filterOption == 1) self.showBranchStatus = 1;
-                    else self.showBranchStatus = 2;
+                  if(filterOption == 0) self.showBranchStatus = 0;
+                  else if(filterOption == 1) self.showBranchStatus = 1;
+                  else self.showBranchStatus = 2;
 
-                    self.listBranches = [];
-                    for(var i = 0; i < self.corpBranches.length; i++) {
-                      if(self.corpBranches[i].isActive == filterOption || filterOption == 2) {
-                        self.listBranches.push(self.corpBranches[i]);
-                      }
+                  self.listBranches = [];
+                  for(var i = 0; i < self.corpBranches.length; i++) {
+                    if(self.corpBranches[i].isActive == filterOption || filterOption == 2) {
+                      self.listBranches.push(self.corpBranches[i]);
                     }
+                  }
                 },
                 filterServiceList: function(event) {
                     var self = this;
-                    var filterOption = event.target.value;
 
-                    if(filterOption == 0) self.showServiceStatus = 0;
-                    else if(filterOption == 1) self.showServiceStatus = 1;
-                    else self.showServiceStatus = 2;
+                    self.listServices = [];
+                    for(var i = 0; i < self.services.length; i++) {
+                      if(self.services[i].isActive == this.serviceStatus || this.serviceStatus == 2) {
+                        self.listServices.push(self.services[i]);
+                      }
+                    }
+
+                    setTimeout(function() {
+                      self.activateSelectable();
+                    }, 500);
                 },
                 loadBranches: function() {
                     var self = this;
@@ -395,22 +389,33 @@
                         self.services = [];
 
                         responseServices.map(function(service, index) {
-                            self.services.push({
-                                id: service.id,
-                                code: service.code,
-                                description: service.description,
-                                isActive: service.isActive,
-                                activeCounter: service.activeCounter,
-                                inactiveCounter: service.inactiveCounter,
-                            });
+                          self.services.push({
+                            id: service.id,
+                            code: service.code,
+                            description: service.description,
+                            isActive: service.isActive,
+                            activeCounter: service.activeCounter,
+                            inactiveCounter: service.inactiveCounter,
+                          });
                         });
-                        
+
+                        self.listServices = [];
+
+                        for(var i = 0; i < self.services.length; i++) {
+                          if(self.services[i].isActive == self.serviceStatus) {
+                            self.listServices.push(self.services[i]);
+                          }
+                        }
+
+                        setTimeout(function() {
+                          self.activateSelectable();
+                        }, 500);
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
 
-                    self.activateSelectable();
+                    ;
                 },
                 activateSelectable: function() {
                     var self = this;
