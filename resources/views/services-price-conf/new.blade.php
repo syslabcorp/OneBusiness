@@ -117,7 +117,7 @@
                     <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                              Service per Branch Configuration
+                              <strong>Service per Branch Configuration</strong>
                             </div>
 
                             <div class="panel-body">
@@ -128,20 +128,28 @@
                                         <label style="margin-top: 6px;">Price</label>
                                       </div>
                                       <div class="col-md-8 price-box">
-                                        <input type="number" name="price" class="form-control">
+                                        <input type="number" name="price" class="form-control"
+                                          {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>
                                       </div>
                                       <div class="col-md-2">
-                                        <button type="button" class="btn btn-primary btn-sm btn-set-price" >Set Price</button>
+                                        <button type="button" class="btn btn-primary btn-sm btn-set-price"
+                                          {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Set Price</button>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="col-md-8 text-right">
-                                    <button type="button" class="btn btn-primary btn-sm btn-edit"  style="margin-left: 5px;">Edit Details</button>
-                                    <button type="button" class="btn btn-primary btn-sm btn-set-active"  style="margin-left: 5px;">Set Active</button>
-                                    <button type="button" class="btn btn-success btn-sm btn-unset-active" style="margin-left: 5px;">Unset Active</button>
+                                    
+                                    <button type="button" class="btn btn-primary btn-sm btn-set-active"  style="margin-left: 5px;"
+                                      {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Set Active</button>
+                                    <button type="button" class="btn btn-success btn-sm btn-unset-active" style="margin-left: 5px;"
+                                      {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Unset Active</button>
                                   </div>
                                 </div>
                                 <hr>
+                                <div class="text-right" style="margin-bottom: 10px;">
+                                  <button type="button" class="btn btn-primary btn-sm btn-edit"
+                                    {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Edit Details</button>
+                                </div>
                                   <div class="table-responsive">
                                     <div class="bootstrap-table">
                                         <div class="fixed-table-container table-no-bordered" style="padding-bottom: 0px;">
@@ -208,7 +216,8 @@
                               <div class="row">
                                   <a href="{{ url('/services-price-conf') }}" class="btn btn-default btn-md pull-left">Back</a> 
                                 <div class="pull-right">
-                                  <button type="button" class="btn btn-primary btn-md btn-save">Save</button>
+                                  <button type="button" class="btn btn-primary btn-md btn-save"
+                                    {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Save</button>
                                 </div>
                               </div>
                             </div>

@@ -15,10 +15,9 @@ class RetailItemPriceConfController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccessById(34, "V"))
-        {
-            \Session::flash('error', "You don't have permission");
-            return redirect("/home");
+        if(!\Auth::user()->checkAccessById(36, "V")) {
+          \Session::flash('error', "You don't have permission");
+          return redirect("/home");
         }
 
         //get services list
@@ -29,6 +28,11 @@ class RetailItemPriceConfController extends Controller
     }
 
     public function create(Request $request) {
+      if(!\Auth::user()->checkAccessById(36, "E")) {
+        \Session::flash('error', "You don't have permission");
+        return redirect("/home");
+      }
+
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SItemCfg;
 
@@ -64,7 +68,7 @@ class RetailItemPriceConfController extends Controller
         }
       }
 
-      \Session::flash('success', "Retail items are successfully updated");
+      \Session::flash('success', "Settings successfully saved");
 
       return redirect(route('retail-items-price-conf.create', [
         'corpID' => $request->corpID,

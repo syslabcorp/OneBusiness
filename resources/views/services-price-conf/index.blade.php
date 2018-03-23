@@ -79,7 +79,7 @@
                     <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                              Service per Branch Configuration
+                              <strong>Service per Branch Configuration</strong>
                             </div>
 
                             <div class="panel-body">
@@ -176,8 +176,15 @@
                                 <a href="{{ url('/services-price-conf') }}" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
-                                  <button type="button" class="btn btn-success btn-md btn-copy" disabled="true">Copy to Branch</button>
-                                  <button type="button" class="btn btn-success btn-md" @click="confNext">Show</button>
+                                  @if(\Auth::user()->checkAccessById(37, "E"))
+                                  <button type="button" class="btn btn-success btn-md btn-copy" disabled="true">
+                                    Copy to Branch
+                                  </button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext"
+                                   {{ \Auth::user()->checkAccessById(37, "V") ? '' : 'disabled' }}>
+                                    Show
+                                  </button>
                                 </div>
                                 
                                 <div class="clearfix"></div>
