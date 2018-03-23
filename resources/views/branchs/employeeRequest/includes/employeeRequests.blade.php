@@ -110,9 +110,8 @@ function sendApproveRequest(requestId){
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
         if(response == "true") { 
-                $(".approved_td[name='"+requestId+"']").prop('checked', true);
-                $("[data-approve-id='"+requestId+"']").attr("disabled", "disabled");
-                $("[data-delete-id='"+requestId+"']").attr("disabled", "disabled");
+                employeeRequestsDatatable.draw();
+                reactivateEmployeeDatatable.draw();
                 showSuccessAlert(" The employee request successfully approved!");
                 // showAlertModal("Success", "The employee request was approved!");
         }
@@ -130,7 +129,9 @@ function sendDeleteRequest(requestId, element){
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
         if(response == "true") { 
-                $("[data-delete-id='"+requestId+"']").closest("tr").remove();
+                employeeRequestsDatatable.draw();
+                reactivateEmployeeDatatable.draw();
+                // $("[data-delete-id='"+requestId+"']").closest("tr").remove();
                 // $("[data-reactivate-id='"+requestId+"']").closest("tr").remove();
                 showSuccessAlert(" The employee request successfully deleted!");
                 // showAlertModal("Success", "The employee request was deleted!"); 
