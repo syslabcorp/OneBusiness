@@ -535,7 +535,9 @@ $(function() {
     });
   })
 
-  $('.prodline_item').on('change', function()
+
+
+  $('body').on('change', '.prodline_item', function()
   {
     var ProdLine = $(this).val();
     var _token = $("meta[name='csrf-token']").attr('content');
@@ -549,6 +551,7 @@ $(function() {
           $.each(res.items, function( index, value ) {
             $('#item_code').append("<li class='ui-widget-content id_"+ProdLine+ " ' data-ItemCode-ID="+value.item_id+">"+value.ItemCode+"</li>");
           });
+          sortUnorderedList( $('#item_code li') );
         }
       });
     }
@@ -557,6 +560,32 @@ $(function() {
       $(".id_" + ProdLine).remove();
     }
   });
+
+  function sortUnorderedList(li, sortDescending) {
+    // Get the list items and setup an array for sorting
+    var lis = li;
+    var vals = [];
+  
+    // Populate the array
+    for(var i = 0, l = lis.length; i < l; i++)
+      vals.push(lis[i].innerHTML);
+  
+    // Sort it
+    vals.sort();
+  
+    // Sometimes you gotta DESC
+    if(sortDescending)
+      vals.reverse();
+  
+    // Change the list on the page
+    for(var i = 0, l = lis.length; i < l; i++)
+      lis[i].innerHTML = vals[i];
+  }
+
+  $('body').on('change', '.prodline_item', function()
+  {
+    sortUnorderedList('item_code');
+  });  
 
   $("input[name='branch_type']").change(function() {
     var self = $(this);
