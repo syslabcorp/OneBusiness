@@ -95,6 +95,36 @@ class RetailItemPriceConfController extends Controller
         //
     }
 
+    public function update(Request $request, $id) {
+      $branches = \App\Branch::whereIn('Branch', $request->branch_ids)->get();
+      $itemModel = new \App\SItemCfg;
+
+      $items = $itemModel->where('Branch', '=', $request->branch_id)->get();
+
+      foreach($branches as $branch) {
+        if($branch->Branch == $request->branch_id) continue;
+
+        foreach($items as $item) {
+          $itemModel->updateOrCreate([
+            'item_id' => $item->item_id,
+            'Branch' => $branch->Branch
+          ], [
+            'ItemCode' => $item->ItemCode,
+            'Sell_Price' => $item->Sell_Price,
+            'Min_Level' => $item->Min_Level,
+            'Active' => $item->Active,
+            'pts_price' => $item->pts_price,
+            'pts_redeemable' => $item->pts_redeemable
+          ]);
+        }
+      }
+
+      \Session::flash('success', "Retail items are successfully copied");
+
+      return redirect(route('retail-items-price-conf.index', [
+      ])); 
+    }
+
     /**
      * Update the specified resource in storage.
      *

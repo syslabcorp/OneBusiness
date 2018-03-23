@@ -142,47 +142,48 @@
                           <div class="panel-body">
                               <div>
                                   <div class="row">
-                                      <div class="col-sm-5">
-                                          <div class="row">
-                                            <div class="col-xs-6">
-                                              <button type="button" class="btn-set-active btn btn-success btn-sm" style="width:100%;">Set Active</button>
-                                            </div>
-                                            <div class="col-xs-6">
-                                              <button type="button" class="btn-set-redeem btn btn-info btn-sm" style="width:100%;">Set Redeemable</button>
-                                            </div>
+                                      
+                                    <div class="col-sm-7">
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <div class="form-group points-box">
+                                            <label>Points per peso (SRP)</label>
+                                            <input type="number" class="form-control" name="points" step="1">
                                           </div>
-                                          <div class="row" style="margin-top: 5px;">
-                                            <div class="col-xs-6">
-                                              <button type="button" class="btn-unset-active btn btn-success btn-sm" style="width:100%;">Unset Active</button>
-                                            </div>
-                                            <div class="col-xs-6">
-                                              <button type="button" class="btn-unset-redeem btn btn-info btn-sm" style="width:100%;">Unset Redeemable</button>
-                                            </div>
-                                            <div class="col-xs-6" style="margin-top: 5px;">
-                                              <button type="button" class="btn-edit btn btn-primary btn-sm" style="width:100%;">Edit Details</button>
-                                            </div>
+                                          <button type="button" class="btn-set-points btn btn-success btn-sm">Set Points</button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <div class="form-group price-box">
+                                            <label>Price</label>
+                                            <input type="number" name="price" class="form-control">
                                           </div>
-                                      </div>
-                                      <div class="col-sm-7">
-                                        <div class="row">
-                                          <div class="col-sm-6">
-                                            <div class="form-group points-box">
-                                              <label>Points per peso (SRP)</label>
-                                              <input type="number" class="form-control" name="points" step="1">
-                                            </div>
-                                            <button type="button" class="btn-set-points btn btn-success btn-sm">Set Points</button>
-                                          </div>
-                                          <div class="col-sm-6">
-                                            <div class="form-group price-box">
-                                              <label>Price</label>
-                                              <input type="number" name="price" class="form-control">
-                                            </div>
-                                            <button type="button" class="btn btn-set-price btn-success btn-sm">Set Price</button>
-                                          </div>
+                                          <button type="button" class="btn btn-set-price btn-success btn-sm">Set Price</button>
                                         </div>
                                       </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                      <div class="row">
+                                        <div class="col-xs-6">
+                                          <button type="button" class="btn-set-active btn btn-success btn-sm" style="width:100%;">Set Active</button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                          <button type="button" class="btn-set-redeem btn btn-info btn-sm" style="width:100%;">Set Redeemable</button>
+                                        </div>
+                                      </div>
+                                      <div class="row" style="margin-top: 5px;">
+                                        <div class="col-xs-6">
+                                          <button type="button" class="btn-unset-active btn btn-success btn-sm" style="width:100%;">Unset Active</button>
+                                        </div>
+                                        <div class="col-xs-6">
+                                          <button type="button" class="btn-unset-redeem btn btn-info btn-sm" style="width:100%;">Unset Redeemable</button>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
                                   <hr>
+                                  <div class="text-right" style="margin-bottom: 10px;">
+                                    <button type="button" class="btn-edit btn btn-primary btn-sm">Edit Details</button>
+                                  </div>
                               </div>
 
                               <div class="table-responsive">
@@ -198,7 +199,7 @@
                                                       <th  style="min-width: 100px;width: 100px;">
                                                         Item Code
                                                       </th>
-                                                      <th  style="min-width: 100px;width: 100px;" class="rightBorder">
+                                                      <th style="min-width: 100px;width: 100px;" class="rightBorder">
                                                         Last Cost
                                                       </th>
                                                       @foreach($branches as $branch)
@@ -227,7 +228,7 @@
                                                   <tr class="ui-widget-content"> 
                                                     
                                                     <td>{{ $stock->ItemCode }}</td>
-                                                    <td class="rightBorder">{{ number_format($stock->LastCost, 2) }}</td>
+                                                    <td class="rightBorder last-cost">{{ number_format($stock->LastCost, 2) }}</td>
                                                     @foreach($branches as $branch)
                                                     @php
                                                       $item = $itemModel->where('item_id', '=', $stock->item_id)->where('Branch', '=', $branch->Branch)->first()
@@ -295,6 +296,15 @@
       $('.modal-copy .table tbody').html('');
 
       $('.modal-copy').modal('show');
+    });
+
+    $('.price-col .priceField').change(function(event) {
+      var lastCost = parseFloat($(this).parents('tr').find('.last-cost').text());
+      var net = parseFloat($(this).val()) - lastCost;
+      var markUp = net / lastCost * 100;
+
+      $(this).parents('td').next().next().text(net.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+      $(this).parents('td').next().text(markUp.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
     });
 
     $('.btn-save').click(function(event) {
