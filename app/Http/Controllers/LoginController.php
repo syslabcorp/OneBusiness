@@ -24,8 +24,7 @@ class LoginController extends Controller
 			$formData = Request::all();
 			$email = $formData['email'];
 			$users = DB::table('t_users')->where('uname', $email)->first();
-			
-			if(count($users)){
+			if(!is_null($users)){
 				$data['email'] = $users->email;
 				$data['username'] = $users->uname;
 				

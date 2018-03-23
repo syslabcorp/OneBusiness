@@ -15,10 +15,9 @@ class RetailItemPriceConfController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccessById(34, "V"))
-        {
-            \Session::flash('error', "You don't have permission");
-            return redirect("/home");
+        if(!\Auth::user()->checkAccessById(36, "V")) {
+          \Session::flash('error', "You don't have permission");
+          return redirect("/home");
         }
 
         //get services list
@@ -28,14 +27,26 @@ class RetailItemPriceConfController extends Controller
         return view('retail-items-price-conf.index', compact(['corporations', 'products']));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function create(Request $request) {
+      if(!\Auth::user()->checkAccessById(36, "E")) {
+        \Session::flash('error', "You don't have permission");
+        return redirect("/home");
+      }
+
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SItemCfg;
+
+      $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->get();
+      $branches = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
+
+      return view('retail-items-price-conf.new', [
+        'branches' => $branches,
+        'stocks' => $stocks,
+        'itemModel' => $itemModel,
+        'corpID' => $request->corpID,
+        'branch_ids' => $request->branch_ids,
+        'item_ids' => $request->item_ids
+      ]);
     }
 
     /**
@@ -44,9 +55,26 @@ class RetailItemPriceConfController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+      $company = Corporation::findOrFail($request->corpID);
+      $itemModel = new \App\SItemCfg;
+
+      foreach($request->items as $item_id => $items) {
+        foreach($items as $Branch => $item) {
+          $status = $itemModel->updateOrCreate([
+            'item_id' => $item_id,
+            'Branch' => $Branch
+          ], $item);
+        }
+      }
+
+      \Session::flash('success', "Settings successfully saved");
+
+      return redirect(route('retail-items-price-conf.create', [
+        'corpID' => $request->corpID,
+        'branch_ids' => $request->branch_ids,
+        'item_ids' => $request->item_ids
+      ]));
     }
 
     /**
@@ -71,6 +99,36 @@ class RetailItemPriceConfController extends Controller
         //
     }
 
+    public function update(Request $request, $id) {
+      $branches = \App\Branch::whereIn('Branch', $request->branch_ids)->get();
+      $itemModel = new \App\SItemCfg;
+
+      $items = $itemModel->where('Branch', '=', $request->branch_id)->get();
+
+      foreach($branches as $branch) {
+        if($branch->Branch == $request->branch_id) continue;
+
+        foreach($items as $item) {
+          $itemModel->updateOrCreate([
+            'item_id' => $item->item_id,
+            'Branch' => $branch->Branch
+          ], [
+            'ItemCode' => $item->ItemCode,
+            'Sell_Price' => $item->Sell_Price,
+            'Min_Level' => $item->Min_Level,
+            'Active' => $item->Active,
+            'pts_price' => $item->pts_price,
+            'pts_redeemable' => $item->pts_redeemable
+          ]);
+        }
+      }
+
+      \Session::flash('success', "Retail items are successfully copied");
+
+      return redirect(route('retail-items-price-conf.index', [
+      ])); 
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -78,10 +136,6 @@ class RetailItemPriceConfController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.

@@ -1,0 +1,104 @@
+#reactivateEmployeeDatatable, #employeeRequestsDatatable 
+{
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#reactivateEmployeeDatatable td, #reactivateEmployeeDatatable th,
+#employeeRequestsDatatable td, #employeeRequestsDatatable th 
+{
+    /*border: 1px solid #ddd;*/
+    padding: 8px;
+}
+
+#employeeRequestsDatatable thead tr th, #reactivateEmployeeDatatable thead tr th {
+    border-bottom: 2px solid #ddd !important;
+}
+
+table#employeeRequestsDatatable, table#reactivateEmployeeDatatable{
+    border: 1px solid #ddd;
+}
+
+#reactivateEmployeeDatatable tr:nth-child(even),
+#employeeRequestsDatatable tr:nth-child(even)
+{
+    /*background-color: #f2f2f2;*/
+}
+
+#employeeRequestsDatatable thead tr, #reactivateEmployeeDatatable thead tr {
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+}
+
+#reactivateEmployeeDatatable tr:hover,
+#employeeRequestsDatatable tr:hover
+{
+    /*background-color: #ddd;*/
+}
+
+#reactivateEmployeeDatatable th,
+#employeeRequestsDatatable th 
+{
+    text-align: left;
+    /*background-color: #2556ff;*/
+    color: black;
+    /*white-space: nowrap;*/
+    vertical-align: middle;
+    padding-right: 14px;
+    text-align: center;
+}
+
+td 
+{
+    /*white-space: nowrap;*/
+}
+
+.actionButton {
+    cursor: pointer;
+}
+
+tr td:last-child, #employeeRequestsDatatable th:last-child, #reactivateEmployeeDatatable th:last-child {
+    text-align: center;
+}
+
+#employeeRequestsDatatable, #reactivateEmployeeDatatable 
+{
+    width: 100% !important;
+    border-bottom: initial;
+}
+
+[name='employeeRequestsDatatable_length'],[name='reactivateEmployeeDatatable_length']
+{
+    margin-left:3px;
+}
+
+th:after {
+   content: none !important;
+}
+
+.tab-content, table, .nav, .modal {
+    /*font-family: 'Nunito', sans-serif !important;*/
+}
+
+td {
+    vertical-align: middle !important;
+    text-align: center !important;
+}
+
+.dataTables_length {
+    /*float:left !important;*/
+}
+
+#reactivateModal label {
+    font-weight: initial;
+}
+
+.modal-back {
+    float: left;
+}
+
+#employeeRequestsDatatable td:before {
+    font-weight: bold;
+}
