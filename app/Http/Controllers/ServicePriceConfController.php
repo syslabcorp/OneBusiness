@@ -14,19 +14,23 @@ class ServicePriceConfController extends Controller
      */
     public function index()
     {
-        if(!\Auth::user()->checkAccessById(34, "V"))
-        {
-            \Session::flash('error', "You don't have permission");
-            return redirect("/home");
-        }
+      if(!\Auth::user()->checkAccessById(37, "V")) {
+        \Session::flash('error', "You don't have permission");
+        return redirect("/home");
+      }
 
-        //get services list
-        $corporations = Corporation::orderBy('corp_name', 'ASC')->get(['corp_id', 'corp_name']);
+      //get services list
+      $corporations = Corporation::orderBy('corp_name', 'ASC')->get(['corp_id', 'corp_name']);
 
-        return view('services-price-conf.index', compact(['corporations']));
+      return view('services-price-conf.index', compact(['corporations']));
     }
 
     public function create (Request $request) {
+      if(!\Auth::user()->checkAccessById(37, "E")) {
+        \Session::flash('error', "You don't have permission");
+        return redirect("/home");
+      }
+
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SrvItemCfg;
       $itemModel->setConnection($company->database_name);
@@ -58,7 +62,7 @@ class ServicePriceConfController extends Controller
         }
       }
 
-      \Session::flash('success', "Service items are successfully updated");
+      \Session::flash('success', "Settings successfully saved");
 
       return redirect(route('services-price-conf.create', [
         'corpID' => $request->corpID,

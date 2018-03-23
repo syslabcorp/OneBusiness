@@ -103,57 +103,13 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
 
-                    <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Retail Price Configuration</h3>
+                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                              Retail Items Pricing
+                              <strong>Retail Items Pricing</strong>
                             </div>
                             <div class="panel-body">
-                                <div v-if="confStep === 2">
-                                    <div class="row">
-                                        <div class="col-sm-5">
-                                            <div class="row">
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Set Active</button>
-                                                </div>
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-info btn-sm" style="width:100%;">Set Redeemable</button>
-                                                </div>
-                                            </div>
-                                            <div class="row" style="margin-top: 5px;">
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm" style="width:100%;">Unset Active</button>
-                                                </div>
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-info btn-sm" style="width:100%;">Unset Redeemable</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-7">
-                                          <div class="row">
-                                            <div class="col-sm-6">
-                                              <div class="form-group">
-                                                <label>Points per peso (SRP)</label>
-                                                <input type="text" class="form-control" name="">
-                                              </div>
-                                              <button type="button" class="btn btn-success btn-sm">Set Points</button>
-                                            </div>
-                                            <div class="col-sm-6">
-                                              <div class="form-group">
-                                                <label>Price</label>
-                                                <input type="text" name="" class="form-control">
-                                              </div>
-                                              <button type="button" class="btn btn-success btn-sm">Set Price</button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                </div>
-
                                 <div v-if="confStep === 1">
-                                    
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="row form-group">
@@ -256,9 +212,11 @@
                                 <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
 
                                 <div class="pull-right">
-                                  <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
-                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1">Show</button>
-                                  <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
+                                  @if(\Auth::user()->checkAccessById(36, "E"))
+                                    <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1"
+                                    {{ \Auth::user()->checkAccessById(36, "V") ? '' : 'disabled' }}>Show</button>
                                 </div>
 
                                 <div class="clearfix"></div>
@@ -369,10 +327,12 @@
                 ri_selectedCorporationId: 0,
                 products: [
                     @foreach($products as $product)
-                    {
+                      @if($product->Active == 1)
+                      {
                         id: {{ $product->ProdLine_ID }},
                         name: '{{ $product->Product }}',
-                    },
+                      },
+                      @endif
                     @endforeach
                 ],
                 selectedProductId: 0,

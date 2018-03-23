@@ -133,11 +133,10 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
 
-                    <div class="col-md-12 col-xs-12">
-                      <h3 class="text-center">Retail Price Configuration</h3>
+                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                       <div class="panel panel-default">
                           <div class="panel-heading">
-                            Retail Items Pricing
+                            <strong>Retail Items Pricing</strong>
                           </div>
                           <div class="panel-body">
                               <div>
@@ -148,41 +147,49 @@
                                         <div class="col-sm-6">
                                           <div class="form-group points-box">
                                             <label>Points per peso (SRP)</label>
-                                            <input type="number" class="form-control" name="points" step="1">
+                                            <input type="number" class="form-control" name="points" step="1"
+                                              {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>
                                           </div>
-                                          <button type="button" class="btn-set-points btn btn-success btn-sm">Set Points</button>
+                                          <button type="button" class="btn-set-points btn btn-success btn-sm"
+                                            {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Points</button>
                                         </div>
                                         <div class="col-sm-6">
                                           <div class="form-group price-box">
                                             <label>Price</label>
-                                            <input type="number" name="price" class="form-control">
+                                            <input type="number" name="price" class="form-control" {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>
                                           </div>
-                                          <button type="button" class="btn btn-set-price btn-success btn-sm">Set Price</button>
+                                          <button type="button" class="btn btn-set-price btn-success btn-sm"
+                                            {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Price</button>
                                         </div>
                                       </div>
                                     </div>
                                     <div class="col-sm-5">
                                       <div class="row">
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-set-active btn btn-success btn-sm" style="width:100%;">Set Active</button>
+                                          <button type="button" class="btn-set-active btn btn-success btn-sm" style="width:100%;"
+                                            {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Active</button>
                                         </div>
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-set-redeem btn btn-info btn-sm" style="width:100%;">Set Redeemable</button>
+                                          <button type="button" class="btn-set-redeem btn btn-info btn-sm" style="width:100%;"
+                                            {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Redeemable</button>
                                         </div>
                                       </div>
                                       <div class="row" style="margin-top: 5px;">
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-unset-active btn btn-success btn-sm" style="width:100%;">Unset Active</button>
+                                          <button type="button" class="btn-unset-active btn btn-success btn-sm" style="width:100%;"
+                                            {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Unset Active</button>
                                         </div>
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-unset-redeem btn btn-info btn-sm" style="width:100%;">Unset Redeemable</button>
+                                          <button type="button" class="btn-unset-redeem btn btn-info btn-sm" style="width:100%;"
+                                            {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Unset Redeemable</button>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                   <hr>
                                   <div class="text-right" style="margin-bottom: 10px;">
-                                    <button type="button" class="btn-edit btn btn-primary btn-sm">Edit Details</button>
+                                    <button type="button" class="btn-edit btn btn-primary btn-sm"
+                                      {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Edit Details</button>
                                   </div>
                               </div>
 
@@ -276,7 +283,8 @@
                               <a href="{{ route('retail-items-price-conf.index') }}" class="btn btn-default btn-md pull-left">Back</a> 
 
                               <div class="pull-right">
-                                <button type="button" class="btn btn-primary btn-md btn-save" style="margin-left: 5px;">Save</button>
+                                <button type="button" class="btn btn-primary btn-md btn-save" style="margin-left: 5px;"
+                                  {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Save</button>
                               </div>
 
                               <div class="clearfix"></div>
@@ -348,6 +356,7 @@
       $('.price-box .error').remove();
       if($.isNumeric($('input[name="price"]').val())) {
         $('.table .ui-selected .price-col input').val(parseFloat($('input[name="price"]').val()).toFixed(2));
+        $('.table .ui-selected .price-col input').change();
         $('.table .ui-selected .price-col .price').text(parseFloat($('input[name="price"]').val()).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
       }else {
         $('.price-box').append('<span class="error">Please input number</span>');
