@@ -480,8 +480,15 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_branch_by_all_cities()
     { 
-      $cities_ID = explode( ',' ,\Auth::user()->area->city );
-      $cities = City::whereIn('City_ID', $cities_ID)->get(['City_ID']);
+      if(\Auth::user()->isAdmin())
+      {
+        $cities = City::all();
+      }
+      else
+      {
+        $cities_ID = explode( ',' ,\Auth::user()->area->city );
+        $cities = City::whereIn('City_ID', $cities_ID)->get();
+      }
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
       });
@@ -505,8 +512,15 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_template_by_all_cities()
     {
-      $cities_ID = explode( ',' ,\Auth::user()->area->city );
-      $cities = City::whereIn('City_ID', $cities_ID)->get(['City_ID']);
+      if(\Auth::user()->isAdmin())
+      {
+        $cities = City::all();
+      }
+      else
+      {
+        $cities_ID = explode( ',' ,\Auth::user()->area->city );
+        $cities = City::whereIn('City_ID', $cities_ID)->get();
+      }
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
       });
