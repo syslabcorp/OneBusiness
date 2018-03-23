@@ -141,10 +141,8 @@
             }).done(function (response){
                 if(response == "true") {
                     $('#reactivateModal').modal('hide');
-                      // $("[date_start_id='"+requestId+"']").html(start_date);
-                      // $("[to_branch_id='"+requestId+"']").html(branch_name);
-                      $("[data-"+corporation_name+"-id='"+requestId+"']").prop('checked', true);
-                      $("[data-reactivate-id='"+requestId+"']").attr("disabled", "disabled");
+                      reactivateEmployeeDatatable.draw();
+                      employeeRequestsDatatable.draw();
                       showSuccessAlert(" The employee reactivated successfully");
                       // showAlertModal("Success", "The employee reactivated successfully");
                 } else {
