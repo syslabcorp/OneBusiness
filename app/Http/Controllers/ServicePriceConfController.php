@@ -26,7 +26,7 @@ class ServicePriceConfController extends Controller
     }
 
     public function create (Request $request) {
-      if(!\Auth::user()->checkAccessById(37, "E")) {
+      if(!\Auth::user()->checkAccessById(37, "V")) {
         \Session::flash('error', "You don't have permission");
         return redirect("/home");
       }
