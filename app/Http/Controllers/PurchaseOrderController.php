@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Request;
 use DB;
 use URL;
+use PDF;
 use Twilio;
 use Nexmo;
 use Hash;
@@ -459,11 +460,32 @@ class PurchaseOrderController extends Controller
           }
         }
       }
-      return redirect()->route('purchase_order.create_manual', [ 'corpID' => (Request::all()['corpID']) ]);
+      // return redirect()->route('purchase_order.create_manual', [ 'corpID' => (Request::all()['corpID']) ]);
+
+      return response()->json([
+        'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
+        'po_no' => $PurchaseOrderModel->po_no
+      ]);
       
       
       // return view('purchase_order.auto_process');
       // return redirect('purchase_order/auto_process');
+    }
+
+    public function pdf($id)
+    {
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $PurchaseOrderModel = new \App\PurchaseOrder;
+      $PurchaseOrderModel->setConnection($company->database_name);
+      $purchase_order = $PurchaseOrderModel->where('po_no' , $id );
+    
+      $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+      $PurchaseOrderDetailModel->setConnection($company->database_name);
+    
+      $purchase_order_detail = $PurchaseOrderDetailModel->where('po_no', $id );
+      // dd(Request::all());
+      $pdf = PDF::loadView('purchase_order/pdf',compact(['purchase_order' => $purchase_order] ));
+      return $pdf->stream('pdf.pdf');
     }
 
     public function auto_process(){

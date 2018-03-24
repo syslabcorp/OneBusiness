@@ -157,6 +157,7 @@ Route::any('/purchase_order/create_automate' ,'PurchaseOrderController@automate'
 Route::any('/purchase_order/manual_suggest' ,'PurchaseOrderController@manual_suggest')->middleware('auth')->name('purchase_order.manual_suggest');
 Route::any('/purchase_order/auto_process' ,'PurchaseOrderController@auto_process')->middleware('auth');
 Route::post('/purchase_order/manual_save' ,'PurchaseOrderController@manual_save')->middleware('auth')->name('purchase_order.manual_save');
+Route::any('/purchase_order_pdf/{id}' ,'PurchaseOrderController@pdf')->middleware('auth')->name('purchase_order.pdf');
 Route::any('/purchase_order/ajax_render_branch_by_city', 'PurchaseOrderController@ajax_render_branch_by_city');
 Route::any('/purchase_order/ajax_render_item_by_prodline', 'PurchaseOrderController@ajax_render_item_by_prodline');
 Route::any('/purchase_order/ajax_render_branch_by_all_cities', 'PurchaseOrderController@ajax_render_branch_by_all_cities');
