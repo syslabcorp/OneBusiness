@@ -285,12 +285,14 @@
             data: {
                 confStep: 1,
                 corporations: [
-                    @foreach($corporations as $corporation)
-                    {
+                  @foreach($corporations as $corporation)
+                    @if($corporation->database_name)
+                      {
                         id: {{ $corporation->corp_id }},
                         name: '{{ $corporation->corp_name }}',
-                    },
-                    @endforeach
+                      },
+                    @endif
+                  @endforeach
                 ],
                 selectedCorporationId: 0,
                 corpBranches: [],
