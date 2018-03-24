@@ -135,11 +135,56 @@
           <button class="btn btn-default">Back</button>
         </div>
         <div class="col-ms-6 pull-right">
-          <button class="btn btn-primary" id="submit_main_form">Save</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" >Save</button>
         </div>
 
         </div>
 
+      </div>
+
+      <button type="button" class="btn btn-info btn-lg" >Open Modal</button>
+
+      <!-- Modal -->
+      <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to save this P.O.?</p>
+            </div>
+            <div class="modal-footer">
+              <button id="submit_main_form" type="button" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal PDF -->
+      <div id="pdfModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">PO PDF file</h4>
+            </div>
+            <div class="modal-body">
+              <p>Do you want to open the file?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+              <a id="pdf_link" href="#" class="btn btn-primary" target="_blank" >Yes</a>
+            </div>
+          </div>
+
+        </div>
       </div>
     
     </div>
@@ -167,7 +212,18 @@
       value: parseFloat($('.value_total_amount').text().replace(",", ""))
     }).appendTo('#main_form');
 
-    $('#main_form').submit();
+    $.ajax({
+        url: $('#main_form').attr('action'),
+        data: $('#main_form').serialize(),
+        type: 'POST',
+        success: function(res){
+          $('#myModal').modal('hide');
+          setTimeout(function(){
+            $('#pdfModal').modal('show');
+            $('#pdfModal').find('#pdf_link').attr('href', res.url)
+          }, 500);
+        }
+      });
   });
 
   $('body').on('click', '.edit', function(){

@@ -167,7 +167,7 @@ return [
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -231,7 +231,7 @@ return [
 		'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
 		'Nexmo' => \Nexmo\Laravel\Facade\Nexmo::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];
