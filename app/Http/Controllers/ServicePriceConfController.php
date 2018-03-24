@@ -20,7 +20,7 @@ class ServicePriceConfController extends Controller
       }
 
       //get services list
-      $corporations = Corporation::orderBy('corp_name', 'ASC')->get(['corp_id', 'corp_name']);
+      $corporations = Corporation::orderBy('corp_name', 'ASC')->get(['corp_id', 'corp_name', 'database_name']);
 
       return view('services-price-conf.index', compact(['corporations']));
     }

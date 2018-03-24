@@ -21,7 +21,7 @@ class RetailItemPriceConfController extends Controller
         }
 
         //get services list
-        $corporations = Corporation::orderBy('corp_name', 'ASC')->get(['corp_id', 'corp_name']);
+        $corporations = Corporation::orderBy('corp_name', 'ASC')->get(['corp_id', 'corp_name', 'database_name']);
         $products = ProductLine::orderBy('Product', 'ASC')->get(['ProdLine_ID', 'Product', 'Active']);
 
         return view('retail-items-price-conf.index', compact(['corporations', 'products']));
