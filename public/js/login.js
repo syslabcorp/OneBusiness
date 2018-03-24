@@ -506,10 +506,6 @@ $(function()
   
 });
 
-$(function () {
-  $('#datetimepicker').datetimepicker();
-});
-
 $(function() {
   $('#city-list').on('change', function(){
     var _token = $("meta[name='csrf-token']").attr('content');

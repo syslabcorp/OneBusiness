@@ -28,7 +28,7 @@ class RetailItemPriceConfController extends Controller
     }
 
     public function create(Request $request) {
-      if(!\Auth::user()->checkAccessById(36, "E")) {
+      if(!\Auth::user()->checkAccessById(36, "V")) {
         \Session::flash('error', "You don't have permission");
         return redirect("/home");
       }
