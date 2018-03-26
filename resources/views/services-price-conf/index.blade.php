@@ -79,29 +79,25 @@
                     <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                              <strong>Service per Branch Configuration</strong>
+                              <div class="row">
+                                <div class="col-sm-6">
+                                  <strong>Service per Branch Configuration</strong>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                  @if(\Auth::user()->checkAccessById(37, "E"))
+                                  <button type="button" class="btn btn-success btn-md btn-copy" disabled="true">
+                                    Copy to Branch
+                                  </button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext"
+                                    {{ \Auth::user()->checkAccessById(37, "V") ? '' : 'disabled' }}>
+                                    Show
+                                  </button>
+                                </div>
+                              </div>
                             </div>
 
                             <div class="panel-body">
-                                <div v-if="confStep === 2" class="row">
-                                  <div class="col-md-4">
-                                    <div class="row">
-                                      <div class="col-md-2">
-                                        <label style="margin-top: 6px;">Price</label>
-                                      </div>
-                                      <div class="col-md-8">
-                                        <input type="text" name="" class="form-control">
-                                      </div>
-                                      <div class="col-md-2">
-                                        <button type="button" class="btn btn-primary btn-sm" >Set Price</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-8 text-right">
-                                    <button type="button" class="btn btn-primary btn-sm"  style="margin-left: 5px;">Set Active</button>
-                                    <button type="button" class="btn btn-success btn-sm" style="margin-left: 5px;">Unset Active</button>
-                                  </div>
-                                </div>
                                 <hr>
                                 <div v-if="confStep === 1">
                                     <div class="row">
@@ -172,25 +168,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-footer">
-                                <a href="{{ url('/services-price-conf') }}" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
-
-                                <div class="pull-right">
-                                  @if(\Auth::user()->checkAccessById(37, "E"))
-                                  <button type="button" class="btn btn-success btn-md btn-copy" disabled="true">
-                                    Copy to Branch
-                                  </button>
-                                  @endif
-                                  <button type="button" class="btn btn-success btn-md" @click="confNext"
-                                   {{ \Auth::user()->checkAccessById(37, "V") ? '' : 'disabled' }}>
-                                    Show
-                                  </button>
-                                </div>
-                                
-                                <div class="clearfix"></div>
-                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
