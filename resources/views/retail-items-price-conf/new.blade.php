@@ -69,7 +69,10 @@
           background: #FFF;
           z-index: 999;
           width: 100px;
-          box-shadow: 1px 0px #ccc;
+          box-shadow: 0px 0px 1px #aaa;
+        }
+        table.fixedColumn tr.ui-selected>td:nth-child(1), table.fixedColumn tr.ui-selected>td:nth-child(2) {
+          background: #76acd6;
         }
         table.fixedColumn tr>th:nth-child(1), table.fixedColumn tr>td:nth-child(1) {
           text-align: left;
