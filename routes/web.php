@@ -14,11 +14,15 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('stocktransfer','StocktransferController@index');
+Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
 
+Route::get('{item}/tmasterOriginalDetail', 'StocktransferController@tmasteOriginalDetail')->name('tmaster.originaldetails');
+
 Route::get('{item}/markToserved', 'StocktransferController@markToserved');
+
+Route::post('/saveRowPO', 'StocktransferController@saveRowPO');
 
 
 Auth::routes();
