@@ -35,7 +35,7 @@ class ServicePriceConfController extends Controller
       $itemModel = new \App\SrvItemCfg;
       $itemModel->setConnection($company->database_name);
 
-      $services = \App\Service::whereIn('Serv_ID', explode(',', $request->service_ids))->get();
+      $services = \App\Service::whereIn('Serv_ID', explode(',', $request->service_ids))->orderBy('Serv_Code', 'ASC')->get();
       $branchs = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
 
       return view('services-price-conf.new', [

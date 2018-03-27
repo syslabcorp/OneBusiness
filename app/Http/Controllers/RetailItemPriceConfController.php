@@ -36,7 +36,7 @@ class RetailItemPriceConfController extends Controller
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SItemCfg;
 
-      $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->get();
+      $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->orderBy('ItemCode', 'ASC')->get();
       $branches = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
 
       return view('retail-items-price-conf.new', [

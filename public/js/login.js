@@ -635,6 +635,6 @@ $(function() {
     $('#manual_form').submit();
   }) 
 
-  $( ".selectable" ).selectable();
+  $( ".selectable" ).selectable({ autoRefresh: false });
 
 });
