@@ -38,7 +38,7 @@ class SubcategoriesController extends Controller
 
     $category = $categoryModel->find($request->category_id);
 
-    $category->subcategories()->create($request->only(['expires', 'description', 'mutli_doc']));
+    $category->subcategories()->create($request->only(['expires', 'description', 'multi_doc']));
 
     \Session::flash('success', "Subcategory successfully created!");
 
@@ -52,7 +52,7 @@ class SubcategoriesController extends Controller
     $categoryModel->setConnection($company->database_name);
 
     $subcategory = $categoryModel->find($id);
-    $subcategory->update($request->only(['expires', 'description', 'mutli_doc']));
+    $subcategory->update($request->only(['expires', 'description', 'multi_doc']));
 
     \Session::flash('success', "Subcategory successfully updated!");
 

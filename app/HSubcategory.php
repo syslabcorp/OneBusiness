@@ -10,7 +10,7 @@ class HSubcategory extends Model {
   protected $primaryKey = "subcat_id";
 
   protected $fillable = [
-    'description', 'expires', 'Deleted', 'mutli_doc'
+    'description', 'expires', 'Deleted', 'multi_doc'
   ];
 
   public function docs() {
