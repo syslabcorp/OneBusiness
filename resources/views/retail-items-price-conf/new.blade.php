@@ -235,7 +235,6 @@
                                                 <tbody class="selectable">
                                                   @foreach($stocks as $stock)
                                                   <tr class="ui-widget-content"> 
-                                                    
                                                     <td>{{ $stock->ItemCode }}</td>
                                                     <td class="rightBorder last-cost">{{ number_format($stock->LastCost, 2) }}</td>
                                                     @foreach($branches as $branch)
