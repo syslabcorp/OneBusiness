@@ -77,6 +77,8 @@ Route::post('/checkbooks/get-accounts-for-main', 'CheckbookController@getAccount
 Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware('auth');
 #End of MasterFile Module
 
+Route::resource('categories', 'CategoriesController', ['middleware' => 'auth']);
+Route::resource('subcategories', 'SubcategoriesController', ['middleware' => 'auth']);
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
 Route::put('branchs/{branch}/misc', 'BranchsController@updateMisc')->middleware('auth')->name('branchs.misc');
 Route::resource('branchs.footers', 'FootersController', ['middleware' => 'auth']);

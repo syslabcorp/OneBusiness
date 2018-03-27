@@ -46,3 +46,14 @@ span.error {
 .modal-backdrop.fade.in {
   position: fixed;
 }
+
+.table-category tr.selected, .table-subcategory tr.selected {
+  background: #b8d4ea;
+}
+.modal label {
+  font-weight: normal;
+}
+
+.modal {
+  z-index: 1050 !important;
+}
