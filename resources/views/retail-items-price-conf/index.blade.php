@@ -106,7 +106,18 @@
                     <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                              <strong>Retail Items Pricing</strong>
+                              <div class="row">
+                                <div class="col-sm-6">
+                                  <strong>Retail Items Pricing</strong>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                  @if(\Auth::user()->checkAccessById(36, "E"))
+                                    <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1"
+                                    {{ \Auth::user()->checkAccessById(36, "V") ? '' : 'disabled' }}>Show</button>
+                                </div>
+                              </div>
                             </div>
                             <div class="panel-body">
                                 <div v-if="confStep === 1">
@@ -176,50 +187,22 @@
                                                   </div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
-                                                    <div v-if="retailItems.length == 0" style="color: #900;">No items for this product line</div>
-                                                    
-                                                    <div v-else>
-                                                        <div v-if="showRetailItemStatus == 1">
-                                                            <!-- work with active items -->
-                                                            <ul v-if="retailItems[0].activeCounter > 0" id="selectableRetailItems" class="selectable">
-                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">No active items</div>
-                                                        </div>
-
-                                                        <div v-else-if="showRetailItemStatus == 2">
-                                                            <!-- work with all items -->
-                                                            <ul id="selectableRetailItems" class="selectable">
-                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                            </ul>
-                                                        </div>
-
-                                                        <div v-else>
-                                                            <!-- work with inactive items -->
-                                                            <ul v-if="retailItems[0].inactiveCounter > 0" id="selectableRetailItems" class="selectable">
-                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="!retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">No inactive items</div>
-                                                        </div>
-                                                    </div>
+                                                  <div v-if="listItems.length == 0" style="color: #900;">
+                                                    <span v-if="showRetailItemStatus == 2">No items for this product line</span>
+                                                    <span v-if="showRetailItemStatus == 1">No active items</span>
+                                                    <span v-if="showRetailItemStatus == 0">No inactive items</span>
+                                                  </div>
+                                                  
+                                                  <div v-if="listItems.length > 0">
+                                                    <ul id="selectableRetailItems" class="selectable">
+                                                        <li v-for="retailItem in listItems" :serviceid="retailItem.id" class="ui-widget-content" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
+                                                    </ul>
+                                                  </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="panel-footer">
-                                <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
-
-                                <div class="pull-right">
-                                  @if(\Auth::user()->checkAccessById(36, "E"))
-                                    <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
-                                  @endif
-                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1"
-                                    {{ \Auth::user()->checkAccessById(36, "V") ? '' : 'disabled' }}>Show</button>
-                                </div>
-
-                                <div class="clearfix"></div>
                             </div>
                         </div>
 
@@ -342,30 +325,29 @@
                 listBranches: [],
                 ri_selectedBranchIds: [],
                 retailItems: [],
+                listItems: [],
                 selectedRetailItemIds: [],
                 showBranchStatus: 1,
                 showRetailItemStatus: 1
             },
             methods: {
                 toggleRowToEditable: function(event) {
-                    var element = event.srcElement.closest('TR');
-                    element.classList.toggle('selectedRow');
+                  var element = event.srcElement.closest('TR');
+                  element.classList.toggle('selectedRow');
 
-                    var childControls = element.querySelectorAll('.childControl');
-                    var currentDisabledStatus = childControls[0].getAttribute('disabled');
-                  
-                    if(currentDisabledStatus == null || !currentDisabledStatus) {
-                        for(var i = 0; i < childControls.length; i++) {
-                            childControls[i].setAttribute('disabled', 'true');
-                        }
+                  var childControls = element.querySelectorAll('.childControl');
+                  var currentDisabledStatus = childControls[0].getAttribute('disabled');
+                
+                  if(currentDisabledStatus == null || !currentDisabledStatus) {
+                      for(var i = 0; i < childControls.length; i++) {
+                          childControls[i].setAttribute('disabled', 'true');
+                      }
 
-                    } else {
-                       for(var i = 0; i < childControls.length; i++) {
-                           childControls[i].removeAttribute('disabled');
-                       } 
-                    }
-                        
-
+                  } else {
+                      for(var i = 0; i < childControls.length; i++) {
+                          childControls[i].removeAttribute('disabled');
+                      } 
+                  }
                 },
                 confNext: function() {
                   var self = this;
@@ -408,6 +390,13 @@
                     if(filterOption == 0) self.showRetailItemStatus = 0;
                     else if(filterOption == 1) self.showRetailItemStatus = 1;
                     else self.showRetailItemStatus = 2;
+
+                    self.listItems = [];
+                    for(var i = 0; i < self.retailItems.length; i++) {
+                      if(self.retailItems[i].isActive == filterOption || filterOption == 2) {
+                        self.listItems.push(self.retailItems[i]);
+                      }
+                    }
                 },
                 loadBranches: function() {
                     var self = this;
@@ -465,16 +454,22 @@
                             self.retailItems = [];
 
                             responseRetailItems.map(function(retailItem, index) {
-                                self.retailItems.push({
-                                    id: retailItem.id,
-                                    code: retailItem.code,
-                                    description: retailItem.description,
-                                    isActive: retailItem.isActive,
-                                    activeCounter: retailItem.activeCounter,
-                                    inactiveCounter: retailItem.inactiveCounter,
-                                });
+                              self.retailItems.push({
+                                  id: retailItem.id,
+                                  code: retailItem.code,
+                                  description: retailItem.description,
+                                  isActive: retailItem.isActive,
+                                  activeCounter: retailItem.activeCounter,
+                                  inactiveCounter: retailItem.inactiveCounter,
+                              });
                             });
-                            
+
+                            self.listItems = [];
+                            for(var i = 0; i < self.retailItems.length; i++) {
+                              if(self.retailItems[i].isActive == 1) {
+                                self.listItems.push(self.retailItems[i]);
+                              }
+                            }
                         })
                         .catch(function (error) {
                             console.log(error);

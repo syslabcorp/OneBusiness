@@ -28,7 +28,7 @@ class RetailItemPriceConfController extends Controller
     }
 
     public function create(Request $request) {
-      if(!\Auth::user()->checkAccessById(36, "E")) {
+      if(!\Auth::user()->checkAccessById(36, "V")) {
         \Session::flash('error', "You don't have permission");
         return redirect("/home");
       }
@@ -36,7 +36,7 @@ class RetailItemPriceConfController extends Controller
       $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\SItemCfg;
 
-      $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->get();
+      $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->orderBy('ItemCode', 'ASC')->get();
       $branches = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
 
       return view('retail-items-price-conf.new', [
