@@ -106,7 +106,18 @@
                     <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                              <strong>Retail Items Pricing</strong>
+                              <div class="row">
+                                <div class="col-sm-6">
+                                  <strong>Retail Items Pricing</strong>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                  @if(\Auth::user()->checkAccessById(36, "E"))
+                                    <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1"
+                                    {{ \Auth::user()->checkAccessById(36, "V") ? '' : 'disabled' }}>Show</button>
+                                </div>
+                              </div>
                             </div>
                             <div class="panel-body">
                                 <div v-if="confStep === 1">
@@ -192,19 +203,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="panel-footer">
-                                <a @click="confBack" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
-
-                                <div class="pull-right">
-                                  @if(\Auth::user()->checkAccessById(36, "E"))
-                                    <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
-                                  @endif
-                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1"
-                                    {{ \Auth::user()->checkAccessById(36, "V") ? '' : 'disabled' }}>Show</button>
-                                </div>
-
-                                <div class="clearfix"></div>
                             </div>
                         </div>
 

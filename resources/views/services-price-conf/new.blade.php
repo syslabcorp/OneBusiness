@@ -53,7 +53,6 @@
           position: sticky;
           position: -webkit-sticky;
           background: #FFF;
-          z-index: 999;
           box-shadow: 1px 0px #ccc;
           box-shadow: 0px 0px 1px #aaa;
         }

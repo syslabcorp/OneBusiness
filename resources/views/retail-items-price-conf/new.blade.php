@@ -67,7 +67,6 @@
         table.fixedColumn tr>td:nth-child(1), table.fixedColumn tr>td:nth-child(2) {
           position: sticky;
           background: #FFF;
-          z-index: 999;
           width: 100px;
           box-shadow: 0px 0px 1px #aaa;
         }
