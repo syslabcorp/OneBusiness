@@ -5,12 +5,12 @@
       <input type="checkbox" onclick="return false;" {{ $category->expires == 1 ? 'checked' : '' }} >
   </td>
   <td class="text-center">
-      <input type="checkbox" onclick="return false;" {{ $category->mutli_doc == 1 ? 'checked' : '' }}>
+      <input type="checkbox" onclick="return false;" {{ $category->multi_doc == 1 ? 'checked' : '' }}>
   </td>
 </tr>
 @endforeach
   @if(!$category->subcategories()->where('Deleted', '=', 0)->count())
 <tr class="empty">
-  <td colspan="3">Not found any subcategories</td>
+  <td colspan="3">No subcategories</td>
 </tr>
 @endif

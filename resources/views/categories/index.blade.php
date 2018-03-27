@@ -188,7 +188,7 @@
         {{ csrf_field() }}
         <input type="hidden" name="corpID" value="{{ $corpID }}">
         <input type="hidden" name="expires" value="0">
-        <input type="hidden" name="mutli_doc" value="0">
+        <input type="hidden" name="multi_doc" value="0">
         <input type="hidden" name="category_id" value="">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -204,7 +204,7 @@
               <input type="checkbox" name="expires" value="1"> with Expiry
             </label>
             <label>
-              <input type="checkbox" name="mutli_doc" value="1"> Multi-Document
+              <input type="checkbox" name="multi_doc" value="1"> Multi-Document
             </label>
           </div>
         </div>
@@ -231,7 +231,7 @@
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" name="corpID" value="{{ $corpID }}">
         <input type="hidden" name="expires" value="0">
-        <input type="hidden" name="mutli_doc" value="0">
+        <input type="hidden" name="multi_doc" value="0">
         <input type="hidden" name="category_id" value="">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -247,7 +247,7 @@
               <input type="checkbox" name="expires" value="1"> with Expiry
             </label>
             <label>
-              <input type="checkbox" name="mutli_doc" value="1"> Multi-Document
+              <input type="checkbox" name="multi_doc" value="1"> Multi-Document
             </label>
           </div>
         </div>
@@ -326,7 +326,7 @@
 
       $('#modal-edit-subcategory input[name="description"]').val($('.table-subcategory tbody tr.selected td:eq(0)').text());
       $('#modal-edit-subcategory input[type="checkbox"][name="expires"]').prop('checked', $('.table-subcategory tbody tr.selected td:eq(1) input').is(':checked'));
-      $('#modal-edit-subcategory input[type="checkbox"][name="mutli_doc"]').prop('checked', $('.table-subcategory tbody tr.selected td:eq(2) input').is(':checked'));
+      $('#modal-edit-subcategory input[type="checkbox"][name="multi_doc"]').prop('checked', $('.table-subcategory tbody tr.selected td:eq(2) input').is(':checked'));
       $('#modal-edit-subcategory form').attr('action', $('.table-subcategory tbody tr.selected').attr('data-delete'));
       $('#modal-edit-subcategory').modal('show');
     });
