@@ -506,7 +506,7 @@ class PurchaseOrderController extends Controller
       $branchs = Branch::where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->orderBy('ShortName')->get();
       return response()->json([
         'branchs' => $branchs
-      ], 200, [], JSON_UNESCAPED_UNICODE);
+      ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
     public function ajax_render_branch_by_all_cities()
@@ -526,7 +526,7 @@ class PurchaseOrderController extends Controller
       $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->orderBy('ShortName')->get();
       return response()->json([
         'branchs' => $branchs
-      ], 200, [], JSON_UNESCAPED_UNICODE);
+      ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
     public function ajax_render_template_by_city()
