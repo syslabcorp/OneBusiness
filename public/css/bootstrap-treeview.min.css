@@ -18,7 +18,7 @@
     background: #fff;
     position: fixed;
     height: 100%;
-    z-index: 10000;
+    z-index: 1030;
     transition: all .4s ease 0s;
 }
 

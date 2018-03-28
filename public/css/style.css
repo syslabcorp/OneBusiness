@@ -3,7 +3,7 @@
   color: #FFF;
 }
 .modal-backdrop {
-  z-index: 99999;
+  z-index: 1040;
   position: fixed !important;
 }
 .modal-open .modal {
