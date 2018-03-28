@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Request;
 use DB;
+use Config;
 use URL;
 use PDF;
 use Twilio;
@@ -314,6 +315,7 @@ class PurchaseOrderController extends Controller
       
       if(Request::all()['ItemCode'] && count(Request::all()['ItemCode']) )
       {
+        // dd(Config::get('database.connections.mysql.database'));
         $total_pieces = 0;
         foreach(Request::all()['ItemCode'] as $item_id)
         {
@@ -335,10 +337,10 @@ class PurchaseOrderController extends Controller
               $total_stock = DB::connection($company->database_name)->select("SELECT s_txfr_detail.item_id, 
               SUM(IF(NOT s_txfr_hdr.Rcvd, s_txfr_detail.Qty, 0)) AS Txit_Qty,
               SUM(IF(s_txfr_hdr.Rcvd, s_txfr_detail.Bal, 0)) AS Txfr_Bal 
-              FROM s_txfr_hdr, s_txfr_detail, BussinessOne.s_invtry_hdr 
+              FROM s_txfr_hdr, s_txfr_detail, ".Config::get('database.connections.mysql.database').".s_invtry_hdr 
               WHERE s_txfr_hdr.Txfr_ID = s_txfr_detail.Txfr_ID AND s_txfr_hdr.Txfr_To_Branch = ?
-              AND BussinessOne.s_invtry_hdr.item_id = s_txfr_detail.item_id AND s_txfr_detail.item_id = ?
-              GROUP BY s_txfr_detail.item_id", [$branch, $item_id]);
+              AND ".Config::get('database.connections.mysql.database').".s_invtry_hdr.item_id = s_txfr_detail.item_id AND s_txfr_detail.item_id = ?
+              GROUP BY s_txfr_detail.item_id", [  $branch, $item_id]);
         
               //Pending PO
               $pending = DB::connection($company->database_name)->select("SELECT SUM(Qty-ServedQty) as PendingQty FROM s_po_detail 
