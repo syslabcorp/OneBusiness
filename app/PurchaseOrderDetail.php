@@ -15,4 +15,11 @@ class PurchaseOrderDetail extends Model
     'Qty', 'ServedQty', 'cost'
   ];
 
+  public function branch() {
+    return $this->belongsTo(\App\Branch::class, "Branch", "Branch");
+  }
+
+  public function stock_item() {
+    return $this->belongsTo(\App\StockItem::class, "item_id", "item_id");
+  }
 }

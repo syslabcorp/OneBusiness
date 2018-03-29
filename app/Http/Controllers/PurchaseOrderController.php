@@ -479,14 +479,18 @@ class PurchaseOrderController extends Controller
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $PurchaseOrderModel = new \App\PurchaseOrder;
       $PurchaseOrderModel->setConnection($company->database_name);
-      $purchase_order = $PurchaseOrderModel->where('po_no' , $id );
+      $purchase_order = $PurchaseOrderModel->where('po_no' , $id )->get()->first();
     
       $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
       $PurchaseOrderDetailModel->setConnection($company->database_name);
     
-      $purchase_order_detail = $PurchaseOrderDetailModel->where('po_no', $id );
-      // dd(Request::all());
-      $pdf = PDF::loadView('purchase_order/pdf',compact(['purchase_order' => $purchase_order] ));
+      $purchase_order_details = $PurchaseOrderDetailModel->where('po_no', $id )->get()->groupBy('item_id');
+
+      $branchs = $PurchaseOrderDetailModel->where('po_no', $id )->get()->groupBy('Branch');
+      // dd($purchase_order_details->first()->stock_item()->first()->ItemCode);
+      // view()->share('purchase_order',$purchase_order);
+
+      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs'));
       return $pdf->stream('pdf.pdf');
     }
 
