@@ -10,6 +10,14 @@ class Subcat extends Model {
   protected $primaryKey = "subcat_id";
 
   protected $fillable = [
-    'description', 'deleted', 'active'
+    'description', 'deleted', 'active', 'cat_id'
   ];
+
+  public function branches() {
+    return $this->hasMany(\App\Pc\CatSat::class, 'subcat_id', 'subcat_id');
+  }
+
+  public function category() {
+    return $this->belongsTo(\App\Pc\Cat::class, 'cat_id', 'cat_id');
+  }
 }
