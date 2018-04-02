@@ -77,4 +77,19 @@ class CategoriesController extends Controller
 
     return redirect(route('categories.index', ['corpID' => $request->corpID]));
   }
+
+  public function petyCash(Request $request) {
+    $company = Corporation::findOrFail($request->corpID);
+
+    $categoryModel = new \App\Pc\Cat;
+    $categoryModel->setConnection($company->database_name);
+
+    $categories = $categoryModel->where('deleted', '=', '0')
+                                ->orderBy('description', 'asc')->get();
+
+    return view('categories.pety-cash', [
+      'corpID' => $request->corpID,
+      'categories' => $categories
+    ]);
+  }
 }
