@@ -13,10 +13,10 @@ use Datetime;
 class CategoriesController extends Controller
 {
   public function index(Request $request) {
-    // if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'V')) {
-    //   \Session::flash('error', "You don't have permission"); 
-    //   return redirect("/home"); 
-    // }
+    if(!\Auth::user()->checkAccessById(33, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
 
     $company = Corporation::findOrFail($request->corpID);
 
@@ -29,16 +29,13 @@ class CategoriesController extends Controller
 
     return view('categories.index', [
       'categories' => $categories,
-      'corpID' => $request->corpID
+      'corpID' => $request->corpID,
+      'categoryId' => $request->categoryId,
+      'subcategoryId' => $request->subcategoryId
     ]);
   }
 
   public function store(Request $request) {
-    // if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
-    //   \Session::flash('error', "You don't have permission"); 
-    //   return redirect("/home"); 
-    // }
-
     $company = Corporation::findOrFail($request->corpID);
 
     $categoryModel = new \App\HCategory;
@@ -47,7 +44,7 @@ class CategoriesController extends Controller
     $category = $categoryModel->create(['description' => $request->description, 'series' => 0]);
     \Session::flash('success', "Category successfully created!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('categories.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
   }
 
   public function update(Request $request, $id) {
@@ -61,7 +58,7 @@ class CategoriesController extends Controller
 
     \Session::flash('success', "Category successfully updated!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('categories.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
   }
 
   public function destroy(Request $request, $id) {
@@ -76,5 +73,20 @@ class CategoriesController extends Controller
     \Session::flash('success', "Category successfully deleted!");
 
     return redirect(route('categories.index', ['corpID' => $request->corpID]));
+  }
+
+  public function petyCash(Request $request) {
+    $company = Corporation::findOrFail($request->corpID);
+
+    $categoryModel = new \App\Pc\Cat;
+    $categoryModel->setConnection($company->database_name);
+
+    $categories = $categoryModel->where('deleted', '=', '0')
+                                ->orderBy('description', 'asc')->get();
+
+    return view('categories.pety-cash', [
+      'corpID' => $request->corpID,
+      'categories' => $categories
+    ]);
   }
 }
