@@ -57,7 +57,7 @@ class CategoriesController extends Controller
 
     \Session::flash('success', "Category successfully updated!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('categories.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
   }
 
   public function destroy(Request $request, $id) {
