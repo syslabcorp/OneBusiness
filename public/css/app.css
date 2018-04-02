@@ -57,3 +57,8 @@ span.error {
 .modal {
   z-index: 1050 !important;
 }
+
+#table-config tr td[rowspan]{
+  text-align: center;
+  vertical-align: middle;
+}

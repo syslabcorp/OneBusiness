@@ -82,7 +82,9 @@ Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware
 #End of MasterFile Module
 
 Route::resource('categories', 'CategoriesController', ['middleware' => 'auth']);
+Route::resource('pccategories', 'Pc\CategoriesController', ['middleware' => 'auth']);
 Route::resource('subcategories', 'SubcategoriesController', ['middleware' => 'auth']);
+Route::resource('pcsubcategories', 'Pc\SubcategoriesController', ['middleware' => 'auth']);
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);
 Route::put('branchs/{branch}/misc', 'BranchsController@updateMisc')->middleware('auth')->name('branchs.misc');
 Route::resource('branchs.footers', 'FootersController', ['middleware' => 'auth']);
@@ -201,3 +203,5 @@ Route::post("approveEmployeeRequest", "Branch\EmployeeRequestController@approveE
 Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmployeeRequest")->middleware('auth');
 Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
 Route::get("branchRequest", "Branch\EmployeeRequestController@index")->middleware('auth');
+
+Route::get('/pety-cash', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
