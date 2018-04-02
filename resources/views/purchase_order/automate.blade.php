@@ -35,7 +35,7 @@
         <div class="row purchase_header_form">
           <div class="row">
             <div class="col-md-12">
-            <form class="form-inline" action="/action_page.php">
+            <form id="create_po_form" class="form-inline" action="/action_page.php">
             <div class="form-group">
               <label>City</label>
               <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
@@ -53,25 +53,61 @@
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table table-striped table-bordered">
+          <table class="table table-bordered main_table">
             <thead>
               <tr>
                 <th>Template Code</th>
                 <th>Ave Cycle</th>
               </tr>
             </thead>
-            <tbody id="render_template">
+            <tbody id="render_template" class="selectable">
 
             </tbody>
           </table>
         </div>
+
+        <!-- <div class="table-responsive">
+          <table class="table process_table" style="border: 1px solid #ddd;">
+            <tbody>
+              <tr class="done">
+                <td>Tempxyz_PO_0123154</td>
+                <td>
+                  Document Created 
+                  <a href="#">View</a>
+                  <span class=" pull-right far fa-check-circle"></span>
+                </td>
+              </tr>
+              <tr class="done" >
+                <td>Tempxza_PO_12312</td>
+                <td>
+                  No items to be ordered
+                  <span class=" pull-right far fa-check-circle"></span>
+                </td>
+              </tr>
+              <tr>
+                <td>Tempxza_PO_123120 </td>
+                <td>
+                  Caculating order quantities(20%)
+                  <span class=" pull-right fa fa-circle-notch fa-pulse"></span>
+                </td>
+              </tr>
+              <tr>
+                <td>Tempxza_PO_1231201 </td>
+                <td>
+                  Pending
+                  <span class=" pull-right fas fa-circle-notch fa-pulse"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
 
       </div>
 
       <div class="panel-footer">
         <div class="row">
         <div class="pull-right">
-          <button class="btn btn-primary">Create P.O.</button>
+          <button class="btn btn-primary" id="create_po_button">Create P.O.</button>
         </div>
 
         </div>
@@ -88,6 +124,47 @@
 
 @section('pageJS')
   <script>
+
+    $('#create_po_button').on('click', function(){
+      $('.hidden_input').remove();
+
+      $('.ui-selected').each(function()
+      {
+        if($(this).data('temp-id'))
+        {
+          $('#create_po_form').prepend("<input type='hidden' class='hidden_input' name='temp[]' value='" + $(this).data('temp-id') + "' >"); 
+        }
+      });
+
+      recursively_ajax()
+      
+    });
+
+    function recursively_ajax()
+    {
+      var corpID = {{$corpID}};
+      var _token = $("meta[name='csrf-token']").attr('content');
+      var list_item=$('.hidden_input');
+      var temp_id = list_item.first().val();
+      $.ajax({
+        type:"POST",
+        async:false, // set async false to wait for previous response
+        url: ajax_url+'/purchase_order/auto_save',
+        dataType:"json",
+        data:{ _token , temp_id, corpID },
+        success: function(data)
+        {
+          if(list_item.length > 1){
+            list_item.first().remove();
+            setTimeout(function()
+            {
+            }, 500);
+            recursively_ajax();
+          }
+        }
+      });
+    }
+
     $('#auto_city_list').on('change', function(){
       var _token = $("meta[name='csrf-token']").attr('content');
       var City_ID = $('#auto_city_list option:selected').val();
@@ -104,7 +181,9 @@
             $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
           }
           $.each(res.POTemplates, function( index, value ) {
-            $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+            $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+            
+            // $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
             // <li class='ui-widget-content'>"+value.ShortName+"</li>
           });
         }
@@ -128,7 +207,7 @@
               $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
             }
             $.each(res.POTemplates, function( index, value ) {
-              $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+              $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
             });
           }
         });

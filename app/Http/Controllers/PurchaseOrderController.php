@@ -474,6 +474,147 @@ class PurchaseOrderController extends Controller
       // return redirect('purchase_order/auto_process');
     }
 
+
+    public function auto_save()
+    {
+
+
+
+      $company = Corporation::findOrFail(Request::all()['corpID']);
+      $stockModel = new \App\Stock;
+      $stockModel->setConnection($company->database_name);
+
+      $POTempModel = new \App\POTemplate;
+      $POTempModel->setConnection($company->database_name);
+      
+      $temp_id = Request::all()['temp_id'];
+
+      $POTemp = $POTempModel->where('po_tmpl8_id', $temp_id)->get()->first();
+      $no_of_date = $POTemp->po_avg_cycle;
+      
+      $details = $POTemp->details()->get();
+
+      // return response()->json(
+      //    $details
+      // );
+
+      $PurchaseOrderModel = new \App\PurchaseOrder;
+      $PurchaseOrderModel->setConnection($company->database_name);
+    
+      $PurchaseOrderModel->po_date = Date('Y-m-d H:i:s');
+      $PurchaseOrderModel->po_tmpl8_id = $POTemp->po_tmpl8_id;
+      $PurchaseOrderModel->save();
+
+      $total_amount = 0;
+      $total_pieces = 0;
+
+      foreach($details as $detail)
+      {
+        $branch = $detail->po_tmpl8_branch;
+        $item_id = $detail->po_tmpl8_item;
+
+        $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
+        FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
+        LEFT JOIN t_shifts ON s_hdr.Shift_ID = t_shifts.Shift_ID AND s_hdr.Branch = t_shifts.Branch 
+        WHERE s_hdr.Branch = ? AND s_detail.item_id = ? 
+        GROUP BY item_id", [ $branch, $item_id ]);
+
+        // missing from_date and to_date
+        //Total Quantity of Stock
+  
+        $total_stock = DB::connection($company->database_name)->select("SELECT s_txfr_detail.item_id, 
+        SUM(IF(NOT s_txfr_hdr.Rcvd, s_txfr_detail.Qty, 0)) AS Txit_Qty,
+        SUM(IF(s_txfr_hdr.Rcvd, s_txfr_detail.Bal, 0)) AS Txfr_Bal 
+        FROM s_txfr_hdr, s_txfr_detail, ".Config::get('database.connections.mysql.database').".s_invtry_hdr 
+        WHERE s_txfr_hdr.Txfr_ID = s_txfr_detail.Txfr_ID AND s_txfr_hdr.Txfr_To_Branch = ?
+        AND ".Config::get('database.connections.mysql.database').".s_invtry_hdr.item_id = s_txfr_detail.item_id AND s_txfr_detail.item_id = ?
+        GROUP BY s_txfr_detail.item_id", [  $branch, $item_id]);
+  
+        //Pending PO
+        $pending = DB::connection($company->database_name)->select("SELECT SUM(Qty-ServedQty) as PendingQty FROM s_po_detail 
+        WHERE Branch = ? AND s_po_detail.item_id = ? AND ServedQty < Qty", [$branch, $item_id]);
+        
+        // process ... 
+
+        if($total_sold && ($total_sold > 0))
+        {
+          $total_sold = $total_sold[0]->SoldQty;
+          $daily_sold_qty = $no_of_date / $total_sold;
+          if ($daily_sold_qty > 0 && is_float($daily_sold_qty))
+          {
+            $daily_sold_qty = intval($daily_sold_qty) + 1;
+          }
+        }
+        else
+        {
+          $daily_sold_qty = 0;
+        }
+
+        if($total_stock && ($total_stock[0]->Txit_Qty))
+        {
+          $quantity_stock =  $total_stock[0]->Txit_Qty + $total_stock[0]->Txfr_Bal;
+        }
+        else
+        {
+          $quantity_stock = 0;
+        }
+
+        if($pending && $pending[0]->PendingQty)
+        {
+          $pending_value = $pending[0]->PendingQty;
+        }
+        else
+        {
+          $pending_value = 0;
+        }
+
+        // Qty for PO
+
+        $item_packaging = StockItem::find($item_id)->Packaging;
+        $item_code = StockItem::find($item_id)->ItemCode;
+
+        $QtyPO = ($daily_sold_qty * $item_packaging) - $pending_value;
+
+        
+        if ( is_float($QtyPO / $item_packaging) )
+        {
+          $QtyPO = (intval($QtyPO / $item_packaging) + 1 ) * $item_packaging;
+        }
+        $total_pieces += $QtyPO;
+        
+        if (StockItem::find($item_id)->LastCost)
+        {
+          $last_cost = StockItem::find($item_id)->LastCost;
+          $itemcost = $QtyPO * StockItem::find($item_id)->LastCost;
+        }
+        else
+        {
+          $itemcost = 0;
+          $last_cost = 0;
+        }
+        $total_amount += $itemcost;
+
+        $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+        $PurchaseOrderDetailModel->setConnection($company->database_name);
+        $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
+        $PurchaseOrderDetailModel->Branch = $branch;
+        $PurchaseOrderDetailModel->item_id = $item_id;
+        $PurchaseOrderDetailModel->ItemCode = $item_code;
+        $PurchaseOrderDetailModel->Qty = $QtyPO;
+        $PurchaseOrderDetailModel->cost = $last_cost;
+        $PurchaseOrderDetailModel->save();
+      }
+
+      $PurchaseOrderModel->tot_pcs   = $total_pieces;
+      $PurchaseOrderModel->total_amt   = $total_amount;
+      $PurchaseOrderModel->save();
+
+
+      return response()->json(
+        [$PurchaseOrderModel, $details]
+      );
+    }
+
     public function pdf($id)
     {
       $company = Corporation::findOrFail(Request::all()['corpID']);
@@ -495,7 +636,8 @@ class PurchaseOrderController extends Controller
     }
 
     public function auto_process(){
-        return view('purchase_order.auto_process');
+
+      return view('purchase_order.auto_process');
     }
 
     public function ajax_render_branch_by_city()
@@ -509,7 +651,7 @@ class PurchaseOrderController extends Controller
       //   $cities_ID = explode( ',' ,\Auth::user()->area->city );
       //   $cities = City::whereIn('City_ID', $cities_ID)->get();
       // }
-      $branchs = Branch::where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->orderBy('ShortName')->get();
+      $branchs = Branch::where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs
       ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
@@ -529,7 +671,7 @@ class PurchaseOrderController extends Controller
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
       });
-      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->orderBy('ShortName')->get();
+      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs
       ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
