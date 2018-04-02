@@ -42,7 +42,8 @@
                         </thead>
                         <tbody>
                           @foreach($categories as $category)
-                          <tr data-delete="{{ route('categories.destroy', $category) }}" class="{{ $loop->index == 0 ? 'selected' : '' }}" data-id='{{ $category->doc_no }}'>
+                          <tr data-delete="{{ route('categories.destroy', $category) }}" data-id='{{ $category->doc_no }}'
+                            class="{{ $categoryId && $categoryId == $category->doc_no || !$categoryId && $loop->index == 0 ? 'selected' : '' }}" >
                             <td>{{ $category->description }}</td>
                             <td>{{ $category->series }}</td>
                           </tr>
@@ -56,17 +57,18 @@
                       </table>
                     </div>
                     <div class="panel-footer">
-                      <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-category">
+                      <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-category"
+                        {{ \Auth::user()->checkAccessById(33, "A") ? '' : 'disabled' }}>
                         <i class="glyphicon glyphicon-plus"></i> New
                       </button>
-                      <button class="btn btn-primary btn-xs btn-edit">
+                      <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
                         <i class="glyphicon glyphicon-pencil"></i> Edit
                       </button>
                       <form action="" method="POST" style="display: inline-block;">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="corpID" value="{{ $corpID }}">
-                        <button class="btn btn-danger btn-xs btn-delete" type="button">
+                        <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
                           <i class="glyphicon glyphicon-trash"></i> Delete
                         </button>
                       </form>
@@ -92,17 +94,18 @@
                       </table>
                     </div>
                     <div class="panel-footer">
-                      <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-subcategory">
+                      <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-subcategory"
+                        {{ \Auth::user()->checkAccessById(33, "A") ? '' : 'disabled' }}>
                         <i class="glyphicon glyphicon-plus"></i> New
                       </button>
-                      <button class="btn btn-primary btn-xs btn-edit">
+                      <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
                         <i class="glyphicon glyphicon-pencil"></i> Edit
                       </button>
                       <form action="" method="POST" style="display: inline-block;">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="corpID" value="{{ $corpID }}">
-                        <button class="btn btn-danger btn-xs btn-delete" type="button">
+                        <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
                           <i class="glyphicon glyphicon-trash"></i> Delete
                         </button>
                       </form>
