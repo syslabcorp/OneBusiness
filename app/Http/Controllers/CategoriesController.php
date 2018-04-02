@@ -30,7 +30,8 @@ class CategoriesController extends Controller
     return view('categories.index', [
       'categories' => $categories,
       'corpID' => $request->corpID,
-      'categoryId' => $request->categoryId
+      'categoryId' => $request->categoryId,
+      'subcategoryId' => $request->subcategoryId
     ]);
   }
 

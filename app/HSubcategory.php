@@ -17,7 +17,7 @@ class HSubcategory extends Model {
     return $this->hasMany(\App\HDocs::class, 'doc_no', 'doc_no');
   }
 
-  public function subcategories() {
-    return $this->hasMany(\App\HSubcategory::class, 'doc_no', 'doc_no');
+  public function category() {
+    return $this->belongsTo(\App\HCategory::class, 'doc_no', 'doc_no');
   }
 }
