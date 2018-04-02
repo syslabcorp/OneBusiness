@@ -390,7 +390,7 @@
       $.ajax({
         type: 'GET',
         url: '{{ route("subcategories.index") }}',
-        data: {id: $('.table-category tbody tr.selected').attr('data-id'), corpID: '{{ $corpID }}'},
+        data: {id: $('.table-category tbody tr.selected').attr('data-id'), corpID: '{{ $corpID }}', subcategoryId: '{{ $subcategoryId }}'},
         success: function(res) {
           $('.table-subcategory tbody').html(res);
         }

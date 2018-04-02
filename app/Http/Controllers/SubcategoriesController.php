@@ -21,16 +21,12 @@ class SubcategoriesController extends Controller
     $category = $categoryModel->find($request->id);
 
     return view('subcategories.index', [
-      'category' => $category
+      'category' => $category,
+      'subcategoryId' => $request->subcategoryId
     ]);
   }
 
   public function store(Request $request) {
-    // if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
-    //   \Session::flash('error', "You don't have permission"); 
-    //   return redirect("/home"); 
-    // }
-
     $company = Corporation::findOrFail($request->corpID);
 
     $categoryModel = new \App\HCategory;
@@ -38,11 +34,15 @@ class SubcategoriesController extends Controller
 
     $category = $categoryModel->find($request->category_id);
 
-    $category->subcategories()->create($request->only(['expires', 'description', 'multi_doc']));
+    $subcategory = $category->subcategories()->create($request->only(['expires', 'description', 'multi_doc']));
 
     \Session::flash('success', "Subcategory successfully created!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('categories.index', [
+      'corpID' => $request->corpID,
+      'categoryId' => $category->doc_no,
+      'subcategoryId' => $subcategory->subcat_id
+    ]));
   }
 
   public function update(Request $request, $id) {
@@ -56,7 +56,11 @@ class SubcategoriesController extends Controller
 
     \Session::flash('success', "Subcategory successfully updated!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('categories.index', [
+      'corpID' => $request->corpID,
+      'categoryId' => $subcategory->category->doc_no,
+      'subcategoryId' => $subcategory->subcat_id
+    ]));
   }
 
   public function destroy(Request $request, $id) {
