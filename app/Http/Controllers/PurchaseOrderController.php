@@ -477,9 +477,6 @@ class PurchaseOrderController extends Controller
 
     public function auto_save()
     {
-
-
-
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
@@ -493,10 +490,6 @@ class PurchaseOrderController extends Controller
       $no_of_date = $POTemp->po_avg_cycle;
       
       $details = $POTemp->details()->get();
-
-      // return response()->json(
-      //    $details
-      // );
 
       $PurchaseOrderModel = new \App\PurchaseOrder;
       $PurchaseOrderModel->setConnection($company->database_name);
@@ -513,13 +506,40 @@ class PurchaseOrderController extends Controller
         $branch = $detail->po_tmpl8_branch;
         $item_id = $detail->po_tmpl8_item;
 
-        $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
-        FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
-        LEFT JOIN t_shifts ON s_hdr.Shift_ID = t_shifts.Shift_ID AND s_hdr.Branch = t_shifts.Branch 
-        WHERE s_hdr.Branch = ? AND s_detail.item_id = ? 
-        GROUP BY item_id", [ $branch, $item_id ]);
+        $SaleDetailModel = new \App\SaleDetail;
+        $SaleDetailModel->setConnection($company->database_name);
+        $SaleDetail = $SaleDetailModel->where('item_id', $item_id)->where('Branch', $branch)->distinct()->get();
 
-        // missing from_date and to_date
+        if( count($SaleDetail) > 0 )
+        {
+          $to_date = $SaleDetail->first()->sale()->first()->DateSold;
+          $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+          foreach($SaleDetail as $detail)
+          {
+            if( $detail->sale )
+            {
+              if( $detail->sale()->first()->DateSold > $to_date )
+              {
+                $to_date = $detail->sale()->first()->DateSold;
+                $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+              }
+            }
+          }
+        }
+
+        if(isset($from_date) && isset($to_date))
+        {
+          $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
+          FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
+          LEFT JOIN t_shifts ON s_hdr.Shift_ID = t_shifts.Shift_ID AND s_hdr.Branch = t_shifts.Branch 
+          WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND t_shifts.ShiftDate >= ? AND t_shifts.ShiftDate <= ? 
+          GROUP BY item_id", [ $branch, $item_id,  $from_date, $to_date  ]);
+        }
+        else
+        {
+          $total_sold = 0;
+        }
+
         //Total Quantity of Stock
   
         $total_stock = DB::connection($company->database_name)->select("SELECT s_txfr_detail.item_id, 
@@ -572,10 +592,10 @@ class PurchaseOrderController extends Controller
 
         $item_packaging = StockItem::find($item_id)->Packaging;
         $item_code = StockItem::find($item_id)->ItemCode;
+        $multiolier = StockItem::find($item_id)->Multiplier;
 
-        $QtyPO = ($daily_sold_qty * $item_packaging) - $pending_value;
+        $QtyPO = ($daily_sold_qty * $multiolier) - $pending_value;
 
-        
         if ( is_float($QtyPO / $item_packaging) )
         {
           $QtyPO = (intval($QtyPO / $item_packaging) + 1 ) * $item_packaging;
@@ -594,15 +614,18 @@ class PurchaseOrderController extends Controller
         }
         $total_amount += $itemcost;
 
-        $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
-        $PurchaseOrderDetailModel->setConnection($company->database_name);
-        $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
-        $PurchaseOrderDetailModel->Branch = $branch;
-        $PurchaseOrderDetailModel->item_id = $item_id;
-        $PurchaseOrderDetailModel->ItemCode = $item_code;
-        $PurchaseOrderDetailModel->Qty = $QtyPO;
-        $PurchaseOrderDetailModel->cost = $last_cost;
-        $PurchaseOrderDetailModel->save();
+        if($QtyPO = 0)
+        {
+          $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+          $PurchaseOrderDetailModel->setConnection($company->database_name);
+          $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
+          $PurchaseOrderDetailModel->Branch = $branch;
+          $PurchaseOrderDetailModel->item_id = $item_id;
+          $PurchaseOrderDetailModel->ItemCode = $item_code;
+          $PurchaseOrderDetailModel->Qty = $QtyPO;
+          $PurchaseOrderDetailModel->cost = $last_cost;
+          $PurchaseOrderDetailModel->save();
+        }
       }
 
       $PurchaseOrderModel->tot_pcs   = $total_pieces;
@@ -610,9 +633,12 @@ class PurchaseOrderController extends Controller
       $PurchaseOrderModel->save();
 
 
-      return response()->json(
-        [$PurchaseOrderModel, $details]
+      return response()->json([
+        'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
+        'po_no' => $PurchaseOrderModel->po_no,
+        'num_details' => count($PurchaseOrderModel->purchase_order_details) ]
       );
+
     }
 
     public function pdf($id)

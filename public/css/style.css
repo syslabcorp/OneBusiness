@@ -311,3 +311,7 @@ input.error{
   -webkit-appearance: none;
   margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
+
+.hidden_table{
+  display: none;
+}

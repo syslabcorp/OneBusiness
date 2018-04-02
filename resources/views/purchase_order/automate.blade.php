@@ -1,7 +1,7 @@
 @extends('layouts.custom')
 
 @section('content')
-
+<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 <!-- Page content -->
 <section class="content">
 <div class="row">
@@ -53,7 +53,7 @@
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table table-bordered main_table">
+          <table class="table table-bordered" id="main_table">
             <thead>
               <tr>
                 <th>Template Code</th>
@@ -66,41 +66,13 @@
           </table>
         </div>
 
-        <!-- <div class="table-responsive">
+        <div class="table-responsive hidden_table" id="process_table">
           <table class="table process_table" style="border: 1px solid #ddd;">
             <tbody>
-              <tr class="done">
-                <td>Tempxyz_PO_0123154</td>
-                <td>
-                  Document Created 
-                  <a href="#">View</a>
-                  <span class=" pull-right far fa-check-circle"></span>
-                </td>
-              </tr>
-              <tr class="done" >
-                <td>Tempxza_PO_12312</td>
-                <td>
-                  No items to be ordered
-                  <span class=" pull-right far fa-check-circle"></span>
-                </td>
-              </tr>
-              <tr>
-                <td>Tempxza_PO_123120 </td>
-                <td>
-                  Caculating order quantities(20%)
-                  <span class=" pull-right fa fa-circle-notch fa-pulse"></span>
-                </td>
-              </tr>
-              <tr>
-                <td>Tempxza_PO_1231201 </td>
-                <td>
-                  Pending
-                  <span class=" pull-right fas fa-circle-notch fa-pulse"></span>
-                </td>
-              </tr>
+              
             </tbody>
           </table>
-        </div> -->
+        </div>
 
       </div>
 
@@ -126,18 +98,25 @@
   <script>
 
     $('#create_po_button').on('click', function(){
-      $('.hidden_input').remove();
-
-      $('.ui-selected').each(function()
+      if($('.ui-selected').length > 0)
       {
-        if($(this).data('temp-id'))
-        {
-          $('#create_po_form').prepend("<input type='hidden' class='hidden_input' name='temp[]' value='" + $(this).data('temp-id') + "' >"); 
-        }
-      });
+        $('.hidden_input').remove();
 
-      recursively_ajax()
-      
+        $('.ui-selected').each(function()
+        {
+          if($(this).data('temp-id'))
+          {
+            $('#create_po_form').append("<input type='hidden' class='hidden_input' name='temp[]' value='" + $(this).data('temp-id') + "' >"); 
+            $('#process_table').find('tbody').append("<tr class='pending' id='temp_"+$(this).data('temp-id')+"'><td>"+$(this).find('td').first().text()+"_PO_1231201 </td> <td> Pending <span class='pull-right fas fa-circle-notch fa-pulse'></span> </td> </tr>");
+          }
+        });
+
+        $('#process_table').removeClass('hidden_table');
+        $('#main_table').addClass('hidden_table');
+        $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
+
+        recursively_ajax()
+      }
     });
 
     function recursively_ajax()
@@ -154,11 +133,22 @@
         data:{ _token , temp_id, corpID },
         success: function(data)
         {
-          if(list_item.length > 1){
+          if(list_item.length > 0){
             list_item.first().remove();
+            if(data.num_details > 0)
+            {
+              $('.pending').first().addClass('done').removeClass('pending')
+                          .find('td').last().html('Document Created <a target="_blank" href="'+data.url+'">View</a> <span class="pull-right far fa-check-circle"></span>');
+            }
+            else
+            {
+              $('.pending').first().addClass('done').removeClass('pending')
+                          .find('td').last().html('No items to be ordered<span class="pull-right far fa-check-circle"></span>');
+            }
+            $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
             setTimeout(function()
             {
-            }, 500);
+            }, 3000);
             recursively_ajax();
           }
         }
