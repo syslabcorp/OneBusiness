@@ -81,12 +81,19 @@ class CategoriesController extends Controller
     $categoryModel = new \App\Pc\Cat;
     $categoryModel->setConnection($company->database_name);
 
+    $branchModel = new \App\Pc\Branch;
+    $branchModel->setConnection($company->database_name);
+
     $categories = $categoryModel->where('deleted', '=', '0')
                                 ->orderBy('description', 'asc')->get();
+    $branchs = $branchModel->orderBy('short_name', 'asc')->get();
 
     return view('categories.pety-cash', [
       'corpID' => $request->corpID,
-      'categories' => $categories
+      'categories' => $categories,
+      'branchs' => $branchs,
+      'tab' => $request->tab,
+      'categoryId' => $request->categoryId
     ]);
   }
 }

@@ -24,7 +24,7 @@ class CategoriesController extends Controller {
 
     \Session::flash('success', "Category successfully created!");
 
-    return redirect(route('petycash.index', ['corpID' => $request->corpID]));
+    return redirect(route('petycash.index', ['corpID' => $request->corpID, 'tab' => 'cat']));
   }
 
   public function update(Request $request, $id) {
@@ -38,7 +38,7 @@ class CategoriesController extends Controller {
 
     \Session::flash('success', "Category successfully updated!");
 
-    return redirect(route('petycash.index', ['corpID' => $request->corpID]));
+    return redirect(route('petycash.index', ['corpID' => $request->corpID, 'tab' => 'cat']));
   }
 
   public function destroy(Request $request, $id) {
@@ -52,6 +52,6 @@ class CategoriesController extends Controller {
 
     \Session::flash('success', "Category successfully deleted!");
 
-    return redirect(route('petycash.index', ['corpID' => $request->corpID]));
+    return redirect(route('petycash.index', ['corpID' => $request->corpID, 'tab' => 'cat']));
   }
 }

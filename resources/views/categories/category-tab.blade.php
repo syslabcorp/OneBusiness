@@ -1,36 +1,38 @@
-<table class="table table-bordered table-striped" id="table-category">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Categories</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach($categories as $cat)
-    <tr>
-      <td>{{ $cat->cat_id }}</td>
-      <td>{{ $cat->description }}</td>
-      <td>
-        <button class="btn btn-success btn-view" data-id="{{ $cat->cat_id }}">
-          <i class="glyphicon glyphicon-eye-open"></i>
-        </button>
-        <button class="btn btn-primary btn-sm btn-edit" data-active="{{ $cat->active }}" data-url="{{ route('pccategories.update', $cat) }}">
-          <i class="glyphicon glyphicon-pencil"></i>
-        </button>
-        <form action="{{ route('pccategories.destroy', $cat) }}" method="POST" style="display: inline-block;">
-          {{ csrf_field() }}
-          <input type="hidden" name="_method" value="DELETE">
-          <input type="hidden" name="corpID" value="{{ $corpID }}">
-          <button class="btn btn-danger btn-sm btn-delete" type="button">
-            <i class="glyphicon glyphicon-trash"></i>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped" id="table-category">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Categories</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($categories as $cat)
+      <tr>
+        <td>{{ $cat->cat_id }}</td>
+        <td>{{ $cat->description }}</td>
+        <td>
+          <button class="btn btn-success btn-view" data-id="{{ $cat->cat_id }}">
+            <i class="glyphicon glyphicon-eye-open"></i>
           </button>
-        </form>
-      </td>
-    </tr>
-    @endforeach
-  </tbody>
-</table>
+          <button class="btn btn-primary btn-sm btn-edit" data-active="{{ $cat->active }}" data-url="{{ route('pccategories.update', $cat) }}">
+            <i class="glyphicon glyphicon-pencil"></i>
+          </button>
+          <form action="{{ route('pccategories.destroy', $cat) }}" method="POST" style="display: inline-block;">
+            {{ csrf_field() }}
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="corpID" value="{{ $corpID }}">
+            <button class="btn btn-danger btn-sm btn-delete" type="button">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
 
 <div class="modal fade" id="modal-edit-category">
   <div class="modal-dialog" role="document">
