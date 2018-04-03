@@ -113,7 +113,8 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
+		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
+		$query1 = $this->removeDuplicateElementsFromArray($query1);
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->ShortName == $request->branch_name;
@@ -149,6 +150,19 @@ class EmployeeRequestController extends Controller
                 // })
                 ->rawColumns(["action", "nx", "sq", "og"])
                 ->make('true');
+	}
+
+	public function removeDuplicateElementsFromArray($arr){
+		$arr2 = [];
+		foreach ($arr as $element) {
+			foreach ($arr2 as $element2) {
+				if($element2->UserID == $element->UserID){
+					continue 2;
+				}
+			}
+			array_push($arr2, $element);
+		}
+		return $arr2;
 	}
 
 	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
@@ -261,10 +275,11 @@ class EmployeeRequestController extends Controller
 				$uniform->save();
 			}
 			if(!is_null($branch)) { $branch_name = $branch->ShortName; } else { $branch_name = null; }
-			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$request->branch_id:"0");
-			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
-			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$request->branch_id:"0");
-			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
+
+			$user->SQ_Branch = (!is_null($branch_name) && (stripos($branch_name,'SQ') >= 0)?$request->branch_id:"0");
+			$user->SQ_Active = (!is_null($branch_name) && (stripos($branch_name,'SQ') >= 0)?"1":"0");
+			$user->Branch = (!is_null($branch_name) && !(stripos($branch_name,'SQ') >= 0)?$request->branch_id:"0");
+			$user->Active = (!is_null($branch_name) && !(stripos($branch_name,'SQ') >= 0)?"1":"0");
 			// $user->date_start = $request->start_date;
 			if($request->password != ""){
 				$user->passwrd = md5($request->password);
