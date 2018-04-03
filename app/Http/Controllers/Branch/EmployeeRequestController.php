@@ -258,9 +258,9 @@ class EmployeeRequestController extends Controller
 		if(!is_null($user)) {
 			// $user->Branch = $request->branch_id;
 			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
-			if(!is_null($employeeRequest)) { 
+			if(!is_null($employeeRequest)) {
 				$employeeRequest->date_start = $request->start_date; $employeeRequest->save(); 
-			}	
+			}
 			$user->Hired = $request->start_date;
 			$user->FullRate = "0.00";
 			$user->Rate = "0.00";
@@ -275,11 +275,12 @@ class EmployeeRequestController extends Controller
 				$uniform->save();
 			}
 			if(!is_null($branch)) { $branch_name = $branch->ShortName; } else { $branch_name = null; }
-
-			$user->SQ_Branch = (!is_null($branch_name) && (stripos($branch_name,'SQ') >= 0)?$request->branch_id:"0");
-			$user->SQ_Active = (!is_null($branch_name) && (stripos($branch_name,'SQ') >= 0)?"1":"0");
-			$user->Branch = (!is_null($branch_name) && !(stripos($branch_name,'SQ') >= 0)?$request->branch_id:"0");
-			$user->Active = (!is_null($branch_name) && !(stripos($branch_name,'SQ') >= 0)?"1":"0");
+			// dd(!is_null($branch_name) && (stripos($branch_name,'SQ') >= 0));
+			// dd(stripos("nika", "ni") !== false);
+			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false)?$request->branch_id:"0";
+			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false)?"1":"0";
+			$user->Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') === false)?$request->branch_id:"0";
+			$user->Active = (!is_null($branch_name) && stripos($branch_name,'SQ') === false)?"1":"0";
 			// $user->date_start = $request->start_date;
 			if($request->password != ""){
 				$user->passwrd = md5($request->password);
