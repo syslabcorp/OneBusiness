@@ -4,7 +4,7 @@
   <div class="panel-heading">
     <div class="row">
       <div class="col-sm-6">
-        <strong>Pety Cash</strong>
+        <strong>Petty Cash Categories</strong>
       </div>
       <div class="col-sm-6 text-right">
         <a href="#" data-toggle="modal" data-target="#modal-new-category" style="display: none;">

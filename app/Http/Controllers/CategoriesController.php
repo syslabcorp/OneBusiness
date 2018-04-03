@@ -86,7 +86,8 @@ class CategoriesController extends Controller
 
     $categories = $categoryModel->where('deleted', '=', '0')
                                 ->orderBy('description', 'asc')->get();
-    $branchs = $branchModel->orderBy('short_name', 'asc')->get();
+    $branchs = $branchModel->where('active', '=', 1)
+                           ->orderBy('short_name', 'asc')->get();
 
     return view('categories.pety-cash', [
       'corpID' => $request->corpID,
