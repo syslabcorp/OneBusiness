@@ -18,7 +18,7 @@
           <td>{{ $sub->subcat_id }}</td>
           <td class="col-name">{{ $sub->description }}</td>
           <td>
-            <button class="btn btn-primary btn-sm btn-edit" data-active="{{ $sub->active }}" data-url="{{ route('pcsubcategories.update', $sub) }}"
+            <button class="btn btn-primary btn-edit btn-md" data-active="{{ $sub->active }}" data-url="{{ route('pcsubcategories.update', $sub) }}"
               data-branches="{{ $sub->branches->map(function($item){ return $item->sat_branch; }) }}">
               <i class="glyphicon glyphicon-pencil"></i>
             </button>
@@ -26,7 +26,7 @@
               {{ csrf_field() }}
               <input type="hidden" name="_method" value="DELETE">
               <input type="hidden" name="corpID" value="{{ $corpID }}">
-              <button class="btn btn-danger btn-sm btn-delete" type="button">
+              <button class="btn btn-danger btn-delete btn-md" type="button">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </form>
@@ -88,7 +88,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
               <div class="form-group">
                 <label>Satellite Branchs:</label>
                 <div>
@@ -160,7 +160,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
               <div class="form-group">
                 <label>Satellite Branchs:</label>
                 <div>
