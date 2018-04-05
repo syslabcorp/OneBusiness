@@ -20,7 +20,8 @@
           @foreach($branchs as $branch)
           @php $sat = $sub->branches()->where('sat_branch', '=', $branch->sat_branch)->first() @endphp
           <td class="text-center">
-            <input type="checkbox" onclick="return false;" {{ $sat ? 'checked' : '' }} >
+            <input type="checkbox" data-branch="{{ $branch->sat_branch }}" onclick="{{ \Auth::user()->checkAccessById(32, "E") ? '' : 'return false;' }}"
+              data-cat="{{ $category->cat_id }}" data-subcat="{{ $sub->subcat_id }}" {{ $sat ? 'checked' : '' }} >
           </td>
           @endforeach
         </tr>
@@ -29,3 +30,10 @@
     </tbody>
   </table>
 </div>
+<form action="{{ route('pccategories.updateBranch') }}" class="form-update-branch" method="POST">
+  {{ csrf_field() }}
+  <input type="hidden" name="corpID" value="{{ $corpID }}">
+  <input type="hidden" name="sat_branch" value="">
+  <input type="hidden" name="cat_id" value="">
+  <input type="hidden" name="subcat_id" value="">
+</form>

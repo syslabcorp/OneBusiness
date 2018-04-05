@@ -83,6 +83,7 @@ Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware
 
 Route::resource('categories', 'CategoriesController', ['middleware' => 'auth']);
 Route::resource('pccategories', 'Pc\CategoriesController', ['middleware' => 'auth']);
+Route::post('pccategories/updateBranch', 'Pc\CategoriesController@updateBranch')->middleware('auth')->name('pccategories.updateBranch');
 Route::resource('subcategories', 'SubcategoriesController', ['middleware' => 'auth']);
 Route::resource('pcsubcategories', 'Pc\SubcategoriesController', ['middleware' => 'auth']);
 Route::resource('branchs', 'BranchsController', ['middleware' => 'auth']);

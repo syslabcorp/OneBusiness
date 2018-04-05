@@ -13,17 +13,20 @@
         <td>{{ $cat->cat_id }}</td>
         <td>{{ $cat->description }}</td>
         <td>
-          <button class="btn btn-success btn-view btn-md" data-id="{{ $cat->cat_id }}">
+          <button class="btn btn-success btn-view btn-md" data-id="{{ $cat->cat_id }}"
+            {{ \Auth::user()->checkAccessById(32, "V") ? '' : 'disabled' }}>
             <i class="glyphicon glyphicon-eye-open"></i>
           </button>
-          <button class="btn btn-primary btn-edit btn-md" data-active="{{ $cat->active }}" data-url="{{ route('pccategories.update', $cat) }}">
+          <button class="btn btn-primary btn-edit btn-md" data-active="{{ $cat->active }}" data-url="{{ route('pccategories.update', $cat) }}"
+            {{ \Auth::user()->checkAccessById(32, "E") ? '' : 'disabled' }}>
             <i class="glyphicon glyphicon-pencil"></i>
           </button>
           <form action="{{ route('pccategories.destroy', $cat) }}" method="POST" style="display: inline-block;">
             {{ csrf_field() }}
             <input type="hidden" name="_method" value="DELETE">
             <input type="hidden" name="corpID" value="{{ $corpID }}">
-            <button class="btn btn-danger btn-delete btn-md" type="button">
+            <button class="btn btn-danger btn-delete btn-md" type="button" 
+              {{ \Auth::user()->checkAccessById(32, "D") ? '' : 'disabled' }}>
               <i class="glyphicon glyphicon-trash"></i>
             </button>
           </form>
