@@ -11,7 +11,7 @@
     <tbody>
       @foreach($categories as $category)
         @foreach($category->subcategories()->where('deleted', '=', 0)->orderBy('description', 'asc')->get() as $sub)
-        <tr data-id="{{ $category->cat_id }}" style="display: none;">
+        <tr data-id="{{ $category->cat_id }}">
           @if($loop->index == 0)
           <td rowspan="{{ $category->subcategories()->where('deleted', '=', 0)->count() }}">{{ $category->description }}</td>
           @endif
