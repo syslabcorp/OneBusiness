@@ -258,8 +258,11 @@ class PurchaseOrderController extends Controller
       
       $prodlines = ProductLine::where('Active', 1)->orderBy('Product')->get();
 
+      $branchs = Branch::where( 'City_ID', $cities->first()->City_ID )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
+
       return view('purchase_order.manual',
         [
+          'branchs' => $branchs,
           'cities' => $cities,
           'prodlines' => $prodlines,
           'corpID' => Request::all()['corpID']
@@ -436,36 +439,83 @@ class PurchaseOrderController extends Controller
     public function manual_save()
     {
       // return response()->json(Request::all());
-      
-      $company = Corporation::findOrFail(Request::all()['corpID']);
-      $PurchaseOrderModel = new \App\PurchaseOrder;
-      $PurchaseOrderModel->setConnection($company->database_name);
-      
-      $PurchaseOrderModel->po_date = Date('Y-m-d H:i:s');
-      $PurchaseOrderModel->tot_pcs = Request::all()['total_pieces'];
-      $PurchaseOrderModel->total_amt = Request::all()['total_amount'];
-      
-      if($PurchaseOrderModel->save())
+
+      if(array_key_exists('po_no' ,Request::all()))
       {
-        foreach( Request::all()['ItemCode'] as $item_id => $item_with_branch )
+        $company = Corporation::findOrFail(Request::all()['corpID']);
+
+        $PurchaseOrderModel = new \App\PurchaseOrder;
+        $PurchaseOrderModel->setConnection($company->database_name);
+        $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+        $PurchaseOrderDetailModel->setConnection($company->database_name);
+
+        $PurchaseOrderDetailModel->where('po_no', Request::all()['po_no'])->delete();
+        $PurchaseOrderModel->where('po_no', Request::all()['po_no'] )->delete();
+        
+        $PurchaseOrderModel = new \App\PurchaseOrder;
+        $PurchaseOrderModel->setConnection($company->database_name);
+
+        $PurchaseOrderModel->po_no = Request::all()['po_no'];
+        $PurchaseOrderModel->po_date = Date('Y-m-d H:i:s');
+        $PurchaseOrderModel->tot_pcs = Request::all()['total_pieces'];
+        $PurchaseOrderModel->total_amt = Request::all()['total_amount'];
+        
+        if($PurchaseOrderModel->save())
         {
-          foreach($item_with_branch as $branch => $item_code)
+          foreach( Request::all()['ItemCode'] as $item_id => $item_with_branch )
           {
-            if(Request::all()['QtyPO'][$item_id][$branch] > 0)
+            foreach($item_with_branch as $branch => $item_code)
             {
-              $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
-              $PurchaseOrderDetailModel->setConnection($company->database_name);
-              $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
-              $PurchaseOrderDetailModel->Branch = $branch;
-              $PurchaseOrderDetailModel->item_id = $item_id;
-              $PurchaseOrderDetailModel->ItemCode = $item_code;
-              $PurchaseOrderDetailModel->Qty = Request::all()['QtyPO'][$item_id][$branch];
-              $PurchaseOrderDetailModel->cost = Request::all()['cost'][$item_id][$branch];
-              $PurchaseOrderDetailModel->save();
+              if(Request::all()['QtyPO'][$item_id][$branch] > 0)
+              {
+                $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+                $PurchaseOrderDetailModel->setConnection($company->database_name);
+                $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
+                $PurchaseOrderDetailModel->Branch = $branch;
+                $PurchaseOrderDetailModel->item_id = $item_id;
+                $PurchaseOrderDetailModel->ItemCode = $item_code;
+                $PurchaseOrderDetailModel->Qty = Request::all()['QtyPO'][$item_id][$branch];
+                $PurchaseOrderDetailModel->cost = Request::all()['cost'][$item_id][$branch];
+                $PurchaseOrderDetailModel->save();
+              }
             }
           }
         }
       }
+      else
+      {
+        $company = Corporation::findOrFail(Request::all()['corpID']);
+        $PurchaseOrderModel = new \App\PurchaseOrder;
+        $PurchaseOrderModel->setConnection($company->database_name);
+        
+        $PurchaseOrderModel->po_date = Date('Y-m-d H:i:s');
+        $PurchaseOrderModel->tot_pcs = Request::all()['total_pieces'];
+        $PurchaseOrderModel->total_amt = Request::all()['total_amount'];
+        
+        if($PurchaseOrderModel->save())
+        {
+          foreach( Request::all()['ItemCode'] as $item_id => $item_with_branch )
+          {
+            foreach($item_with_branch as $branch => $item_code)
+            {
+              if(Request::all()['QtyPO'][$item_id][$branch] > 0)
+              {
+                $PurchaseOrderDetailModel = new \App\PurchaseOrderDetail;
+                $PurchaseOrderDetailModel->setConnection($company->database_name);
+                $PurchaseOrderDetailModel->po_no = $PurchaseOrderModel->po_no;
+                $PurchaseOrderDetailModel->Branch = $branch;
+                $PurchaseOrderDetailModel->item_id = $item_id;
+                $PurchaseOrderDetailModel->ItemCode = $item_code;
+                $PurchaseOrderDetailModel->Qty = Request::all()['QtyPO'][$item_id][$branch];
+                $PurchaseOrderDetailModel->cost = Request::all()['cost'][$item_id][$branch];
+                $PurchaseOrderDetailModel->save();
+              }
+            }
+          }
+        }
+      }
+      
+
       // return redirect()->route('purchase_order.create_manual', [ 'corpID' => (Request::all()['corpID']) ]);
 
       return response()->json([

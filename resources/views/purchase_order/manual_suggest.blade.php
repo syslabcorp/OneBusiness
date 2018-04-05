@@ -1,10 +1,5 @@
-@extends('layouts.custom')
 
-@section('content')
-
-<!-- Page content -->
-<section class="content">
-<div class="row">
+<div class="row" id="ajax_tab">
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -132,7 +127,7 @@
       <div class="panel-footer">
         <div class="row">
         <div class="col-md-6">
-          <button class="btn btn-default">Back</button>
+          <button class="btn btn-default" id="backbutton">Back</button>
         </div>
         <div class="col-ms-6 pull-right">
           <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" >Save</button>
@@ -189,115 +184,3 @@
   </div>
 </div>
 
-</section>
-
-@endsection
-
-@section('pageJS')
-
-<script>
-  $('#submit_main_form').on('click',function(event)
-  {
-    $('<input>').attr({
-      type: 'hidden',
-      name: 'total_pieces',
-      value: parseFloat( $('.value_total_pieces').text().replace(",", ""))
-    }).appendTo('#main_form');
-
-    $('<input>').attr({
-      type: 'hidden',
-      name: 'total_amount',
-      value: parseFloat($('.value_total_amount').text().replace(",", ""))
-    }).appendTo('#main_form');
-
-    $.ajax({
-        url: $('#main_form').attr('action'),
-        data: $('#main_form').serialize(),
-        type: 'POST',
-        success: function(res){
-          $('#myModal').modal('hide');
-          setTimeout(function(){
-            $('#pdfModal').modal('show');
-            $('#pdfModal').find('#pdf_link').attr('href', res.url)
-          }, 500);
-        }
-      });
-  });
-
-  $('body').on('click', '.edit', function(){
-    $('.input_QtyPO').each(function()
-    {
-      if( parseInt($(this).val()) )
-      {
-        if(parseInt($(this).val()) < 0)
-        {
-          $(this).val(0);
-        }
-      }
-      else
-      {
-        $(this).val(0);
-      }
-    });
-    var self = $(this);
-    if(self.find('span').hasClass('fa-pencil'))
-    {
-      self.find('span').removeClass('fa-pencil').addClass('fa-save');
-      self.parents('.editable').find( ".input_QtyPO" ).each(function( index ) {
-        $(this).val($(this).parents('td').find('.value_QtyPO').text()).attr("type", "text");
-      });
-      self.parents('.editable').find( ".value_QtyPO" ).css("display", "none");
-    }
-    else
-    {
-      var total_line = 0;
-      self.find('span').removeClass('fa-save').addClass('fa-pencil');
-      self.parents('.editable').find( ".input_QtyPO" ).attr("type", "hidden");
-      self.parents('.editable').find( ".value_QtyPO" ).css("display", "");
-      self.parents('.editable').find(".input_QtyPO").each(function(index)
-      {
-        total_line += parseInt($(this).val());
-      });
-      self.parents('.editable').find('.value_total').text(total_line);
-
-      var total_pieces = 0;
-      $('.value_total').each(function()
-      {
-        total_pieces += parseInt($(this).text());
-      });
-      $('.value_total_pieces').text(total_pieces.toFixed(2));
-
-      var total_amount = 0;
-      $('.input_QtyPO').each(function(index){
-        total_amount+= parseInt($(this).val()) * parseFloat($(this).parents('td').find('.input_cost').val())
-      });
-      $('.value_total_amount').text(total_amount.toFixed(2));
-    }
-  });
-
-  $('body').on('change paste keyup', '.input_QtyPO', function()
-  {
-    var self = $(this);
-    var result;
-    if( parseInt(self.val()) )
-    {
-      if( parseInt(self.val()) < 0 )
-      {
-        result = 0;
-      }
-      else
-      {
-        result = parseInt(self.val());
-      }
-    }
-    else
-    {
-      result = 0;
-    }
-    // self.parents('td').attr('class').split(' ')[1];
-    self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_QtyPO" ).text( result );
-    self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_mult" ).text("?");
-  });
-</script>
-
-@endsection

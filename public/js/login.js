@@ -640,26 +640,48 @@ $(function() {
   });
 
   $("#manual_generate").on('click', function(event){
-    if($('#item_code .ui-selected').length > 0 && $('.prodline_item:checked').length > 0)
-    {
-      event.preventDefault();
-      var input;
-      $('#item_code .ui-selected').each(function(el) {
-        input = $("<input>")
-          .attr("type", "hidden")
-          .attr("name", "ItemCode[]").val($(this).data("itemcode-id"));
-        $('#manualform').append(input);
-      });
+    if( $('#manualform').valid())
+    { 
+      if($('#item_code .ui-selected').length > 0 && $('.prodline_item:checked').length > 0)
+      {
 
-      $('#branch .ui-selected').each(function(el) {
-        input = $("<input>")
-          .attr("type", "hidden")
-          .attr("name", "branchs[]").val($(this).data("branch"));
-        $('#manualform').append(input);
-      });
+        $("#manual_generate").prop('disabled', 'disabled');
+        $('#main_tab').hide();
+        $('#loading-animation').show();
 
-      $('#manualform').submit();
+        $( "input[name='ItemCode[]']" ).remove();
+        $( "input[name='branch[]']" ).remove();
+        
+        var input;
+        $('#item_code .ui-selected').each(function(el) {
+          input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "ItemCode[]").val($(this).data("itemcode-id"));
+          $('#manualform').append(input);
+        });
+  
+        $('#branch .ui-selected').each(function(el) {
+          input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "branchs[]").val($(this).data("branch"));
+          $('#manualform').append(input);
+        });
+  
+        // $('#manualform').submit();
+  
+        $.ajax({
+          url: ajax_url+'/purchase_order/manual_suggest',
+          data: $('#manualform').serialize(),
+          type: "GET",
+          success: function(res){
+            $('.content').append(res);
+            $('#loading-animation').hide();
+        
+          }
+        });
+      }
     }
+
   });
 
   $( ".selectable" ).selectable();
