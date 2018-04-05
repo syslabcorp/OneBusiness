@@ -112,29 +112,57 @@ class StocktransferController extends Controller
             $itemCode = $item['itemCode'];
             $itemID = $item['itemID'];
             $branchID = $item['branchID'];
+            $bal = $item['bal'];
             $date = date('Y-m-d');
-            
-            $srcvDetail = Srcvdetail::where('item_id',$itemID)->first();
-            $movementID = $srcvDetail['Movement_ID'];
-            // dd($movementID);
+            // SELECT * FROM t_master.s_rcv_detail WHERE item_id=69 and Bal>0 ORDER BY RcvDate ASC
+            $srcvDetailFirst = Srcvdetail::where('item_id',$itemID)->where('Bal','>',0)->orderBy('RcvDate', 'ASC')->skip(0)->first();
+            $movementIDFirst = $srcvDetailFirst['Movement_ID'];
 
-        $stxf = Stxfrhdr::create([
+            $srcvDetailSecond = Srcvdetail::where('item_id',$itemID)->where('Bal','>',0)->orderBy('RcvDate', 'ASC')->skip(1)->first();
+            $movementIDSecond = $srcvDetailSecond['Movement_ID'];
+
+            $tmpBal = $srcvDetailFirst['Bal'];
+
+            if($tmpBal>$bal){
+                Stxfrdetail::create([
+                    'item_id' => $itemID,
+                    'ItemCode' =>$itemCode,
+                    'Qty' => $qty,
+                    'Bal' => $bal,
+                    'Movement_ID' => $movementIDFirst,
+                    ]);
+            }
+            else {
+                Stxfrdetail::create([
+                    'item_id' => $itemID,
+                    'ItemCode' =>$itemCode,
+                    'Qty' => $qty,
+                    'Bal' => $tmpBal,
+                    'Movement_ID' => $movementIDFirst,
+                    ]);
+                Stxfrdetail::create([
+                    'item_id' => $itemID,
+                    'ItemCode' =>$itemCode,
+                    'Qty' => $qty,
+                    'Bal' => $bal-$tmpBal,
+                    'Movement_ID' => $movementIDSecond,
+                    
+                    ]);
+                
+            }
+
+             Stxfrhdr::create([
                
               'Txfr_Date' => $date,
               'Txfr_To_Branch' =>$branchID,
               'Rcvd' => 1,
               'Uploaded' => 1,
               ]);
+
+              Spodetail::where('Branch', $branchID)->where('item_id', $itemID)
+                        ->update(['ServedQty' => 0]);
       
-        $stxfdetail = Stxfrdetail::create([
-          
-              'item_id' => $itemID,
-              'ItemCode' =>$itemCode,
-              'Qty' => $qty,
-              'Bal' => 0,
-              'Movement_ID' => $movementID,
-              
-              ]);
+
         }
         
       return response()->json([

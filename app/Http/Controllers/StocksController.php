@@ -264,74 +264,74 @@ class StocksController extends Controller
     }
   }
 
-  public function index(Request $request)
-  {
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'V')) {
-      \Session::flash('error', "You don't have permission"); 
-      return redirect("/home"); 
-    }
-    $company = Corporation::findOrFail($request->corpID);
-    $stockModel = new \App\Stock;
-    $stockModel->setConnection($company->database_name);
+  // public function index(Request $request)
+  // {
+  //   if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'V')) {
+  //     \Session::flash('error', "You don't have permission"); 
+  //     return redirect("/home"); 
+  //   }
+  //   $company = Corporation::findOrFail($request->corpID);
+  //   $stockModel = new \App\Stock;
+  //   $stockModel->setConnection($company->database_name);
 
-    $one_vendor = false;
-    $vendor_ID = "";
-    if ($request->order == 'asc')
-    {
-      $next_order = 'desc';
-    }
-    else
-    {
-      $next_order = 'asc';
-    }
+  //   $one_vendor = false;
+  //   $vendor_ID = "";
+  //   if ($request->order == 'asc')
+  //   {
+  //     $next_order = 'desc';
+  //   }
+  //   else
+  //   {
+  //     $next_order = 'asc';
+  //   }
 
-    if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != "")) {
-      if($request->sortBy && $request->order)
-      {
-        $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy($request->sortBy,$request->order)->paginate(100);
-        $one_vendor = true;
-        $vendor_ID = $request->vendorID;
-      }
-      else
-      {
-        $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy('RcvDate','desc')->paginate(100);
-        $one_vendor = true;
-        $vendor_ID = $request->vendorID;
-      }
-    }
-    else
-    {
-      if( $request->sortBy && $request->order)
-      {
-        $stocks = $stockModel->orderBy($request->sortBy,$request->order)->paginate(100);
-      }
-      else
-      {
-        $stocks = $stockModel->orderBy('RcvDate','desc')->paginate(100);
-      }
-    }
+  //   if( $request->vendor == "one" && $request->vendorID && ($request->vendorID != "")) {
+  //     if($request->sortBy && $request->order)
+  //     {
+  //       $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy($request->sortBy,$request->order)->paginate(100);
+  //       $one_vendor = true;
+  //       $vendor_ID = $request->vendorID;
+  //     }
+  //     else
+  //     {
+  //       $stocks = $stockModel->where('Supp_ID', $request->vendorID)->orderBy('RcvDate','desc')->paginate(100);
+  //       $one_vendor = true;
+  //       $vendor_ID = $request->vendorID;
+  //     }
+  //   }
+  //   else
+  //   {
+  //     if( $request->sortBy && $request->order)
+  //     {
+  //       $stocks = $stockModel->orderBy($request->sortBy,$request->order)->paginate(100);
+  //     }
+  //     else
+  //     {
+  //       $stocks = $stockModel->orderBy('RcvDate','desc')->paginate(100);
+  //     }
+  //   }
     
-    $vendors = Vendor::orderBy('VendorName')->get();
-    setcookie('last_index_url' , route('stocks.index', [
-      'corpID' => $request->corpID,
-      'vendor' => $request->vendor,
-      'vendorID' => $vendor_ID,
-      'sortBy' => $request->sortBy,
-      'order' => $request->order
-    ]));
-    return view('stocks.index',
-      [
-        'corpID' => $request->corpID,
-        'stocks' => $stocks,
-        'vendors' => $vendors,
-        'one_vendor' => $one_vendor,
-        'vendor_ID' => $vendor_ID,
-        'vendor_list_type' => $request->vendor,
-        'next_order' => $next_order,
-        'sortBy' => $request->sortBy
-      ]
-    );
-  }
+  //   $vendors = Vendor::orderBy('VendorName')->get();
+  //   setcookie('last_index_url' , route('stocks.index', [
+  //     'corpID' => $request->corpID,
+  //     'vendor' => $request->vendor,
+  //     'vendorID' => $vendor_ID,
+  //     'sortBy' => $request->sortBy,
+  //     'order' => $request->order
+  //   ]));
+  //   return view('stocks.index',
+  //     [
+  //       'corpID' => $request->corpID,
+  //       'stocks' => $stocks,
+  //       'vendors' => $vendors,
+  //       'one_vendor' => $one_vendor,
+  //       'vendor_ID' => $vendor_ID,
+  //       'vendor_list_type' => $request->vendor,
+  //       'next_order' => $next_order,
+  //       'sortBy' => $request->sortBy
+  //     ]
+  //   );
+  // }
 
   public function create(Request $request)
   {
