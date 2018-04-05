@@ -4,7 +4,7 @@
 
 <!-- Page content -->
 <section class="content">
-<div class="row">
+<div class="row" id="main_tab">
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -63,7 +63,9 @@
                 <div class="panel-body first">
                   <div>
                     <ul class="selectable" id="branch">
-                      
+                      @foreach($branchs as $branch)
+                        <li class="ui-widget-content" data-branch="{{$branch->Branch}}">{{$branch->ShortName}}</li>
+                      @endforeach
                     </ul>
 
                   </div>
@@ -168,6 +170,14 @@
   </div>
 </div>
 
+<div id="loading-animation" style="display: none;">
+  <b style="color: blue;">Processing Orders ... Please wait</b>
+
+  <div class="meter blue" style="height: 30px;">
+    <span style="width: 100%"><span></span></span>
+  </div>
+</div>
+
 </section>
 
 @endsection
@@ -215,6 +225,122 @@
           greaterThan: "To Date must be greater than From Date"
         }
       }
+    });
+
+
+    //manual suggest
+
+    $('body').on('click', '#submit_main_form', function(event)
+    {
+      $('<input>').attr({
+        type: 'hidden',
+        name: 'total_pieces',
+        value: parseFloat( $('.value_total_pieces').text().replace(",", ""))
+      }).appendTo('#main_form');
+
+      $('<input>').attr({
+        type: 'hidden',
+        name: 'total_amount',
+        value: parseFloat($('.value_total_amount').text().replace(",", ""))
+      }).appendTo('#main_form');
+
+      $.ajax({
+          url: $('#main_form').attr('action'),
+          data: $('#main_form').serialize(),
+          type: 'POST',
+          success: function(res){
+            $('#main_form').append("<input type='hidden' name='po_no' value='"+res.po_no+"'>")
+            $('#myModal').modal('hide');
+            setTimeout(function(){
+              $('#pdfModal').modal('show');
+              $('#pdfModal').find('#pdf_link').attr('href', res.url)
+            }, 500);
+          }
+        });
+    });
+
+    $('body').on('click', '.edit', function(){
+      $('.input_QtyPO').each(function()
+      {
+        if( parseInt($(this).val()) )
+        {
+          if(parseInt($(this).val()) < 0)
+          {
+            $(this).val(0);
+          }
+        }
+        else
+        {
+          $(this).val(0);
+        }
+      });
+      var self = $(this);
+      if(self.find('span').hasClass('fa-pencil'))
+      {
+        self.find('span').removeClass('fa-pencil').addClass('fa-save');
+        self.parents('.editable').find( ".input_QtyPO" ).each(function( index ) {
+          $(this).val($(this).parents('td').find('.value_QtyPO').text()).attr("type", "text");
+        });
+        self.parents('.editable').find( ".value_QtyPO" ).css("display", "none");
+      }
+      else
+      {
+        var total_line = 0;
+        self.find('span').removeClass('fa-save').addClass('fa-pencil');
+        self.parents('.editable').find( ".input_QtyPO" ).attr("type", "hidden");
+        self.parents('.editable').find( ".value_QtyPO" ).css("display", "");
+        self.parents('.editable').find(".input_QtyPO").each(function(index)
+        {
+          total_line += parseInt($(this).val());
+        });
+        self.parents('.editable').find('.value_total').text(total_line);
+
+        var total_pieces = 0;
+        $('.value_total').each(function()
+        {
+          total_pieces += parseInt($(this).text());
+        });
+        $('.value_total_pieces').text(total_pieces.toFixed(2));
+
+        var total_amount = 0;
+        $('.input_QtyPO').each(function(index){
+          total_amount+= parseInt($(this).val()) * parseFloat($(this).parents('td').find('.input_cost').val())
+        });
+        $('.value_total_amount').text(total_amount.toFixed(2));
+      }
+    });
+
+    $('body').on('change paste keyup', '.input_QtyPO', function()
+    {
+      var self = $(this);
+      var result;
+      if( parseInt(self.val()) )
+      {
+        if( parseInt(self.val()) < 0 )
+        {
+          result = 0;
+        }
+        else
+        {
+          result = parseInt(self.val());
+        }
+      }
+      else
+      {
+        result = 0;
+      }
+      // self.parents('td').attr('class').split(' ')[1];
+      self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_QtyPO" ).text( result );
+      self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_mult" ).text("?");
+    });
+
+    $('body').on('click', '#backbutton', function()
+    {
+      $('#main_tab').show();
+      $('#ajax_tab').remove();
+      $("#manual_generate").prop('disabled', false);
+      $( "input[name='ItemCode[]']" ).remove();
+      $( "input[name='branchs[]']" ).remove();
     });
     
   </script>
