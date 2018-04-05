@@ -54,4 +54,23 @@ class CategoriesController extends Controller {
 
     return redirect(route('petycash.index', ['corpID' => $request->corpID, 'tab' => 'cat']));
   }
+
+  public function updateBranch(Request $request) {
+    $company = Corporation::findOrFail($request->corpID);
+
+    $categoryModel = new \App\Pc\Subcat;
+    $categoryModel->setConnection($company->database_name);
+
+    $subcategory = $categoryModel->findOrFail($request->subcat_id);
+    $branch = $subcategory->branches()->where('sat_branch', '=', $request->sat_branch)->first();
+    if($branch) {
+      $branch->delete();
+    }else {
+      $subcategory->branches()->create($request->only('sat_branch', 'cat_id'));
+    }
+
+    \Session::flash('success', "Category successfully updated!");
+
+    return redirect(route('petycash.index', ['corpID' => $request->corpID]));
+  }
 }

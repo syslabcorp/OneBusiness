@@ -7,12 +7,14 @@
         <strong>Petty Cash Categories</strong>
       </div>
       <div class="col-sm-6 text-right">
+        @if(\Auth::user()->checkAccessById(32, "A"))
         <a href="#" data-toggle="modal" data-target="#modal-new-category" style="display: none;">
           Add Category
         </a>
         <a href="#" data-toggle="modal" data-target="#modal-new-subcategory" style="display: none;">
           Add Subcategory
         </a>
+        @endif
       </div>
     </div>
     
@@ -46,6 +48,149 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modal-new-subcategory">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action="{{ route('pcsubcategories.store') }}" method="POST">
+        {{ csrf_field() }}
+        <input type="hidden" name="subcat[active]" value="0">
+        <input type="hidden" name="corpID" value="{{ $corpID }}">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Add Subcategory</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Category:</label>
+                <select name="subcat[cat_id]" class="form-control">
+                  @foreach($categories as $cat)
+                  <option value="{{ $cat->cat_id }}">{{ $cat->description }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Subcategory:</label>
+                <input type="text" class="form-control" name="subcat[description]">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label style="width: 100%">&nbsp;</label>
+                <label for="">
+                  <input type="checkbox" name="subcat[active]" value="1"> Active
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Satellite Branchs:</label>
+                <div>
+                  @foreach($branchs as $branch)
+                  <input type="hidden" name="branches[{{ $loop->index }}][sat_branch]" value="{{ $branch->sat_branch }}">
+                  <label style="margin-right: 10px; margin-bottom: 5px;">
+                    <input type="checkbox" name="branches[{{ $loop->index }}][checked]" value="1"> {{ $branch->short_name }}
+                  </label>
+                  @endforeach
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <div class="pull-left">
+              <button type="button" class="btn btn-default" data-dismiss="modal"> Back</button>
+            </div>
+            <div class="pull-right">
+              <button type="submit" class="btn btn-primary btn-create">Create</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-edit-subcategory">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action="{{ route('pcsubcategories.store') }}" method="POST">
+        {{ csrf_field() }}
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="subcat[active]" value="0">
+        <input type="hidden" name="corpID" value="{{ $corpID }}">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Edit Subcategory</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Category:</label>
+                <select name="subcat[cat_id]" class="form-control">
+                  @foreach($categories as $cat)
+                  <option value="{{ $cat->cat_id }}">{{ $cat->description }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Subcategory:</label>
+                <input type="text" class="form-control" name="subcat[description]">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label style="width: 100%">&nbsp;</label>
+                <label for="">
+                  <input type="checkbox" name="subcat[active]" value="1"> Active
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Satellite Branchs:</label>
+                <div>
+                  @foreach($branchs as $branch)
+                  <input type="hidden" name="branches[{{ $loop->index }}][sat_branch]" value="{{ $branch->sat_branch }}">
+                  <label style="margin-right: 10px; margin-bottom: 5px;">
+                    <input data-id="{{ $branch->sat_branch }}" type="checkbox" name="branches[{{ $loop->index }}][checked]" value="1"> {{ $branch->short_name }}
+                  </label>
+                  @endforeach
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <div class="pull-left">
+              <button type="button" class="btn btn-default" data-dismiss="modal"> Back</button>
+            </div>
+            <div class="pull-right">
+              <button type="submit" class="btn btn-primary btn-save">Save</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('pageJS')
@@ -70,6 +215,15 @@
       $('a[data-target="#modal-new-subcategory"]').css('display', 'inline-block');
       $('.table-subcategory tbody tr[data-id="{{ $categoryId }}"]').css('display', 'table-row');
     @endif
+    
+    @if(\Auth::user()->checkAccessById(32, "E"))
+    $('#table-config input[type="checkbox"]').click(function() {
+      $('.form-update-branch input[name="sat_branch"]').val($(this).attr('data-branch'));
+      $('.form-update-branch input[name="cat_id"]').val($(this).attr('data-cat'));
+      $('.form-update-branch input[name="subcat_id"]').val($(this).attr('data-subcat'));
+      $('.form-update-branch').submit();
+    });
+    @endif
 
     $('.nav a').click(function(event) {
       if($(this).attr('href') == '#cat') {
@@ -85,10 +239,11 @@
     });
 
     $('.btn-view').click(function() {
-      $('.table-subcategory .empty').css('display', 'none');
-      $('.table-subcategory tbody tr').css('display', 'none');
-      $('.table-subcategory tbody tr[data-id="' + $(this).attr('data-id') +  '"]').css('display', 'table-row');
-      $('.nav a[href="#sub"]').click();
+      $('#table-category_wrapper').html($('.table-subcategory'));
+      $('#table-category_wrapper tbody tr').css('display', 'none');
+      $('#table-category_wrapper tbody tr[data-id="' + $(this).attr('data-id') +  '"]').css('display', 'table-row');
+      $('a[data-target="#modal-new-subcategory"]').css('display', 'inline-block');
+      $('a[data-target="#modal-new-category"]').css('display', 'none');
     });
 
     $('#modal-new-category .btn-create').click(function(event) {
