@@ -76,6 +76,11 @@ class CategoriesController extends Controller
   }
 
   public function petyCash(Request $request) {
+    if(!\Auth::user()->checkAccessById(32, 'V')) {
+      \Session::flash('error', "You don't have permission"); 
+      return redirect("/home"); 
+    }
+
     $company = Corporation::findOrFail($request->corpID);
 
     $categoryModel = new \App\Pc\Cat;

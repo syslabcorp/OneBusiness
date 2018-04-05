@@ -239,11 +239,18 @@
     });
 
     $('.btn-view').click(function() {
-      $('#table-category_wrapper').html($('.table-subcategory'));
-      $('#table-category_wrapper tbody tr').css('display', 'none');
-      $('#table-category_wrapper tbody tr[data-id="' + $(this).attr('data-id') +  '"]').css('display', 'table-row');
+      $("#table-category").parents('.table-responsive').css('display', 'none');
+      $('.view-subcategory').css('display', 'block');
+      $('.view-subcategory tbody tr').css('display', 'none');
+      $('.view-subcategory tbody tr[data-id="' + $(this).attr('data-id') +  '"]').css('display', 'table-row');
+
       $('a[data-target="#modal-new-subcategory"]').css('display', 'inline-block');
       $('a[data-target="#modal-new-category"]').css('display', 'none');
+    });
+
+    $('.view-subcategory .btn-back').click(function() {
+      $("#table-category").parents('.table-responsive').css('display', 'block');
+      $('.view-subcategory').css('display', 'none');
     });
 
     $('#modal-new-category .btn-create').click(function(event) {

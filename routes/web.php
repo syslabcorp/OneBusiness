@@ -206,4 +206,4 @@ Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmp
 Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
 Route::get("branchRequest", "Branch\EmployeeRequestController@index")->middleware('auth');
 
-Route::get('/pety-categories', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
+Route::get('/petty-categories', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
