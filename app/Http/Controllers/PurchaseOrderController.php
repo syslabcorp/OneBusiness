@@ -248,15 +248,15 @@ class PurchaseOrderController extends Controller
       $stockModel->setConnection($company->database_name);
       if(\Auth::user()->isAdmin())
       {
-        $cities = City::all();
+        $cities = City::orderBy('City')->get();
       }
       else
       {
         $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
       }
       
-      $prodlines = ProductLine::where('Active', 1)->get();
+      $prodlines = ProductLine::where('Active', 1)->orderBy('Product')->get();
 
       return view('purchase_order.manual',
         [
@@ -274,12 +274,12 @@ class PurchaseOrderController extends Controller
       
       if(\Auth::user()->isAdmin())
       {
-        $cities = City::all();
+        $cities = City::orderBy('City')->get();
       }
       else
       {
         $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
       }
       
       return view('purchase_order.automate',
@@ -383,6 +383,10 @@ class PurchaseOrderController extends Controller
               // Qty for PO
 
               $QtyPO = ($daily_sold_qty * Request::all()['multiolier']) - $pending_value;
+              if($QtyPO < 0)
+              {
+                $QtyPO = 0;
+              }
               $item_packaging = StockItem::find($item_id)->Packaging;
               if ( is_float($QtyPO / $item_packaging) )
               {
@@ -409,7 +413,7 @@ class PurchaseOrderController extends Controller
 
             $bal = DB::connection($company->database_name)->select(" SELECT SUM(Bal) as Bal from s_rcv_detail
                                                                      where item_id = ? GROUP BY item_id ", [$item_id] );
-            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode, "Bal" => $bal[0]->Bal,
+            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode, "Bal" => intval($bal[0]->Bal),
             'total' => $total, 'item_id' => $item_id]);
             $total_pieces += $total;
             // $branchs_by_items["ItemCode"] = StockItem::find($item_id)->ItemCode;
@@ -668,15 +672,16 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_branch_by_city()
     {
-      // if(\Auth::user()->isAdmin())
-      // {
-      //   $cities = City::all();
-      // }
-      // else
-      // {
-      //   $cities_ID = explode( ',' ,\Auth::user()->area->city );
-      //   $cities = City::whereIn('City_ID', $cities_ID)->get();
-      // }
+      if(\Auth::user()->isAdmin())
+      {
+        $cities = City::all();
+      }
+      else
+      {
+        $cities_ID = explode( ',' ,\Auth::user()->area->city );
+        $cities = City::whereIn('City_ID', $cities_ID)->get();
+      }
+      
       $branchs = Branch::where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs

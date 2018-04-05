@@ -52,74 +52,74 @@
             <table class="table table-bordered" id="table_editable">
               <thead>
                 <tr>
-                  <th>Item Code</th>
+                  <th class="text-center">Item Code</th>
                   @foreach( $header_branch as $key => $branch )
                     <th class="text-center" colspan="5">{{$branch}}</th>
                   @endforeach
-                  <th class="red_box">TOTAL</th>
-                  <th class="blue_box" >BAL</th>
-                  <th>Action</th>
+                  <th class="red_box text-center">TOTAL</th>
+                  <th class="blue_box text-center" >BAL</th>
+                  <th class="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td></td>
+                  <td class="text-center"></td>
                   @for($x = 1; $x <= $num_branch; $x++)
-                    <td>Ave.Sold Qty(Daily)</td>
-                    <td>Mult</td>
-                    <td>Stock(w/in-Trans)</td>
-                    <td>Pending(for PO)</td>
-                    <td class="blue_box" style="width: 100px;">Qty</td>
+                    <td class="text-center">Ave.Sold Qty(Daily)</td>
+                    <td class="text-center">Mult</td>
+                    <td class="text-center">Stock(w/in-Trans)</td>
+                    <td class="text-center">Pending(for PO)</td>
+                    <td class="blue_box text-center" style="width: 100px;">Qty</td>
                   @endfor
-                  <td class="red_box"></td>
-                  <td class="blue_box"></td>
+                  <td class="red_box text-center"></td>
+                  <td class="blue_box text-center"></td>
                   <td></td>
                 </tr>
                 
                 @foreach($items as $item_id => $item)
                 <tr class="editable">
-                  <td>
+                  <td class=" text-center">
                     <span class="value_ItemCode">
                       {{$item['ItemCode']}}
                     </span>
                   </td>
                   @foreach($item['items'] as $branch_id => $item_of_branch)
                     <input type="hidden" name="ItemCode[{{$item['item_id']}}][{{$branch_id}}]" value="{{$item['ItemCode']}}">
-                    <td class="branch_{{$branch_id}}">
+                    <td class="branch_{{$branch_id}}  text-center">
                       <span class="value_daily_sold_qty">
                         {{$item_of_branch['daily_sold_qty']}}
                       </span>
                     </td>
-                    <td class="branch_{{$branch_id}}">
+                    <td class="branch_{{$branch_id}}  text-center">
                       <span class="value_mult mult_{{$branch_id}}">
                         {{$item_of_branch['Mult']}}
                       </span>
                     </td>
-                    <td class="branch_{{$branch_id}}">
+                    <td class="branch_{{$branch_id}} text-center">
                       <span class="value_stock">
                         {{$item_of_branch['stock']}}
                       </span>
                     </td>
-                    <td class="branch_{{$branch_id}}">
+                    <td class="branch_{{$branch_id}} text-center">
                       <span class="value_pending">{{$item_of_branch['pending']}}</span>
                     </td>
-                    <td class="blue_box branch_{{$branch_id}}">
+                    <td class="blue_box branch_{{$branch_id}} text-center">
                       <span class="value_QtyPO">{{$item_of_branch['QtyPO']}}</span>
                       <input type="hidden" name="cost[{{$item['item_id']}}][{{$branch_id}}]" class="input_cost" value="{{$item_of_branch['cost']}}">
                       <input autocomplete="off" class="input_QtyPO" type="hidden" name="QtyPO[{{$item['item_id']}}][{{$branch_id}}]" value="{{$item_of_branch['QtyPO']}}" > 
                     </td>
                   @endforeach
-                  <td class="red_box">
+                  <td class="red_box text-center">
                     <span class="value_total">
                       {{$item['total']}}
                     </span>
                   </td>
-                  <td class="blue_box">
+                  <td class="blue_box text-center">
                     <span class="value_bal">
                       {{$item['Bal']}}
                     </span>
                   </td>
-                  <td> <button type="button" class="btn btn-primary edit"> <span class="fa fa-pencil"></span> </button> </td>
+                  <td class="text-center"> <button type="button" class="btn btn-primary edit"> <span class="fa fa-pencil"></span> </button> </td>
                 </tr>
                 @endforeach
 
@@ -225,6 +225,20 @@
   });
 
   $('body').on('click', '.edit', function(){
+    $('.input_QtyPO').each(function()
+    {
+      if( parseInt($(this).val()) )
+      {
+        if(parseInt($(this).val()) < 0)
+        {
+          $(this).val(0);
+        }
+      }
+      else
+      {
+        $(this).val(0);
+      }
+    });
     var self = $(this);
     if(self.find('span').hasClass('fa-pencil'))
     {
@@ -264,8 +278,24 @@
   $('body').on('change paste keyup', '.input_QtyPO', function()
   {
     var self = $(this);
+    var result;
+    if( parseInt(self.val()) )
+    {
+      if( parseInt(self.val()) < 0 )
+      {
+        result = 0;
+      }
+      else
+      {
+        result = parseInt(self.val());
+      }
+    }
+    else
+    {
+      result = 0;
+    }
     // self.parents('td').attr('class').split(' ')[1];
-    self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_QtyPO" ).text(parseInt(self.val()) );
+    self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_QtyPO" ).text( result );
     self.parents('.editable').find("."+self.parents('td').attr('class').split(' ')[1]).find( ".value_mult" ).text("?");
   });
 </script>

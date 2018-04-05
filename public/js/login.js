@@ -518,14 +518,16 @@ $(function() {
       success: function(res){
         $('#branch').html('');
         $.each(res.branchs, function( index, value ) {
-          $('#branch').append("<li class='ui-widget-content'>\
-            <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
-              <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
-            </div>\
-            <div class='col-xs-10' style='white-space:nowrap;'>\
-              <label class='label-control'>"+value.ShortName+"</label> \
-            </div>\
-          </li>");
+          // $('#branch').append("<li class='ui-widget-content'>\
+          //   <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
+          //     <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
+          //   </div>\
+          //   <div class='col-xs-10' style='white-space:nowrap;'>\
+          //     <label class='label-control'>"+value.ShortName+"</label> \
+          //   </div>\
+          // </li>");
+
+          $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
         });
       }
     });
@@ -587,9 +589,19 @@ $(function() {
     var self = $(this);
     if(!(this.checked)) {
       $('#branch').find('.ui-widget-content').each(function( index ) {
-        if($(this).find('.label-control').html().startsWith( self.val() ) )
+        if($(this).text().startsWith( self.val() ) )
         {
-          $(this).remove();
+          $(this).removeClass('ui-selected');
+          $(this).hide();
+        }
+      });
+    }
+    else
+    {
+      $('#branch').find('.ui-widget-content').each(function( index ) {
+        if($(this).text().startsWith( self.val() ) )
+        {
+          $(this).show();
         }
       });
     }
@@ -598,6 +610,7 @@ $(function() {
   $("#all_cities_checkbox").on('change', function(){
     var _token = $("meta[name='csrf-token']").attr('content');
     if(this.checked){
+      $('#dropdown_city_list').prop('disabled','disabled');
       $.ajax({
         url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
         data: {_token},
@@ -605,14 +618,16 @@ $(function() {
         success: function(res){
           $('#branch').html('');
           $.each(res.branchs, function( index, value ) {
-            $('#branch').append("<li class='ui-widget-content'>\
-            <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
-              <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
-            </div>\
-            <div class='col-xs-10' style='white-space:nowrap;'>\
-              <label class='label-control'>"+value.ShortName+"</label> \
-            </div>\
-          </li>");
+          //   $('#branch').append("<li class='ui-widget-content'>\
+          //   <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
+          //     <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
+          //   </div>\
+          //   <div class='col-xs-10' style='white-space:nowrap;'>\
+          //     <label class='label-control'>"+value.ShortName+"</label> \
+          //   </div>\
+          // </li>");
+          $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
+          
           });
         }
       });
@@ -620,20 +635,32 @@ $(function() {
     else
     {
       $('#branch').html('');
+      $('#dropdown_city_list').prop('disabled',false);
     }
   });
 
   $("#manual_generate").on('click', function(event){
-    event.preventDefault();
-    var input;
-    $('#item_code .ui-selected').each(function(el) {
-      input = $("<input>")
-        .attr("type", "hidden")
-        .attr("name", "ItemCode[]").val($(this).data("itemcode-id"));
-      $('#manual_form').append(input);
-    });
-    $('#manual_form').submit();
-  }) 
+    if($('#item_code .ui-selected').length > 0 && $('.prodline_item:checked').length > 0)
+    {
+      event.preventDefault();
+      var input;
+      $('#item_code .ui-selected').each(function(el) {
+        input = $("<input>")
+          .attr("type", "hidden")
+          .attr("name", "ItemCode[]").val($(this).data("itemcode-id"));
+        $('#manualform').append(input);
+      });
+
+      $('#branch .ui-selected').each(function(el) {
+        input = $("<input>")
+          .attr("type", "hidden")
+          .attr("name", "branchs[]").val($(this).data("branch"));
+        $('#manualform').append(input);
+      });
+
+      $('#manualform').submit();
+    }
+  });
 
   $( ".selectable" ).selectable();
 
