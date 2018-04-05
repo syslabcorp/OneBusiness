@@ -1,7 +1,7 @@
 @extends('layouts.custom')
 
 @section('content')
-
+<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 <!-- Page content -->
 <section class="content">
 <div class="row">
@@ -35,7 +35,7 @@
         <div class="row purchase_header_form">
           <div class="row">
             <div class="col-md-12">
-            <form class="form-inline" action="/action_page.php">
+            <form id="create_po_form" class="form-inline" action="/action_page.php">
             <div class="form-group">
               <label>City</label>
               <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
@@ -53,15 +53,23 @@
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table table-striped table-bordered">
+          <table class="table table-bordered" id="main_table">
             <thead>
               <tr>
                 <th>Template Code</th>
                 <th>Ave Cycle</th>
               </tr>
             </thead>
-            <tbody id="render_template">
+            <tbody id="render_template" class="selectable">
 
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-responsive hidden_table" id="process_table">
+          <table class="table process_table" style="border: 1px solid #ddd;">
+            <tbody>
+              
             </tbody>
           </table>
         </div>
@@ -71,7 +79,7 @@
       <div class="panel-footer">
         <div class="row">
         <div class="pull-right">
-          <button class="btn btn-primary">Create P.O.</button>
+          <button class="btn btn-primary" id="create_po_button">Create P.O.</button>
         </div>
 
         </div>
@@ -88,6 +96,65 @@
 
 @section('pageJS')
   <script>
+
+    $('#create_po_button').on('click', function(){
+      if($('.ui-selected').length > 0)
+      {
+        $('.hidden_input').remove();
+
+        $('.ui-selected').each(function()
+        {
+          if($(this).data('temp-id'))
+          {
+            $('#create_po_form').append("<input type='hidden' class='hidden_input' name='temp[]' value='" + $(this).data('temp-id') + "' >"); 
+            $('#process_table').find('tbody').append("<tr class='pending' id='temp_"+$(this).data('temp-id')+"'><td>"+$(this).find('td').first().text()+"_PO_1231201 </td> <td> Pending <span class='pull-right fas fa-circle-notch fa-pulse'></span> </td> </tr>");
+          }
+        });
+
+        $('#process_table').removeClass('hidden_table');
+        $('#main_table').addClass('hidden_table');
+        $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
+
+        recursively_ajax()
+      }
+    });
+
+    function recursively_ajax()
+    {
+      var corpID = {{$corpID}};
+      var _token = $("meta[name='csrf-token']").attr('content');
+      var list_item=$('.hidden_input');
+      var temp_id = list_item.first().val();
+      $.ajax({
+        type:"POST",
+        async:false, // set async false to wait for previous response
+        url: ajax_url+'/purchase_order/auto_save',
+        dataType:"json",
+        data:{ _token , temp_id, corpID },
+        success: function(data)
+        {
+          if(list_item.length > 0){
+            list_item.first().remove();
+            if(data.num_details > 0)
+            {
+              $('.pending').first().addClass('done').removeClass('pending')
+                          .find('td').last().html('Document Created <a target="_blank" href="'+data.url+'">View</a> <span class="pull-right far fa-check-circle"></span>');
+            }
+            else
+            {
+              $('.pending').first().addClass('done').removeClass('pending')
+                          .find('td').last().html('No items to be ordered<span class="pull-right far fa-check-circle"></span>');
+            }
+            $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
+            setTimeout(function()
+            {
+            }, 3000);
+            recursively_ajax();
+          }
+        }
+      });
+    }
+
     $('#auto_city_list').on('change', function(){
       var _token = $("meta[name='csrf-token']").attr('content');
       var City_ID = $('#auto_city_list option:selected').val();
@@ -104,7 +171,9 @@
             $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
           }
           $.each(res.POTemplates, function( index, value ) {
-            $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+            $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+            
+            // $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
             // <li class='ui-widget-content'>"+value.ShortName+"</li>
           });
         }
@@ -128,7 +197,7 @@
               $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
             }
             $.each(res.POTemplates, function( index, value ) {
-              $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+              $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
             });
           }
         });

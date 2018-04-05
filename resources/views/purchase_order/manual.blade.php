@@ -38,8 +38,7 @@
               <form class="form-inline" >
                 <div id="city-list" class="form-group">
                   <label>City</label>
-                  <select class="form-control" style="width: 300px;" name="" id="">
-                    <option value=""></option>
+                  <select class="form-control" style="width: 300px;" name="" id="dropdown_city_list">
                     @foreach($cities as $city)
                       <option value="{{$city->City_ID}}">{{$city->City}}</option>
                     @endforeach
@@ -53,7 +52,7 @@
           </div>
         </div>
         <div class="row purchase_choose">
-          <form action="{{ route('purchase_order.manual_suggest',['corpID' => $corpID]) }}" id="manual_form">
+          <form action="{{ route('purchase_order.manual_suggest',['corpID' => $corpID]) }}" id="manualform">
             <input type="hidden" name="corpID" value="{{$corpID}}">
             <div class="col-md-4">
               <div class="panel panel-default">
@@ -63,7 +62,7 @@
 
                 <div class="panel-body first">
                   <div>
-                    <ul class="" id="branch">
+                    <ul class="selectable" id="branch">
                       
                     </ul>
 
@@ -95,12 +94,12 @@
                 <div class="row">
                   <div class="col-md-6">
                     <label for="">From</label>
-                    <input type="date" name="from_date" id="" class="datepicker" >
+                    <input type="date" name="from_date" id="from_date" class="datepicker" >
                   </div>
 
                   <div class="col-md-6">
                     <label for="">To</label>
-                    <input type="date" name="to_date" id="" class="datepicker">
+                    <input type="date" name="to_date" id="to_date" class="datepicker">
                   </div>
                 </div>
 
@@ -110,7 +109,7 @@
                     <label class="">Multiplier</label>
                   </div>
                   <div class="col-md-9">
-                    <input class="form-control" name="multiolier" type="text">
+                    <input class="form-control" name="multiolier" id="multiolier" type="text">
                   </div>
                 </div>
             </div>
@@ -172,3 +171,53 @@
 </section>
 
 @endsection
+
+@section('pageJS')
+
+  <script>
+
+    // $('.datepicker').datepicker();
+
+    jQuery.validator.addMethod("greaterThan", 
+      function(value, element, params) {
+
+          if (!/Invalid|NaN/.test(new Date(value))) {
+              return new Date(value) > new Date($(params).val());
+          }
+
+          return isNaN(value) && isNaN($(params).val()) 
+              || (Number(value) > Number($(params).val())); 
+      },'Must be greater than {0}.');
+
+    $("#manualform").validate({
+      rules: {
+        multiolier: {
+          required: true,
+          number: true
+        },
+        from_date: {
+          required: true,
+        },
+        to_date: {
+          required: true,
+          greaterThan: "#from_date"
+        }
+      },
+      messages:{
+        multiolier:{
+          required: "Multilier is required"
+        },
+        from_date:{
+          required: "From Date is required",
+        },
+        to_date:{
+          required: "To Date is required",
+          greaterThan: "To Date must be greater than From Date"
+        }
+      }
+    });
+    
+  </script>
+
+@endsection
+  
