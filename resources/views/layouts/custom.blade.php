@@ -151,7 +151,7 @@
     <script src="{{ URL('/js/table-edits.min.js') }}"></script>
     <script src="{{ URL('/js/momentjs.min.js') }}"></script>
     <script src="{{ URL('/js/bootstrap-datetimepicker.min.js') }}"></script>
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script> -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 	<script src="{{ asset('js/login.js') }}"></script>
