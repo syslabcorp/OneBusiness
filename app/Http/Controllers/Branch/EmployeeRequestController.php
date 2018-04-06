@@ -114,11 +114,12 @@ class EmployeeRequestController extends Controller
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
 		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
-		$query1 = $this->removeDuplicateElementsFromArray($query1);
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->ShortName == $request->branch_name;
 			});
+		} else {
+			$query1 = $this->removeDuplicateElementsFromArray($query1);
 		}
 		if(!is_null($request->isActive) && $request->isActive != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
