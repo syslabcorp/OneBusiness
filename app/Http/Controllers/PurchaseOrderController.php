@@ -271,6 +271,7 @@ class PurchaseOrderController extends Controller
     }
 
     public function automate(){
+      ini_set('max_execution_time', 300);
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
@@ -284,9 +285,15 @@ class PurchaseOrderController extends Controller
         $cities_ID = explode( ',' ,\Auth::user()->area->city );
         $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
       }
+
+      $POTemplateModel = new \App\POTemplate;
+      $POTemplateModel->setConnection($company->database_name);
+      
+      $POTemplates = $POTemplateModel->where('Active', 1)->where('city_id', $cities->first()->City_ID)->get();
       
       return view('purchase_order.automate',
       [
+        'POTemplates' => $POTemplates,
         'cities' => $cities,
         'corpID' => Request::all()['corpID']
       ]);
@@ -711,8 +718,10 @@ class PurchaseOrderController extends Controller
       // dd($purchase_order_details->first()->stock_item()->first()->ItemCode);
       // view()->share('purchase_order',$purchase_order);
 
+      $file_name = $company->corp_name."_".$purchase_order->po_no."_".$purchase_order->po_date->format("Ymd");
+
       $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs'));
-      return $pdf->stream('pdf.pdf');
+      return $pdf->stream($file_name.".pdf");
     }
 
     public function auto_process(){

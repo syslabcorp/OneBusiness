@@ -4,7 +4,7 @@
 <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 <!-- Page content -->
 <section class="content">
-<div class="row">
+<div class="row" id="auto_row">
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -39,7 +39,6 @@
             <div class="form-group">
               <label>City</label>
               <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
-                <option value=""></option>
                 @foreach($cities as $city)
                   <option value="{{$city->City_ID}}">{{$city->City}}</option>
                 @endforeach
@@ -61,18 +60,19 @@
               </tr>
             </thead>
             <tbody id="render_template" class="selectable">
-
+              @foreach( $POTemplates as $value )
+                <tr class='ui-widget-content id_{{$value->po_tmpl8_id}} ' data-temp-id="{{$value->po_tmpl8_id}}" > <td> {{$value->po_tmpl8_desc}} </td> <td> {{$value->po_avg_cycle}} </td> </tr>
+              @endforeach
             </tbody>
+            <tfoot>
+              @if( count($POTemplates) == 0 )
+                <tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>
+              @endif
+            </tfoot>
           </table>
         </div>
 
-        <div class="table-responsive hidden_table" id="process_table">
-          <table class="table process_table" style="border: 1px solid #ddd;">
-            <tbody>
-              
-            </tbody>
-          </table>
-        </div>
+
 
       </div>
 
@@ -90,6 +90,13 @@
   </div>
 </div>
 
+        <div class="table-responsive hidden_table" id="process_table">
+          <table class="table process_table" style="border: 1px solid #ddd;">
+            <tbody>
+              
+            </tbody>
+          </table>
+        </div>
 </section>
 
 @endsection
@@ -112,7 +119,7 @@
         });
 
         $('#process_table').removeClass('hidden_table');
-        $('#main_table').addClass('hidden_table');
+        $('#auto_row').addClass('hidden_table');
         $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
 
         recursively_ajax()
@@ -148,8 +155,9 @@
             $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
             setTimeout(function()
             {
-            }, 3000);
-            recursively_ajax();
+              recursively_ajax();
+            }, 500);
+            
           }
         }
       });
@@ -166,9 +174,10 @@
         type: 'POST',
         success: function(res){
           $('#render_template').html('');
+          $('tfoot').html('');
           if(res.POTemplates.length == 0)
           {
-            $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
+            $('tfoot').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
           }
           $.each(res.POTemplates, function( index, value ) {
             $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
@@ -186,15 +195,19 @@
       // $('#auto_city_list').find('option').removeattr('selected');
       // $('#auto_city_list').find('option:first').attr('selected',true);
       if(this.checked){
+        $('#auto_city_list').prepend("<option id='addForFun' selected></option>");
+      
+        $('#auto_city_list').prop('disabled','disabled');
         $.ajax({
           url: ajax_url+'/purchase_order/ajax_render_template_by_all_cities',
           data: {_token,corpID},
           type: 'POST',
           success: function(res){
             $('#render_template').html('');
+            $('tfoot').html('');
             if(res.POTemplates.length == 0)
             {
-              $('#render_template').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
+              $('tfoot').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
             }
             $.each(res.POTemplates, function( index, value ) {
               $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
@@ -205,6 +218,8 @@
       else
       {
         $('#render_template').html('');
+        $('#auto_city_list').prop('disabled',false);
+        $('#addForFun').remove();
       }
     });
   </script>

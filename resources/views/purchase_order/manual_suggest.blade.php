@@ -21,7 +21,7 @@
                 </li>
 
                 <li class="">
-                    <a href="{{route('purchase_order.create_automate') }}">Auto-generate P.O.</a>
+                  <a href="{{route('purchase_order.create_automate',['corpID' => $corpID]) }}">Auto-generate P.O.</a>
                 </li>
                 <li class="last_item"></li>
             </ul>
@@ -145,7 +145,9 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title"></h4>
+              <h4 class="modal-title">
+                Confirm Save
+              </h4>
             </div>
             <div class="modal-body">
               <p>Are you sure you want to save this P.O.?</p>

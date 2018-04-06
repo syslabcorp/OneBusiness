@@ -610,6 +610,8 @@ $(function() {
   $("#all_cities_checkbox").on('change', function(){
     var _token = $("meta[name='csrf-token']").attr('content');
     if(this.checked){
+      $('#dropdown_city_list').prepend("<option id='addForFun' selected></option>");
+      
       $('#dropdown_city_list').prop('disabled','disabled');
       $.ajax({
         url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
@@ -635,6 +637,7 @@ $(function() {
     else
     {
       $('#branch').html('');
+      $('#addForFun').remove();
       $('#dropdown_city_list').prop('disabled',false);
     }
   });
