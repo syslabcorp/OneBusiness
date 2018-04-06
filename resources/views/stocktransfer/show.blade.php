@@ -114,7 +114,7 @@ use App\Srcvdetail;
                                                                             @php
                                                                             $r = Spodetail::where('ItemCode',$item->ItemCode)->get();
                                                                             @endphp                  
-                                                                            <td  class="input_ItemCode_{{$rowNo}}"  >{{$item->ItemCode}}
+                                                                            <td  class="input_ItemCode_{{$rowNo}}"  >{{$item->ItemCode}}<p class="itemID_{{$rowNo}}" hidden>{{$r[0]->item_id}}</p>
                                                                             </td>
                                                                             @php
                                                                             $no = 1;
@@ -130,7 +130,7 @@ use App\Srcvdetail;
 
                                                                                 <span class="value_Cost">@if(isset($dataBasedOnBranches[0])){{$dataBasedOnBranches[0]->Qty-$dataBasedOnBranches[0]->ServedQty}}@endif</span>
                                                                                 <p class="branchID_{{$no}}" hidden>{{$branchID}}</p>
-                                                                                <p class="itemID_{{$rowNo}}" hidden>{{$r[0]->item_id}}</p>
+                                                                                
                                                                                 
                                                                                 <input type="hidden" data-validation-error-msg="Invalid input: Please enter a number."  
                                                                                 data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="input_Cost"
@@ -138,7 +138,7 @@ use App\Srcvdetail;
                                                                                 display: block;width: 100%;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;" 
                                                                                 onkeyup="keyupInput({{$rowNo}},{{$count}})" >
 
-                                                                                <span class="error{{$no}}"  style="display:none;color: #a94442;    font-style: italic;">invalid input</span>
+                                                                                <span class="error{{$no}}"  style="display:none;color: #a94442;    font-style: italic;">invalid number</span>
 
                                                                             </td>
                                                                             @php
@@ -148,7 +148,7 @@ use App\Srcvdetail;
                                                                             @endforeach
 
                                                                             
-                                                                            <td  id="total_{{$rowNo}}" class="edit_Cost text-right" data-field="Cost" >
+                                                                            <td class="edit_Cost text-right" data-field="Cost" >
                                                                                 <span class="value_Cost">@if(isset($dataBasedOnBranches[0])){{$dataBasedOnBranches[0]->Qty+$dataBasedOnBranches[0]->ServedQty}}@endif</span>
                                                                             </td>
                                                                        
@@ -156,8 +156,7 @@ use App\Srcvdetail;
                                                                             
                                                                             @php
                                                                                 $sum = 0 ;
-                                                                                $rr = Spodetail::where('ItemCode',$item->ItemCode)->get();
-                                                                                $dataBals =  Srcvdetail::where('item_id',$rr[0]->item_id)->get();
+                                                                                $dataBals =  Srcvdetail::where('ItemCode',$item->ItemCode)->get();
                                                                             @endphp
 
                                                                             @foreach($dataBals as $dataBal)
@@ -165,7 +164,7 @@ use App\Srcvdetail;
                                                                             @php
                                                                             $sum += $dataBal->Bal ;
                                                                             @endphp
-                                                                           
+
                                                                             @endforeach
 
                                                                             {{$sum}}
@@ -282,10 +281,45 @@ use App\Srcvdetail;
 
 $(document).ready(function() {
 
-    $('#table_editable_1').DataTable({
+    $('#stockDetail').DataTable({
     "dom": '<"m-t-10"B><"m-t-10 pull-left"><"m-t-10 pull-right">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
-    aaSorting: [[ 0, "asc" ]]
+   
     });
+
+            // $("table tr").editable({
+
+            //     // enable keyboard support
+            //     keyboard: true,
+
+            //     // double click to start editing
+            //     dblclick: true,
+
+            //     // enable edit buttons
+            //     button: true,
+
+            //     // CSS selector for edit buttons
+            //     buttonSelector: ".edit",
+
+            //     // uses select dropdown instead of input field
+            //     dropdowns: {},
+
+            //     // maintains column width when editing
+            //     maintainWidth: true,
+
+            //     // callbacks for edit, save and cancel actions
+
+            //     edit: function(values) {
+            //         // alert('edit');
+            //     },
+            //     save: function(values) {
+            //         alert('save');
+            //     },
+            //     cancel: function(values) {
+            //         // alert('cancel');
+            //     }
+
+            // });
+
 });
 
 
@@ -318,7 +352,7 @@ function editRow(rowNo,count,BranchID){
     
         for ( var i = 1; i < count ; i ++){
             if($('#item_'+rowNo+'_'+i).find('span:first').text()!=''){
-                // console.log($('#item_'+rowNo+'_'+i).find('span:first').text());
+                console.log($('#item_'+rowNo+'_'+i).find('span:first').text());
             $('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val($('#item_'+rowNo+'_'+i).find('.value_Cost').text().replace(',', '')).attr("type", "text") ;
             $('#item_'+rowNo+'_'+i).find('.value_Cost').text("");
             }
@@ -328,36 +362,30 @@ function editRow(rowNo,count,BranchID){
     else
     {
         $('#item_'+rowNo+'_1').parents('.editable').find('.glyphicon').removeClass('glyphicon-ok').addClass('glyphicon-pencil');
-        total = 0;
+        
         for ( var i = 1; i <count ; i ++)
         {
             rowVal = [];
             branchID = [];
-            
 
             if($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val()!="")
                 {
-                    // console.log($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val());
+                    console.log($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val());
                     branchID[i] = $('#item_'+rowNo+'_'+i).parents('.editable').find(".branchID_"+i).text();
                   
                     itemCode = $('#item_'+rowNo+'_1').parents('.editable').find(".input_ItemCode_"+rowNo ).text();
-                    console.log(itemCode);
+
                     itemID = $('#item_'+rowNo+'_1').parents('.editable').find(".itemID_"+rowNo).text();
                       
                     rowVal[i] = parseFloat($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val());
 
-                    total += rowVal[i];
-
                     $('#item_'+rowNo+'_'+i).find('.value_Cost').text( rowVal[i]);
 
-                    $('#total_'+rowNo).find('.value_Cost').text(total);
-                    
                     changedRowArr.push({
                                 rowVal:rowVal[i],
                                 branchID:branchID[i],
                                 itemCode:itemCode,
-                                itemID:itemID,
-                                bal:total
+                                itemID:itemID
                     });
 
                 }
@@ -436,7 +464,7 @@ function myFunction() {
 
     var j = 0;
     for(var i = 0;i<changedRowArr.length;i++){
-        // console.log(changedRowArr[i].itemCode)
+        console.log(changedRowArr[i].itemCode)
 
         if(changedRowArr.slice(i + 1 - j).filter(f=>f.itemCode == changedRowArr[i].itemCode && f.branchID == changedRowArr[i].branchID ).length > 0)
             changedRowArr.splice(i - j ++, 1);
@@ -444,7 +472,6 @@ function myFunction() {
  
     var r = confirm("Are you sure you want to transfer these items");
     if (r == true) {
-        // console.log(changedRowArr.length);
         if(changedRowArr.length==0){
             alert('there is no item to transfer')
         }

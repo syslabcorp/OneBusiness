@@ -251,7 +251,7 @@ $(document).ready(function() {
 
     $('#list_menu').DataTable({
     "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
-    "order": [[ 0, "desc" ]]
+   
     });
 
     $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select onChange="filter()" class="filterSelect1"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
