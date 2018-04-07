@@ -227,6 +227,9 @@
 
     $('.nav a').click(function(event) {
       if($(this).attr('href') == '#cat') {
+        $("#table-category").parents('.table-responsive').css('display', 'block');
+        $('.view-subcategory').css('display', 'none');
+
         $('a[data-target="#modal-new-category"]').css('display', 'inline-block');
         $('a[data-target="#modal-new-subcategory"]').css('display', 'none');
       }else if($(this).attr('href') == '#sub') {
