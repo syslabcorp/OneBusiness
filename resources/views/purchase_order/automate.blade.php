@@ -35,19 +35,19 @@
         <div class="row purchase_header_form">
           <div class="row">
             <div class="col-md-12">
-            <form id="create_po_form" class="form-inline" action="/action_page.php">
-            <div class="form-group">
-              <label>City</label>
-              <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
-                @foreach($cities as $city)
-                  <option value="{{$city->City_ID}}">{{$city->City}}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="checkbox">
-              <label><input id="all_cities_checkbox_auto" type="checkbox"> All Cities</label>
-            </div>
-          </form>
+              <form id="create_po_form" class="form-inline" action="/action_page.php">
+                <div class="form-group">
+                  <label>City</label>
+                  <select  class="form-control" style="width: 300px;" name="" id="auto_city_list">
+                    @foreach($cities as $city)
+                      <option value="{{$city->City_ID}}">{{$city->City}}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="checkbox">
+                  <label><input id="all_cities_checkbox_auto" type="checkbox"> All Cities</label>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -121,8 +121,7 @@
         $('#process_table').removeClass('hidden_table');
         $('#auto_row').addClass('hidden_table');
         $('.pending').first().find('td').last().html("Caculating order quantities<span class='pull-right fa fa-circle-notch fa-pulse'></span>");
-
-        recursively_ajax()
+        setTimeout(function(){ recursively_ajax(); }, 500);
       }
     });
 

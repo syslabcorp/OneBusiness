@@ -72,36 +72,37 @@
 
                 </div>
               </div>
-
-                <div class="form-group">
-                  <div class="col-md-4">
-                    <label class="checkbox-inline">
-                      <input type="checkbox" id="NX" name="branch_type" value="NX" checked >NetExpress
-                    </label>
+                @if($checkINN)
+                  <div class="form-group">
+                    <div class="col-md-4">
+                      <label class="checkbox-inline">
+                        <input type="checkbox" id="NX" name="branch_type" value="NX" checked >NetExpress
+                      </label>
+                    </div>
+                    <div class="col-md-4 text-center">
+                      <label class="checkbox-inline">
+                        <input type="checkbox" id="SQ" name="branch_type" value="SQ" checked>Sequel
+                      </label>
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <label class="checkbox-inline">
+                        <input type="checkbox" id="IS" name="branch_type" value="IS" checked>iSing
+                      </label>
+                    </div>
                   </div>
-                  <div class="col-md-4">
-                    <label class="checkbox-inline">
-                      <input type="checkbox" id="SQ" name="branch_type" value="SQ" checked>Sequel
-                    </label>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="checkbox-inline">
-                      <input type="checkbox" id="IS" name="branch_type" value="IS" checked>iSing
-                    </label>
-                  </div>
-                </div>
+                @endif
                 <div class="form-group">
                   <label>Date Range</label>
                   
                 <div class="row">
                   <div class="col-md-6">
                     <label for="">From</label>
-                    <input type="date" name="from_date" id="from_date" class="datepicker" >
+                    <input type="text" name="from_date" id="from_date" class="datepicker form-control" >
                   </div>
 
                   <div class="col-md-6">
                     <label for="">To</label>
-                    <input type="date" name="to_date" id="to_date" class="datepicker">
+                    <input type="text" name="to_date" id="to_date" class="datepicker form-control">
                   </div>
                 </div>
 
@@ -187,7 +188,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
   <script>
 
-    // $('.datepicker').datepicker();
+    $('.datepicker').datepicker();
 
     jQuery.validator.addMethod("greaterThan", 
       function(value, element, params) {
@@ -343,6 +344,67 @@
       $( "input[name='ItemCode[]']" ).remove();
       $( "input[name='branchs[]']" ).remove();
     });
+
+    $("#all_cities_checkbox").on('change', function(){
+      var _token = $("meta[name='csrf-token']").attr('content');
+      var Corp_ID = {{ $corpID }};
+      if(this.checked){
+        $('#dropdown_city_list').prepend("<option id='addForFun' selected></option>");
+        
+        $('#dropdown_city_list').prop('disabled','disabled');
+        $.ajax({
+          url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
+          data: {_token, Corp_ID},
+          type: 'POST',
+          success: function(res){
+            $('#branch').html('');
+            $.each(res.branchs, function( index, value ) {
+              $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
+            });
+          }
+        });
+      }
+      else
+      {
+        $('#branch').html('');
+        $('#addForFun').remove();
+        $('#dropdown_city_list').prop('disabled',false);
+
+        var _token = $("meta[name='csrf-token']").attr('content');
+        var City_ID = $('#city-list option:selected').val();
+        var Corp_ID = {{ $corpID }};
+        $.ajax({
+          url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
+          data: {_token, City_ID, Corp_ID},
+          method: "POST",
+          type: 'POST',
+          success: function(res){
+            $.each(res.branchs, function( index, value ) {
+              $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
+            });
+          }
+        });
+
+      }
+    });
+  
+    $('#city-list').on('change', function(){
+      var _token = $("meta[name='csrf-token']").attr('content');
+      var City_ID = $('#city-list option:selected').val();
+      var Corp_ID = {{ $corpID }};
+      $.ajax({
+        url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
+        data: {_token, City_ID, Corp_ID},
+        method: "POST",
+        type: 'POST',
+        success: function(res){
+          $('#branch').html('');
+          $.each(res.branchs, function( index, value ) {
+            $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
+          });
+        }
+      });
+    })
     
   </script>
 
