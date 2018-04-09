@@ -507,34 +507,6 @@ $(function()
 });
 
 $(function() {
-  $('#city-list').on('change', function(){
-    var _token = $("meta[name='csrf-token']").attr('content');
-    var City_ID = $('#city-list option:selected').val();
-    $.ajax({
-      url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
-      data: {_token, City_ID},
-      method: "POST",
-      type: 'POST',
-      success: function(res){
-        $('#branch').html('');
-        $.each(res.branchs, function( index, value ) {
-          // $('#branch').append("<li class='ui-widget-content'>\
-          //   <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
-          //     <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
-          //   </div>\
-          //   <div class='col-xs-10' style='white-space:nowrap;'>\
-          //     <label class='label-control'>"+value.ShortName+"</label> \
-          //   </div>\
-          // </li>");
-
-          $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
-        });
-      }
-    });
-  })
-
-
-
   $('body').on('change', '.prodline_item', function()
   {
     var ProdLine = $(this).val();
@@ -607,40 +579,6 @@ $(function() {
     }
   });
 
-  $("#all_cities_checkbox").on('change', function(){
-    var _token = $("meta[name='csrf-token']").attr('content');
-    if(this.checked){
-      $('#dropdown_city_list').prepend("<option id='addForFun' selected></option>");
-      
-      $('#dropdown_city_list').prop('disabled','disabled');
-      $.ajax({
-        url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
-        data: {_token},
-        type: 'POST',
-        success: function(res){
-          $('#branch').html('');
-          $.each(res.branchs, function( index, value ) {
-          //   $('#branch').append("<li class='ui-widget-content'>\
-          //   <div class='col-xs-2 text-center' style='border-right: 1px solid #aaaaaa'>\
-          //     <input type='checkbox' name='branchs[]' class='prodline_item' value='"+value.Branch+"'>\
-          //   </div>\
-          //   <div class='col-xs-10' style='white-space:nowrap;'>\
-          //     <label class='label-control'>"+value.ShortName+"</label> \
-          //   </div>\
-          // </li>");
-          $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
-          
-          });
-        }
-      });
-    }
-    else
-    {
-      $('#branch').html('');
-      $('#addForFun').remove();
-      $('#dropdown_city_list').prop('disabled',false);
-    }
-  });
 
   $("#manual_generate").on('click', function(event){
     if( $('#manualform').valid())
