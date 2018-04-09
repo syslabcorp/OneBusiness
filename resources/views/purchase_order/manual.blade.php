@@ -72,7 +72,7 @@
 
                 </div>
               </div>
-                @if($checkINN)
+                @if(!$checkINN)
                   <div class="form-group">
                     <div class="col-md-4">
                       <label class="checkbox-inline">

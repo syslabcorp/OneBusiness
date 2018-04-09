@@ -609,7 +609,7 @@ class PurchaseOrderController extends Controller
               }
             }
           }
-  
+
           if(isset($from_date) && isset($to_date))
           {
             if( Request::all()['corpID'] == 7 )
@@ -617,7 +617,7 @@ class PurchaseOrderController extends Controller
               $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
               FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
               LEFT JOIN shifts ON s_hdr.Shift_ID = shifts.Shift_ID AND s_hdr.Branch = shifts.Branch 
-              WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND shifts.ShiftDate >= ? AND shifts.ShiftDate <= ? 
+              WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND shifts.shift_start >= ? AND shifts.shift_start <= ?
               GROUP BY item_id", [ $branch, $item_id,  $from_date, $to_date  ]);
             }
             else
@@ -625,7 +625,7 @@ class PurchaseOrderController extends Controller
               $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
               FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
               LEFT JOIN t_shifts ON s_hdr.Shift_ID = t_shifts.Shift_ID AND s_hdr.Branch = t_shifts.Branch 
-              WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND t_shifts.ShiftDate >= ? AND t_shifts.ShiftDate <= ? 
+              WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND t_shifts.ShiftDate >= ? AND t_shifts.ShiftDate <= ?
               GROUP BY item_id", [ $branch, $item_id,  $from_date, $to_date  ]);
             }
           }
@@ -633,7 +633,7 @@ class PurchaseOrderController extends Controller
           {
             $total_sold = 0;
           }
-  
+
           //Total Quantity of Stock
     
           $total_stock = DB::connection($company->database_name)->select("SELECT s_txfr_detail.item_id, 
@@ -681,7 +681,7 @@ class PurchaseOrderController extends Controller
           {
             $pending_value = 0;
           }
-  
+
           // Qty for PO
   
           $item_packaging = StockItem::find($item_id)->Packaging;
@@ -689,7 +689,10 @@ class PurchaseOrderController extends Controller
           $multiolier = StockItem::find($item_id)->Multiplier;
   
           $QtyPO = ($daily_sold_qty * $multiolier) - $pending_value;
-  
+          if($QtyPO < 0)
+          {
+            $QtyPO = 0;
+          }
           if ( is_float($QtyPO / $item_packaging) )
           {
             $QtyPO = (intval($QtyPO / $item_packaging) + 1 ) * $item_packaging;
