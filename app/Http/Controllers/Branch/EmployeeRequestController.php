@@ -123,7 +123,11 @@ class EmployeeRequestController extends Controller
 		}
 		if(!is_null($request->isActive) && $request->isActive != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
-				return $arr->Active == $request->isActive;
+				if($request->branch_name != "any" && stripos($request->branch_name,'SQ') !== false) {
+					return $arr->SQ_Active == $request->isActive;
+				} else {
+					return $arr->Active == $request->isActive;
+				}
 			});
 		}
             return Datatables::of($query1)
@@ -197,10 +201,10 @@ class EmployeeRequestController extends Controller
 			// $user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
 			// $user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
 			// $user->Active = ($employeeRequest->to_branch != null?"1":"0");
-			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
-			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ')?"1":"0");
-			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ')?$employeeRequest->to_branch:"0");
-			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ')?"1":"0");
+			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false?$employeeRequest->to_branch:"0");
+			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false?"1":"0");
+			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ') !== false?$employeeRequest->to_branch:"0");
+			$user->Active = (!is_null($branch_name) && !stripos($branch_name,'SQ') !== false?"1":"0");
 			$user->LastUnfrmPaid = null;
 			$user->TechActive = 0;
 			$user->save();
