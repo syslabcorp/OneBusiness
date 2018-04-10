@@ -349,7 +349,7 @@ class PurchaseOrderController extends Controller
                 $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
                 FROM s_hdr LEFT JOIN s_detail ON s_hdr.Sales_ID = s_detail.Sales_ID AND s_hdr.Branch = s_detail.Branch 
                 LEFT JOIN shifts ON s_hdr.Shift_ID = shifts.Shift_ID AND s_hdr.Branch = shifts.Branch 
-                WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND shifts.ShiftDate >= ? AND shifts.ShiftDate <= ? 
+                WHERE s_hdr.Branch = ? AND s_detail.item_id = ? AND AND shifts.shift_start >= ? AND shifts.shift_start <= ?
                 GROUP BY item_id", [ $branch, $item_id, $from_date, $to_date ]);
               }
               else
