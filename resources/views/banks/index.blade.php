@@ -295,7 +295,7 @@
                                                             <i class="glyphicon glyphicon-pencil"></i>
                                                             </a>
                                                             <a href="#" name="delete" class="btn btn-danger btn-sm delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                                <i class="glyphicon glyphicon-remove"></i><span style="display: none;">{{ $bank->bank_id }}</span>
+                                                                <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $bank->bank_id }}</span>
                                                             </a>
                                                         </td>
                                                     </tr>
@@ -414,15 +414,22 @@
                 <form class="form-horizontal" action="" id="editAccountModalForm">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
-                            <div class="col-md-7 col-xs-12">
-                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id=""
-                                        data-parsley-required-message="Bank Code is required" required>
-                                    <option value="">Select Bank:</option>
-                                    @foreach($selectBank as $bank)
-                                        <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
+                                    <div class="col-md-9 col-xs-12">
+                                        <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id=""
+                                                data-parsley-required-message="Bank Code is required" required>
+                                            <option value="">Select Bank:</option>
+                                            @foreach($selectBank as $bank)
+                                                <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-12" style="margin-left: -30px;">
+                                    <a href="#" class="addBank" data-dismiss="modal" data-toggle="modal" data-target="#addNewBank" style="font-size: 0.8em">Add Bank</a>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
