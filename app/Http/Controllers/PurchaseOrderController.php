@@ -683,11 +683,17 @@ class PurchaseOrderController extends Controller
           }
 
           // Qty for PO
-  
+
+          if( !StockItem::find($item_id) )
+          {
+            return response()->json([
+              'num_details' => 0 ]
+            );
+          }
           $item_packaging = StockItem::find($item_id)->Packaging;
           $item_code = StockItem::find($item_id)->ItemCode;
           $multiolier = StockItem::find($item_id)->Multiplier;
-  
+
           $QtyPO = ($daily_sold_qty * $multiolier) - $pending_value;
           if($QtyPO < 0)
           {
@@ -724,11 +730,18 @@ class PurchaseOrderController extends Controller
             $PurchaseOrderDetailModel->save();
           }
         }
-  
+        
+
         $PurchaseOrderModel->tot_pcs   = $total_pieces;
         $PurchaseOrderModel->total_amt   = $total_amount;
         $PurchaseOrderModel->save();
-  
+        // if ( count($PurchaseOrderModel->purchase_order_details) == 0 )
+        // {
+        //   $PurchaseOrderModel->delete();
+        //   return response()->json([
+        //     'num_details' => count($PurchaseOrderModel->purchase_order_details) ]
+        //   );
+        // }
   
         return response()->json([
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
