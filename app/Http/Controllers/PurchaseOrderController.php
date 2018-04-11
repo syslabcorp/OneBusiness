@@ -442,7 +442,15 @@ class PurchaseOrderController extends Controller
 
             $bal = DB::connection($company->database_name)->select(" SELECT SUM(Bal) as Bal from s_rcv_detail
                                                                      where item_id = ? GROUP BY item_id ", [$item_id] );
-            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode, "Bal" => intval($bal[0]->Bal),
+            if(isset($bal[0]->Bal))
+            {
+              $bal_val = $bal[0]->Bal;
+            }
+            else
+            {
+              $bal_val = 0;
+            }
+            array_push($items, ["items" => $branchs_by_items, "ItemCode" => StockItem::find($item_id)->ItemCode, "Bal" => intval($bal_val),
             'total' => $total, 'item_id' => $item_id]);
             $total_pieces += $total;
             // $branchs_by_items["ItemCode"] = StockItem::find($item_id)->ItemCode;
