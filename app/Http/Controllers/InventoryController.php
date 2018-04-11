@@ -6,6 +6,7 @@ use App\InventoryChange;
 use Illuminate\Http\Request;
 use Auth;
 use App\Inventory;
+use App\SItemCfg;
 use App\InventoryType;
 use App\InventoryBrand;
 use App\ProductLine;
@@ -103,6 +104,18 @@ class InventoryController extends Controller
         $inventory->Print_This = ($request->itemPrintStub) ? 1 : 0;
         $inventory->Active = ($request->itemActive) ? 1 : 0;
         $inventory->save();
+
+        $last_item_id = SItemCfg::all()->last()->item_id;
+        $list_item = SItemCfg::where('item_id' , $last_item_id)->get();
+        
+        foreach( $list_item as $item )
+        {
+          $new_item =  new SItemCfg();
+          $new_item->item_id = $inventory->item_id;
+          $new_item->Branch = $item->Branch;
+          $new_item->ItemCode = $inventory->ItemCode;
+          $new_item->save();
+        }
 
         \Session::flash('success', "Item added successfully");
         return redirect()->route('inventory.index');
