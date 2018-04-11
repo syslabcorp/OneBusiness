@@ -156,6 +156,8 @@ class VendorController extends Controller
             ->orderBy('Description', 'ASC')
             ->get();
 
+        // return response()->json($vendors, 200);
+        
         return view('vendors.management.index')
             ->with('vendors', $vendors)
             ->with('corporations', $corporations)

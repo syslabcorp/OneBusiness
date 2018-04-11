@@ -324,11 +324,25 @@
                     url: "checkbooks/get-checkbooks",
                     data: function (d) {
                         @if(is_object($corporations))
-                        d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
-                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
-                        d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
-                        d.MainStatus = $('#example_ddl5 input').is(":checked");
+                            d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
+                            @if(isset($corporations[0]->corp_id))
+                                d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
+                            @else
+                                d.corpId = $('#example_ddl2 select option:selected').val();
+                            @endif
+
+                            @if(isset($banks[0]->bank_acct_id))
+                                d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
+                            @else
+                                d.branch = $('#example_ddl4 select option:selected').val();
+                            @endif
+
+                            @if(isset($satelliteBranch[0]->Branch))
+                                d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
+                            @else
+                                d.sysBranch = $('#example_ddl1 select option:selected').val();
+                            @endif
+                            d.MainStatus = $('#example_ddl5 input').is(":checked");
                         @endif
                     }
                 },

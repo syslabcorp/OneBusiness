@@ -15,9 +15,9 @@ class CheckbookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        
         if(!\Auth::user()->checkAccessById(28, "V"))
         {
             \Session::flash('error', "You don't have permission");
@@ -29,10 +29,10 @@ class CheckbookController extends Controller
         $branches = DB::table('user_area')
             ->where('user_ID', \Auth::user()->UserID)
             ->pluck('branch');
-
+            
         $branch = explode(",", $branches[0]);
 
-
+        
         //dd($branch);
         $corporations = DB::table('t_sysdata')
             ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
@@ -41,9 +41,9 @@ class CheckbookController extends Controller
             ->orderBy('corporation_masters.corp_name', 'ASC')
             ->distinct()
             ->get();
-
+            
         if(isset($corporations[0]->corp_id)) {
-
+            
             //get records from t_sysdata
             $tSysdata = DB::table('t_sysdata')
                 ->orderBy('Branch', 'ASC')
@@ -62,7 +62,7 @@ class CheckbookController extends Controller
                     'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
                 ->orderBy('cv_banks.bank_code', 'ASC')
                 ->get();
-
+                
         }else{
             $details = array(
                 0 => [
@@ -83,7 +83,7 @@ class CheckbookController extends Controller
                 ]
             );
         }
-
+        
 
 
         return view('checkbooks.index')

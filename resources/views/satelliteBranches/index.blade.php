@@ -162,7 +162,7 @@
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-5.pull-left'<'#example_ddl2'>><'col-sm-5'<'#example_ddl3'>>>" +
+                "<'row'<'.col-sm-1.pull-left'<'#example_ddl'>><'.col-sm-2.pull-left'<'#example_ddl2'>><'.col-sm-2'<'#example_ddl3'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [

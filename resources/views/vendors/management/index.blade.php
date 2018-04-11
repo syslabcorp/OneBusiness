@@ -227,7 +227,7 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="suppId" value="{{ $vendors[0]->supp_id }}">
+                                <input type="hidden" name="suppId" value=" @if($vendors->count() > 0 ) {{ $vendors[0]->supp_id}} @endif">
                                 <button type="submit" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
@@ -396,6 +396,7 @@
 
                         select.append( '<option value="1">Active</option>' )
                         select.append( '<option value="0">Inactive</option>' )
+                        // var checkbox = $(' <input type="checkbox" name="" id="">')
 
                     } );
 
@@ -483,7 +484,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/OneBusiness/vendor-management/get-account-for-vendor",
+                    url: "/vendor-management/get-account-for-vendor",
                     data: { id : id },
                     success: function (data) {
                         if(data.nx_branch == -1){
