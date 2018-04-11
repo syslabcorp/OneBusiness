@@ -603,16 +603,19 @@ class PurchaseOrderController extends Controller
   
           if( count($SaleDetail) > 0 )
           {
-            $to_date = $SaleDetail->first()->sale()->first()->DateSold;
-            $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
-            foreach($SaleDetail as $detail)
+            if($SaleDetail->first()->sale)
             {
-              if( $detail->sale )
+              $to_date = $SaleDetail->first()->sale()->first()->DateSold;
+              $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+              foreach($SaleDetail as $detail)
               {
-                if( $detail->sale()->first()->DateSold > $to_date )
+                if( $detail->sale )
                 {
-                  $to_date = $detail->sale()->first()->DateSold;
-                  $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+                  if( $detail->sale()->first()->DateSold > $to_date )
+                  {
+                    $to_date = $detail->sale()->first()->DateSold;
+                    $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+                  }
                 }
               }
             }
