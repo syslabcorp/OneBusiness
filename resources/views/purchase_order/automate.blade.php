@@ -96,6 +96,9 @@
               
             </tbody>
           </table>
+          <div class="row">
+            <button class="btn btn-default" id="back_auto_button">Back</button>
+          </div>
         </div>
 </section>
 
@@ -103,6 +106,13 @@
 
 @section('pageJS')
   <script>
+
+    $('#back_auto_button').on('click', function()
+    {
+      $('#process_table').addClass('hidden_table');
+      $('#process_table').find('tbody').html("");
+      $('#auto_row').removeClass('hidden_table');
+    });
 
     $('#create_po_button').on('click', function(){
       if($('.ui-selected').length > 0)
