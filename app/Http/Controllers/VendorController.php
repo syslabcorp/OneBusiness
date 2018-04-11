@@ -107,8 +107,10 @@ class VendorController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Vendor $vendor)
+    public function show(Vendor $vendor,Request $request)
     {
+     
+        
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
             \Session::flash('error', "You don't have permission");
@@ -125,8 +127,19 @@ class VendorController extends Controller
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
             ->get();
-
-
+            
+        if( isset($request->main) && $request->main == "true" )
+        {
+        $vendors = DB::table('cv_vendacct')
+            ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+            ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
+            ->where('cv_vendacct.nx_branch', -1)
+            ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
+            ->orderBy('VendorName', 'ASC')
+            ->get();
+        }
+        else
+        {
         $vendors = DB::table('cv_vendacct')
             ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
             ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
@@ -134,6 +147,7 @@ class VendorController extends Controller
             ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
             ->orderBy('VendorName', 'ASC')
             ->get();
+        }
 
       /*  if($url == null)
         {
@@ -161,7 +175,8 @@ class VendorController extends Controller
         return view('vendors.management.index')
             ->with('vendors', $vendors)
             ->with('corporations', $corporations)
-            ->with('branches', $branches);
+            ->with('branches', $branches)
+            ->with('main', $request->main);
     }
 
     /**
