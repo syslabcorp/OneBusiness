@@ -377,14 +377,14 @@
                                 var info = mainTable.page.info();
 
                                 if (meta.row > 0) {
-                                    $('<a name="edit" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }else if(info.page > 0){
-                                    $('<a name="edit" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }
 
-                                $( '<a name="edit" class="btn btn-primary btn-sm dtMoveDown">' +
+                                $( '<a name="edit" data-used="'+row.used+'" class="btn btn-primary btn-sm dtMoveDown">' +
                                     '<i class="glyphicon glyphicon-arrow-down"></i>').appendTo($span);
 
                                 return $span.html();
@@ -751,17 +751,24 @@
 
             $(document).on('click', '.edit', function (e) {
                 e.preventDefault();
-                var start = $(this).closest('tr').find('td:nth-child(2)').text();
-                var end = $(this).closest('tr').find('td:nth-child(3)').text();
+                if($(this).data("used") == 1)
+                {
+                    alert("Check box is full: editing not allowed");
+                }
+                else
+                {
+                    var start = $(this).closest('tr').find('td:nth-child(2)').text();
+                    var end = $(this).closest('tr').find('td:nth-child(3)').text();
 
-                var id  = $(this).closest('td').find('span').text();
+                    var id  = $(this).closest('td').find('span').text();
 
-                $('input[name="editAccountId"]').val(id);
+                    $('input[name="editAccountId"]').val(id);
 
-                $('#editStartingNum').val(start);
-                $('#editEndingNum').val(end);
+                    $('#editStartingNum').val(start);
+                    $('#editEndingNum').val(end);
 
-                $('#editCheckbook').modal("toggle");
+                    $('#editCheckbook').modal("toggle");
+                }
             });
 
             $(document).on('submit', '#editCheckbookForm', function (e) {

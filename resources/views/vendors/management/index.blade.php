@@ -111,7 +111,7 @@
                                             <tr>
                                                 <td>{{ $vendormgm->corp_name }}</td>
                                                 <td>{{ $vendormgm->corp_id }}</td>
-                                                <td>{{ $vendormgm->ShortName }}</td>
+                                                <td>{{ $vendormgm->nx_branch == -1 ? "MAIN": $vendormgm->ShortName }}</td>
                                                 <td>{{ $vendormgm->acct_num }}</td>
                                                 <td>{{ $vendormgm->description }}</td>
                                                 <td>{{ $vendormgm->days_offset }}</td>
@@ -156,7 +156,7 @@
                                         <label class="col-md-3 control-label" for="corporationId">Corporation:</label>
                                         <div class="col-md-7">
                                             <select name="corporationId" class="form-control input-md corporationId" id=""
-                                                    data-parsley-required-message="Corporation person is required" required>
+                                                    data-parsley-required-message="Corporation is required" required>
                                                 <option value="">Select Corporation:</option>
                                                 @foreach($corporations as $corporation)
                                                     <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
@@ -190,7 +190,7 @@
                             <label class="col-md-3 col-xs-12 control-label" for="vendorAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
                                 <input id="vendorAccountNumber" name="vendorAccountNumber" type="text" class="form-control input-md"
-                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-required-message="Account number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 50 characters"
                                        data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
@@ -274,7 +274,7 @@
                                     <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
                                     <div class="col-md-7">
                                         <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
-                                                data-parsley-required-message="Corporation person is required" required>
+                                                data-parsley-required-message="Corporation is required" required>
                                             <option value="">Select Corporation:</option>
                                             @foreach($corporations as $corporation)
                                                 <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
@@ -288,7 +288,7 @@
                             <label class="col-md-3 col-xs-12 control-label" for="editVendorAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
                                 <input id="editVendorAccountNumber" name="editVendorAccountNumber" type="text" class="form-control input-md"
-                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-required-message="Account number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 50 characters"
                                        data-parsley-maxlength="50" data-parsley-pattern="^[\d+\-\?]+\d+$"  required="">
                             </div>
@@ -379,7 +379,14 @@
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-
+                    @if($main == "true")
+                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branchs accounts</label>').appendTo("#example_ddlmain");
+                        $('#main_check_box').prop('checked', true);
+                    @else
+                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branchs accounts</label>').appendTo("#example_ddlmain");
+                        $('#main_check_box').prop('checked', false);
+                    @endif
+                    
                     this.api().columns(8).every( function () {
                         var column = this;
                         var select = $('<select class="form-control"><option value="">All</option></select>')
@@ -435,27 +442,34 @@
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
+                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddlmain.checkbox'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 order: [[ 2, 'asc' ]],
                 "columnDefs": [
-                    { "orderable": false, "targets": [0, 2]},
-                    { "orderable": false, 'visible': false, "targets": [1,8]},
-                    { "orderable": false, "width": "9%", "targets": 5 },
+                    { "orderable": true, "targets": [0, 2]},
+                    { "orderable": true, 'visible': false, "targets": [1,8]},
+                    { "orderable": true, "width": "9%", "targets": 5 },
                     {"className": "dt-center", "targets": [5, 7]}
                 ]
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
+
+            $('#main_check_box').on('change', function(e){
+                e.preventDefault();
+                var main = $(this).is(':checked');
+                window.location.href = window.location.href.replace("?main=true","").replace("?main=false","")+"?main="+main
+            });
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
 
                 var id  = $(this).closest('td').find('span').text();
                 var itemCode  = $(this).closest('tr').find('td:nth-child(1)').text();
-                var description  = $(this).closest('tr').find('td:nth-child(2)').text();
+                var description  = $(this).closest('tr').find('td:nth-child(4)').text();
+                var account_num = $(this).closest('tr').find('td:nth-child(3)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
-                $('#confirm-delete .brandToDelete').text(itemCode);
+                $('#confirm-delete .brandToDelete').text(account_num);
                 $('#confirm-delete .descriptionOfBrand').text(description);
                 $('#confirm-delete form').attr('action', '/OneBusiness/vendor-management/'+id);
                 $('#confirm-delete').modal("show");
