@@ -606,7 +606,8 @@ class PurchaseOrderController extends Controller
             if($SaleDetail->first()->sale)
             {
               $to_date = $SaleDetail->first()->sale()->first()->DateSold;
-              $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+              $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($to_date))));
+              
               foreach($SaleDetail as $detail)
               {
                 if( $detail->sale )
@@ -614,7 +615,7 @@ class PurchaseOrderController extends Controller
                   if( $detail->sale()->first()->DateSold > $to_date )
                   {
                     $to_date = $detail->sale()->first()->DateSold;
-                    $from_date = date_sub( $to_date ,date_interval_create_from_date_string( $no_of_date." days"));
+                    $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($to_date))));
                   }
                 }
               }
@@ -757,7 +758,12 @@ class PurchaseOrderController extends Controller
         return response()->json([
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
           'po_no' => $PurchaseOrderModel->po_no,
-          'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ) ]
+          'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ),
+          'to_date' => $to_date, 'from_date' => $from_date, "no_of_date" => $no_of_date ,
+          'total_sold' => $total_sold,
+          'pending' => $pending
+          ]
+          
         );
       }
 
