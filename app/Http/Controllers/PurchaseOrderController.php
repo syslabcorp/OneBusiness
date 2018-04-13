@@ -606,6 +606,7 @@ class PurchaseOrderController extends Controller
           
           if(count($test) > 0)
           {
+            $test = $test[0]->DateSold;
             $to_date = DateTime::createFromFormat('Y-m-d H:i:s', $test);
             $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($test))));
           }
@@ -769,6 +770,7 @@ class PurchaseOrderController extends Controller
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
           'po_no' => $PurchaseOrderModel->po_no,
           'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ),
+          'from_date' => $from_date, 
           'total_sold' => $total_sold,
           'pending' => $pending,
           'test' => $test
