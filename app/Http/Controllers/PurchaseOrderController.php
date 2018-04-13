@@ -596,9 +596,6 @@ class PurchaseOrderController extends Controller
         {
           $branch = $detail->po_tmpl8_branch;
           $item_id = $detail->po_tmpl8_item;
-
-          $branch = 1;
-          $item_id = 90;
   
           $SaleDetailModel = new \App\SaleDetail;
           $SaleDetailModel->setConnection($company->database_name);
@@ -607,11 +604,12 @@ class PurchaseOrderController extends Controller
           $test = DB::connection($company->database_name)->select( " SELECT * from s_hdr INNER JOIN s_detail ON s_detail.Branch = s_hdr.Branch 
           and s_detail.Sales_ID = s_hdr.Sales_ID where s_detail.item_id = ? and s_detail.Branch = ? order by s_hdr.DateSold DESC", [$item_id, $branch]);
           
-          if( $test = $test[0]->DateSold )
+          if(count($test) > 0)
           {
             $to_date = DateTime::createFromFormat('Y-m-d H:i:s', $test);
             $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($test))));
           }
+
           
           // if( count($SaleDetail) > 0 )
           // {
@@ -771,9 +769,6 @@ class PurchaseOrderController extends Controller
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
           'po_no' => $PurchaseOrderModel->po_no,
           'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ),
-          'to_date' => $to_date,
-          'from_date' => $from_date, 
-          "no_of_date" => $no_of_date ,
           'total_sold' => $total_sold,
           'pending' => $pending,
           'test' => $test
