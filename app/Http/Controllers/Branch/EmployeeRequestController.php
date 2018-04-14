@@ -117,9 +117,9 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
+		$query1 = DB::select('SELECT users.UserName as "username", sysdata.City_ID, cities.Prov_ID, users.UserID, users.Branch, users.SQ_Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID where sysdata.corp_id = ?', [$request->corpId]);
 
-		$query1 = $this->filter_results_according_access_rights($query1, $request);
+		$query1 = $this->filter_results_according_access_rights2($query1, $request);
 
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
@@ -170,6 +170,29 @@ class EmployeeRequestController extends Controller
 			$allowed_branches = explode(",", UserArea::where("user_ID", $user->UserID)->first()->branch);
 		            	$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_branches){
 				return in_array($arr->Branch, $allowed_branches);
+			});
+		}
+		if($user->Area_type == "CT") {
+			$allowed_cities = explode(",", UserArea::where("user_ID", $user->UserID)->first()->city);
+            			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_cities){
+				return in_array($arr->City_ID, $allowed_cities);
+		    	});
+		}
+		if($user->Area_type == "PR") {
+			$allowed_provincies = explode(",", UserArea::where("user_ID", $user->UserID)->first()->province);
+            			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_provincies){
+				return in_array($arr->Prov_ID, $allowed_provincies);
+		    	});
+		}
+		return $query1;
+	}
+
+	public function filter_results_according_access_rights2($query1, $request) {
+		$user = \Auth::user();
+		if($user->Area_type == "BR") {
+			$allowed_branches = explode(",", UserArea::where("user_ID", $user->UserID)->first()->branch);
+		            	$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_branches){
+				return in_array($arr->Branch, $allowed_branches) or in_array($arr->SQ_Branch, $allowed_branches);
 			});
 		}
 		if($user->Area_type == "CT") {
