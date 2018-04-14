@@ -243,6 +243,10 @@ class PurchaseOrderController extends Controller
     }
 
     public function manual(){
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 40, 'A')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+      }
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
@@ -286,6 +290,10 @@ class PurchaseOrderController extends Controller
 
     public function automate(){
       ini_set('max_execution_time', 300);
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 41, 'A')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+      }
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
@@ -315,6 +323,10 @@ class PurchaseOrderController extends Controller
 
     public function manual_suggest()
     {
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 40, 'A')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+      }
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
@@ -478,6 +490,10 @@ class PurchaseOrderController extends Controller
 
     public function manual_save()
     {
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 40, 'A')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+      }
       // return response()->json(Request::all());
 
       if(array_key_exists('po_no' ,Request::all()))
@@ -572,6 +588,10 @@ class PurchaseOrderController extends Controller
     public function auto_save()
     {
       ini_set('max_execution_time', 600);
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 41, 'A')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+      }
       if ( array_key_exists( "temp_id", Request::all() ))
       {
         $company = Corporation::findOrFail(Request::all()['corpID']);
