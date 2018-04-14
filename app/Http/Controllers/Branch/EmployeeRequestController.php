@@ -17,6 +17,9 @@ use Carbon\Carbon;
 class EmployeeRequestController extends Controller
 {
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
+		// if(!\Auth::user()->checkAccessById(38, "V")) {
+		// 	$this->returnNoPermission("You don't have a permission to access the page");	
+		// }
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
@@ -33,6 +36,10 @@ class EmployeeRequestController extends Controller
 			return $ex->getMessage();
 			// return abort(404);
 		}
+	}
+
+	public function returnNoPermission($message){
+		throw new \Exception($message, 1);
 	}
 
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
@@ -224,6 +231,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		if(!\Auth::user()->checkAccessById(38, "E")) {
+			$this->returnNoPermission("You don't have a permission to edit the request");	
+		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
@@ -293,6 +303,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function deleteEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
+		if(!\Auth::user()->checkAccessById(38, "D")) {
+			$this->returnNoPermission("You don't have a permission to delete the request");	
+		}
 		$employeeRequest->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
@@ -304,6 +317,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		if(!\Auth::user()->checkAccessById(38, "E")) {
+			$this->returnNoPermission("You don't have a permission to edit the request");	
+		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
