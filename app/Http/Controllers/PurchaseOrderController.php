@@ -850,20 +850,23 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_template_by_city()
     {
-      // if(\Auth::user()->isAdmin())
-      // {
-      //   $cities = City::all();
-      // }
-      // else
-      // {
-      //   $cities_ID = explode( ',' ,\Auth::user()->area->city );
-      //   $cities = City::whereIn('City_ID', $cities_ID)->get();
-      // }
+      if(\Auth::user()->isAdmin())
+      {
+        $cities = City::all();
+      }
+      else
+      {
+        $cities_ID = explode( ',' ,\Auth::user()->area->city );
+        $cities = City::whereIn('City_ID', $cities_ID)->get();
+      }
+      $cities = $cities->map(function($item) {
+        return $item['City_ID'];
+      });
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $POTemplateModel = new \App\POTemplate;
       $POTemplateModel->setConnection($company->database_name);
       
-      $POTemplates = $POTemplateModel->where('Active', 1)->where('city_id', Request::all()['City_ID'])->get();
+      $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities)->where('city_id', Request::all()['City_ID'])->orderBy('po_tmpl8_desc')->get();
       return response()->json([
         'POTemplates' => $POTemplates
       ]);
@@ -888,7 +891,7 @@ class PurchaseOrderController extends Controller
       $POTemplateModel = new \App\POTemplate;
       $POTemplateModel->setConnection($company->database_name);
 
-      $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities)->get();
+      $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities)->orderBy('po_tmpl8_desc')->get();
       return response()->json([
         'POTemplates' => $POTemplates
       ]);
