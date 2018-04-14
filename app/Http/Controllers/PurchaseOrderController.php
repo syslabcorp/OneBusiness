@@ -257,8 +257,14 @@ class PurchaseOrderController extends Controller
       }
       
       $prodlines = ProductLine::where('Active', 1)->orderBy('Product')->get();
-
-      $branchs = Branch::where( 'City_ID', $cities->first()->City_ID )->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
+      if(count($cities) > 0)
+      {
+        $branchs = Branch::where( 'City_ID', $cities->first()->City_ID )->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
+      }
+      else
+      {
+        $branch = [];
+      }
       if($company->corp_type == "INN")
       {
         $checkINN = true;
