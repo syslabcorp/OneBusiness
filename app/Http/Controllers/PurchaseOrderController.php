@@ -256,8 +256,11 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        if(\Auth::user()->area)
+        {
+          $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
       }
       
       $prodlines = ProductLine::where('Active', 1)->orderBy('Product')->get();
@@ -304,8 +307,11 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        if(\Auth::user()->area)
+        {
+          $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
       }
 
       $POTemplateModel = new \App\POTemplate;
@@ -606,7 +612,7 @@ class PurchaseOrderController extends Controller
         $POTemp = $POTempModel->where('po_tmpl8_id', $temp_id)->get()->first();
         $no_of_date = $POTemp->po_avg_cycle;
         
-        $details = $POTemp->details()->get();
+        $details = $POTemp->details;
   
         $PurchaseOrderModel = new \App\PurchaseOrder;
         $PurchaseOrderModel->setConnection($company->database_name);
@@ -796,7 +802,6 @@ class PurchaseOrderController extends Controller
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
           'po_no' => $PurchaseOrderModel->po_no,
           'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ),
-          'from_date' => $from_date, 
           'total_sold' => $total_sold,
           'pending' => $pending,
           'test' => $test
@@ -842,8 +847,11 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        if(\Auth::user()->area)
+        {
+          $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
       }
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
@@ -862,8 +870,11 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        if(\Auth::user()->area)
+        {
+          $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
       }
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
@@ -882,8 +893,11 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        if(\Auth::user()->area)
+        {
+          $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
       }
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
@@ -906,8 +920,11 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $cities_ID = explode( ',' ,\Auth::user()->area->city );
-        $cities = City::whereIn('City_ID', $cities_ID)->get();
+        if(\Auth::user()->area)
+        {
+          $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
       }
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
