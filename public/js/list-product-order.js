@@ -1,13 +1,14 @@
 function get_list_data(){
 	var city_id = $('#city option:selected').val();
     var corp_id = $('#corp_id').val();
+    var group_id = $('#group_id').val();
 	$(".update-add-url").attr("href", ajax_url+'/purchase_order/'+corp_id+'/'+city_id);
 	var active = $('#active option:selected').val();
     var _token = $("meta[name='csrf-token']").attr("content");
     $.ajax({
         url: ajax_url+'/list_purchase_order',
         type: "POST",
-        data: {_token,city_id,active,corp_id},
+        data: {_token,city_id,active,corp_id,group_id},
         success: function(response){
           $('.list-purchase-orders').html(response);
         }

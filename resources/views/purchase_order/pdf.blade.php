@@ -93,6 +93,16 @@
           <span class="value_po"> {{  $purchase_order->po_date->format("d/m/Y") }} </span> 
         </div>
       </div>
+
+      <div class="po">
+        <div class="title">
+          <b>Group: </b>
+        </div>
+        <div class="value">
+          <span class="value_po"> {{  $group->desc }} </span> 
+        </div>
+      </div>
+
       </div>
 
       <div class="mid-row">
@@ -100,14 +110,14 @@
       </div>
 
       <div class="one-row">
-      <div class="po">
-        <div class="title">
-          <b>Page #: </b>
+        <div class="po">
+          <div class="title">
+            <b>Page #: </b>
+          </div>
+          <div class="value">
+            <span class="value_po"> 1 </span>
+          </div>
         </div>
-        <div class="value">
-          <span class="value_po"> 1 </span>
-        </div>
-      </div>
       
     <div class="po">
       <div class="title">
