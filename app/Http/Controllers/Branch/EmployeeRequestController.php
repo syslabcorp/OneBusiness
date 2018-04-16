@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Branch\EmployeeRequestHelper;
 use App\Corporation;
 use App\Branch;
+use App\UserArea;
 use Yajra\Datatables\Datatables;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,9 @@ use Carbon\Carbon;
 class EmployeeRequestController extends Controller
 {
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
+		// if(!\Auth::user()->checkAccessById(38, "V")) {
+		// 	$this->returnNoPermission("You don't have a permission to access the page");	
+		// }
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
@@ -34,10 +38,17 @@ class EmployeeRequestController extends Controller
 		}
 	}
 
+	public function returnNoPermission($message){
+		throw new \Exception($message, 1);
+	}
+
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata.Branch, sysdata.City_ID, cities.Prov_ID, sysdata2.ShortName as "to_branch", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		// dd($query1);
+
+		$query1 = $this->filter_results_according_access_rights($query1, $request);
 
 		// if($request->search["value"]) { $query1 = $this->applySearchToArray($query1, $request->search["value"]); }
 		if(!is_null($request->approved) && $request->approved != "any"){
@@ -113,7 +124,10 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", users.UserID, users.Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch where sysdata.corp_id = ?', [$request->corpId]);
+		$query1 = DB::select('SELECT users.UserName as "username", sysdata.City_ID, cities.Prov_ID, users.UserID, users.Branch, users.SQ_Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID where sysdata.corp_id = ?', [$request->corpId]);
+
+		$query1 = $this->filter_results_according_access_rights2($query1, $request);
+
 		if(!is_null($request->branch_name) && $request->branch_name != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
 				return $arr->ShortName == $request->branch_name;
@@ -157,6 +171,52 @@ class EmployeeRequestController extends Controller
                 ->make('true');
 	}
 
+	public function filter_results_according_access_rights($query1, $request) {
+		$user = \Auth::user();
+		if($user->Area_type == "BR") {
+			$allowed_branches = explode(",", UserArea::where("user_ID", $user->UserID)->first()->branch);
+		            	$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_branches){
+				return in_array($arr->Branch, $allowed_branches);
+			});
+		}
+		if($user->Area_type == "CT") {
+			$allowed_cities = explode(",", UserArea::where("user_ID", $user->UserID)->first()->city);
+            			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_cities){
+				return in_array($arr->City_ID, $allowed_cities);
+		    	});
+		}
+		if($user->Area_type == "PR") {
+			$allowed_provincies = explode(",", UserArea::where("user_ID", $user->UserID)->first()->province);
+            			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_provincies){
+				return in_array($arr->Prov_ID, $allowed_provincies);
+		    	});
+		}
+		return $query1;
+	}
+
+	public function filter_results_according_access_rights2($query1, $request) {
+		$user = \Auth::user();
+		if($user->Area_type == "BR") {
+			$allowed_branches = explode(",", UserArea::where("user_ID", $user->UserID)->first()->branch);
+		            	$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_branches){
+				return in_array($arr->Branch, $allowed_branches) or in_array($arr->SQ_Branch, $allowed_branches);
+			});
+		}
+		if($user->Area_type == "CT") {
+			$allowed_cities = explode(",", UserArea::where("user_ID", $user->UserID)->first()->city);
+            			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_cities){
+				return in_array($arr->City_ID, $allowed_cities);
+		    	});
+		}
+		if($user->Area_type == "PR") {
+			$allowed_provincies = explode(",", UserArea::where("user_ID", $user->UserID)->first()->province);
+            			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_provincies){
+				return in_array($arr->Prov_ID, $allowed_provincies);
+		    	});
+		}
+		return $query1;
+	}
+
 	public function removeDuplicateElementsFromArray($arr){
 		$arr2 = [];
 		foreach ($arr as $element) {
@@ -171,6 +231,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		if(!\Auth::user()->checkAccessById(38, "E")) {
+			$this->returnNoPermission("You don't have a permission to edit the request");	
+		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
@@ -240,6 +303,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function deleteEmployeeRequest(EmployeeRequestHelper $employeeRequest, Request $request){
+		if(!\Auth::user()->checkAccessById(38, "D")) {
+			$this->returnNoPermission("You don't have a permission to delete the request");	
+		}
 		$employeeRequest->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequest->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
@@ -251,6 +317,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		if(!\Auth::user()->checkAccessById(38, "E")) {
+			$this->returnNoPermission("You don't have a permission to edit the request");	
+		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
