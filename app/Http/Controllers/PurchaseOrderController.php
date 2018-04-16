@@ -790,13 +790,13 @@ class PurchaseOrderController extends Controller
         $PurchaseOrderModel->tot_pcs   = $total_pieces;
         $PurchaseOrderModel->total_amt   = $total_amount;
         $PurchaseOrderModel->save();
-        // if ( $PurchaseOrderModel->purchase_order_details()->count() == 0 )
-        // {
-        //   $PurchaseOrderModel->delete();
-        //   return response()->json([
-        //     'num_details' => $PurchaseOrderModel->purchase_order_details()->count() ]
-        //   );
-        // }
+        if ( $PurchaseOrderModel->purchase_order_details()->count() == 0 )
+        {
+          $PurchaseOrderModel->delete();
+          return response()->json([
+            'num_details' => $PurchaseOrderModel->purchase_order_details()->count() ]
+          );
+        }
   
         return response()->json([
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
