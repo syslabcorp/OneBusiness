@@ -23,13 +23,13 @@
       <div class="panel-body" style="margin: 30px 0px;">
         <div class="row purchase_menu" style="margin-bottom: 20px;">
             <ul class="purchase_order_style navbar-nav" >
+                <li class="active">
+                    <a>Auto-generate P.O.</a>
+                </li>
                 <li class="">
                     <a href="{{route('purchase_order.create_manual') }}">Manual P.O.</a>
                 </li>
 
-                <li class="active">
-                    <a>Auto-generate P.O.</a>
-                </li>
                 <li class="last_item"></li>
             </ul>
         </div>

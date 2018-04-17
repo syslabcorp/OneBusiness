@@ -21,12 +21,11 @@
       <div class="panel-body manual" style="margin: 30px 0px;">
         <div class="row purchase_menu" style="margin-bottom: 20px;">
             <ul class="purchase_order_style navbar-nav" >
-                <li class="active">
-                    <a>Manual P.O.</a>
-                </li>
-
                 <li class="">
                     <a href="{{route('purchase_order.create_automate',['corpID' => $corpID]) }}">Auto-generate P.O.</a>
+                </li>
+                <li class="active">
+                    <a>Manual P.O.</a>
                 </li>
                 <li class="last_item"></li>
             </ul>
@@ -48,14 +47,6 @@
                   <label><input type="checkbox" id="all_cities_checkbox"> All Cities</label>
                 </div>
 
-                  <div class="form-group" style="margin-left: 20px;">
-                      <label for="group">Group:</label>
-                      <select class="form-control required listgroup" id="group" name="group_id">
-                        @foreach ($groups as $group) 
-                            <option {{ ($group ->group_ID == $group_id) ? "selected" : "" }} value="{{ $group->group_ID }}" >{{ $group->desc }} </option> 
-                        @endforeach    
-                      </select>
-                  </div>
               </form>
             </div>
           </div>
@@ -360,14 +351,13 @@
     $("#all_cities_checkbox").on('change', function(){
       var _token = $("meta[name='csrf-token']").attr('content');
       var Corp_ID = {{ $corpID }};
-      var group = $('#group').val();
       if(this.checked){
         $('#dropdown_city_list').prepend("<option id='addForFun' selected></option>");
         
         $('#dropdown_city_list').prop('disabled','disabled');
         $.ajax({
           url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
-          data: {_token, Corp_ID, group},
+          data: {_token, Corp_ID},
           type: 'POST',
           success: function(res){
             $('#branch').html('');
@@ -388,7 +378,7 @@
         var Corp_ID = {{ $corpID }};
         $.ajax({
           url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
-          data: {_token, City_ID, Corp_ID, group},
+          data: {_token, City_ID, Corp_ID},
           method: "POST",
           type: 'POST',
           success: function(res){
@@ -401,14 +391,13 @@
       }
     });
   
-    $('#city-list ,#group').on('change', function(){
+    $('#city-list').on('change', function(){
       var _token = $("meta[name='csrf-token']").attr('content');
-      var group = $('#group').val();
       var City_ID = $('#city-list option:selected').val();
       var Corp_ID = {{ $corpID }};
       $.ajax({
         url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
-        data: {_token, City_ID, Corp_ID, group},
+        data: {_token, City_ID, Corp_ID},
         method: "POST",
         type: 'POST',
         success: function(res){

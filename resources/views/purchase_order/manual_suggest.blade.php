@@ -29,7 +29,6 @@
         <form id="main_form" action="{{route('purchase_order.manual_save')}}"  method="POST">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <input type="hidden" name="corpID" value="{{$corpID}}">
-          <input type="hidden" name="group" value="{{$group}}">
           <div class="row border_bottom">
             <span style="font-size: 36px">Generate P.O.:</span>
             <span>Total Pieces: 

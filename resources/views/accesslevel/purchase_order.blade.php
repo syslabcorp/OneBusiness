@@ -48,19 +48,6 @@
                                             @endif
                                         </div>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <div class="row">
-                                            <label for="group" class="col-md-3 control-label">Group:</label>
-                                            <div class="col-md-9">
-                                                <select class="form-control required listgroup" id="group" name="group_id">
-                                                @foreach ($groups as $group) 
-                                                    <option {{ ($group ->group_ID == $group_id) ? "selected" : "" }} value="{{ $group->group_ID }}" >{{ $group->desc }} </option> 
-                                                @endforeach    
-                                            </select>
-                                            </div>
-                                        </div>
-                                    </div>
                                     
 									<div class="col-md-1">
 									<label class="mt-checkbox">
@@ -144,22 +131,6 @@ $(function(){
     <?php if(isset($proline_ids)){ ?>
         GetSelectedproduct();
     <?php } ?>  
-});
-
-
-$("#group").change(function(){
-    var group_id = $(this).val();
-    var _token = $("meta[name='csrf-token']").attr("content");
-    var city_id = {{ $cities->City_ID }};
-    var corp_id = {{ $corp_id }};
-    $.ajax({
-        url: ajax_url+'/product_branch',
-        type: "POST",
-        data: {_token,city_id,group_id,corp_id},
-        success: function(response){
-          $('.product-branch').html(response);
-        }
-    });
 });
 </script>
 @endsection
