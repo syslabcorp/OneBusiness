@@ -17,9 +17,9 @@ use Carbon\Carbon;
 class EmployeeRequestController extends Controller
 {
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
-		// if(!\Auth::user()->checkAccessById(38, "V")) {
-		// 	$this->returnNoPermission("You don't have a permission to access the page");	
-		// }
+		if(!\Auth::user()->checkAccessById(38, "V")) {
+			return view("branchs.employeeRequest.index", ["hasAccess" => false]);
+		}
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
@@ -31,7 +31,7 @@ class EmployeeRequestController extends Controller
 			$corpsAndBranches = $this->generateCorpsWithBranches($corpType, $id);
 			$corpsAndBranches = array_filter($corpsAndBranches, function ($item){ return count($item["branches"]) > 0; });
 
-			return view("branchs.employeeRequest.index", ["corpId" => $id, "branches" => $branches, "corporations" => $corpsAndBranches]);
+			return view("branchs.employeeRequest.index", ["hasAccess" => true, "corpId" => $id, "branches" => $branches, "corporations" => $corpsAndBranches]);
 		} catch(\Exception $ex){
 			return $ex->getMessage();
 			// return abort(404);
@@ -103,7 +103,7 @@ class EmployeeRequestController extends Controller
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch.'</span>';
                 })
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<span class="btn btn-success actionButton" '.($employeeRequest->approved == 1?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span>';
+                    return '<span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessById(38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessById(38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -231,9 +231,6 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function approveEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
-		if(!\Auth::user()->checkAccessById(38, "E")) {
-			$this->returnNoPermission("You don't have a permission to edit the request");	
-		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
@@ -318,7 +315,7 @@ class EmployeeRequestController extends Controller
 
 	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
 		if(!\Auth::user()->checkAccessById(38, "E")) {
-			$this->returnNoPermission("You don't have a permission to edit the request");	
+			return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
 		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
@@ -372,10 +369,9 @@ class EmployeeRequestController extends Controller
 			// dd($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date));
 			// dd($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date));
 			
-
-			return "true";
+			return ["success" => true, "msg" => "The employee reactivated successfully"];
 		}
-		return "false";
+		return ["success" => false, "msg" => "Something went wrong. Please contact administration"];
 	}
 
 	public function CalculateLast13_Date($date){
