@@ -20,8 +20,12 @@
   <div class="col-md-12">
     <div style="display: none;" class="alert-dismissible alert alert-success alertfade"><span class="fa fa-close"> </span><em> </em></div>
     <div style="display: none;" class="alert alert-danger alertfade"><span class="fa fa-close"> </span><em> </em></div>
+    @if(!$hasAccess)
+        <div class="alert alert-danger"><span class="fa fa-close"> </span><em> You don't have permission </em></div>
+    @endif
   </div>
 </div>
+@if($hasAccess)
 <section class="content">
     <div class="row">
         <div class="col-md-12">
@@ -51,7 +55,7 @@
         </div>
       </div>
 </section>
-
+@endif
 
   <script type="text/javascript">
   function showAlertModal(title, message){
