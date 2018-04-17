@@ -16,12 +16,11 @@
       <div class="panel-body manual" style="margin: 30px 0px;">
         <div class="row purchase_menu" style="margin-bottom: 20px;">
             <ul class="purchase_order_style navbar-nav" >
-                <li class="active">
-                    <a>Manual P.O.</a>
-                </li>
-
                 <li class="">
                   <a href="{{route('purchase_order.create_automate',['corpID' => $corpID]) }}">Auto-generate P.O.</a>
+                </li>
+                <li class="active">
+                    <a>Manual P.O.</a>
                 </li>
                 <li class="last_item"></li>
             </ul>
