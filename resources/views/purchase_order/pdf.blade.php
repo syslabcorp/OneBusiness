@@ -94,15 +94,6 @@
         </div>
       </div>
 
-      <div class="po">
-        <div class="title">
-          <b>Group: </b>
-        </div>
-        <div class="value">
-          <span class="value_po"> {{  $group->desc }} </span> 
-        </div>
-      </div>
-
       </div>
 
       <div class="mid-row">

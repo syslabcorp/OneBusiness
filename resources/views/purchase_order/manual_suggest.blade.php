@@ -16,12 +16,11 @@
       <div class="panel-body manual" style="margin: 30px 0px;">
         <div class="row purchase_menu" style="margin-bottom: 20px;">
             <ul class="purchase_order_style navbar-nav" >
-                <li class="active">
-                    <a>Manual P.O.</a>
-                </li>
-
                 <li class="">
                   <a href="{{route('purchase_order.create_automate',['corpID' => $corpID]) }}">Auto-generate P.O.</a>
+                </li>
+                <li class="active">
+                    <a>Manual P.O.</a>
                 </li>
                 <li class="last_item"></li>
             </ul>
@@ -29,7 +28,6 @@
         <form id="main_form" action="{{route('purchase_order.manual_save')}}"  method="POST">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <input type="hidden" name="corpID" value="{{$corpID}}">
-          <input type="hidden" name="group" value="{{$group}}">
           <div class="row border_bottom">
             <span style="font-size: 36px">Generate P.O.:</span>
             <span>Total Pieces: 
