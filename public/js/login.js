@@ -596,6 +596,11 @@ $(function() {
             .attr("name", "branchs[]").val($(this).data("branch"));
           $('#manualform').append(input);
         });
+
+        input = $("<input>")
+          .attr("type", "hidden")
+          .attr("name", "group_id").val($('#group').val());
+        $('#manualform').append(input);
   
         // $('#manualform').submit();
   

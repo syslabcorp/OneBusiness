@@ -37,7 +37,7 @@
                                 <input type="hidden" name="proid" id="proid" value="{{isset($detail_edit_temp_hdr->po_tmpl8_id) ? $detail_edit_temp_hdr->po_tmpl8_id : '' }}">
                                 <input type="hidden" id="corp_id" value="{{ $corp_id }}">
                                 <div class="form-group row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
                                         <div class="col-md-8">
                                             <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : old('po_tmpl8_desc') }}"autofocus>
@@ -48,16 +48,29 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label for="group" class="col-md-3 control-label">Group:</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control required listgroup" id="group" name="group_id">
+                                                @foreach ($groups as $group) 
+                                                    <option {{ ($group ->group_ID == $group_id) ? "selected" : "" }} value="{{ $group->group_ID }}" >{{ $group->desc }} </option> 
+                                                @endforeach    
+                                            </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
 									<div class="col-md-1">
 									<label class="mt-checkbox">
-										<input type="checkbox" name="active" id="active" <?php if(isset($detail_edit_temp_hdr->active) && $detail_edit_temp_hdr->active == 1){ echo 'checked'; }else{echo '';}?>> Active
+										<input type="checkbox" checked name="active" id="active" <?php if(isset($detail_edit_temp_hdr->active) && $detail_edit_temp_hdr->active == 1){ echo 'checked'; }else{echo '';}?>> Active
 										<span></span>
 									</label>
 									</div>
-									<div class="col-md-4">
-										<label for="temp_nam" class="col-md-6 control-label">Ave. Qty Cycle</label>
-										<div class="col-md-6">
+									<div class="col-md-3">
+										<label for="temp_nam" class="col-md-5 control-label">Ave. Qty Cycle</label>
+										<div class="col-md-7">
 										<div class="input-group" id="requestorPhoneLast">
 											<input id="area_cycle" type="text" class="form-control required number" name="po_avg_cycle"  value="{{isset($detail_edit_temp_hdr->po_avg_cycle) ? $detail_edit_temp_hdr->po_avg_cycle : 30 }}" autofocus>
 											<span class="input-group-addon">
@@ -131,6 +144,22 @@ $(function(){
     <?php if(isset($proline_ids)){ ?>
         GetSelectedproduct();
     <?php } ?>  
+});
+
+
+$("#group").change(function(){
+    var group_id = $(this).val();
+    var _token = $("meta[name='csrf-token']").attr("content");
+    var city_id = {{ $cities->City_ID }};
+    var corp_id = {{ $corp_id }};
+    $.ajax({
+        url: ajax_url+'/product_branch',
+        type: "POST",
+        data: {_token,city_id,group_id,corp_id},
+        success: function(response){
+          $('.product-branch').html(response);
+        }
+    });
 });
 </script>
 @endsection

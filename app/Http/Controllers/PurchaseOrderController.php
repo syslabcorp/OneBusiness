@@ -20,6 +20,7 @@ use App\ProductLine;
 use App\StockItem;
 use App\Corporation;
 use App\StockDetail;
+use App\RemitGroup;
 class PurchaseOrderController extends Controller
 {
 	public function __construct()
@@ -104,17 +105,27 @@ class PurchaseOrderController extends Controller
             $data['proline_ids'] = $proline_ids;
             $branchdata['probranch_ids'] = $probranch_ids;
         }
-        
+        $group_id = isset($formData['group_id']) ? $formData['group_id'] :'';
+        // $group = RemitGroup::where('group_id', $group_id)->get()->first();
+        $branchs_ID = array();
+        $remit_groups =  RemitGroup::orderBy('desc')->get();
+        if($group = $remit_groups->first())
+        {
+          $branchs_ID = explode( ',' ,$group->branch );
+        }
+        $data['groups'] = $remit_groups;
+        $data['group_id'] = $group_id;
+
         $user_area_data = DB::table('user_area')->where('user_ID',$userId)->first();
         $branchdata['branches'] = array();
         if(isset($user_area_data->branch) && !is_null($user_area_data->branch)){
             $branch_idss = explode(',', $user_area_data->branch);
-            $branchdata['branches'] = DB::table('t_sysdata')->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->whereIn('Branch',$branch_idss)->orderBy('ShortName')->get();
+            $branchdata['branches'] = DB::table('t_sysdata')->whereIn('Branch', $branchs_ID)->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->whereIn('Branch',$branch_idss)->orderBy('ShortName')->get();
         }
         if(isset($user_area_data->city) && !is_null($user_area_data->city)){
             $city_idss = explode(',', $user_area_data->city);
             if(in_array($city_id,$city_idss)){
-                $branchdata['branches'] = DB::table('t_sysdata')->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->orderBy('ShortName')->get();
+                $branchdata['branches'] = DB::table('t_sysdata')->whereIn('Branch', $branchs_ID)->where('Active',1)->where('corp_id',$corp_id)->where('City_ID',$city_id)->orderBy('ShortName')->get();
             }
             
         }
@@ -147,15 +158,34 @@ class PurchaseOrderController extends Controller
         $data =array();
         if (Request::isMethod('post')) {
             $formData = Request::all();
-            $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
-            $data['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
-            $POTemplateDetail = '\\App\\POTemplateDetail'.$corp_id;
-            $branchesSelected = $POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
-            $probranch_ids = array();
-            foreach ($branchesSelected as $branchSelected) {
-                array_push($probranch_ids, $branchSelected->po_tmpl8_branch);
+            if ( isset($formData['group_id']) )
+            {
+              $group_id = $formData['group_id'];
+              $corp_id = $formData['corp_id'];
+              $group = RemitGroup::where('group_id', $group_id)->get()->first();
+              $branchs_ID = explode( ',' ,$group->branch );
+              $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
+              $data['branches'] = DB::table('t_sysdata')->where('Active',1)->where('corp_id',$corp_id)->whereIn('Branch', $branchs_ID)->where('City_ID',$city_id)->get();
+              $POTemplateDetail = '\\App\\POTemplateDetail'.$corp_id;
+              // $branchesSelected = $POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
+              $probranch_ids = array();
+              // foreach ($branchesSelected as $branchSelected) {
+              //     array_push($probranch_ids, $branchSelected->po_tmpl8_branch);
+              // }
+              $data['probranch_ids'] = $probranch_ids;
             }
-            $data['probranch_ids'] = $probranch_ids;
+            else
+            {
+              $city_id = isset($formData['city_id']) ? $formData['city_id'] : '';
+              $data['branches'] = DB::table('t_sysdata')->where('City_ID',$city_id)->get();
+              $POTemplateDetail = '\\App\\POTemplateDetail'.$corp_id;
+              $branchesSelected = $POTemplateDetail::where('po_tmpl8_id',$formData['product_id'])->select('po_tmpl8_branch')->groupBy('po_tmpl8_branch')->get();
+              $probranch_ids = array();
+              foreach ($branchesSelected as $branchSelected) {
+                  array_push($probranch_ids, $branchSelected->po_tmpl8_branch);
+              }
+              $data['probranch_ids'] = $probranch_ids;
+            }
         }
         return view('accesslevel.product_branches',$data);
     }
@@ -197,10 +227,15 @@ class PurchaseOrderController extends Controller
     public function list_purchase_order(){
         $corp_id = isset($_GET['corpID']) ? $_GET['corpID']: '' ;
         $city_id = session('city_id'); 
+        $group_id = session('group_id');
+        // dd($city_id);
         $data = array();
          if (Request::isMethod('post')) {
             $formData = Request::all();
             $city_id = isset($formData['city_id']) ? $formData['city_id'] :'';
+            $group_id = isset($formData['group_id']) ? $formData['group_id'] :'';
+            $group = RemitGroup::where('group_id', $group_id)->get()->first();
+            $groups_ID = explode( ',' ,$group->branch );
             $active = isset($formData['active']) ? $formData['active'] :'';
             $data['corp_id'] = isset($formData['corp_id']) ? $formData['corp_id'] :'';
             $db_namedata = DB::table('corporation_masters')->where('corp_id',$data['corp_id'])->select('database_name')->first();
@@ -223,6 +258,7 @@ class PurchaseOrderController extends Controller
             return redirect("/501");
         }
         $user_area = UserArea::where('user_ID', Auth::id())->first();
+        $remit_groups =  RemitGroup::orderBy('desc')->get();
         if(!empty($user_area->city)){
             $user_cities = explode(",", $user_area->city);
             $cities = DB::table('t_cities')->select('City_ID','City')->whereIn('City_ID', $user_cities)->orderBy('t_cities.City', 'asc')->get();
@@ -233,6 +269,8 @@ class PurchaseOrderController extends Controller
             $cities = DB::table('t_cities')->select('City_ID','City')->orderBy('t_cities.City', 'asc')->get();
         }
         $data['cities'] = $cities;
+        $data['groups'] = $remit_groups;
+        $data['group_id'] = $group_id;
         $data['city_id'] = $city_id;
         $data['corp_id'] = $corp_id;
         return view('accesslevel.list_purchase_order',$data);
@@ -250,6 +288,16 @@ class PurchaseOrderController extends Controller
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
+
+      $group_id = isset($formData['group_id']) ? $formData['group_id'] :'';
+      $branchs_ID = array();
+      $remit_groups =  RemitGroup::orderBy('desc')->get();
+      if($group = $remit_groups->first())
+      {
+        $branchs_ID = explode( ',' ,$group->branch );
+      }
+      // dd($branchs_ID);
+      
       if(\Auth::user()->isAdmin())
       {
         $cities = City::orderBy('City')->get();
@@ -266,7 +314,7 @@ class PurchaseOrderController extends Controller
       $prodlines = ProductLine::where('Active', 1)->orderBy('Product')->get();
       if(count($cities) > 0)
       {
-        $branchs = Branch::where( 'City_ID', $cities->first()->City_ID )->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
+        $branchs = Branch::whereIn('Branch', $branchs_ID)->where( 'City_ID', $cities->first()->City_ID )->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
       }
       else
       {
@@ -286,7 +334,9 @@ class PurchaseOrderController extends Controller
           'branchs' => $branchs,
           'cities' => $cities,
           'prodlines' => $prodlines,
-          'corpID' => Request::all()['corpID']
+          'corpID' => Request::all()['corpID'],
+          'groups' => $remit_groups,
+          'group_id' => $group_id
         ]
       );
     }
@@ -355,6 +405,8 @@ class PurchaseOrderController extends Controller
         }
       }
       
+      $group = isset(Request::all()['group_id']) ? Request::all()['group_id'] : "";
+
       if(Request::all()['ItemCode'] && count(Request::all()['ItemCode']) )
       {
         // dd(Config::get('database.connections.mysql.database'));
@@ -490,7 +542,8 @@ class PurchaseOrderController extends Controller
         'num_branch' => count(Request::all()['branchs']),
         'header_branch' => $header_branch,
         'total_amount' => $total_amount,
-        'total_pieces' => $total_pieces
+        'total_pieces' => $total_pieces,
+        'group' => $group
       ]);
     }
 
@@ -501,6 +554,7 @@ class PurchaseOrderController extends Controller
         return redirect("/home"); 
       }
       // return response()->json(Request::all());
+      $group = isset(Request::all()['group']) ? Request::all()['group'] : "";
 
       if(array_key_exists('po_no' ,Request::all()))
       {
@@ -581,8 +635,8 @@ class PurchaseOrderController extends Controller
       // return redirect()->route('purchase_order.create_manual', [ 'corpID' => (Request::all()['corpID']) ]);
 
       return response()->json([
-        'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
-        'po_no' => $PurchaseOrderModel->po_no
+        'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID'], 'group' => $group]),
+        'po_no' => $PurchaseOrderModel->po_no,
       ]);
       
       
@@ -790,13 +844,13 @@ class PurchaseOrderController extends Controller
         $PurchaseOrderModel->tot_pcs   = $total_pieces;
         $PurchaseOrderModel->total_amt   = $total_amount;
         $PurchaseOrderModel->save();
-        // if ( $PurchaseOrderModel->purchase_order_details()->count() == 0 )
-        // {
-        //   $PurchaseOrderModel->delete();
-        //   return response()->json([
-        //     'num_details' => $PurchaseOrderModel->purchase_order_details()->count() ]
-        //   );
-        // }
+        if ( $PurchaseOrderModel->purchase_order_details()->count() == 0 )
+        {
+          $PurchaseOrderModel->delete();
+          return response()->json([
+            'num_details' => $PurchaseOrderModel->purchase_order_details()->count() ]
+          );
+        }
   
         return response()->json([
           'url' => route('purchase_order.pdf', ['id'=> $PurchaseOrderModel->po_no, 'corpID' => Request::all()['corpID']]),
@@ -815,6 +869,8 @@ class PurchaseOrderController extends Controller
     public function pdf($id)
     {
       $company = Corporation::findOrFail(Request::all()['corpID']);
+      $group = RemitGroup::where('group_ID', Request::all()['group'])->get()->first();
+      
       $PurchaseOrderModel = new \App\PurchaseOrder;
       $PurchaseOrderModel->setConnection($company->database_name);
       $purchase_order = $PurchaseOrderModel->where('po_no' , $id )->get()->first();
@@ -830,7 +886,7 @@ class PurchaseOrderController extends Controller
 
       $file_name = $company->corp_name."_".$purchase_order->po_no."_".$purchase_order->po_date->format("Ymd");
 
-      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs'));
+      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs', 'group'));
       return $pdf->stream($file_name.".pdf");
     }
 
@@ -856,7 +912,16 @@ class PurchaseOrderController extends Controller
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
       });
-      $branchs = Branch::whereIn( 'City_ID', $cities )->where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
+
+      $group_id = Request::all()['group'];
+      $branchs_ID = array();
+      $remit_groups =  RemitGroup::where('group_ID', $group_id)->get();
+      if($group = $remit_groups->first())
+      {
+        $branchs_ID = explode( ',' ,$group->branch );
+      }
+
+      $branchs = Branch::whereIn('Branch', $branchs_ID)->whereIn( 'City_ID', $cities )->where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs
       ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
@@ -879,7 +944,16 @@ class PurchaseOrderController extends Controller
       $cities = $cities->map(function($item) {
         return $item['City_ID'];
       });
-      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
+
+      $group_id = Request::all()['group'];
+      $branchs_ID = array();
+      $remit_groups =  RemitGroup::where('group_ID', $group_id)->get();
+      if($group = $remit_groups->first())
+      {
+        $branchs_ID = explode( ',' ,$group->branch );
+      }
+
+      $branchs = Branch::whereIn('Branch', $branchs_ID)->whereIn( 'City_ID', $cities )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs
       ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
