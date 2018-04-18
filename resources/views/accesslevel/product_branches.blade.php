@@ -8,7 +8,7 @@
 	    <table id="pro_line" class="table table-striped table-bordered" cellspacing="0" width="100%">
 		    <tbody>
 		    	@if($branches->isEmpty())
-		    	<tr><td>No Branches Exists</td></tr> 
+		    	<tr><td>No branches or branches are not allowed for your account </td></tr> 
 		    	@else
 		    		@foreach ($branches as $branch) 
 			        <tr>
