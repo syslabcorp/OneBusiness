@@ -97,12 +97,12 @@
                 <div class="row">
                   <div class="col-md-6">
                     <label for="">From</label>
-                    <input type="text" name="from_date" id="from_date" class="datepicker form-control" >
+                    <input type="date" name="from_date" id="from_date" class=" form-control" >
                   </div>
 
                   <div class="col-md-6">
                     <label for="">To</label>
-                    <input type="text" name="to_date" id="to_date" class="datepicker form-control">
+                    <input type="date" name="to_date" id="to_date" class=" form-control">
                   </div>
                 </div>
 
