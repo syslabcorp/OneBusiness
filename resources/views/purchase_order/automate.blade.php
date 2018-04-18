@@ -78,7 +78,7 @@
       <div class="panel-footer">
         <div class="row">
         <div class="pull-right">
-          <button class="btn btn-primary" id="create_po_button">Create P.O.</button>
+          <button class="btn btn-primary" id="create_po_button" {{ \Auth::user()->checkAccessByIdForCorp($corpID, 40, 'A') ? "" : "disabled" }}>Create P.O.</button>
         </div>
 
         </div>

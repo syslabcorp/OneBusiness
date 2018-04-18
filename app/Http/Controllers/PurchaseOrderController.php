@@ -220,7 +220,7 @@ class PurchaseOrderController extends Controller
         $permission = \Auth::user()->checkAccessByPoId([$corp_id],31, "V");
         if(!$permission)
         {
-            \Session::flash('error', "You don't have permission"); 
+            \Session::flash('error', "You doncities't have permission"); 
             return redirect("/home"); 
         }elseif ($permission === 501) {
             return redirect("/501");
@@ -253,7 +253,6 @@ class PurchaseOrderController extends Controller
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
-      
       if(\Auth::user()->isAdmin())
       {
         $cities = City::orderBy('City')->get();
@@ -262,8 +261,33 @@ class PurchaseOrderController extends Controller
       {
         if(isset(\Auth::user()->area))
         {
-          $cities_ID = explode( ',' ,\Auth::user()->area->city );
-          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+          if(isset(\Auth::user()->area->branch))
+          {
+            $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+            $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+            $citi_list = $citi_list->map(function($item) {
+              return $item['City_ID'];
+            });
+          }
+          else
+          {
+            $citi_list = [];
+          }
+
+          if(isset(\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+          }
+          else
+          {
+            $provinces_ID = [];
+          }
+          
+          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          // dd($cities);
+          
+          // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
         else
         {
@@ -317,8 +341,31 @@ class PurchaseOrderController extends Controller
       {
         if(isset(\Auth::user()->area))
         {
-          $cities_ID = explode( ',' ,\Auth::user()->area->city );
-          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+          if(isset(\Auth::user()->area->branch))
+          {
+            $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+            $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+            $citi_list = $citi_list->map(function($item) {
+              return $item['City_ID'];
+            });
+          }
+          else
+          {
+            $citi_list = [];
+          }
+
+          if(isset(\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+          }
+          else
+          {
+            $provinces_ID = [];
+          }
+          
+          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
         else
         {
@@ -655,8 +702,31 @@ class PurchaseOrderController extends Controller
           {
             if(isset(\Auth::user()->area))
             {
-              $cities_ID = explode( ',' ,\Auth::user()->area->city );
-              $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+              if(isset(\Auth::user()->area->branch))
+              {
+                $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+                $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+                $citi_list = $citi_list->map(function($item) {
+                  return $item['City_ID'];
+                });
+              }
+              else
+              {
+                $citi_list = [];
+              }
+    
+              if(isset(\Auth::user()->area->province))
+              {
+                $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+              }
+              else
+              {
+                $provinces_ID = [];
+              }
+              
+              $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+              // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+              // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
             }
             else
             {
@@ -900,8 +970,31 @@ class PurchaseOrderController extends Controller
       {
         if(isset(\Auth::user()->area))
         {
-          $cities_ID = explode( ',' ,\Auth::user()->area->city );
-          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+          if(isset(\Auth::user()->area->branch))
+          {
+            $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+            $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+            $citi_list = $citi_list->map(function($item) {
+              return $item['City_ID'];
+            });
+          }
+          else
+          {
+            $citi_list = [];
+          }
+
+          if(isset(\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+          }
+          else
+          {
+            $provinces_ID = [];
+          }
+          
+          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
         else
         {
@@ -928,8 +1021,31 @@ class PurchaseOrderController extends Controller
       {
         if(isset(\Auth::user()->area))
         {
-          $cities_ID = explode( ',' ,\Auth::user()->area->city );
-          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+          if(isset(\Auth::user()->area->branch))
+          {
+            $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+            $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+            $citi_list = $citi_list->map(function($item) {
+              return $item['City_ID'];
+            });
+          }
+          else
+          {
+            $citi_list = [];
+          }
+
+          if(isset(\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+          }
+          else
+          {
+            $provinces_ID = [];
+          }
+          
+          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
         else
         {
@@ -956,8 +1072,31 @@ class PurchaseOrderController extends Controller
       {
         if(isset(\Auth::user()->area))
         {
-          $cities_ID = explode( ',' ,\Auth::user()->area->city );
-          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+          if(isset(\Auth::user()->area->branch))
+          {
+            $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+            $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+            $citi_list = $citi_list->map(function($item) {
+              return $item['City_ID'];
+            });
+          }
+          else
+          {
+            $citi_list = [];
+          }
+
+          if(isset(\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+          }
+          else
+          {
+            $provinces_ID = [];
+          }
+          
+          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
         else
         {
@@ -987,8 +1126,31 @@ class PurchaseOrderController extends Controller
       {
         if(isset(\Auth::user()->area))
         {
-          $cities_ID = explode( ',' ,\Auth::user()->area->city );
-          $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+          if(isset(\Auth::user()->area->branch))
+          {
+            $branchs_ID = explode( ',' ,\Auth::user()->area->branch );
+            $citi_list = Branch::whereIn('Branch', $branchs_ID)->select('City_ID')->distinct()->get();
+            $citi_list = $citi_list->map(function($item) {
+              return $item['City_ID'];
+            });
+          }
+          else
+          {
+            $citi_list = [];
+          }
+
+          if(isset(\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+          }
+          else
+          {
+            $provinces_ID = [];
+          }
+          
+          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();  
+          // $cities_ID = explode( ',' ,\Auth::user()->area->city );
+          // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
         else
         {
