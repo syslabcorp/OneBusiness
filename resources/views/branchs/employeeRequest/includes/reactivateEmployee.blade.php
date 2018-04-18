@@ -139,14 +139,15 @@
                 url : "{{ url('reactivateEmployeeRequest') }}", 
                 data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : {{ $corpId }} }
             }).done(function (response){
-                if(response == "true") {
+                if(response.success == "true") {
                     $('#reactivateModal').modal('hide');
                       reactivateEmployeeDatatable.draw();
                       employeeRequestsDatatable.draw();
-                      showSuccessAlert(" The employee reactivated successfully");
+                      showSuccessAlert(response.msg);
                       // showAlertModal("Success", "The employee reactivated successfully");
                 } else {
-                  showDangerAlert("Something Went Wrong, Please Contact Administration");
+                  $('#reactivateModal').modal('hide');
+                  showDangerAlert(response.msg);
                 }
             });
         });
