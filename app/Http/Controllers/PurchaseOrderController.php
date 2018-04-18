@@ -260,10 +260,14 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        if(\Auth::user()->area)
+        if(isset(\Auth::user()->area))
         {
           $cities_ID = explode( ',' ,\Auth::user()->area->city );
           $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
+        else
+        {
+          $cities = [];
         }
       }
       
@@ -311,18 +315,28 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        if(\Auth::user()->area)
+        if(isset(\Auth::user()->area))
         {
           $cities_ID = explode( ',' ,\Auth::user()->area->city );
           $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
+        else
+        {
+          $cities = [];
         }
       }
 
       $POTemplateModel = new \App\POTemplate;
       $POTemplateModel->setConnection($company->database_name);
       
-      $POTemplates = $POTemplateModel->where('Active', 1)->where('city_id', $cities->first()->City_ID)->get();
-      
+      if (count($cities) > 0)
+      {
+        $POTemplates = $POTemplateModel->where('Active', 1)->where('city_id', $cities->first()->City_ID)->get();
+      }
+      else
+      {
+        $POTemplates = [];
+      }      
       return view('purchase_order.automate',
       [
         'POTemplates' => $POTemplates,
@@ -639,10 +653,14 @@ class PurchaseOrderController extends Controller
           }
           else
           {
-            if(\Auth::user()->area)
+            if(isset(\Auth::user()->area))
             {
               $cities_ID = explode( ',' ,\Auth::user()->area->city );
               $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+            }
+            else
+            {
+              $cities = [];
             }
           }
           $cities = $cities->map(function($item) {
@@ -880,10 +898,14 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        if(\Auth::user()->area)
+        if(isset(\Auth::user()->area))
         {
           $cities_ID = explode( ',' ,\Auth::user()->area->city );
           $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
+        else
+        {
+          $cities = [];
         }
       }
       $cities = $cities->map(function($item) {
@@ -904,10 +926,14 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        if(\Auth::user()->area)
+        if(isset(\Auth::user()->area))
         {
           $cities_ID = explode( ',' ,\Auth::user()->area->city );
           $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
+        else
+        {
+          $cities = [];
         }
       }
       $cities = $cities->map(function($item) {
@@ -928,10 +954,14 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        if(\Auth::user()->area)
+        if(isset(\Auth::user()->area))
         {
           $cities_ID = explode( ',' ,\Auth::user()->area->city );
           $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
+        else
+        {
+          $cities = [];
         }
       }
       $cities = $cities->map(function($item) {
@@ -955,10 +985,14 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        if(\Auth::user()->area)
+        if(isset(\Auth::user()->area))
         {
           $cities_ID = explode( ',' ,\Auth::user()->area->city );
           $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+        }
+        else
+        {
+          $cities = [];
         }
       }
       $cities = $cities->map(function($item) {
