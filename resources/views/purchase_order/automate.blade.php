@@ -154,6 +154,20 @@
             {
               $('.pending').first().addClass('done').removeClass('pending')
                           .find('td').last().html('Document Created <a target="_blank" href="'+data.url+'">View</a> <span class="pull-right far fa-check-circle"></span>');
+              if(data.error.length > 0)
+              {
+                $('.done').last().find('td').last().append('<br><span style="color:red;"> Unable to process <span class="list_branchs_ajax"> </span>: Account not allowed</span>');
+                $.each( data.error, function( key, value ) {
+                  if((key + 1) == data.error.length)
+                  {
+                    $('.done').last().find('td').last().find('.list_branchs_ajax').append('<span>"'+value+'"</span>');
+                  }
+                  else
+                  {
+                    $('.done').last().find('td').last().find('.list_branchs_ajax').append('<span>"'+value+'", </span>');
+                  }
+                });
+              }
             }
             else
             {

@@ -53,6 +53,7 @@ class PurchaseOrderController extends Controller
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
                     }
+                $temp_hdr['created_by'] = $userId;
                 $po_tmpl8_hdr = $POTemplate::insertGetId($temp_hdr);
                 Request::session()->flash('flash_message', 'Product Template has been added.');
                 Request::Session()->flash('alert-class', 'alert-success');
@@ -245,7 +246,7 @@ class PurchaseOrderController extends Controller
     }
 
     public function manual(){
-      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 40, 'A')) {
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 40, 'V')) {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
       }
@@ -273,7 +274,7 @@ class PurchaseOrderController extends Controller
       }
       else
       {
-        $branch = [];
+        $branchs = [];
       }
       if($company->corp_type == "INN")
       {
@@ -296,7 +297,7 @@ class PurchaseOrderController extends Controller
 
     public function automate(){
       ini_set('max_execution_time', 300);
-      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 41, 'A')) {
+      if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 41, 'V')) {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
       }
@@ -625,11 +626,39 @@ class PurchaseOrderController extends Controller
   
         $total_amount = 0;
         $total_pieces = 0;
-  
+        $errors = array();
+        
         foreach($details as $detail)
         {
           $branch = $detail->po_tmpl8_branch;
           $item_id = $detail->po_tmpl8_item;
+
+          if(\Auth::user()->isAdmin())
+          {
+            $cities = City::all();
+          }
+          else
+          {
+            if(\Auth::user()->area)
+            {
+              $cities_ID = explode( ',' ,\Auth::user()->area->city );
+              $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+            }
+          }
+          $cities = $cities->map(function($item) {
+            return $item['City_ID'];
+          });
+
+          $branchs = Branch::whereIn( 'City_ID', $cities )->get();
+          $branchs_ID = $branchs->map(function($item) {
+            return $item['Branch'];
+          });
+
+          if(!in_array($branch, $branchs_ID->toArray()))
+          {
+            array_push($error, Branch::where('Branch', $branch)->get()->first()->ShortName ) ;
+            continue;
+          } 
   
           $SaleDetailModel = new \App\SaleDetail;
           $SaleDetailModel->setConnection($company->database_name);
@@ -806,7 +835,8 @@ class PurchaseOrderController extends Controller
           'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ),
           'total_sold' => $total_sold,
           'pending' => $pending,
-          'test' => $test
+          'test' => $test,
+          'error' => $errors
           ]
           
         );
