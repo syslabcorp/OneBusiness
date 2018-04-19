@@ -146,7 +146,7 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) {
-                    return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
+                    return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessById(38, "E")?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
                     return '<input disabled data-NX-id="'.$employeeRequest->UserID.'" type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
