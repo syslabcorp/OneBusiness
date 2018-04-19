@@ -130,14 +130,26 @@
             $('#reactivateModal').modal('show');
         }
 
+        function defineBranchId(){
+          $("#reactivateModal :checkbox:checked").next("select").val();
+        }
+
+        function defineBranchName(){
+          $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
+        }
+
+        function defineCorporationName() {
+          $("#reactivateModal :checkbox:checked").prev().html();
+        }
+
         $("#reactivateEmployeeForm").submit(function (event){
             event.preventDefault();
             var requestId = $("input[name='requestId']").val();
-            branch_id = $("#reactivateModal :checkbox:checked").next("select").val();
-            branch_name = $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
+            branch_id = defineBranchId();
+            branch_name = defineBranchName();
+            corporation_name = defineCorporationName();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
-            corporation_name = $("#reactivateModal :checkbox:checked").prev().html();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 

@@ -13,13 +13,16 @@ use Yajra\Datatables\Datatables;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\ModuleMaster;
 
 class EmployeeRequestController extends Controller
 {
+	
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
 		// if(!\Auth::user()->checkAccessById(38, "V")) {
 		// 	return view("branchs.employeeRequest.index", ["hasAccess" => false]);
 		// }
+		// dd(ModuleMaster::first());
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
@@ -347,8 +350,6 @@ class EmployeeRequestController extends Controller
 				$uniform->save();
 			}
 			if(!is_null($branch)) { $branch_name = $branch->ShortName; } else { $branch_name = null; }
-			// dd(!is_null($branch_name) && (stripos($branch_name,'SQ') >= 0));
-			// dd(stripos("nika", "ni") !== false);
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false)?$request->branch_id:"0";
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false)?"1":"0";
 			$user->Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') === false)?$request->branch_id:"0";
@@ -356,7 +357,6 @@ class EmployeeRequestController extends Controller
 			// $user->date_start = $request->start_date;
 			if($request->password != ""){
 				$user->passwrd = md5($request->password);
-				// $employeeRequest->user()->update(["passwrd" => md5($request->password)]);
 			}
 			$user->save();
 
