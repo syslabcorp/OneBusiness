@@ -160,7 +160,7 @@
       <div class="panel-footer">
         <div class="row">
         <div class="pull-right">
-          <button id="manual_generate" class="btn btn-success">Generate PO</button>
+          <button id="manual_generate" class="btn btn-success" {{ \Auth::user()->checkAccessByIdForCorp($corpID, 40, 'A') ? "" : "disabled" }} >Generate PO</button>
         </div>
 
         </div>
