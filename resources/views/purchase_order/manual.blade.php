@@ -68,7 +68,9 @@
                           <li class="ui-widget-content" data-branch="{{$branch->Branch}}">{{$branch->ShortName}}</li>
                         @endforeach
                       @else
+                        @if(  $branch_type )
                         <span style="color:red;"> Account not allowed to access any branch in this corp </span>
+                        @endif
                       @endif
                     </ul>
 
