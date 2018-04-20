@@ -388,7 +388,10 @@ class PurchaseOrderController extends Controller
       
       if (count($cities) > 0)
       {
-        $POTemplates = $POTemplateModel->where('Active', 1)->where('city_id', $cities->first()->City_ID)->get();
+        $cities_list = $cities->map(function($item) {
+          return $item['City_ID'];
+        });
+        $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities_list)->where('city_id', $cities->first()->City_ID)->get();
       }
       else
       {
@@ -756,7 +759,7 @@ class PurchaseOrderController extends Controller
           //   return $item['Branch'];
           // });
 
-          if(!in_array($branch, $branchs_ID->toArray()))
+          if(!in_array($branch, $branchs_ID))
           {
             array_push($error, Branch::where('Branch', $branch)->get()->first()->ShortName ) ;
             continue;
