@@ -242,6 +242,29 @@
         $('#render_template').html('');
         $('#auto_city_list').prop('disabled',false);
         $('#addForFun').remove();
+        var _token = $("meta[name='csrf-token']").attr('content');
+        var City_ID = $('#auto_city_list option:selected').val();
+        var corpID = {{$corpID}};
+        $.ajax({
+          url: ajax_url+'/purchase_order/ajax_render_template_by_city',
+          data: {_token, City_ID, corpID},
+          method: "POST",
+          type: 'POST',
+          success: function(res){
+            $('#render_template').html('');
+            $('tfoot').html('');
+            if(res.POTemplates.length == 0)
+            {
+              $('tfoot').append("<tr> <td colspan='2' style='color: red;'> No PO templates found </td> </tr>");
+            }
+            $.each(res.POTemplates, function( index, value ) {
+              $('#render_template').append("<tr class='ui-widget-content id_"+value.po_tmpl8_id+ " ' data-temp-id="+value.po_tmpl8_id+" > <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+              
+              // $('#render_template').append("<tr> <td> "+value.po_tmpl8_desc+" </td> <td> "+value.po_avg_cycle+" </td> </tr>");
+              // <li class='ui-widget-content'>"+value.ShortName+"</li>
+            });
+          }
+        });
       }
     });
   </script>
