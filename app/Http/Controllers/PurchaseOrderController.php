@@ -253,9 +253,15 @@ class PurchaseOrderController extends Controller
       $company = Corporation::findOrFail(Request::all()['corpID']);
       $stockModel = new \App\Stock;
       $stockModel->setConnection($company->database_name);
+      $branchs_ID = [];
       if(\Auth::user()->isAdmin())
       {
         $cities = City::orderBy('City')->get();
+        $branchs_ID = Branch::all();
+        $branchs_ID = $branchs_ID->map(function($item) {
+          return $item['Branch'];
+        });
+        $branchs_ID = $branchs_ID->toArray();
       }
       else
       {
@@ -298,12 +304,15 @@ class PurchaseOrderController extends Controller
       $prodlines = ProductLine::where('Active', 1)->orderBy('Product')->get();
       if(count($cities) > 0)
       {
-        $branchs = Branch::where( 'City_ID', $cities->first()->City_ID )->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
+        $total_branchs = Branch::whereIn('Branch', $branchs_ID)->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->count();
+        $branchs = Branch::where( 'City_ID', $cities->first()->City_ID )->whereIn('Branch', $branchs_ID)->where('corp_id', Request::all()['corpID'] )->where('Active', 1)->orderBy('ShortName')->get(['Branch', 'ShortName']);
       }
       else
       {
+        $total_branchs = 0;
         $branchs = [];
       }
+      // dd($total_branchs);
       if($company->corp_type == "INN")
       {
         $checkINN = true;
@@ -318,7 +327,8 @@ class PurchaseOrderController extends Controller
           'branchs' => $branchs,
           'cities' => $cities,
           'prodlines' => $prodlines,
-          'corpID' => Request::all()['corpID']
+          'corpID' => Request::all()['corpID'],
+          'total_branchs' => $total_branchs
         ]
       );
     }
@@ -693,10 +703,14 @@ class PurchaseOrderController extends Controller
         {
           $branch = $detail->po_tmpl8_branch;
           $item_id = $detail->po_tmpl8_item;
-
+          $branchs_ID = [];
           if(\Auth::user()->isAdmin())
           {
             $cities = City::all();
+            $branchs_ID = Branch::all();
+            $branchs_ID = $branchs_ID->map(function($item) {
+              return $item['Branch'];
+            });
           }
           else
           {
@@ -737,10 +751,10 @@ class PurchaseOrderController extends Controller
             return $item['City_ID'];
           });
 
-          $branchs = Branch::whereIn( 'City_ID', $cities )->get();
-          $branchs_ID = $branchs->map(function($item) {
-            return $item['Branch'];
-          });
+          // $branchs = Branch::whereIn( 'City_ID', $cities )->get();
+          // $branchs_ID = $branchs->map(function($item) {
+          //   return $item['Branch'];
+          // });
 
           if(!in_array($branch, $branchs_ID->toArray()))
           {
@@ -962,9 +976,15 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_branch_by_city()
     {
+      $branchs_ID = [];
       if(\Auth::user()->isAdmin())
       {
         $cities = City::all();
+        $branchs_ID = Branch::all();
+        $branchs_ID = $branchs_ID->map(function($item) {
+          return $item['Branch'];
+        });
+        $branchs_ID = $branchs_ID->toArray();
       }
       else
       {
@@ -1005,7 +1025,7 @@ class PurchaseOrderController extends Controller
         return $item['City_ID'];
       });
 
-      $branchs = Branch::whereIn( 'City_ID', $cities )->where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
+      $branchs = Branch::whereIn( 'City_ID', $cities )->whereIn('Branch', $branchs_ID)->where( 'City_ID', (Request::all()['City_ID']) )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs
       ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
@@ -1013,9 +1033,15 @@ class PurchaseOrderController extends Controller
 
     public function ajax_render_branch_by_all_cities()
     { 
+      $branchs_ID = [];
       if(\Auth::user()->isAdmin())
       {
         $cities = City::all();
+        $branchs_ID = Branch::all();
+        $branchs_ID = $branchs_ID->map(function($item) {
+          return $item['Branch'];
+        });
+        $branchs_ID = $branchs_ID->toArray();
       }
       else
       {
@@ -1056,7 +1082,7 @@ class PurchaseOrderController extends Controller
         return $item['City_ID'];
       });
 
-      $branchs = Branch::whereIn( 'City_ID', $cities )->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
+      $branchs = Branch::whereIn( 'City_ID', $cities )->whereIn('Branch', $branchs_ID)->where('Active', 1)->where('corp_id',(Request::all()['Corp_ID']) )->orderBy('ShortName')->get(['Branch', 'ShortName']);
       return response()->json([
         'branchs' => $branchs
       ], 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
