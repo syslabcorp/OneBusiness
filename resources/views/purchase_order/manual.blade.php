@@ -63,9 +63,13 @@
                 <div class="panel-body first">
                   <div>
                     <ul class="selectable" id="branch">
-                      @foreach($branchs as $branch)
-                        <li class="ui-widget-content" data-branch="{{$branch->Branch}}">{{$branch->ShortName}}</li>
-                      @endforeach
+                      @if( $total_branchs > 0)
+                        @foreach($branchs as $branch)
+                          <li class="ui-widget-content" data-branch="{{$branch->Branch}}">{{$branch->ShortName}}</li>
+                        @endforeach
+                      @else
+                        <span style="color:red;"> Account not allowed to access any branch in this corp </span>
+                      @endif
                     </ul>
 
                   </div>
@@ -348,31 +352,52 @@
       $( "input[name='branchs[]']" ).remove();
     });
 
-    $("#all_cities_checkbox").on('change', function(){
-      var _token = $("meta[name='csrf-token']").attr('content');
-      var Corp_ID = {{ $corpID }};
-      if(this.checked){
-        $('#dropdown_city_list').prepend("<option id='addForFun' selected></option>");
-        
-        $('#dropdown_city_list').prop('disabled','disabled');
-        $.ajax({
-          url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
-          data: {_token, Corp_ID},
-          type: 'POST',
-          success: function(res){
-            $('#branch').html('');
-            $.each(res.branchs, function( index, value ) {
-              $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
-            });
-          }
-        });
-      }
-      else
-      {
-        $('#branch').html('');
-        $('#addForFun').remove();
-        $('#dropdown_city_list').prop('disabled',false);
+    
+    @if( $total_branchs > 0)
+      $("#all_cities_checkbox").on('change', function(){
+        var _token = $("meta[name='csrf-token']").attr('content');
+        var Corp_ID = {{ $corpID }};
+        if(this.checked){
+          $('#dropdown_city_list').prepend("<option id='addForFun' selected></option>");
+          
+          $('#dropdown_city_list').prop('disabled','disabled');
+          $.ajax({
+            url: ajax_url+'/purchase_order/ajax_render_branch_by_all_cities',
+            data: {_token, Corp_ID},
+            type: 'POST',
+            success: function(res){
+              $('#branch').html('');
+              $.each(res.branchs, function( index, value ) {
+                $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
+              });
+            }
+          });
+        }
+        else
+        {
+          $('#branch').html('');
+          $('#addForFun').remove();
+          $('#dropdown_city_list').prop('disabled',false);
 
+          var _token = $("meta[name='csrf-token']").attr('content');
+          var City_ID = $('#city-list option:selected').val();
+          var Corp_ID = {{ $corpID }};
+          $.ajax({
+            url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
+            data: {_token, City_ID, Corp_ID},
+            method: "POST",
+            type: 'POST',
+            success: function(res){
+              $.each(res.branchs, function( index, value ) {
+                $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
+              });
+            }
+          });
+
+        }
+      });
+
+      $('#city-list').on('change', function(){
         var _token = $("meta[name='csrf-token']").attr('content');
         var City_ID = $('#city-list option:selected').val();
         var Corp_ID = {{ $corpID }};
@@ -382,32 +407,14 @@
           method: "POST",
           type: 'POST',
           success: function(res){
+            $('#branch').html('');
             $.each(res.branchs, function( index, value ) {
               $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
             });
           }
         });
-
-      }
-    });
-  
-    $('#city-list').on('change', function(){
-      var _token = $("meta[name='csrf-token']").attr('content');
-      var City_ID = $('#city-list option:selected').val();
-      var Corp_ID = {{ $corpID }};
-      $.ajax({
-        url: ajax_url+'/purchase_order/ajax_render_branch_by_city',
-        data: {_token, City_ID, Corp_ID},
-        method: "POST",
-        type: 'POST',
-        success: function(res){
-          $('#branch').html('');
-          $.each(res.branchs, function( index, value ) {
-            $('#branch').append("<li class='ui-widget-content ' data-branch="+value.Branch+">"+value.ShortName+"</li>");
-          });
-        }
-      });
-    })
+      })
+    @endif
     
   </script>
 
