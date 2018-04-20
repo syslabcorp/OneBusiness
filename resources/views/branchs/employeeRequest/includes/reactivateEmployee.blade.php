@@ -68,10 +68,14 @@
         <hr>
         <label style="margin: 0 0 12px 14px;">Branch Assignment: </label>
             <div class="row branchAssignment">
+              <div style="height: 33px;">
+                    <span class="col-md-3">Main Branch</span>
+                     <input class="col-md-1 MainBranchCheckbox" type="checkbox">
+                </div>
             @foreach($corporations as $corporation)
                 <div style="height: 33px;">
                     <span class="col-md-3">{{ $corporation["corporation"] }}</span>
-                     <input class="col-md-1" type="checkbox">
+                     <input class="col-md-1 notMainBranchCheckbox" type="checkbox">
                     <select disabled class="col-md-8" style="margin-top:-4px; background-color: rgb(235, 235, 228);">
                     <option value="null"></option>
                     @foreach($corporation["branches"] as $branch)
@@ -126,14 +130,26 @@
             $('#reactivateModal').modal('show');
         }
 
+        function defineBranchId(){
+          $("#reactivateModal :checkbox:checked").next("select").val();
+        }
+
+        function defineBranchName(){
+          $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
+        }
+
+        function defineCorporationName() {
+          $("#reactivateModal :checkbox:checked").prev().html();
+        }
+
         $("#reactivateEmployeeForm").submit(function (event){
             event.preventDefault();
             var requestId = $("input[name='requestId']").val();
-            branch_id = $("#reactivateModal :checkbox:checked").next("select").val();
-            branch_name = $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
+            branch_id = defineBranchId();
+            branch_name = defineBranchName();
+            corporation_name = defineCorporationName();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
-            corporation_name = $("#reactivateModal :checkbox:checked").prev().html();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 
@@ -152,7 +168,7 @@
             });
         });
 
-        $('#reactivateEmployeeForm input[type="checkbox"]').on('change', function() {
+        $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').on('change', function() {
             if(!$(this).is(":checked")) {
                 $(this).next("select").prop("disabled", true);
                 $(this).next("select").css("background-color", "#ebebe4");
@@ -163,13 +179,30 @@
                 $(this).next("select").css("background-color", "#ffffff");
                 $(this).next("select").find("option[value='null']").remove();
              }
-             $('#reactivateEmployeeForm input[type="checkbox"]').not(this).each(function (iterator, value){
+             $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').not(this).each(function (iterator, value){
                 $(value).prop('checked', false);  
                 $(value).next("select").prop("disabled", "disabled");
                 $(value).next("select").css("background-color", "#ebebe4");
                 $(value).next("select").prepend('<option value="null"></option>');
                 $(value).next("select").val("null");
              });
+        });
+
+        $('#reactivateEmployeeForm input[type="checkbox"].MainBranchCheckbox').on('change', function() {
+            if($(this).is(":checked")) {
+               $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').each(function (iterator, value){
+                  $(value).prop('checked', false);  
+                  $(value).next("select").prop("disabled", "disabled");
+                  $(value).next("select").css("background-color", "#ebebe4");
+                  $(value).next("select").prepend('<option value="null"></option>');
+                  $(value).next("select").val("null");
+                  $(value).prop("disabled", true);
+               });
+             } else {
+              $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').each(function (iterator, value){
+                  $(value).prop("disabled", false);
+               });
+             }
         });
 $(document).ready(function (){
     $("#reactivate_filters").insertAfter("#reactivateEmployeeDatatable_wrapper .dataTables_length");
