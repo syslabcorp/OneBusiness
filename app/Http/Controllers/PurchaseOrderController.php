@@ -391,7 +391,7 @@ class PurchaseOrderController extends Controller
         $cities_list = $cities->map(function($item) {
           return $item['City_ID'];
         });
-        $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities_list)->where('city_id', $cities->first()->City_ID)->get();
+        $POTemplates = $POTemplateModel->where('Active', 1)->whereIn('city_id', $cities_list)->where('city_id', $cities->first()->City_ID)->orderBy('po_tmpl8_desc')->get();
       }
       else
       {
@@ -761,7 +761,7 @@ class PurchaseOrderController extends Controller
 
           if(!in_array($branch, $branchs_ID))
           {
-            array_push($error, Branch::where('Branch', $branch)->get()->first()->ShortName ) ;
+            array_push($errors, Branch::where('Branch', $branch)->get()->first()->ShortName ) ;
             continue;
           } 
   
