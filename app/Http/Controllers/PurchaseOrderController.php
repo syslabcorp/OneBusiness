@@ -292,7 +292,7 @@ class PurchaseOrderController extends Controller
             $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
           }
           
-          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
           // $cities_ID = explode( ',' ,\Auth::user()->area->city );
           // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
@@ -377,7 +377,7 @@ class PurchaseOrderController extends Controller
             $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
           }
           
-          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
           // $cities_ID = explode( ',' ,\Auth::user()->area->city );
           // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
@@ -747,7 +747,7 @@ class PurchaseOrderController extends Controller
                 $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
               }
               
-              $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+              //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
               // $cities_ID = explode( ',' ,\Auth::user()->area->city );
               // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
             }
@@ -1022,7 +1022,7 @@ class PurchaseOrderController extends Controller
             $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
           }
           
-          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
           // $cities_ID = explode( ',' ,\Auth::user()->area->city );
           // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
@@ -1080,7 +1080,7 @@ class PurchaseOrderController extends Controller
             $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
           }
           
-          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
           // $cities_ID = explode( ',' ,\Auth::user()->area->city );
           // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
@@ -1132,7 +1132,7 @@ class PurchaseOrderController extends Controller
             $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
           }
           
-          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
           // $cities_ID = explode( ',' ,\Auth::user()->area->city );
           // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
@@ -1187,7 +1187,7 @@ class PurchaseOrderController extends Controller
             $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
           }
           
-          $cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+          //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
           // $cities_ID = explode( ',' ,\Auth::user()->area->city );
           // $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
         }
