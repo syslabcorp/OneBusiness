@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Config;
 use App\InventoryChange;
 use Illuminate\Http\Request;
 use Auth;
@@ -11,6 +12,7 @@ use App\InventoryType;
 use App\InventoryBrand;
 use App\ProductLine;
 use Illuminate\Support\Facades\DB;
+use DB as VLDB;
 
 class InventoryController extends Controller
 {
@@ -105,16 +107,34 @@ class InventoryController extends Controller
         $inventory->Active = ($request->itemActive) ? 1 : 0;
         $inventory->save();
 
-        $last_item_id = SItemCfg::all()->last()->item_id;
-        $list_item = SItemCfg::where('item_id' , $last_item_id)->get();
-        
-        foreach( $list_item as $item )
+        foreach  (Config::get('database')['connections'] as $key => $value )
         {
-          $new_item =  new SItemCfg();
-          $new_item->item_id = $inventory->item_id;
-          $new_item->Branch = $item->Branch;
-          $new_item->ItemCode = $inventory->ItemCode;
-          $new_item->save();
+            $query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME =  ?";
+            $query_check_exist_table = "SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
+            $db = VLDB::select($query, [$key]);
+            if(!empty($db))
+            {
+                $table = VLDB::select($query_check_exist_table, [$key, 's_item_cfg' ]);
+                if(!empty($table))
+                {
+                    // $last_item_id = SItemCfg::all()->last()->item_id;
+                    // $list_item = SItemCfg::where('item_id' , $last_item_id)->get();
+                    $last_item_id = VLDB::connection($key)->table('s_item_cfg')->get()->last()->item_id;
+                    $list_item = VLDB::connection($key)->table('s_item_cfg')->where('item_id' , $last_item_id)->get();
+                    
+                    foreach( $list_item as $item )
+                    {
+                        $new_item = new \App\SItemCfg;
+                        $new_item->setConnection($key);
+                    //   $new_item =  new SItemCfg();
+                        $new_item->item_id = $inventory->item_id;
+                        $new_item->Branch = $item->Branch;
+                        $new_item->ItemCode = $inventory->ItemCode;
+                        $new_item->save();
+                    } 
+                }
+            }
+
         }
 
         \Session::flash('success', "Item added successfully");

@@ -739,12 +739,28 @@ class PurchaseOrderController extends Controller
               {
                 $provinces_ID = explode( ',' ,\Auth::user()->area->province );
                 $cities = City::WhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+
+                $cities_ID = $cities->map(function($item) {
+                  return $item['City_ID'];
+                });
+
+                $branchs_list = Branch::whereIn('City_ID', $cities_ID)->get();
+
+                $branchs_ID = $branchs_list->map(function($item) {
+                  return $item['Branch'];
+                });
               }
 
               if((\Auth::user()->area->city))
               {
                 $cities_ID = explode( ',' ,\Auth::user()->area->city );
                 $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+
+                $branchs_list = Branch::whereIn('City_ID', $cities_ID)->get();
+
+                $branchs_ID = $branchs_list->map(function($item) {
+                  return $item['Branch'];
+                });
               }
               
               //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
