@@ -294,6 +294,8 @@ class PurchaseOrderController extends Controller
             $branchs_ID = $branchs_list->map(function($item) {
               return $item['Branch'];
             });
+
+            $branchs_ID = $branchs_ID->toArray();
           }
 
           if((\Auth::user()->area->city))
@@ -306,6 +308,8 @@ class PurchaseOrderController extends Controller
             $branchs_ID = $branchs_list->map(function($item) {
               return $item['Branch'];
             });
+
+            $branchs_ID = $branchs_ID->toArray();
           }
           
           //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
@@ -765,6 +769,8 @@ class PurchaseOrderController extends Controller
                 $branchs_ID = $branchs_list->map(function($item) {
                   return $item['Branch'];
                 });
+
+                $branchs_ID = $branchs_ID->toArray();
               }
 
               if((\Auth::user()->area->city))
@@ -777,6 +783,8 @@ class PurchaseOrderController extends Controller
                 $branchs_ID = $branchs_list->map(function($item) {
                   return $item['Branch'];
                 });
+
+                $branchs_ID = $branchs_ID->toArray();
               }
               
               //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
@@ -1057,6 +1065,8 @@ class PurchaseOrderController extends Controller
             $branchs_ID = $branchs_list->map(function($item) {
               return $item['Branch'];
             });
+
+            $branchs_ID = $branchs_ID->toArray();
           }
 
           if((\Auth::user()->area->city))
@@ -1069,6 +1079,8 @@ class PurchaseOrderController extends Controller
             $branchs_ID = $branchs_list->map(function($item) {
               return $item['Branch'];
             });
+
+            $branchs_ID = $branchs_ID->toArray();
           }
           
           //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
@@ -1131,6 +1143,8 @@ class PurchaseOrderController extends Controller
             $branchs_ID = $branchs_list->map(function($item) {
               return $item['Branch'];
             });
+
+            $branchs_ID = $branchs_ID->toArray();
           }
 
           if((\Auth::user()->area->city))
@@ -1143,6 +1157,8 @@ class PurchaseOrderController extends Controller
             $branchs_ID = $branchs_list->map(function($item) {
               return $item['Branch'];
             });
+
+            $branchs_ID = $branchs_ID->toArray();
           }
           
           //$cities = City::whereIn('City_ID', $citi_list)->orWhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
