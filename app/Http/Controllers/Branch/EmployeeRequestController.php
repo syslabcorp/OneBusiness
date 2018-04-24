@@ -19,9 +19,9 @@ class EmployeeRequestController extends Controller
 {
 
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
-		if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
-			return view("branchs.employeeRequest.index", ["hasAccess" => false]);
-		}
+		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
+		// 	return view("branchs.employeeRequest.index", ["hasAccess" => false]);
+		// }
 		// dd(ModuleMaster::first());
 		try{
 			$id = $request->corpID;
@@ -105,7 +105,7 @@ class EmployeeRequestController extends Controller
                  ->editColumn("to_branch", function($employeeRequest){
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch.'</span>';
                 })
-                ->addColumn('action', function ($employeeRequest) {
+                ->addColumn('action', function ($employeeRequest) use ($request) {
                     return '<span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
@@ -148,7 +148,7 @@ class EmployeeRequestController extends Controller
 			});
 		}
             return Datatables::of($query1)
-                ->addColumn('action', function ($employeeRequest) {
+                ->addColumn('action', function ($employeeRequest) use ($request) {
                     // return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                     return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "E")?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
                 })
