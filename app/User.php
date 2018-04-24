@@ -101,6 +101,7 @@ class User extends Authenticatable
       $company = \App\Company::findOrFail($corpID);
 
       $moduleId = $company->corp_type == 'ICAFE' ? 3 : 5;
+      $moduleId = 3;
 
       if($this->permissions == null) {
         $this->permissions = \DB::table('rights_detail')
