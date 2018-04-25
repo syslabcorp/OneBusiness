@@ -61,24 +61,24 @@ Route::get('/ajax/services/{service_id_csv?}', ['as'=>'ajax.fetch.services', 'us
 Route::get('/ajax/retail-items/{product_id_csv?}', ['as'=>'ajax.fetch.retail-items', 'uses'=>'AjaxController@fetchRetailItems']);
 // end of routes for feature: service & retail item price configuration
 
-Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth']);
+Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth'])->name('bank_accounts.update');
 Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middleware' => 'auth']);
-Route::post('/banks/get-branches', 'BankController@getBranches')->middleware('auth');
+Route::post('/banks/get-branches', 'BankController@getBranches')->middleware('auth')->name('banks.get_branches');
 
 Route::post('/vendor-management/get-account-for-vendor', 'VendorManagementController@getVendorAccount')->middleware('auth');
 Route::post('/inventory/get-inventory-list', 'InventoryController@getInventoryList')->middleware('auth');
-Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth');
+Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth')->name('bank_accounts.change_default_account');
 Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getBranches')->middleware('auth');
-Route::post('banks/get-banks-list', 'BankController@getBanksList')->middleware('auth');
+Route::post('banks/get-banks-list', 'BankController@getBanksList')->middleware('auth')->name('banks.get_banks_list');
 Route::post('/checkbooks/get-accounts-for-branch', 'CheckbookController@getAccountForCheckbook')->middleware('auth');
-Route::post('/checkbooks/get-checkbooks', 'CheckbookController@getCheekbooks')->middleware('auth');
-Route::post('/checkbooks/edit-row-order', 'CheckbookController@editRowOrder')->middleware('auth');
+Route::post('/checkbooks/get-checkbooks', 'CheckbookController@getCheekbooks')->middleware('auth')->name('checkbooks.get_checkbooks');
+Route::post('/checkbooks/edit-row-order', 'CheckbookController@editRowOrder')->middleware('auth')->name('checkbooks.edit_row_order');
 Route::post('/checkbooks/delete', 'CheckbookController@destroy')->middleware('auth');
 Route::post('/checkbooks/edit-checkbook', 'CheckbookController@update')->middleware('auth');
-Route::post('/checkbooks/get-branches', 'CheckbookController@getBranches')->middleware('auth');
-Route::post('/checkbooks/get-banks', 'CheckbookController@getBanks')->middleware('auth');
-Route::post('/checkbooks/get-accounts-for-main', 'CheckbookController@getAccountsForMain')->middleware('auth');
-Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware('auth');
+Route::post('/checkbooks/get-branches', 'CheckbookController@getBranches')->middleware('auth')->name('checkbooks.get_branches');
+Route::post('/checkbooks/get-banks', 'CheckbookController@getBanks')->middleware('auth')->name('checkbooks.get_banks');
+Route::post('/checkbooks/get-accounts-for-main', 'CheckbookController@getAccountsForMain')->middleware('auth')->name('checkbooks.get_accounts_for_main');
+Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware('auth')->name('vendors.get_branch');
 #End of MasterFile Module
 
 Route::resource('categories', 'CategoriesController', ['middleware' => 'auth']);

@@ -533,8 +533,7 @@
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="branchName">Branch:</label>
                                     <div class="col-md-7">
-                                        <select name="branchName" class="form-control input-md editbranchName" id=""
-                                                data-parsley-required-message="Branch is required" required>
+                                        <select name="editbranchName" class="form-control input-md editbranchName" id="">
                                             <option value="">Select Branch:</option>
                                             @if(is_object($satelliteBranch))
                                             @foreach($satelliteBranch as $branch)
@@ -545,7 +544,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
-                                    <input type="checkbox" name="mainStatus" class="pull-left mainStatus" name="" id="">
+                                    <input type="checkbox" name="mainStatus" class="pull-left editmainStatus" name="" id="">
                                     <label for="mainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
                                 </div>
                             </div>
@@ -673,7 +672,7 @@
                "serverSide": true,
                 "ajax" : {
                    type: "POST",
-                    url: "banks/get-banks-list",
+                    url: "{!! route('banks.get_banks_list') !!}",
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         @if(isset($corporations[0]->corp_id))
@@ -781,6 +780,14 @@
                 }
             });
 
+            $(document).on('click', '.editmainStatus', function () {
+                if($('.editmainStatus').is(':checked')){
+                    $('.editbranchName').attr('disabled', true).css({"background-color":"#dddddd", "color":"#dddddd"});
+                }else{
+                    $('.editbranchName').attr('disabled', false).css({"background-color":"#FFF", "color":"#333"});
+                }
+            });
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
@@ -825,6 +832,16 @@
                 $('.editbranchName').val(hiddenColumnValue.branch);
                 $('.accountID').val(id);
                 $('#editAccountModal').modal("toggle");
+                if(hiddenColumnValue.branch == -1)
+                {
+                    $('.editmainStatus').prop('checked', true);
+                    $('.editbranchName').attr('disabled', true).css({"background-color":"#dddddd", "color":"#dddddd"});
+                }
+                else
+                {
+                    $('.editmainStatus').prop('checked', false);
+                    $('.editbranchName').removeAttr('disabled').css({"background-color":"", "color":""});
+                }
             });
 
             $(document).on('click', '.checkDefaultAcct', function (e) {
@@ -835,7 +852,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'bank-accounts/change-default-account',
+                    url: '{!! route("bank_accounts.change_default_account") !!}',
                     data: { id : id },
                     success: function () {
                         ref.closest('tbody').find('input:checked').each(function () {
@@ -874,7 +891,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: 'banks/get-branches',
+                    url: "{!! route('checkbooks.get_branches') !!}",
                     data: { status : dataStatus, corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -901,7 +918,7 @@
                 //get branches
                 $.ajax({
                     method: 'POST',
-                    url: 'banks/get-branches',
+                    url: "{!! route('banks.get_branches') !!}",
                     data: { status : dataStatus, corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -931,12 +948,20 @@
                 var accountNum = $('#bankAccountNumberEdit').val();
                 var accountID = $('.accountID').val();
                 var corpId = $('.editCorpName option:selected').val();
-                var branch = $('.editBranchName option:selected').val();
-
+                var branch = $('.editbranchName option:selected').val();
+                if( $('.editmainStatus').is(':checked') )
+                {
+                    var mainStatus = "on";
+                }
+                else
+                {
+                    var mainStatus = "off";
+                }
+                
                 $.ajax({
-                    url: "/bank-accounts/update",
+                    url: "{!! route('bank_accounts.update') !!}",
                     method: "POST",
-                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID, corpId : corpId, branch: branch},
+                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID, corpId : corpId, branch: branch, mainStatus: mainStatus},
                     success: function (data) {
                         if(data == "success"){
                             $('#editAccountModal').modal("toggle");
@@ -1027,7 +1052,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '/OneBusiness/vendors/get-branches',
+                    url: "{!! route('vendors.get_branch') !!}",
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);

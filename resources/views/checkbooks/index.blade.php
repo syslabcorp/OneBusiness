@@ -321,7 +321,7 @@
                 "serverSide": true,
                 "ajax" : {
                     type: "POST",
-                    url: "checkbooks/get-checkbooks",
+                    url: "{!! route('checkbooks.get_checkbooks') !!}",
                     data: function (d) {
                         @if(is_object($corporations))
                             d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
@@ -377,14 +377,14 @@
                                 var info = mainTable.page.info();
 
                                 if (meta.row > 0) {
-                                    $('<a name="edit" data-used="'+row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }else if(info.page > 0){
-                                    $('<a name="edit" data-used="'+row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }
 
-                                $( '<a name="edit" data-used="'+row.used+'" class="btn btn-primary btn-sm dtMoveDown">' +
+                                $( '<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-sm dtMoveDown">' +
                                     '<i class="glyphicon glyphicon-arrow-down"></i>').appendTo($span);
 
                                 return $span.html();
@@ -470,7 +470,7 @@
                 //edit the order of the column
                 $.ajax({
                     method: 'POST',
-                    url: 'checkbooks/edit-row-order',
+                    url: "{!! route('checkbooks.edit_row_order') !!}",
                     data: { rowId : rowId, rowId2 : rowId2, order_num : order_num, order_num2 : order_num2 },
                     success: function () {
                         mainTable.ajax.reload();
@@ -506,7 +506,7 @@
 
                     $.ajax({
                         method: 'POST',
-                        url: 'checkbooks/get-accounts-for-main',
+                        url: "{!! route('checkbooks.get_accounts_for_main') !!}",
                         success: function (data) {
                             data = JSON.parse(data);
                             $.each(data, function (key, val) {
@@ -553,7 +553,7 @@
                     var cnt = 0;
                     $.ajax({
                         method: 'POST',
-                        url: 'checkbooks/get-branches',
+                        url: "{!! route('checkbooks.get_branches') !!}",
                         data: { status : dataStatus, corpId : corpId },
                         success: function (data) {
                             data = JSON.parse(data);
@@ -621,7 +621,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: 'checkbooks/get-banks',
+                    url: "{!! route('checkbooks.get_banks') !!}",
                     data: { branchId : branchId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -660,7 +660,7 @@
                     var cnt = 0;
                     $.ajax({
                         method: 'POST',
-                        url: 'checkbooks/get-banks',
+                        url: "{!! route('checkbooks.get_banks') !!}",
                         data: { branchId : branchId },
                         success: function (data) {
                             data = JSON.parse(data);
