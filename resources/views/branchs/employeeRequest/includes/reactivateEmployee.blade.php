@@ -131,15 +131,19 @@
         }
 
         function defineBranchId(){
-          $("#reactivateModal :checkbox:checked").next("select").val();
+            if($("#reactivateEmployeeForm input[type='checkbox'].MainBranchCheckbox").is(":checked")) {
+              return "-1";
+            } else {
+              return $("#reactivateModal :checkbox:checked").next("select").val();
+            }
         }
 
         function defineBranchName(){
-          $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
+          return $("#reactivateModal :checkbox:checked").next("select").children("option").filter(":selected").text();
         }
 
         function defineCorporationName() {
-          $("#reactivateModal :checkbox:checked").prev().html();
+          return $("#reactivateModal :checkbox:checked").prev().html();
         }
 
         $("#reactivateEmployeeForm").submit(function (event){
