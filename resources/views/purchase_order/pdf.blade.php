@@ -115,7 +115,7 @@
         <b>Total Price: </b>
       </div>
       <div class="value">
-        <span class="value_po"> {{ $purchase_order->total_amt ? number_format($purchase_order->total_amt, 2, '.', ',')  : "" }} </span>
+        <span class="value_po"> P{{ $purchase_order->total_amt ? number_format($purchase_order->total_amt, 2, '.', ',')  : "" }} </span>
       </div>
     </div>
     </div>
