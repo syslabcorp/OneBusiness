@@ -1016,6 +1016,15 @@ class PurchaseOrderController extends Controller
       $file_name = $company->corp_name."_".$purchase_order->po_no."_".$purchase_order->po_date->format("Ymd");
 
       $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs'));
+      if(count($branchs) > 3)
+      {
+        $pdf->setPaper('A4', 'landscape');
+      }
+      else
+      {
+        $pdf->setPaper('A4');
+      }
+
       return $pdf->stream($file_name.".pdf");
     }
 
