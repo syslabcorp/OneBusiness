@@ -1014,17 +1014,26 @@ class PurchaseOrderController extends Controller
       // view()->share('purchase_order',$purchase_order);
 
       $file_name = $company->corp_name."_".$purchase_order->po_no."_".$purchase_order->po_date->format("Ymd");
-
-      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs'));
-      if(count($branchs) > 3)
+      $index = 1;
+      $quantity = 5;
+      if(is_float(count($branchs) / $quantity))
       {
-        $pdf->setPaper('A4', 'landscape');
+        $num_page = intval(count($branchs) / $quantity) + 1;
       }
       else
       {
-        $pdf->setPaper('A4');
+        $num_page = intval(count($branchs) / $quantity);
       }
-
+      // dd($branchs->toArray());
+      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs', 'num_page', 'index', 'quantity'));
+      // if(count($branchs) > $quantity)
+      // {
+        $pdf->setPaper('A4', 'landscape');
+      // }
+      // else
+      // {
+      //   $pdf->setPaper('A4');
+      // }
       return $pdf->stream($file_name.".pdf");
     }
 
