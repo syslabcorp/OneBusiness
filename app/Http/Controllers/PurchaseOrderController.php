@@ -1008,10 +1008,18 @@ class PurchaseOrderController extends Controller
       $PurchaseOrderDetailModel->setConnection($company->database_name);
     
       $purchase_order_details = $PurchaseOrderDetailModel->where('po_no', $id )->get()->groupBy('item_id');
-
+      $total_qty = array();
+      foreach($purchase_order_details as $key => $details)
+      {
+        $total = 0;
+        foreach($details as $detail)
+        {
+          $total += $detail->Qty;
+        }
+        $total_qty[$key] = $total;
+      }
       $branchs = $PurchaseOrderDetailModel->where('po_no', $id )->get()->groupBy('Branch');
-      // dd($purchase_order_details->first()->stock_item()->first()->ItemCode);
-      // view()->share('purchase_order',$purchase_order);
+
 
       $file_name = $company->corp_name."_".$purchase_order->po_no."_".$purchase_order->po_date->format("Ymd");
       $index = 1;
@@ -1024,16 +1032,8 @@ class PurchaseOrderController extends Controller
       {
         $num_page = intval(count($branchs) / $quantity);
       }
-      // dd($branchs->toArray());
-      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs', 'num_page', 'index', 'quantity'));
-      // if(count($branchs) > $quantity)
-      // {
-        $pdf->setPaper('A4', 'landscape');
-      // }
-      // else
-      // {
-      //   $pdf->setPaper('A4');
-      // }
+      $pdf = PDF::loadView('purchase_order/pdf', compact('purchase_order', 'purchase_order_details', 'branchs', 'num_page', 'index', 'quantity', 'total_qty'));
+      $pdf->setPaper('A4', 'landscape');
       return $pdf->stream($file_name.".pdf");
     }
 

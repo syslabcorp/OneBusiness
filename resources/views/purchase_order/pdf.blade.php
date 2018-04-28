@@ -137,9 +137,16 @@
           @php $colspan++; @endphp
         @endif
       @endforeach
-      <th colspan="{{ ($colspan+2)  }}">
-        List Of Orders
-      </th>
+
+      @if($index == $num_page)
+        <th colspan="{{ ($colspan+2)  }}">
+          List Of Orders
+        </th>
+      @else
+        <th colspan="{{ ($colspan+1)  }}">
+          List Of Orders
+        </th>
+      @endif
     </tr>
 
     <tr>
@@ -151,9 +158,11 @@
           </th>
         @endif
       @endforeach
-      <th>Total</th>
+      @if($index == $num_page)
+        <th>Total</th>
+      @endif
     </tr>
-    @foreach( $purchase_order_details as $purchase_order_detail )
+    @foreach( $purchase_order_details as $key_detail => $purchase_order_detail )
       <tr>
         <td class="item_code">{{ $purchase_order_detail[0]->stock_item()->first()->ItemCode }}</td>
         @php $total = 0; @endphp
@@ -180,7 +189,9 @@
 
           @endif
         @endforeach
-        <td> {{$total}} </td>
+        @if($index == $num_page)
+          <td> {{$total_qty[$key_detail]}} </td>
+        @endif
       </tr>
     @endforeach
   </table>
