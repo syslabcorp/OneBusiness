@@ -977,7 +977,7 @@ class PurchaseOrderController extends Controller
         {
           $PurchaseOrderModel->delete();
           return response()->json([
-            'num_details' => $PurchaseOrderModel->purchase_order_details()->count(), 'test' => $PurchaseOrderModel->delete() ]
+            'num_details' => 0 ]
           );
         }
   
