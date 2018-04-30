@@ -81,7 +81,7 @@
                                     <div class="row">
                                         <div class="col-xs-6">
                                             @if($vendors->count() > 0 )
-                                                <a href="/vendors">  {{ $vendors[0]->VendorName }} </a>
+                                                <a href="{{ route('vendors.index') }}">  {{ $vendors[0]->VendorName }} </a>
                                             @endif
                                         </div>
                                         <div class="col-xs-6 text-right">

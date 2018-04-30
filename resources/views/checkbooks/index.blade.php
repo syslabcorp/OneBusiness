@@ -397,7 +397,7 @@
                             var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(28, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
                             var optionClassDel = "";
-                            if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccess == 0 || row.used == 1) { optionClass = 'disabled' };
                             if(checkAccessDel == 0) { optionClassDel = 'disabled' };
                             return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
                                 '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
@@ -570,7 +570,10 @@
                         }
 
                     })
-                    mainTable.ajax.reload();
+                    setTimeout(() => {
+                        mainTable.ajax.reload();
+                    }, 200);
+                    
                 }else{
                     $('#example_ddl2 select').val(__previous);
                 }
@@ -614,7 +617,7 @@
 
             $('#example_ddl1').on('change', function () {
                 var branchId = $('#example_ddl1 select option:selected').val();
-
+                
                 var options = $('#example_ddl4 select');
                 options.empty();
                 //get branches
@@ -646,7 +649,9 @@
                     }
 
                 })
-                mainTable.ajax.reload();
+                setTimeout(() => {
+                    mainTable.ajax.reload();
+                }, 200);
             })
 
             //reload
