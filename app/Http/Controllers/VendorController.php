@@ -278,7 +278,7 @@ class VendorController extends Controller
 
         //get records from t_sysdata
         $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
+            ->orderBy('ShortName', 'ASC')
             ->where('corp_id', intval($corpId))
             ->where('Active', 1)
             ->select('Branch', 'ShortName')

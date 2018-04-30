@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Bank;
 use App\BankAccount;
 use App\SatelliteBranch;
+use App\City;
+use App\Branch;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,12 +29,55 @@ class BankController extends Controller
 
 
         //get user data
-        $branches = DB::table('user_area')
-            ->where('user_ID', \Auth::user()->UserID)
-            ->pluck('branch');
+        // $branches = DB::table('user_area')
+        //     ->where('user_ID', '=', \Auth::user()->UserID)
+        //     ->pluck('branch');
 
-        //todo check if this exists
-        $branch = explode(",", $branches[0]);
+        // $branch = explode(",", $branches[0]);
+
+        if((\Auth::user()->area))
+        {
+          if((\Auth::user()->area->branch))
+          {
+            $branch = explode( ',' ,\Auth::user()->area->branch );
+          }
+
+          if((\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+            $cities = City::WhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+
+            $cities_ID = $cities->map(function($item) {
+              return $item['City_ID'];
+            });
+
+            $branchs_list = Branch::whereIn('City_ID', $cities_ID)->get();
+
+            $branchs_ID = $branchs_list->map(function($item) {
+              return $item['Branch'];
+            });
+
+            $branch = $branchs_ID->toArray();
+          }
+
+          if((\Auth::user()->area->city))
+          {
+            $cities_ID = explode( ',' ,\Auth::user()->area->city );
+            $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+
+            $branchs_list = Branch::whereIn('City_ID', $cities_ID)->get();
+
+            $branchs_ID = $branchs_list->map(function($item) {
+              return $item['Branch'];
+            });
+
+            $branch = $branchs_ID->toArray();
+          }
+        }
+        else
+        {
+            $branch = [];
+        }
 
 
         //dd($branch);

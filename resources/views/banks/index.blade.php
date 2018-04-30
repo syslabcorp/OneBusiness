@@ -517,7 +517,7 @@
                             <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                 <label class="col-md-3 control-label" for="editCorpName">Corporation:</label>
                                 <div class="col-md-9">
-                                    <select name="editCorpName" class="form-control input-md editCorpName" id=""
+                                    <select name="editCorpName" class="form-control input-md editCorpName corpName" id=""
                                             data-parsley-required-message="Corporation is required" required>
                                         <option value="">Select Corporation:</option>
                                         @foreach($selectCorp as $corp)
@@ -533,7 +533,7 @@
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="branchName">Branch:</label>
                                     <div class="col-md-7">
-                                        <select name="editbranchName" class="form-control input-md editbranchName" id="">
+                                        <select name="editbranchName" class="form-control input-md editbranchName branchName" id="">
                                             <option value="">Select Branch:</option>
                                             @if(is_object($satelliteBranch))
                                             @foreach($satelliteBranch as $branch)
@@ -842,6 +842,31 @@
                     $('.editmainStatus').prop('checked', false);
                     $('.editbranchName').removeAttr('disabled').css({"background-color":"", "color":""});
                 }
+
+
+                var corpId = hiddenColumnValue.corp_id;
+                var options = $('.editCorpName').parents('form').find('.branchName');
+
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: "{!! route('vendors.get_branch') !!}",
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
             });
 
             $(document).on('click', '.checkDefaultAcct', function (e) {
@@ -905,7 +930,9 @@
                     }
 
                 })
-                mainTable.ajax.reload();
+                setTimeout(() => {
+                    mainTable.ajax.reload();
+                }, 200);
             })
 
             $('#example_ddl3').on('change', function () {
@@ -1044,8 +1071,8 @@
             })
 
             $(document).on('change', '.corpName', function () {
-                var corpId = $('.corpName option:selected').val();
-                var options = $('.branchName');
+                var corpId = $(this).val();
+                var options = $(this).parents('form').find('.branchName');
 
                 options.empty();
                 //get branches

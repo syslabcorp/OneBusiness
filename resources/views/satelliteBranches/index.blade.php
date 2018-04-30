@@ -34,6 +34,14 @@
             margin-right: 2px;
         }
 
+        #example_ddl3{
+            margin-left: 5px;
+        }
+
+        #example_ddl2 label{
+            margin-right: 5px;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -130,7 +138,7 @@
 
             var table = $('#myTable').DataTable({
                 initComplete: function () {
-                    $('<label for="">Filters:</label>').appendTo("#example_ddl");
+                    $('<label for="">Filters:</label>').appendTo("#example_ddl2");
                     var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else "N/A" @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
@@ -162,7 +170,7 @@
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'.col-sm-1.pull-left'<'#example_ddl'>><'.col-sm-2.pull-left'<'#example_ddl2'>><'.col-sm-2'<'#example_ddl3'>>>" +
+                "<'row'<'col-sm-12'<'.form-group.pull-left#example_ddl'<'#example_ddl2'>><'.form-group'<'#example_ddl3'>>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
