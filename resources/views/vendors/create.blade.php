@@ -101,8 +101,9 @@
                                                     <label class="col-md-3 control-label" for="payTo">Pay To:</label>
                                                     <div class="col-md-7">
                                                         <input id="payTo" name="payTo" type="text" value="{{ old('payTo') }}" class="form-control input-md"
-                                                                data-parsley-maxlength-message="Pay to should not exceed 80 characters"
-                                                                data-parsley-maxlength="80" >
+                                                                data-parsley-maxlength-message="Pay To should not exceed 80 characters"
+                                                                data-parsley-required-message="Pay To is required"
+                                                                data-parsley-maxlength="80" required >
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
