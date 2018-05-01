@@ -65,7 +65,7 @@ Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['mi
 Route::post('/bank-accounts/delete', 'BankAccountController@destroy', ['middleware' => 'auth']);
 Route::post('/banks/get-branches', 'BankController@getBranches')->middleware('auth')->name('banks.get_branches');
 
-Route::post('/vendor-management/get-account-for-vendor', 'VendorManagementController@getVendorAccount')->middleware('auth');
+Route::post('/vendor-management/get-account-for-vendor', 'VendorManagementController@getVendorAccount')->middleware('auth')->name('vendor_management.get_account_for_vendor');
 Route::post('/inventory/get-inventory-list', 'InventoryController@getInventoryList')->middleware('auth');
 Route::post('/bank-accounts/change-default-account', 'BankAccountController@changeDefaultAccount')->middleware('auth')->name('bank_accounts.change_default_account');
 Route::post('/satellite-branch/get-branch-list', 'SatelliteBranchController@getBranches')->middleware('auth');

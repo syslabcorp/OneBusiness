@@ -92,7 +92,7 @@ class CheckbookController extends Controller
             
             //get records from t_sysdata
             $tSysdata = DB::table('t_sysdata')
-                ->orderBy('Branch', 'ASC')
+                ->orderBy('ShortName', 'ASC')
                 ->where('Active', 1)
                 ->where('corp_id', $corporations[0]->corp_id)
                 ->get();
@@ -185,13 +185,17 @@ class CheckbookController extends Controller
         $checkbook->lastchknum = $ending;
         $checkbook->bank_code = $bankCode->banks->bank_code;
         $success = $checkbook->save();
-
+        
         if($success) {
-            \Session::flash('success', "Checkbook added successfully");
-            return redirect()->route('checkbooks.index');
+            return response()->json("success", 200);
+            
+            // \Session::flash('success', "Checkbook added successfully");
+            // return redirect()->route('checkbooks.index');
         }
-        \Session::flash('error', "Something went wrong!");
-        return redirect()->route('checkbooks.index');
+        return response()->json("failure", 200);
+        
+        // \Session::flash('error', "Something went wrong!");
+        // return redirect()->route('checkbooks.index');
     }
 
     /**
