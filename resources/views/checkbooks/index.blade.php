@@ -159,7 +159,7 @@
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
                                 <input type="hidden" name="accountId" value=" @if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }}  @endif">
-                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                                <button type="button" class="btn btn-success pull-right" id="submit_by_ajax">Create</button>
                             </div>
                         </div>
                     </div>
@@ -834,6 +834,20 @@
                 }
             })
 
+            $(document).on('click', '#submit_by_ajax', function(e){
+                e.preventDefault();
+                $.ajax({
+                    method: 'POST',
+                    url: $('#addNewCheckbook form').attr('action'),
+                    data: $('#addNewCheckbook form').serialize(),
+                    success: function () {
+                        $('#startingNum').val('');
+                        $('#endingNum').val('');
+                        $('#addNewCheckbook').modal("hide");
+                        mainTable.ajax.reload();
+                    }
+                })
+            })
         })(jQuery);
     </script>
 @endsection

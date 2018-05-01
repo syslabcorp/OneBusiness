@@ -109,8 +109,8 @@ class VendorController extends Controller
      */
     public function show(Vendor $vendor,Request $request)
     {
-     
         
+
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
             \Session::flash('error', "You don't have permission");
@@ -123,11 +123,21 @@ class VendorController extends Controller
 
         //$url = $request->input('corp');
         //$url != null ? session(['corpUrl' => $url]) : null;
-
+        
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
             ->get();
-            
+
+        if(isset($request->corpID))
+        {
+            $corpID = $request->corpID;
+        }
+        else
+        {
+            $corpID = $corporations->first()->corp_id;
+        }
+        
+        // dd($request->corpID);
         if( isset($request->main) && $request->main == "true" )
         {
         $vendors = DB::table('cv_vendacct')
@@ -176,7 +186,8 @@ class VendorController extends Controller
             ->with('vendors', $vendors)
             ->with('corporations', $corporations)
             ->with('branches', $branches)
-            ->with('main', $request->main);
+            ->with('main', $request->main)
+            ->with('corpID', $corpID);
     }
 
     /**

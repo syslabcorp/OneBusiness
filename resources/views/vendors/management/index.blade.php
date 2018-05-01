@@ -359,7 +359,7 @@
                         {!! csrf_field() !!}
                         {{ method_field('Delete') }}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-ok" id="delete_ajax" class="deleteItem">Delete</button>
                     </div>
                 </form>
             </div>
@@ -380,10 +380,10 @@
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
                     @if($main == "true")
-                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branchs accounts</label>').appendTo("#example_ddlmain");
+                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branch accounts</label>').appendTo("#example_ddlmain");
                         $('#main_check_box').prop('checked', true);
                     @else
-                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branchs accounts</label>').appendTo("#example_ddlmain");
+                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branch accounts</label>').appendTo("#example_ddlmain");
                         $('#main_check_box').prop('checked', false);
                     @endif
                     
@@ -428,7 +428,11 @@
                             @if($cnt == 0){
                             <?php $key ?>
                         }@else{
-                            corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            @if( $corpID == $val->corp_id )
+                                corporationID.append('<option selected value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            @else
+                                corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            @endif
                         }
                         @endif
 
@@ -472,6 +476,7 @@
                 $('#confirm-delete .brandToDelete').text(account_num);
                 $('#confirm-delete .descriptionOfBrand').text(description);
                 $('#confirm-delete form').attr('action', '/OneBusiness/vendor-management/'+id);
+                $('#confirm-delete form').append("<input type='hidden' name='corpID' value='"+$('#example_ddl2 select').val()+"'>")
                 $('#confirm-delete').modal("show");
             });
 
@@ -498,7 +503,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/vendor-management/get-account-for-vendor",
+                    url: "{!! route('vendor_management.get_account_for_vendor') !!}",
                     data: { id : id },
                     success: function (data) {
                         if(data.nx_branch == -1){
@@ -521,6 +526,20 @@
                     }
                 })
             });
+
+            // $(document).on('click', '#delete_ajax', function (e) {
+            //     e.preventDefault();
+
+            //     var form  = $(this).parents('form');
+            //     $.ajax({
+            //         type: "DELETE",
+            //         url: form.attr('action'),
+            //         data: form.serialize(),
+            //         success: function (data) {
+            //             $('#confirm-delete').modal('hide');
+            //         }
+            //     })
+            // });
 
            /* $(document).on('change', '#example_ddl2', function () {
                 var location = $('#example_ddl2 option:selected').val();
