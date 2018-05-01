@@ -694,6 +694,7 @@ class PurchaseOrderController extends Controller
 
     public function auto_save()
     {
+      ini_set('memory_limit', '-1');
       ini_set('max_execution_time', 600);
       if(!\Auth::user()->checkAccessByIdForCorp(Request::all()['corpID'], 41, 'A')) {
         \Session::flash('error', "You don't have permission"); 
@@ -725,7 +726,7 @@ class PurchaseOrderController extends Controller
         $total_amount = 0;
         $total_pieces = 0;
         $errors = array();
-        
+
         foreach($details as $detail)
         {
           $branch = $detail->po_tmpl8_branch;
