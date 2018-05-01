@@ -80,9 +80,7 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
-                                            @if($vendors->count() > 0 )
-                                                <a href="{{ route('vendors.index') }}">  {{ $vendors[0]->VendorName }} </a>
-                                            @endif
+                                            <a href="{{ route('vendors.index') }}">  {{ $VendorName }} </a>
                                         </div>
                                         <div class="col-xs-6 text-right">
                                             <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
@@ -521,7 +519,7 @@
                         if(data.active){
                             $('input[name="editActiveAccount').attr("checked", true);
                         }
-                        $('#editAccount form').attr('action', '/vendor-management/'+id);
+                        $('#editAccount form').attr('action', '/OneBusiness/vendor-management/'+id);
                         $('#editAccount').modal("toggle");
                     }
                 })

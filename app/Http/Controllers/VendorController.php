@@ -159,6 +159,8 @@ class VendorController extends Controller
             ->get();
         }
 
+        $vendor_name = $vendor->VendorName;
+
       /*  if($url == null)
         {
 
@@ -187,7 +189,8 @@ class VendorController extends Controller
             ->with('corporations', $corporations)
             ->with('branches', $branches)
             ->with('main', $request->main)
-            ->with('corpID', $corpID);
+            ->with('corpID', $corpID)
+            ->with('VendorName', $vendor_name);
     }
 
     /**
