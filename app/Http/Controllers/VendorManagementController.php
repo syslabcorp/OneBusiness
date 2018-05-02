@@ -64,7 +64,7 @@ class VendorManagementController extends Controller
 
         if($success){
             \Session::flash('success', "Vendor account created successfully");
-            return redirect()->route('vendors.show', $suppId);
+            return redirect()->route('vendors.show', [$suppId, 'corpID' => $corpId]);
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
@@ -127,7 +127,7 @@ class VendorManagementController extends Controller
 
         if($success){
             \Session::flash('success', "Vendor account updated successfully");
-            return redirect()->route('vendors.show', $suppId);
+            return redirect()->route('vendors.show', [$suppId, 'corpID' => $request->corpID]);
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
