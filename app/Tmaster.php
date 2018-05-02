@@ -21,9 +21,8 @@ class Tmaster extends Model
         return $this->hasMany('App\Spodetail','po_no');
     }
 
-    public function getSpotmpl8hdrData()
-    {
-        return $this->hasOne('App\Spotmpl8hdr','po_tmpl8_id');
+    public function template() {
+        return $this->belongsTo(Models\Spo\Tmpl8Hdr::class);
     }
 
 

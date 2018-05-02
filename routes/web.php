@@ -14,7 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Stocktransfer
+Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
+
 
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
 
