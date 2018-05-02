@@ -226,7 +226,7 @@
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
                                 <input type="hidden" name="suppId" value=" @if($vendors->count() > 0 ) {{ $vendors[0]->supp_id}} @endif">
-                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                                <button type="submit" id="submitAddNewAccount" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
                     </div>
@@ -398,9 +398,17 @@
                                     .search( val ? '^'+val+'$' : '', true, false )
                                     .draw();
                             } );
+                        @if($check_active == 'active')
+                            select.append( '<option selected value="1">Active</option>' )
+                        @else
+                            select.append( '<option value="1">Active</option>' )
+                        @endif
 
-                        select.append( '<option value="1">Active</option>' )
-                        select.append( '<option value="0">Inactive</option>' )
+                        @if($check_active == 'inactive')
+                            select.append( '<option selected value="0">Inactive</option>' )
+                        @else
+                            select.append( '<option  value="0">Inactive</option>' )
+                        @endif
                         // var checkbox = $(' <input type="checkbox" name="" id="">')
 
                     } );
@@ -474,7 +482,8 @@
                 $('#confirm-delete .brandToDelete').text(account_num);
                 $('#confirm-delete .descriptionOfBrand').text(description);
                 $('#confirm-delete form').attr('action', '/OneBusiness/vendor-management/'+id);
-                $('#confirm-delete form').append("<input type='hidden' name='corpID' value='"+$('#example_ddl2 select').val()+"'>")
+                $('#confirm-delete form').append("<input type='hidden' name='corpID' value='"+$('#example_ddl2 select').val()+"'>");
+                $('#confirm-delete form').append("<input type='hidden' name='check_active' value='"+$('#example_ddl3 select').val()+"'>");
                 $('#confirm-delete').modal("show");
             });
 
@@ -567,7 +576,7 @@
                     }
 
                 })
-            })
+            });
 
             mainTable.search( $('#example_ddl2 option:selected').text() );
             mainTable.draw();

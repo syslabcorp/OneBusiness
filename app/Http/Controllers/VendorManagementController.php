@@ -125,9 +125,18 @@ class VendorManagementController extends Controller
             'active' => $activeAccount == "on" ? 1 : 0
         ]);
 
+        if($activeAccount == "on")
+        {
+            $check_active = 1;
+        }
+        else
+        {
+            $check_active = 0;
+        }
+
         if($success){
             \Session::flash('success', "Vendor account updated successfully");
-            return redirect()->route('vendors.show', [$suppId, 'corpID' => $request->corpID]);
+            return redirect()->route('vendors.show', [$suppId, 'corpID' => $corp_id]);
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
