@@ -989,7 +989,9 @@ class PurchaseOrderController extends Controller
           'total_sold' => $total_sold,
           'pending' => $pending,
           'test' => $test,
-          'error' => $errors
+          'error' => $errors,
+          'to_date' => $to_date,
+          'from_date' => $from_date
           ]
           
         );
