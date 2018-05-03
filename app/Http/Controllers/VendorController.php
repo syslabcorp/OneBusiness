@@ -136,6 +136,20 @@ class VendorController extends Controller
         {
             $corpID = $corporations->first()->corp_id;
         }
+        // dd($request->all());
+        $check_active = "";
+
+        if(isset($request->check_active))
+        {
+            if($request->check_active == 1)
+            {
+                $check_active = "active";
+            }
+            if($request->check_active == 0)
+            {
+                $check_active = "inactive";
+            }
+        }
         
         // dd($request->corpID);
         if( isset($request->main) && $request->main == "true" )
@@ -190,7 +204,8 @@ class VendorController extends Controller
             ->with('branches', $branches)
             ->with('main', $request->main)
             ->with('corpID', $corpID)
-            ->with('VendorName', $vendor_name);
+            ->with('VendorName', $vendor_name)
+            ->with('check_active', $check_active);
     }
 
     /**
