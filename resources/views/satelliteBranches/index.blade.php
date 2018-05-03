@@ -139,7 +139,7 @@
             var table = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl2");
-                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else "N/A" @endif</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif">@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else "N/A" @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
                     @foreach($corporations as $key => $val)
@@ -149,9 +149,12 @@
                     }
                     cntCorp++;
                     @endforeach
-                    var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
+                    var branchStatus = $('<select class="form-control"><option value="1">Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
+                    
+                    corporationID.val(localStorage.getItem('satellite.corpID'));
+                    branchStatus.val(localStorage.getItem('satellite.active'));
                 },
                 "processing": true,
                 "serverSide": true,
@@ -160,12 +163,10 @@
                     type: "POST",
                     url: "satellite-branch/get-branch-list",
                     data: function ( d ) {
-                        d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val(),
-                            @if(isset($corporations[0]->corp_id))
-                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
+                        d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? localStorage.getItem('satellite.active') : $('#example_ddl3 select option:selected').val(),
+                        @if(isset($corporations[0]->corp_id))
+                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? localStorage.getItem('satellite.corpID') : $('#example_ddl2 select option:selected').val();
                         @endif
-                        // d.custom = $('#myInput').val();
-                        // etc
                     }
                 },
                 stateSave: true,
@@ -258,6 +259,11 @@
                 $('#confirm-delete .descriptionOfBrand').text(description);
                 $('#confirm-delete form').attr('action', 'satellite-branch/'+id);
                 $('#confirm-delete').modal("show");
+            });
+
+            $(document).on('click', '.edit', function(e) {
+              localStorage.setItem('satellite.corpID', $('#example_ddl2 select').val());
+              localStorage.setItem('satellite.active', $('#example_ddl3 select').val());
             });
 
 

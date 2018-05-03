@@ -197,65 +197,22 @@
 <script>
 
 $(document).ready(function() {
-    $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select onChange="filter()" class="filterSelect1"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
-    // $('[data-toggle="tooltip"]').tooltip(); 
+    
 
-      $('#list_menu_delivery').DataTable({
-    "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId_1">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
-   
+    $('#list_menu_delivery').DataTable({
+      "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId_1">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      initComplete: function() {
+      }
     });
 
     $("#selectId_1").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select class="filterSelect2"><option value="1">In-transit</option><option value="2">Received</option><option value="3">All </option></select></div>');
-    // $('[data-toggle="tooltip"]').tooltip(); 
 
-            // $("table tr").editable({
-
-            //     // enable keyboard support
-            //     keyboard: true,
-
-            //     // double click to start editing
-            //     dblclick: true,
-
-            //     // enable edit buttons
-            //     button: true,
-
-            //     // CSS selector for edit buttons
-            //     buttonSelector: ".edit",
-
-            //     // uses select dropdown instead of input field
-            //     dropdowns: {},
-
-            //     // maintains column width when editing
-            //     maintainWidth: true,
-
-            //     // callbacks for edit, save and cancel actions
-
-            //     edit: function(values) {
-            //         // alert('edit');
-            //     },
-            //     save: function(values) {
-            //         alert('save');
-            //     },
-            //     cancel: function(values) {
-            //         // alert('cancel');
-            //     }
-
-            // });
-            @if($status==1)       
-                    $('.filterSelect1').val(1)
-            @elseif($status==2)     
-                    $('.filterSelect1').val(2)
-            @elseif($status==3)     
-                    $('.filterSelect1').val(3)
-            @endif
-
+    $('#selectId select').val('{{ $status }}');
 });
 
 
 
 function onEditRow(param){
-
-    
     if($('#editable'+param).hasClass('glyphicon-pencil')){
 
          $(".rcvdCheckbox"+param).attr("disabled", false);
@@ -288,9 +245,8 @@ function showHidden(p){
     var urlmarkToserved;
 
 
-    function filter(){
-        var selectedValue = $('.filterSelect1').val();
-        document.location.href="?status="+selectedValue;
+    function filterStatus(event) {
+      window.location = location.pathname + location.search.replace(/&status=[0-9]+/g, '') + "&status=" + $('#selectId select').val();
     }
 
 
@@ -386,7 +342,10 @@ function showHidden(p){
         $('#list_menu').DataTable({
           "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
           order: [[0, 'desc']],
-          deferRender: true
+          deferRender: true,
+          initComplete: function() {
+            $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1"><strong>Filters:</strong> </label><select onChange="filterStatus()" class="form-control"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
+          }
         });
       }
     })

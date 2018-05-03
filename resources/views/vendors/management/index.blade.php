@@ -523,6 +523,7 @@
                           $('input[name="editActiveAccount').prop("checked", true);
                         }
                         $('#editAccount form').attr('action', '{{ route('vendor-management.index') }}/' + id  + getSearchParams());
+                        $('.editCorporationId').change();
                         $('#editAccount').modal("toggle");
                     }
                 })
@@ -557,9 +558,34 @@
                             options.append('<option value="">No options</option>');
                         }
                     }
-
                 })
             });
+
+            $(document).on('change', '.editCorporationId', function () {
+                var corpId = $(this).val();
+                var options = $('.editBranchName');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('vendors.get_branch') }}',
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+                })
+            });
+
+
 
             mainTable.search( $('#example_ddl2 option:selected').text() );
             mainTable.draw();
