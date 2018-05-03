@@ -193,6 +193,7 @@ class VendorController extends Controller
         }*/
 
         $branches = DB::table('t_sysdata')
+            ->where('Active', 1)
             ->orderBy('Description', 'ASC')
             ->get();
 
@@ -312,7 +313,7 @@ class VendorController extends Controller
             ->orderBy('ShortName', 'ASC')
             ->where('corp_id', intval($corpId))
             ->where('Active', 1)
-            ->select('Branch', 'ShortName')
+            ->select('Branch', 'ShortName', 'Active')
             ->get();
 
         return response()->json(json_encode($tSysdata), 200);

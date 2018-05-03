@@ -250,6 +250,22 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
+                                    <div class="col-md-7">
+                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
+                                                data-parsley-required-message="Corporation is required" required>
+                                            <option value="">Select Corporation:</option>
+                                            @foreach($corporations as $corporation)
+                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="editBranchName">Branch:</label>
                                     <div class="col-md-7">
                                         <select name="editBranchName" class="form-control input-md editBranchName" id="">
@@ -263,22 +279,6 @@
                                 <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
                                     <input type="checkbox" name="editMainStatus" class="pull-left editMainStatus" name="" id="">
                                     <label for="editMainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
-                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
-                                    <div class="col-md-7">
-                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
-                                                data-parsley-required-message="Corporation is required" required>
-                                            <option value="">Select Corporation:</option>
-                                            @foreach($corporations as $corporation)
-                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -405,14 +405,13 @@
                           select.append( '<option value="1">Active</option>');
                           select.append( '<option  value="0">Inactive</option>');
                           select.val('{{ $active }}')
-
                     } );
 
                     this.api().columns(1).every( function () {
                         var column = this;
                         var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
                             .appendTo('#example_ddl2')
-                            .on( 'change', function () {
+                            .on('change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
@@ -436,14 +435,14 @@
                             @endif
                         }
                         @endif
-
                         <?php $cnt++; ?>
                         @endforeach
-
+                        
                     });
 
-
-
+                  setTimeout(() => {
+                    this.api().search('');
+                  }, 300);
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
@@ -545,7 +544,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '{{ route('banks.get_branches') }}',
+                    url: '{{ route('vendors.get_branch') }}',
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);
