@@ -198,7 +198,9 @@ class VendorController extends Controller
 
         // return response()->json($vendors, 200);
         
-        return view('vendors.management.index')
+        return view('vendors.management.index', [
+          'active' => $request->active
+        ])
             ->with('vendors', $vendors)
             ->with('corporations', $corporations)
             ->with('branches', $branches)
@@ -266,8 +268,8 @@ class VendorController extends Controller
         ]);
 
         if($success){
-            \Session::flash('success', "Vendor updated successfully");
-            return redirect()->route('vendors.index');
+          \Session::flash('success', "Vendor updated successfully");
+          return redirect()->route('vendors.index');
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.index');
