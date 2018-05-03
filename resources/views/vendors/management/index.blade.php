@@ -519,8 +519,9 @@
                         $('input[name="editCycleDays"]').val(data.days_offset);
                         $('input[name="editOffsetDays"]').val(data.firstday_offset);
 
-                        if(data.active){
-                            $('input[name="editActiveAccount').attr("checked", true);
+                        $('input[name="editActiveAccount').prop("checked", false);
+                        if(data.active == 1){
+                          $('input[name="editActiveAccount').prop("checked", true);
                         }
                         $('#editAccount form').attr('action', '{{ route('vendor-management.index') }}/' + id  + getSearchParams());
                         $('#editAccount').modal("toggle");
