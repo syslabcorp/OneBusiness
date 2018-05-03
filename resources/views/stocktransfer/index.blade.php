@@ -345,6 +345,7 @@ function showHidden(p){
           deferRender: true,
           initComplete: function() {
             $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1"><strong>Filters:</strong> </label><select onChange="filterStatus()" class="form-control"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
+            $("#selectId select").val('{{ $status }}');
           }
         });
       }

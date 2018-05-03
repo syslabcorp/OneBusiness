@@ -193,6 +193,7 @@ class StocktransferController extends Controller {
 
       $itemRows = $stockItem->items()
                             ->whereIn('Branch', $branches->pluck('Branch'))
+                            ->orderBy('ItemCode', 'ASC')
                             ->get()
                             ->groupBy('ItemCode');
 

@@ -80,7 +80,7 @@ use App\Srcvdetail;
                                     </div>
                                   </div>
                                 </div>
-                                    <form class="form-horizontal has-validation-callback" action="#" id="formTable" method="POST" >
+                                <form class="form-horizontal table-items" action="#" id="formTable" method="POST" >
                                       {{ csrf_field() }}
                                     <div class="col-md-12" style="margin-top: 10px;">
                                       <div class="row">
@@ -101,9 +101,12 @@ use App\Srcvdetail;
                                                 <tr>
                                                   <td>{{ $row->first()->ItemCode }}</td>
                                                   @foreach($branches as $branch)
-                                                    <td>{{ $row->where('Branch', $branch->Branch)->first()['Qty'] }}</td>
+                                                    <td class="col-qty">
+                                                      <input type="text" class="form-control" 
+                                                        value="{{ $row->where('Branch', $branch->Branch)->first()['Qty'] }}">
+                                                    </td>
                                                   @endforeach
-                                                  <td>{{ $row->sum('Qty') }}</td>
+                                                  <td class="col-total">{{ $row->sum('Qty') }}</td>
                                                   <td>{{ $row->first()->rcvDetails()->sum('Bal') }}</td>
                                                 </tr>
                                                 @endforeach
@@ -114,7 +117,7 @@ use App\Srcvdetail;
 
                                     </div>
                                   </div>
-                                    </form>
+                                  </form>
 
                                     <div class="col-md-12">
                                       <div class="row">
@@ -132,34 +135,26 @@ use App\Srcvdetail;
 
                                     <!-- second product tab -->
                                   <div class="tab-pane fade " id="tasks">
-
-                                            <!--  -->
-                                                <div class="row">
-                                                    <div class="table-responsive">
-                                                    <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>D.R.No</th>
-                                                                <th>Date</th>
-                                                                <th>Destination</th>
-                                                                <th>Rcvd</th>
-                                                                <th>Uploaded</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                    
-                                                        <tbody >
-                                                                
-                                                        
-                                                                
-                                                        </tbody>
-
-                                                        </table>
-                                                    </div>   
-                                                </div>
+                                        <div class="row">
+                                          <div class="table-responsive">
+                                            <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>D.R.No</th>
+                                                        <th>Date</th>
+                                                        <th>Destination</th>
+                                                        <th>Rcvd</th>
+                                                        <th>Uploaded</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            
+                                                <tbody >
+                                                </tbody>
+                                                </table>
+                                            </div>   
                                         </div>
-                                            <!--  -->
-
+                                      </div>
                                     </div>
                                   
                                 
@@ -196,123 +191,7 @@ $(document).ready(function() {
    
     });
 
-            // $("table tr").editable({
-
-            //     // enable keyboard support
-            //     keyboard: true,
-
-            //     // double click to start editing
-            //     dblclick: true,
-
-            //     // enable edit buttons
-            //     button: true,
-
-            //     // CSS selector for edit buttons
-            //     buttonSelector: ".edit",
-
-            //     // uses select dropdown instead of input field
-            //     dropdowns: {},
-
-            //     // maintains column width when editing
-            //     maintainWidth: true,
-
-            //     // callbacks for edit, save and cancel actions
-
-            //     edit: function(values) {
-            //         // alert('edit');
-            //     },
-            //     save: function(values) {
-            //         alert('save');
-            //     },
-            //     cancel: function(values) {
-            //         // alert('cancel');
-            //     }
-
-            // });
-
 });
-
-
-function keyupInput(rowNo,count){
-
-    for( var i = 1; i <=count ; i ++) {
-     if( !( $('#item_'+rowNo+'_'+i).find('.input_Cost').val().match(/^-?\d+(?:[.]\d*?)?$/) ) ){
-
-        if($('#item_'+rowNo+'_'+i).find('.input_Cost').val()!=''){
-            $('#item_'+rowNo+'_'+i).find('.error'+i).show();
-         }
-       
-        $('#editIcon'+rowNo).find('.edit').attr('disabled', "");
-        }
-        else{
-            if($('#item_'+rowNo+'_'+i).find('.input_Cost').val()!=''){
-                $('#item_'+rowNo+'_'+i).find('.error'+i).hide();
-            }
-        // $('#item_'+rowNo+'_'+i).find('.edit').removeAttr('disabled');
-        $('#editIcon'+rowNo).find('.edit').removeAttr('disabled');
-        }
-    }
-}
-
-function editRow(rowNo,count,BranchID){
-
-    if($('#item_'+rowNo+'_1').parents('.editable').find('.glyphicon').hasClass('glyphicon-pencil'))
-    {
-        $('#item_'+rowNo+'_1').parents('.editable').find('.glyphicon').removeClass('glyphicon-pencil').addClass('glyphicon-ok');
-    
-        for ( var i = 1; i < count ; i ++){
-            if($('#item_'+rowNo+'_'+i).find('span:first').text()!=''){
-                console.log($('#item_'+rowNo+'_'+i).find('span:first').text());
-            $('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val($('#item_'+rowNo+'_'+i).find('.value_Cost').text().replace(',', '')).attr("type", "text") ;
-            $('#item_'+rowNo+'_'+i).find('.value_Cost').text("");
-            }
-
-        }
-    }
-    else
-    {
-        $('#item_'+rowNo+'_1').parents('.editable').find('.glyphicon').removeClass('glyphicon-ok').addClass('glyphicon-pencil');
-        
-        for ( var i = 1; i <count ; i ++)
-        {
-            rowVal = [];
-            branchID = [];
-
-            if($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val()!="")
-                {
-                    console.log($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val());
-                    branchID[i] = $('#item_'+rowNo+'_'+i).parents('.editable').find(".branchID_"+i).text();
-                  
-                    itemCode = $('#item_'+rowNo+'_1').parents('.editable').find(".input_ItemCode_"+rowNo ).text();
-
-                    itemID = $('#item_'+rowNo+'_1').parents('.editable').find(".itemID_"+rowNo).text();
-                      
-                    rowVal[i] = parseFloat($('#item_'+rowNo+'_'+i).find( ".input_Cost" ).val());
-
-                    $('#item_'+rowNo+'_'+i).find('.value_Cost').text( rowVal[i]);
-
-                    changedRowArr.push({
-                                rowVal:rowVal[i],
-                                branchID:branchID[i],
-                                itemCode:itemCode,
-                                itemID:itemID
-                    });
-
-                }
-            else
-            {
-                if($('#item_'+rowNo+'_'+i).find('span:first').text()!=''){
-                    $('#item_'+rowNo+'_'+i).find('.value_Cost').text('0');
-                }
-            }
-
-            $('#item_'+rowNo+'_'+i).find( ".input_Cost" ).attr("type", "hidden");
-        }
-
-    }
-
-
-}
 
 function goBack() {
     window.history.back();
@@ -359,9 +238,68 @@ function myFunction() {
 
 
 </script>
-
-
-
 @endsection
 
 
+@section('footer-scripts')
+<script type="text/javascript">
+  (function() {
+    $('.table-items .form-control').keyup(function() {
+      $parent = $(this).parents('td');
+      $parentTr = $(this).parents('tr');
+      $parent.find('.error').remove();
+
+      if(!$(this).val() || $.isNumeric($(this).val())) {
+        let qtyTotal = 0;
+        $parentTr.find('.col-qty').each(function(el) {
+          let colQty = $(this).find('.form-control').val();
+          if($.isNumeric(colQty)) {
+            qtyTotal += parseInt(colQty);
+          }
+        })
+
+        $parentTr.find('.col-total').text(qtyTotal);
+      }else {
+        $parent.append('<span class="error">Invalid input</span>');
+      }
+    });
+
+    $('.table-items .form-control').keydown(function(event) {
+      let currentCol = $(this).parents('td').index();
+      let currentRow = $(this).parents('tr').index();
+      let minCol = $('.table-items tr .col-qty').index();
+      let maxCol = minCol - 1 + $('.table-items tr:eq(1) .col-qty').length;
+      let maxRow = $('.table-items tbody tr').length;
+
+      switch(event.which) {
+        case 37:
+          currentCol -= 1;
+          break;
+        case 38:
+          currentRow -= 1;
+          break;
+        case 39:
+          currentCol += 1;
+          break;
+        case 40:
+        currentRow += 1;
+          break;
+        default:
+          break;
+      }
+
+      if(currentCol < minCol) {
+        currentCol = maxCol;
+        currentRow -= 1;
+      }else if(currentCol > maxCol) {
+        currentCol = minCol;
+        currentRow += 1;
+      }
+      
+      if($('.table-items tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control').length) {
+        $('.table-items tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control')[0].focus();
+      }
+    });
+  })()
+</script>
+@endsection
