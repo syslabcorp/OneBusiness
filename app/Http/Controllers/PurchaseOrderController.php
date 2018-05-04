@@ -538,8 +538,10 @@ class PurchaseOrderController extends Controller
               }
 
               // Qty for PO
+              $multiolier = StockItem::find($item_id)->Multiplier;
+              // $multiolier = Request::all()['multiolier'];
 
-              $QtyPO = ($daily_sold_qty * Request::all()['multiolier']) - $pending_value;
+              $QtyPO = ($daily_sold_qty * $multiolier) - $pending_value;
               if($QtyPO < 0)
               {
                 $QtyPO = 0;
