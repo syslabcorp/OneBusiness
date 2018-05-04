@@ -139,22 +139,21 @@
             var table = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl2");
-                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif">@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else "N/A" @endif</option></select>')
+                    var corporationID = $('<select class="form-control"></select>')
                         .appendTo('#example_ddl2');
-                    var cntCorp = 0;
-                    @foreach($corporations as $key => $val)
-                            if(cntCorp != 0) {
-                        corporationID.append('<option value="{{ $val->corp_id }}" >{{ $val->corp_name }}</option>');
 
-                    }
-                    cntCorp++;
+                    @foreach($corporations as $key => $val)
+                      corporationID.append('<option value="{{ $val->corp_id }}" >{{ $val->corp_name }}</option>');
                     @endforeach
                     var branchStatus = $('<select class="form-control"><option value="1">Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
-                    
-                    corporationID.val(localStorage.getItem('satellite.corpID'));
-                    branchStatus.val(localStorage.getItem('satellite.active'));
+
+                    let initStatus = localStorage.getItem('satellite.active') || 1;
+                    let initCorp = localStorage.getItem('satellite.corpID') || '{{ $corporations[0]->corp_id }}';
+
+                    corporationID.val(initCorp);
+                    branchStatus.val(initStatus);
                 },
                 "processing": true,
                 "serverSide": true,
@@ -163,10 +162,13 @@
                     type: "POST",
                     url: "satellite-branch/get-branch-list",
                     data: function ( d ) {
-                        d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? localStorage.getItem('satellite.active') : $('#example_ddl3 select option:selected').val(),
-                        @if(isset($corporations[0]->corp_id))
-                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? localStorage.getItem('satellite.corpID') : $('#example_ddl2 select option:selected').val();
-                        @endif
+                      let initStatus = localStorage.getItem('satellite.active') || 1;
+                      let initCorp = localStorage.getItem('satellite.corpID') || '{{ $corporations[0]->corp_id }}';
+                
+                      d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? initStatus : $('#example_ddl3 select option:selected').val(),
+                      @if(isset($corporations[0]->corp_id))
+                      d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? initCorp : $('#example_ddl2 select option:selected').val();
+                      @endif
                     }
                 },
                 stateSave: true,
