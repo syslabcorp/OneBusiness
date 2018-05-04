@@ -145,7 +145,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add Vendor Account</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/vendor-management') }}" id="form1" METHOD="POST">
+                <form class="form-horizontal" action="" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
@@ -250,6 +250,22 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
+                                    <div class="col-md-7">
+                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
+                                                data-parsley-required-message="Corporation is required" required>
+                                            <option value="">Select Corporation:</option>
+                                            @foreach($corporations as $corporation)
+                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="editBranchName">Branch:</label>
                                     <div class="col-md-7">
                                         <select name="editBranchName" class="form-control input-md editBranchName" id="">
@@ -263,22 +279,6 @@
                                 <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
                                     <input type="checkbox" name="editMainStatus" class="pull-left editMainStatus" name="" id="">
                                     <label for="editMainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
-                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
-                                    <div class="col-md-7">
-                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
-                                                data-parsley-required-message="Corporation is required" required>
-                                            <option value="">Select Corporation:</option>
-                                            @foreach($corporations as $corporation)
-                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -371,6 +371,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
         (function($){
+          $('#addNewAccount #submitAddNewAccount').click(function() {
+            var url = '{{ url('/vendor-management') }}' + getSearchParams();
+            $('#addNewAccount form').attr('action', url);
+          });
 
             $('#form1, #form2').parsley();
 
@@ -398,26 +402,16 @@
                                     .search( val ? '^'+val+'$' : '', true, false )
                                     .draw();
                             } );
-                        @if($check_active == 'active')
-                            select.append( '<option selected value="1">Active</option>' )
-                        @else
-                            select.append( '<option value="1">Active</option>' )
-                        @endif
-
-                        @if($check_active == 'inactive')
-                            select.append( '<option selected value="0">Inactive</option>' )
-                        @else
-                            select.append( '<option  value="0">Inactive</option>' )
-                        @endif
-                        // var checkbox = $(' <input type="checkbox" name="" id="">')
-
+                          select.append( '<option value="1">Active</option>');
+                          select.append( '<option  value="0">Inactive</option>');
+                          select.val('{{ $active }}')
                     } );
 
                     this.api().columns(1).every( function () {
                         var column = this;
                         var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
                             .appendTo('#example_ddl2')
-                            .on( 'change', function () {
+                            .on('change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
@@ -441,14 +435,14 @@
                             @endif
                         }
                         @endif
-
                         <?php $cnt++; ?>
                         @endforeach
-
+                        
                     });
 
-
-
+                  setTimeout(() => {
+                    this.api().search('');
+                  }, 300);
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
@@ -467,8 +461,7 @@
 
             $('#main_check_box').on('change', function(e){
                 e.preventDefault();
-                var main = $(this).is(':checked');
-                window.location.href = window.location.href.replace("?main=true","").replace("?main=false","")+"?main="+main
+                window.location = location.pathname + getSearchParams()
             });
 
             $(document).on('click', '.delete', function (e) {
@@ -481,7 +474,7 @@
                 $('#confirm-delete').find('.serviceId').val(id);
                 $('#confirm-delete .brandToDelete').text(account_num);
                 $('#confirm-delete .descriptionOfBrand').text(description);
-                $('#confirm-delete form').attr('action', '/OneBusiness/vendor-management/'+id);
+                $('#confirm-delete form').attr('action', '{{ route('vendor-management.index') }}/' + id + getSearchParams());
                 $('#confirm-delete form').append("<input type='hidden' name='corpID' value='"+$('#example_ddl2 select').val()+"'>");
                 $('#confirm-delete form').append("<input type='hidden' name='check_active' value='"+$('#example_ddl3 select').val()+"'>");
                 $('#confirm-delete').modal("show");
@@ -525,33 +518,23 @@
                         $('input[name="editCycleDays"]').val(data.days_offset);
                         $('input[name="editOffsetDays"]').val(data.firstday_offset);
 
-                        if(data.active){
-                            $('input[name="editActiveAccount').attr("checked", true);
+                        $('input[name="editActiveAccount').prop("checked", false);
+                        if(data.active == 1){
+                          $('input[name="editActiveAccount').prop("checked", true);
                         }
-                        $('#editAccount form').attr('action', '/OneBusiness/vendor-management/'+id);
+                        $('#editAccount form').attr('action', '{{ route('vendor-management.index') }}/' + id  + getSearchParams());
                         $('#editAccount').modal("toggle");
                     }
                 })
             });
 
-            // $(document).on('click', '#delete_ajax', function (e) {
-            //     e.preventDefault();
+            function getSearchParams() {
+              var queryParams= '?corpID=' + $('#example_ddl2 select').val();
+              queryParams += '&main=' + $('#example_ddlmain input').is(':checked');
+              queryParams += '&active=' + $('#example_ddl3 select').val();
+              return queryParams;
+            }
 
-            //     var form  = $(this).parents('form');
-            //     $.ajax({
-            //         type: "DELETE",
-            //         url: form.attr('action'),
-            //         data: form.serialize(),
-            //         success: function (data) {
-            //             $('#confirm-delete').modal('hide');
-            //         }
-            //     })
-            // });
-
-           /* $(document).on('change', '#example_ddl2', function () {
-                var location = $('#example_ddl2 option:selected').val();
-                window.location.href = '?corp='+location;
-            })*/
 
             $(document).on('change', '.corporationId', function () {
                 var corpId = $('.corporationId option:selected').val();
@@ -561,7 +544,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '/OneBusiness/vendors/get-branches',
+                    url: '{{ route('vendors.get_branch') }}',
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);

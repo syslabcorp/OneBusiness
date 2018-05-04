@@ -64,7 +64,12 @@ class VendorManagementController extends Controller
 
         if($success){
             \Session::flash('success', "Vendor account created successfully");
-            return redirect()->route('vendors.show', [$suppId, 'corpID' => $corpId]);
+            return redirect()->route('vendors.show', [
+              $suppId,
+              'corpID' => $request->corpID,
+              'active' => $request->active,
+              'main' => $request->main
+            ]);
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
@@ -136,10 +141,20 @@ class VendorManagementController extends Controller
 
         if($success){
             \Session::flash('success', "Vendor account updated successfully");
-            return redirect()->route('vendors.show', [$suppId, 'corpID' => $corp_id]);
+            return redirect()->route('vendors.show', [
+              $suppId,
+              'corpID' => $request->corpID,
+              'active' => $request->active,
+              'main' => $request->main
+            ]);
         }
         \Session::flash('error', "Something went wrong!");
-        return redirect()->route('vendors.show', $suppId);
+        return redirect()->route('vendors.show', [
+          $suppId,
+          'corpID' => $request->corpID,
+          'active' => $request->active,
+          'main' => $request->main
+        ]);
     }
 
     /**
@@ -160,11 +175,20 @@ class VendorManagementController extends Controller
         $success = $vendorManagement->delete();
         if($success){
             \Session::flash('success', "Vendor deleted successfully");
-            return redirect()->route('vendors.show', [$vendorManagement->supp_id, 'corpID' => $request->corpID ]);
-            // return response()->json('success', 200);
+            return redirect()->route('vendors.show', [
+              $vendorManagement->supp_id,
+              'corpID' => $request->corpID,
+              'active' => $request->active,
+              'main' => $request->main
+            ]);
         }
         \Session::flash('error', "Something went wrong!");
-        return redirect()->route('vendors.show', $vendorManagement->supp_id);
+        return redirect()->route('vendors.show', [
+          $vendorManagement->supp_id,
+          'corpID' => $request->corpID,
+          'active' => $request->active,
+          'main' => $request->main
+        ]);
     }
 
     public function getVendorAccount(Request $request){

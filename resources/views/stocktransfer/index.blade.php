@@ -76,69 +76,19 @@
 	                                                <div class="row">
 	                                                	<div class="table-responsive">
 										                   <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-										                        <thead>
-										                            <tr>
-										                                <th>P.O.#</th>
-										                                <th>P.O.Date</th>
-										                                <th>P.O.Template</th>
-										                                <th>Status</th>
-										                                <th>Total Count</th>
-										                                <th>Total Amount</th>
-										                                <th>Action</th>
-										                            </tr>
-										                        </thead>
-										                        <tbody>
-                                                                @foreach ($tmaster_data as $item) 
-										                        	<tr  id="emp{{$item->po_no}}">
-										                            <td>{{$item->po_no}}</td>
-											                        <td>{{$item->po_date}}</td>
-											                        <td>
-                                                                        @php
-                                                                        $template = $item->getSpotmpl8hdrData;
-                                                                        @endphp
-                                                                        @if($template)
-                                                                        {{$template->po_tmpl8_desc}}
-                                                                        @endif
-                                                                    </td>
-											                        <td 
-                                                                    @if($item->served==0)
-                                                                    Unserved
-                                                                    @elseif($item->served==1)
-                                                                    Served
-                                                                    @endif
-                                                                    </td>
-											                        <td  style="text-align: center;">{{number_format($item->tot_pcs)}}</td>
-											                        <td  style="text-align: right;">{{number_format((float)$item->total_amt, 2)}}</td>
-											                        <td  style="text-align: center;">
-
-                                                                        <a class="btn btn-success btn-md blue-tooltip " data-title="View PO Details"
-                                                                            href="{{ route('tmaster.details',$item->po_no) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="view PO detail">
-                                                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                                                        </a>
-                                                                      
-                                                                        <a class="btn btn-primary btn-md blue-tooltip " data-title="View original Details" 
-                                                                            href="{{ route('tmaster.originaldetails',$item->po_no) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="view original detail">
-                                                                            <span class="glyphicon glyphicon-eye-open"></span>
-                                                                        </a>
-                                                                       
-                                                                        <a class="btn btn-danger btn-md blue-tooltip " data-title="Edit" onclick="markToserved({{$item->po_no}})"
-                                                                            data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
-                                                                            <span class="glyphicon glyphicon-ok"></span>
-                                                                        </a>
-                                                                        
-
-											                        	 <!-- <a  href="{{ route('tmaster.details',$item->po_no) }}"  class="filterIcon1"><span class="glyphicon glyphicon-eye-open"></span></a>   -->
-											                        	 <!-- <a  class="filterIcon1"><span class="glyphicon glyphicon-pencil"></span></a>  -->
-                                             
-											                        </td>
-											                        </tr>
-                                                                    @endforeach
-
-											                      <!--   <span class="glyphicon glyphicon-eye-open"></span>
-											                        <span class="glyphicon glyphicon-pencil"></span>
-											                        <span class="glyphicon glyphicon-ok"></span> -->
-											                        
-										                        </tbody>
+                                          <thead>
+                                              <tr>
+                                                  <th>P.O.#</th>
+                                                  <th>P.O.Date</th>
+                                                  <th>P.O.Template</th>
+                                                  <th>Status</th>
+                                                  <th>Total Count</th>
+                                                  <th>Total Amount</th>
+                                                  <th>Action</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                          </tbody>
 										                    </table>
 										                </div>   
 	                                                </div>
@@ -243,17 +193,10 @@
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
+
 <script>
 
 $(document).ready(function() {
-
-    
-
-    $('#list_menu').DataTable({
-    "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
-   
-    });
-
     $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select onChange="filter()" class="filterSelect1"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
     // $('[data-toggle="tooltip"]').tooltip(); 
 
@@ -432,4 +375,22 @@ function showHidden(p){
   </script>
 @endsection
 
-
+@section('footer-scripts')
+<script type="text/javascript">
+  (function() {
+    $.ajax({
+      url: '{{ route('stocktransfer.autoItems') }}' + location.search,
+      type: 'GET',
+      success: function(res) {
+        $("#list_menu tbody").html(res);
+        $('#list_menu').DataTable({
+          "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+          order: [[0, 'desc']],
+          deferRender: true
+        });
+      }
+    })
+    
+  })()
+</script>
+@endsection

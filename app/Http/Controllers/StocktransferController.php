@@ -30,54 +30,38 @@ use Datetime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class StocktransferController extends Controller
-{
-    public function index()
-    {
-        // echo "string";
+class StocktransferController extends Controller {
+  public function index(Request $request) {
+    $status= $request->status ? $request->status : 1;
+    $company = Corporation::findOrFail($request->corpID);
 
-        if(!isset($_GET['status']))
-        {
-            $status=1;
-        }
-        else{
-            $status = $_GET['status'];
-        }
-    if($status==1)
-        {
-            $tmaster_data = Tmaster::where('served',0)->limit(100)->get();
-        }
-        else if($status==2)
-        {
-            $tmaster_data = Tmaster::where('served',1)->limit(100)->get();
-        }
-        else if($status==3)
-        {
-            $tmaster_data = Tmaster::limit(100)->get();
-        }
-        $delivery_data = Delivery::limit(1000)->get();
-        return view('stocktransfer/index',compact(array('tmaster_data','delivery_data','status')));
+    $delivery_data = Delivery::limit(1000)->get();
+
+    return view('stocktransfer/index',compact(array('delivery_data','status')));
+  }
+
+    public function autoItems(Request $request) {
+      $company = Corporation::findOrFail($request->corpID);
+      $status= $request->status ? $request->status : 1;
+
+      $hdrModel = new \App\Models\Spo\Hdr;
+      $hdrModel->setConnection($company->database_name);
+
+      $items = $hdrModel->orderBy('po_no', 'DESC');
+
+      if($status == 1) {
+          $items = $items->where('served', 0);
+      }else if($status == 2) {
+        $items = $items->where('served', 1);
+      }
+
+      return view('stocktransfer/auto-item', [
+        'items' => $items->get(),
+        'corpID' => $request->corpID
+      ]);
     }
 
-    public function  tmasterDetail($id)
-    {
-        $tmaster_ItemCode_Distinct = Spodetail::where('po_no',$id)->distinct()->get(['ItemCode']);
-        $tmaster_Branch_Distinct = Spodetail::where('po_no',$id)->distinct()->get(['Branch']);
-        $arr = [];
-        $global_data = DB::table('t_sysdata')->get()->all();
 
-        foreach($global_data as $data){
-           foreach($tmaster_Branch_Distinct as $branch)
-            if($data->Branch == $branch->Branch){
-                $arr[] = $data;
-                break;
-            }
-        }
-        $tmaster = Tmaster::find($id);
-        $tmaster_template = $tmaster->getSpotmpl8hdrData;
-        $po_no = $id;
-    return view('stocktransfer/show',compact('tmaster_ItemCode_Distinct','arr','tmaster','tmaster_template','po_no'));
-    }
 
     public function  tmasteOriginalDetail($id)
     {
@@ -197,9 +181,27 @@ class StocktransferController extends Controller
     }
 
    
-    public function show($id)
-    {
-        //
+    public function show(Request $request, $id) {
+      $company = Corporation::findOrFail($request->corpID);
+      
+      $hdrModel = new \App\Models\Spo\Hdr;
+      $hdrModel->setConnection($company->database_name);
+
+      $stockItem = $hdrModel->findOrFail($id);
+      $branchIds = $stockItem->items->pluck('Branch');
+
+      $branches = \App\Branch::whereIn('Branch', $branchIds);
+
+      $itemRows = $stockItem->items()
+                            ->whereIn('Branch', $branches->pluck('Branch'))
+                            ->get()
+                            ->groupBy('ItemCode');
+
+      return view('stocktransfer/show', [
+        'stockItem' => $stockItem,
+        'branches' => $branches->get(),
+        'itemRows' => $itemRows
+      ]);
     }
 
     public function edit($id)
