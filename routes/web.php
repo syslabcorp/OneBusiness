@@ -17,12 +17,11 @@ Route::get('/', function () {
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');
+Route::get('stocktransfer/{stock}/original', 'StocktransferController@original', ['middleware' => 'auth'])->name('stocktransfer.original');
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
 
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
-
-Route::get('{item}/tmasterOriginalDetail', 'StocktransferController@tmasteOriginalDetail')->name('tmaster.originaldetails');
 
 Route::get('{item}/markToserved', 'StocktransferController@markToserved');
 

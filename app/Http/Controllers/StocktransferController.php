@@ -37,7 +37,11 @@ class StocktransferController extends Controller {
 
     $delivery_data = Delivery::limit(1000)->get();
 
-    return view('stocktransfer/index',compact(array('delivery_data','status')));
+    return view('stocktransfer/index', [
+      'corpID' => $request->corpID,
+      'delivery_data' => $delivery_data,
+      'status' => $status
+    ]);
   }
 
     public function autoItems(Request $request) {
@@ -63,25 +67,31 @@ class StocktransferController extends Controller {
 
 
 
-    public function  tmasteOriginalDetail($id)
-    {
-        $tmaster_ItemCode_Distinct = Spodetail::where('po_no',$id)->distinct()->get(['ItemCode']);
-        
-        $tmaster_Branch_Distinct = Spodetail::where('po_no',$id)->distinct()->get(['Branch']);
-        $arr = [];
-        $global_data = DB::table('t_sysdata')->get()->all();
-        foreach($global_data as $data){
-           foreach($tmaster_Branch_Distinct as $branch)
-            if($data->Branch == $branch->Branch){
-                $arr[] = $data;
-                break;
-            }
-        }
-        $tmaster = Tmaster::find($id);
-        $tmaster_template = $tmaster->getSpotmpl8hdrData;
-        $po_no = $id;
+    public function original(Request $request, $id) {
+      $company = Corporation::findOrFail($request->corpID);
+      
+      $detailModel = new \App\Models\Spo\Detail;
+      $detailModel->setConnection($company->database_name);
 
-    return view('stocktransfer/showOriginal',compact('tmaster_ItemCode_Distinct','arr','tmaster','tmaster_template','po_no'));
+      $hdrModel = new \App\Models\Spo\Hdr;
+      $hdrModel->setConnection($company->database_name);
+
+      $stockItem = $hdrModel->findOrFail($id);
+
+      $branchIds = $stockItem->items->pluck('Branch');
+      $branches = \App\Branch::whereIn('Branch', $branchIds);
+
+      $itemRows = $stockItem->items()
+                            ->whereIn('Branch', $branches->pluck('Branch'))
+                            ->orderBy('ItemCode', 'ASC')
+                            ->get()
+                            ->groupBy('ItemCode');
+  
+    return view('stocktransfer/original', [
+      'stockItem' => $stockItem,
+      'branches' => $branches->get(),
+      'itemRows' => $itemRows
+    ]);
    
     }
 
@@ -127,7 +137,6 @@ class StocktransferController extends Controller {
     }
 
     public function markToserved($id){
-
         $tmaster = Tmaster::where( 'po_no',$id)->update([
             'served'=>1
         ]);   

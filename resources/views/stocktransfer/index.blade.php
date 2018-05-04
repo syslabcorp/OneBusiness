@@ -69,34 +69,36 @@
                                    
                                         
                                       	</ul>
-                                        <!-- 4 tabs start -->
                                         <div  class="tab-content" style="padding: 1em;">
-                                            <!-- first order tab  -->
-	                                            <div class="tab-pane fade active in" id="access" >
-	                                                <div class="row">
-	                                                	<div class="table-responsive">
-										                   <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                          <thead>
-                                              <tr>
-                                                  <th>P.O.#</th>
-                                                  <th>P.O.Date</th>
-                                                  <th>P.O.Template</th>
-                                                  <th>Status</th>
-                                                  <th>Total Count</th>
-                                                  <th>Total Amount</th>
-                                                  <th>Action</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                          </tbody>
-										                    </table>
-										                </div>   
-	                                                </div>
-	                                            </div>
-	                                              <!-- second product tab -->
+                                          <div class="tab-pane fade active in" id="access" >
+                                            @if(\Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V'))
+                                            <div class="row">
+                                              <div class="table-responsive">
+                                                <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>P.O.#</th>
+                                                            <th>P.O.Date</th>
+                                                            <th>P.O.Template</th>
+                                                            <th>Status</th>
+                                                            <th>Total Count</th>
+                                                            <th>Total Amount</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                  </table>
+                                              </div>
+                                            </div>
+                                            @else
+                                            <div class="alert alert-danger no-close">
+                                              You don't have permission
+                                          </div>
+                                            @endif
+                                          </div>
 	                                            <div class="tab-pane fade " id="tasks" >
 
-                                                        <!--  -->
                                                             <div class="row">
                                                                 <div class="table-responsive">
                                                                 <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
@@ -135,7 +137,6 @@
                                                                             <td  style="text-align:center;">
 
                                                                             <a class="btn btn-primary btn-md blue-tooltip edit" data-title="Edit"  onclick="onEditRow({{$item->Txfr_ID}})"
-
                                                                                  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
                                                                                 <span  id="editable{{$item->Txfr_ID}}" class="glyphicon glyphicon-pencil"></span>
                                                                              </a>
@@ -143,11 +144,6 @@
                                                                                 id="11" corp-name="Corp test" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Corporation">
                                                                                 <span class="glyphicon glyphicon-trash"></span>
                                                                             </a>
-
-
-                                                                                <!-- <a  class="filterIcon1 edit"><span class="glyphicon glyphicon-pencil"></span></a>        
-                                                                                <a  class="filterIcon1"><span class="glyphicon glyphicon-trash"></span></a>         -->
-
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -268,9 +264,7 @@ function showHidden(p){
             table.row('.selected').remove().draw( false );
             $('#emp'+tmasterId).closest('table').DataTable().destroy();
             $('#delete_confirm').modal('hide');            
-            // alert(response)
-            // $(this).prev().click()
-            alert('success');
+            alert(id + ' has been served');
         }
         
         });

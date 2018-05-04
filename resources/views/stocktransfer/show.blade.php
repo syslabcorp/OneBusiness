@@ -103,10 +103,10 @@ use App\Srcvdetail;
                                                   @foreach($branches as $branch)
                                                     <td class="col-qty">
                                                       <input type="text" class="form-control" 
-                                                        value="{{ $row->where('Branch', $branch->Branch)->first()['Qty'] }}">
+                                                        value="{{ $row->where('Branch', $branch->Branch)->sum('Qty') - $row->where('Branch', $branch->Branch)->sum('ServedQty') }}">
                                                     </td>
                                                   @endforeach
-                                                  <td class="col-total">{{ $row->sum('Qty') }}</td>
+                                                  <td class="col-total">{{ $row->sum('Qty')  - $row->sum('ServedQty') }}</td>
                                                   <td>{{ $row->first()->rcvDetails()->sum('Bal') }}</td>
                                                 </tr>
                                                 @endforeach
@@ -185,6 +185,12 @@ use App\Srcvdetail;
 
 
 $(document).ready(function() {
+  // Set column text color red if value equal zero
+  $('table tbody tr td').each(function(el) {
+    if($.isNumeric($(this).text()) && parseInt($(this).text()) == 0) {
+      $(this).css('color', '#f44336');
+    }
+  });
 
     $('#stockDetail').DataTable({
     "dom": '<"m-t-10"B><"m-t-10 pull-left"><"m-t-10 pull-right">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
@@ -215,7 +221,7 @@ function myFunction() {
             alert('there is no item to transfer')
         }
         else {
-                $.ajax({
+          $.ajax({
             url: ajax_url+'/saveRowPO',
             data: {changeRowArr:changedRowArr},
             type: "POST",
@@ -223,16 +229,11 @@ function myFunction() {
             success: function(response){
                 alert(response.success)
             }
-        });
+          });
         }
     } else {
        return false;
     }
-
-    
-    
-
-
 }
 
 
@@ -257,6 +258,12 @@ function myFunction() {
             qtyTotal += parseInt(colQty);
           }
         })
+
+        if(qtyTotal != 0) {
+          $parentTr.find('.col-total').css('color', '#111111');
+        }else {
+          $parentTr.find('.col-total').css('color', '#f44336');
+        }
 
         $parentTr.find('.col-total').text(qtyTotal);
       }else {
