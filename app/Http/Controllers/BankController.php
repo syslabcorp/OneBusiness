@@ -125,13 +125,10 @@ class BankController extends Controller
         $mainStatus = $request->input('MainStatus');
 
         $draw = $request->input('draw');
-        $start = $request->input('start');
-        $length = $request->input('length');
         $columns = $request->input('columns');
         $orderable = $request->input('order');
         $orderNumColumn = $orderable[0]['column'];
         $orderDirection = $orderable[0]['dir'];
-        $columnName = $columns[$orderNumColumn]['data'];
         $search = $request->input('search');
 
 
@@ -147,9 +144,6 @@ class BankController extends Controller
                 ->where('t_sysdata.corp_id', $corpID)
                 ->select('cv_bank_acct.default_acct', 'cv_bank_acct.date_created', 'cv_banks.bank_code', 'cv_bank_acct.acct_no', 'cv_bank_acct.branch',
                     'cv_bank_acct.corp_id', 'cv_bank_acct.bank_acct_id', 'cv_bank_acct.bank_id')
-                ->orderBy($columnName, $orderDirection)
-                ->skip($start)
-                ->take($length)
                 ->get();
 
         }else if($mainStatus != "false"){
@@ -158,9 +152,6 @@ class BankController extends Controller
                 ->where('cv_bank_acct.branch', -1)
                 ->select('cv_bank_acct.default_acct', 'cv_bank_acct.date_created', 'cv_banks.bank_code', 'cv_bank_acct.acct_no', 'cv_bank_acct.branch',
                     'cv_bank_acct.corp_id', 'cv_bank_acct.bank_acct_id', 'cv_bank_acct.bank_id')
-                ->orderBy($columnName, $orderDirection)
-                ->skip($start)
-                ->take($length)
                 ->get();
         }
 

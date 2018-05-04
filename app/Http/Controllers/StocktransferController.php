@@ -134,8 +134,7 @@ class StocktransferController extends Controller {
         return response()->json(array('msg'=>'success'), 200);   
     }
 
-    public function create(Request $request)
-  {
+    public function create(Request $request) {
     if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
@@ -194,6 +193,7 @@ class StocktransferController extends Controller {
 
       $itemRows = $stockItem->items()
                             ->whereIn('Branch', $branches->pluck('Branch'))
+                            ->orderBy('ItemCode', 'ASC')
                             ->get()
                             ->groupBy('ItemCode');
 
