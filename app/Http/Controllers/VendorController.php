@@ -15,11 +15,10 @@ class VendorController extends Controller
      */
     public function index()
     {
-        /*if(!\Auth::user()->checkAccessById(29, "V"))
-        {
+        if(!\Auth::user()->checkAccessById(29, "V")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }*/
+        }
 
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
