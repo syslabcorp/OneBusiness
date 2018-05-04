@@ -100,9 +100,6 @@ class User extends Authenticatable
     public function checkAccessByIdForCorp($corpID, $feature_id, $action) {
       $company = \App\Company::findOrFail($corpID);
 
-      $moduleId = $company->corp_type == 'ICAFE' ? 3 : 5;
-      $moduleId = 3;
-
       if($this->permissions == null) {
         $this->permissions = \DB::table('rights_detail')
             ->join("module_masters", "module_masters.module_id", "=", "rights_detail.module_id")
