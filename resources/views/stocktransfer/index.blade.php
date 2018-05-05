@@ -69,34 +69,36 @@
                                    
                                         
                                       	</ul>
-                                        <!-- 4 tabs start -->
                                         <div  class="tab-content" style="padding: 1em;">
-                                            <!-- first order tab  -->
-	                                            <div class="tab-pane fade active in" id="access" >
-	                                                <div class="row">
-	                                                	<div class="table-responsive">
-										                   <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                          <thead>
-                                              <tr>
-                                                  <th>P.O.#</th>
-                                                  <th>P.O.Date</th>
-                                                  <th>P.O.Template</th>
-                                                  <th>Status</th>
-                                                  <th>Total Count</th>
-                                                  <th>Total Amount</th>
-                                                  <th>Action</th>
-                                              </tr>
-                                          </thead>
-                                          <tbody>
-                                          </tbody>
-										                    </table>
-										                </div>   
-	                                                </div>
-	                                            </div>
-	                                              <!-- second product tab -->
+                                          <div class="tab-pane fade active in" id="access" >
+                                            @if(\Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V'))
+                                            <div class="row">
+                                              <div class="table-responsive">
+                                                <table id="list_menu" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>P.O.#</th>
+                                                            <th>P.O.Date</th>
+                                                            <th>P.O.Template</th>
+                                                            <th>Status</th>
+                                                            <th>Total Count</th>
+                                                            <th>Total Amount</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                  </table>
+                                              </div>
+                                            </div>
+                                            @else
+                                            <div class="alert alert-danger no-close">
+                                              You don't have permission
+                                          </div>
+                                            @endif
+                                          </div>
 	                                            <div class="tab-pane fade " id="tasks" >
 
-                                                        <!--  -->
                                                             <div class="row">
                                                                 <div class="table-responsive">
                                                                 <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
@@ -135,7 +137,6 @@
                                                                             <td  style="text-align:center;">
 
                                                                             <a class="btn btn-primary btn-md blue-tooltip edit" data-title="Edit"  onclick="onEditRow({{$item->Txfr_ID}})"
-
                                                                                  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
                                                                                 <span  id="editable{{$item->Txfr_ID}}" class="glyphicon glyphicon-pencil"></span>
                                                                              </a>
@@ -143,11 +144,6 @@
                                                                                 id="11" corp-name="Corp test" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Corporation">
                                                                                 <span class="glyphicon glyphicon-trash"></span>
                                                                             </a>
-
-
-                                                                                <!-- <a  class="filterIcon1 edit"><span class="glyphicon glyphicon-pencil"></span></a>        
-                                                                                <a  class="filterIcon1"><span class="glyphicon glyphicon-trash"></span></a>         -->
-
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -197,65 +193,22 @@
 <script>
 
 $(document).ready(function() {
-    $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select onChange="filter()" class="filterSelect1"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
-    // $('[data-toggle="tooltip"]').tooltip(); 
+    
 
-      $('#list_menu_delivery').DataTable({
-    "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId_1">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
-   
+    $('#list_menu_delivery').DataTable({
+      "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId_1">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      initComplete: function() {
+      }
     });
 
     $("#selectId_1").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select class="filterSelect2"><option value="1">In-transit</option><option value="2">Received</option><option value="3">All </option></select></div>');
-    // $('[data-toggle="tooltip"]').tooltip(); 
 
-            // $("table tr").editable({
-
-            //     // enable keyboard support
-            //     keyboard: true,
-
-            //     // double click to start editing
-            //     dblclick: true,
-
-            //     // enable edit buttons
-            //     button: true,
-
-            //     // CSS selector for edit buttons
-            //     buttonSelector: ".edit",
-
-            //     // uses select dropdown instead of input field
-            //     dropdowns: {},
-
-            //     // maintains column width when editing
-            //     maintainWidth: true,
-
-            //     // callbacks for edit, save and cancel actions
-
-            //     edit: function(values) {
-            //         // alert('edit');
-            //     },
-            //     save: function(values) {
-            //         alert('save');
-            //     },
-            //     cancel: function(values) {
-            //         // alert('cancel');
-            //     }
-
-            // });
-            @if($status==1)       
-                    $('.filterSelect1').val(1)
-            @elseif($status==2)     
-                    $('.filterSelect1').val(2)
-            @elseif($status==3)     
-                    $('.filterSelect1').val(3)
-            @endif
-
+    $('#selectId select').val('{{ $status }}');
 });
 
 
 
 function onEditRow(param){
-
-    
     if($('#editable'+param).hasClass('glyphicon-pencil')){
 
          $(".rcvdCheckbox"+param).attr("disabled", false);
@@ -288,9 +241,8 @@ function showHidden(p){
     var urlmarkToserved;
 
 
-    function filter(){
-        var selectedValue = $('.filterSelect1').val();
-        document.location.href="?status="+selectedValue;
+    function filterStatus(event) {
+      window.location = location.pathname + location.search.replace(/&status=[0-9]+/g, '') + "&status=" + $('#selectId select').val();
     }
 
 
@@ -312,9 +264,7 @@ function showHidden(p){
             table.row('.selected').remove().draw( false );
             $('#emp'+tmasterId).closest('table').DataTable().destroy();
             $('#delete_confirm').modal('hide');            
-            // alert(response)
-            // $(this).prev().click()
-            alert('success');
+            alert(id + ' has been served');
         }
         
         });
@@ -386,7 +336,11 @@ function showHidden(p){
         $('#list_menu').DataTable({
           "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
           order: [[0, 'desc']],
-          deferRender: true
+          deferRender: true,
+          initComplete: function() {
+            $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1"><strong>Filters:</strong> </label><select onChange="filterStatus()" class="form-control"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
+            $("#selectId select").val('{{ $status }}');
+          }
         });
       }
     })

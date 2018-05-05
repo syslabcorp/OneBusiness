@@ -669,6 +669,8 @@
                         .appendTo('#example_ddl5');
                 },
                "processing": true,
+               bServerSide: false,
+            //    sAjaxSource: true,
                "serverSide": true,
                 "ajax" : {
                    type: "POST",
@@ -677,7 +679,8 @@
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         @if(isset($corporations[0]->corp_id))
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
+                        console.log($('#example_ddl4 select').val());
+                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select').val();
                         @endif
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
@@ -927,12 +930,13 @@
                         if(cnt == 0){
                             options.append('<option value="">No option</option>');
                         }
+                        setTimeout(() => {
+                            mainTable.ajax.reload();
+                        }, 200);
                     }
 
                 })
-                setTimeout(() => {
-                    mainTable.ajax.reload();
-                }, 200);
+                
             })
 
             $('#example_ddl3').on('change', function () {
@@ -956,10 +960,11 @@
                         if(cnt == 0){
                             options.append('<option value="">No option</option>');
                         }
+                        mainTable.ajax.reload();
                     }
 
                 })
-                mainTable.ajax.reload();
+                
             })
 
             $('#example_ddl4').on('change', function () {

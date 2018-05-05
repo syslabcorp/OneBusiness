@@ -14,19 +14,24 @@
     </td>
     <td  style="text-align: center;">{{number_format($item->tot_pcs)}}</td>
     <td  style="text-align: right;">{{number_format((float)$item->total_amt, 2)}}</td>
-    <td  style="text-align: center;">
-      <a class="btn btn-primary btn-md" title="View PO Details"
+    <td>
+      <a class="btn btn-primary btn-sm" title="View PO Details"
+        {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }}
         href="{{ route('stocktransfer.show', [$item, 'corpID' => $corpID]) }}">
           <span class="glyphicon glyphicon-eye-open"></span>
       </a>
-      <a class="btn btn-warning btn-md blue-tooltip " data-title="View original Details" 
-        href="{{ route('tmaster.originaldetails',$item->po_no) }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="view original detail">
+      <a class="btn btn-warning btn-sm blue-tooltip" title="View original Details" 
+        {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }}
+        href="{{ route('stocktransfer.original',$item->po_no) }}">
         <span class="glyphicon glyphicon-inbox"></span>
       </a>
-      <a class="btn btn-success btn-md blue-tooltip " data-title="Edit" onclick="markToserved({{$item->po_no}})"
-        data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
+      @if($item->served == '0')
+      <a class="btn btn-success btn-sm blue-tooltip" title="Edit" 
+        {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}
+        onclick="confirm('Serve PO: Are you sure you want to mark {{ $item->po_no }} as served?') && markToserved({{$item->po_no}})">
         <span class="glyphicon glyphicon-ok"></span>
       </a>
+      @endif
     </td>
   </tr>
 @endforeach

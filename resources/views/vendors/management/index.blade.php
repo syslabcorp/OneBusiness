@@ -370,6 +370,7 @@
 @section('footer-scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
+        let selectBranchId = null;
         (function($){
           $('#addNewAccount #submitAddNewAccount').click(function() {
             var url = '{{ url('/vendor-management') }}' + getSearchParams();
@@ -506,12 +507,6 @@
                     url: "{!! route('vendor_management.get_account_for_vendor') !!}",
                     data: { id : id },
                     success: function (data) {
-                        if(data.nx_branch == -1){
-                            $('.editMainStatus').attr("checked", true);
-                            $('.editBranchName').attr("disabled", true);
-                        }else{
-                            $('.editBranchName').val(data.nx_branch);
-                        }
                         $('.editCorporationId').val(data.corp_id);
                         $('#editVendorAccountNumber').val(data.acct_num);
                         $('input[name="editDescription"]').val(data.description);
@@ -523,6 +518,14 @@
                           $('input[name="editActiveAccount').prop("checked", true);
                         }
                         $('#editAccount form').attr('action', '{{ route('vendor-management.index') }}/' + id  + getSearchParams());
+                        $('.editCorporationId').change();
+                        if(data.nx_branch == -1){
+                            $('.editMainStatus').attr("checked", true);
+                            $('.editBranchName').attr("disabled", true);
+                        }else{
+                            selectBranchId = data.nx_branch;
+                        }
+                        
                         $('#editAccount').modal("toggle");
                     }
                 })
@@ -557,9 +560,35 @@
                             options.append('<option value="">No options</option>');
                         }
                     }
-
                 })
             });
+
+            $(document).on('change', '.editCorporationId', function () {
+                var corpId = $(this).val();
+                var options = $('.editBranchName');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('vendors.get_branch') }}',
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                            options.val(selectBranchId);
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+                })
+            });
+
+
 
             mainTable.search( $('#example_ddl2 option:selected').text() );
             mainTable.draw();
