@@ -730,7 +730,9 @@ class PurchaseOrderController extends Controller
         $total_amount = 0;
         $total_pieces = 0;
         $errors = array();
-
+        $array_today = [];
+        $array_fromday = [];
+        
         foreach($details as $detail)
         {
           $branch = $detail->po_tmpl8_branch;
@@ -854,6 +856,8 @@ class PurchaseOrderController extends Controller
 
           if(isset($from_date) && isset($to_date))
           {
+            array_push($array_today, $to_date);
+            array_push($array_fromday, $from_date);
             if( Request::all()['corpID'] == 7 )
             {
               $total_sold = DB::connection($company->database_name)->select("SELECT SUM(Qty) as SoldQty 
@@ -994,8 +998,8 @@ class PurchaseOrderController extends Controller
           'pending' => $pending,
           'test' => $test,
           'error' => $errors,
-          'to_date' => $to_date,
-          'from_date' => $from_date
+          'to_date' => $array_today,
+          'from_date' => $array_fromday
           ]
           
         );
