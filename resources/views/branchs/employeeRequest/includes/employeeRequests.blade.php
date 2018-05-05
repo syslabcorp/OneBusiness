@@ -60,7 +60,7 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
                 {data: 'type', name: 'type'},
                 {data: 'from_branch', name: 'from_branch'},
                 {data: 'date_end', name: 'date_end'},
-                {data: 'to_branch', name: 'to_branch'},
+                {data: 'to_branch_name', name: 'to_branch_name'},
                 {data: 'date_start', name: 'date_start'},
                 {data: 'approved', name: 'approved'},
                 {data: 'executed', name: 'executed'},
