@@ -822,8 +822,7 @@ class PurchaseOrderController extends Controller
           $SaleDetailModel->setConnection($company->database_name);
           $SaleDetail = $SaleDetailModel->where('item_id', $item_id)->where('Branch', $branch)->distinct()->get();
   
-          $test = DB::connection($company->database_name)->select( " SELECT * from s_hdr INNER JOIN s_detail ON s_detail.Branch = s_hdr.Branch 
-          and s_detail.Sales_ID = s_hdr.Sales_ID where s_detail.item_id = ? and s_detail.Branch = ? order by s_hdr.DateSold DESC", [$item_id, $branch]);
+          $test = DB::connection($company->database_name)->select( " SELECT * from s_hdr order by s_hdr.DateSold DESC LIMIT 1");
           
           if(count($test) > 0)
           {
