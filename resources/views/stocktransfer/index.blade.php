@@ -97,86 +97,68 @@
                                           </div>
                                             @endif
                                           </div>
-	                                            <div class="tab-pane fade " id="tasks" >
+                                            <div class="tab-pane fade " id="tasks" >
+                                              <div class="row">
+                                                  <div class="table-responsive">
+                                                  <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>D.R.No</th>
+                                                        <th>Date</th>
+                                                        <th>Destination</th>
+                                                        <th>Rcvd</th>
+                                                        <th>Uploaded</th>
+                                                        <th>Action</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody >
+                                                      @foreach ($delivery_data as $item) 
+                                                          <tr  class="editable"   data-id="1">
+                                                              <td  data-field="Txfr_ID">{{$item->Txfr_ID}}</td>
+                                                              <td  data-field="Txfr_Date">{{$item->Txfr_Date}}</td>
+                                                              <td  data-field="Destination"></td>
+                                                              <td  style="text-align:center;">
+                                                              @if($item->Rcvd==1)
+                                                                  <input type="checkbox" checked disabled class="rcvdCheckbox{{$item->Txfr_ID}}">
+                                                              @else
+                                                                  <input type="checkbox" disabled  class="rcvdCheckbox{{$item->Txfr_ID}}">
+                                                              @endif
+                                                              </td>
+                                                              <td  style="text-align:center;">
+                                                              @if($item->Uploaded==1)
+                                                                  <input type="checkbox" checked  disabled class="uploadCheckbox{{$item->Txfr_ID}}">
+                                                              @else
+                                                                  <input type="checkbox"  disabled class="uploadCheckbox{{$item->Txfr_ID}}">
+                                                              @endif
+                                                              </td>
+                                                              <td  style="text-align:center;">
 
-                                                            <div class="row">
-                                                                <div class="table-responsive">
-                                                                <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>D.R.No</th>
-                                                                            <th>Date</th>
-                                                                            <th>Destination</th>
-                                                                            <th>Rcvd</th>
-                                                                            <th>Uploaded</th>
-                                                                            <th>Action</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                
-                                                                    <tbody >
-                                                                            
-                                                                    @foreach ($delivery_data as $item) 
-                                                                        <tr  class="editable"   data-id="1">
-                                                                            <td  data-field="Txfr_ID">{{$item->Txfr_ID}}</td>
-                                                                            <td  data-field="Txfr_Date">{{$item->Txfr_Date}}</td>
-                                                                            <td  data-field="Destination"></td>
-                                                                            <td  style="text-align:center;">
-                                                                            @if($item->Rcvd==1)
-                                                                                <input type="checkbox" checked disabled class="rcvdCheckbox{{$item->Txfr_ID}}">
-                                                                            @else
-                                                                                <input type="checkbox" disabled  class="rcvdCheckbox{{$item->Txfr_ID}}">
-                                                                            @endif
-                                                                            </td>
-                                                                            <td  style="text-align:center;">
-                                                                            @if($item->Uploaded==1)
-                                                                                <input type="checkbox" checked  disabled class="uploadCheckbox{{$item->Txfr_ID}}">
-                                                                            @else
-                                                                                <input type="checkbox"  disabled class="uploadCheckbox{{$item->Txfr_ID}}">
-                                                                            @endif
-                                                                            </td>
-                                                                            <td  style="text-align:center;">
-
-                                                                            <a class="btn btn-primary btn-md blue-tooltip edit" data-title="Edit"  onclick="onEditRow({{$item->Txfr_ID}})"
-                                                                                 data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
-                                                                                <span  id="editable{{$item->Txfr_ID}}" class="glyphicon glyphicon-pencil"></span>
-                                                                             </a>
-                                                                            <a class="btn btn-danger btn-md sweet-4 red-tooltip " data-title="Delete" href="#" rel=""
-                                                                                id="11" corp-name="Corp test" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Corporation">
-                                                                                <span class="glyphicon glyphicon-trash"></span>
-                                                                            </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    @endforeach
-                                                                            
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>   
-                                                            </div>
-                                                    </div>
-                                                        <!--  -->
-
-                                                </div>
-	                                            
-                                           
+                                                              <a class="btn btn-primary btn-md blue-tooltip edit" data-title="Edit"  onclick="onEditRow({{$item->Txfr_ID}})"
+                                                                    data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
+                                                                  <span  id="editable{{$item->Txfr_ID}}" class="glyphicon glyphicon-pencil"></span>
+                                                                </a>
+                                                              <a class="btn btn-danger btn-md sweet-4 red-tooltip " data-title="Delete" href="#" rel=""
+                                                                  id="11" corp-name="Corp test" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Corporation">
+                                                                  <span class="glyphicon glyphicon-trash"></span>
+                                                              </a>
+                                                              </td>
+                                                          </tr>
+                                                      @endforeach
+                                                              
+                                                          </tbody>
+                                                      </table>
+                                                  </div>   
+                                              </div>
+                                            </div>
+                                          </div>
      
                                         </div>
-                                                <!-- 4 tabs end -->
-
                                     </div>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
-
-
                 </section>
-              
-                <!-- www -->
-
-
-
                 </div>
             </div>
         </div>

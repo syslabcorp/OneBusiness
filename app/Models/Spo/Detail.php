@@ -10,8 +10,7 @@ class Detail extends Model {
   protected $primaryKey = "item_id";
 
   protected $fillable = [
-    'po_date', 'tot_pcs', 'Prodserved_Line',
-    'total_amt', 'po_tmpl8_id'
+    'ServedQty', 'Branch', 'po_no'
   ];
 
   public function rcvDetails() {

@@ -81,87 +81,61 @@ use App\Srcvdetail;
                                   </div>
                                 </div>
                                 <form class="form-horizontal table-items" action="#" id="formTable" method="POST" >
-                                      {{ csrf_field() }}
-                                    <div class="col-md-12" style="margin-top: 10px;">
-                                      <div class="row">
-                                          <div class="table-responsive">
-                                            <table id="table_editable_1" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                              <thead>
-                                                <tr>
-                                                  <th>Item Code</th>
-                                                  @foreach($branches as $branch)
-                                                    <th>{{ $branch->ShortName }}</th>
-                                                  @endforeach
-                                                  <th  style="color:blue; width:15%;">TOTAL</th>
-                                                  <th style="color:red;">STOCK</th>
-                                                </tr>
-                                              </thead>
-                                              <tbody>
-                                                @foreach($itemRows as $row)
-                                                <tr>
-                                                  <td>{{ $row->first()->ItemCode }}</td>
-                                                  @foreach($branches as $branch)
-                                                    <td class="col-qty">
-                                                      <input type="text" class="form-control" 
-                                                        value="{{ $row->where('Branch', $branch->Branch)->sum('Qty') - $row->where('Branch', $branch->Branch)->sum('ServedQty') }}">
-                                                    </td>
-                                                  @endforeach
-                                                  <td class="col-total">{{ $row->sum('Qty')  - $row->sum('ServedQty') }}</td>
-                                                  <td>{{ $row->first()->rcvDetails()->sum('Bal') }}</td>
-                                                </tr>
-                                                @endforeach
-                                              </tbody>
-                                            </table>
-                                          </div>
+                                  {{ csrf_field() }}
+                                  <div class="col-md-12" style="margin-top: 10px;">
+                                    <div class="row">
+                                      <div class="table-responsive">
+                                        <table id="table_editable_1" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                          <thead>
+                                            <tr>
+                                              <th>Item Code</th>
+                                              @foreach($branches as $branch)
+                                                <th>{{ $branch->ShortName }}</th>
+                                              @endforeach
+                                              <th style="color:blue; width:15%;">TOTAL</th>
+                                              <th style="color:red;">STOCK</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            @foreach($itemRows as $row)
+                                            <tr>
+                                              <td data-id="{{ $row->first()->item_id }}">{{ $row->first()->ItemCode }}</td>
+                                              @foreach($branches as $branch)
+                                                @php
+                                                  $maxQty = $row->where('Branch', $branch->Branch)->sum('Qty') - $row->where('Branch', $branch->Branch)->sum('ServedQty')
+                                                @endphp
+                                                <td style="width: 350px;" class="col-qty" 
+                                                  data-branch="{{ $branch->Branch }}" data-max="{{ $maxQty }}">
+                                                  <input type="text" class="form-control"
+                                                    value="{{ $maxQty }}" {{ $maxQty == 0 ? 'disabled' : '' }}>
+                                                </td>
+                                              @endforeach
+                                              <td class="col-total">{{ $row->sum('Qty')  - $row->sum('ServedQty') }}</td>
+                                              <td class="col-stock">{{ $row->first()->rcvDetails()->sum('Bal') }}</td>
+                                            </tr>
+                                            @endforeach
+                                          </tbody>
+                                        </table>
                                       </div>
-
                                     </div>
                                   </div>
-                                  </form>
-
-                                    <div class="col-md-12">
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          <button class="btn btn-default" style="width:8em;"  onclick="goBack()"><span style="    margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>Back</button>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <button onclick="myFunction()" class="btn btn-info" style="background-color:green;width:9em;float:right;" >Transfer Stocks</button>
-                                        </div>
-                                      </div>
+                                </div>
+                                </form>
+                                <div class="col-md-12">
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <button class="btn btn-default" style="width:8em;"  onclick="goBack()"><span style="margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>Back</button>
                                     </div>
 
-
-
-                                    <!-- second product tab -->
-                                  <div class="tab-pane fade " id="tasks">
-                                        <div class="row">
-                                          <div class="table-responsive">
-                                            <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th>D.R.No</th>
-                                                        <th>Date</th>
-                                                        <th>Destination</th>
-                                                        <th>Rcvd</th>
-                                                        <th>Uploaded</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                            
-                                                <tbody >
-                                                </tbody>
-                                                </table>
-                                            </div>   
-                                        </div>
-                                      </div>
+                                    <div class="col-md-6">
+                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" >Transfer Stocks</button>
                                     </div>
-                                  
-                                
-
+                                  </div>
+                                </div>
+                                <div class="tab-pane fade " id="tasks">
+                                </div>
+                                </div>
                             </div>
-                                    <!-- 4 tabs end -->
-
                         </div>
                     </div>
                   </div>
@@ -203,37 +177,118 @@ function goBack() {
     window.history.back();
 }
 
-
-
-function myFunction() {
-
-    var j = 0;
-    for(var i = 0;i<changedRowArr.length;i++){
-        console.log(changedRowArr[i].itemCode)
-
-        if(changedRowArr.slice(i + 1 - j).filter(f=>f.itemCode == changedRowArr[i].itemCode && f.branchID == changedRowArr[i].branchID ).length > 0)
-            changedRowArr.splice(i - j ++, 1);
+showAlertMessage = (message, title = "Alert", isReload = false) => {
+  swal({
+    title: "<div class='delete-title'>" + title + "</div>",
+    text:  "<div class='delete-text'>" + message + "</strong></div>",
+    html:  true,
+    customClass: 'swal-wide',
+    showCancelButton: false,
+    closeOnConfirm: true,
+    allowEscapeKey: !isReload
+  }, (data) => {
+    if(isReload) {
+      window.location.reload()
     }
- 
-    var r = confirm("Are you sure you want to transfer these items");
-    if (r == true) {
-        if(changedRowArr.length==0){
-            alert('there is no item to transfer')
-        }
-        else {
-          $.ajax({
-            url: ajax_url+'/saveRowPO',
-            data: {changeRowArr:changedRowArr},
-            type: "POST",
-            async: false,
-            success: function(response){
-                alert(response.success)
-            }
-          });
-        }
-    } else {
-       return false;
+  });
+}
+
+checkRowsTransfer = () => {
+  let hasRowsTransfer = false
+  
+  for(let index = 0; index < $('.table .col-total').length; index++) {
+    let el = $($('.table .col-total')[index])
+
+    if($.isNumeric(el.text()) && parseFloat(el.text()) != 0) {
+      hasRowsTransfer = true
     }
+  }
+
+  if(!hasRowsTransfer) {
+    showAlertMessage('No item to transfer')
+    return false;
+  }
+
+  return true;
+}
+
+checkAvailableStock = () => {
+  for(let index = 0; index < $('.table .col-total').length; index++) {
+    let totalElement = $($('.table .col-total')[index])
+    let stockElement = totalElement.parents('tr').find('.col-stock')
+    let itemCode = totalElement.parents('tr').find('td:eq(0)').text()
+    
+    if(parseFloat(totalElement.text()) > parseFloat(stockElement.text())) {
+      showAlertMessage('Not enough ' + itemCode + ' in warehouse...')
+      return false
+    }
+  }
+
+  return true
+}
+
+// @return Object
+getTransferParams = () => {
+  let params = {}
+
+  for(let index = 0; index < $('.table tbody tr').length; index++) {
+    let rowElement = $($('.table tbody tr')[index])
+    let itemCode = rowElement.find('td:eq(0)').text()
+    let itemId = rowElement.find('td:eq(0)').attr('data-id')
+    let colElements = rowElement.find('.col-qty')
+    
+    if(parseInt(rowElement.find('.col-total').text()) == 0) {
+      continue;
+    }
+
+    params[itemCode] = {}
+
+    for(let subIndex = 0; subIndex < colElements.length; subIndex++) {
+      let colElement = $(colElements[subIndex])
+      let branchId = colElement.attr('data-branch')
+
+      params[itemCode][branchId] = {}
+      params[itemCode][branchId]['ItemId'] = itemId
+      params[itemCode][branchId]['Branch'] = branchId
+      params[itemCode][branchId]['Qty'] = colElement.find('.form-control').val()
+    }
+  }
+
+  return params
+}
+
+transferStocks = () => {
+  if($('.table tbody .error').length > 0) {
+    showAlertMessage('Please check form error')
+    return false
+  }
+
+  swal({
+    title: "<div class='delete-title'>Transfer</div>",
+    text:  "<div class='delete-text'>Are you sure you want to transfer these items</strong></div>",
+    html:  true,
+    customClass: 'swal-wide',
+    showCancelButton: true,
+    confirmButtonClass: 'btn-success',
+    closeOnConfirm: false,
+    closeOnCancel: true
+  },
+  (isConfirm) => {
+    if(isConfirm) {
+      if(checkRowsTransfer() && checkAvailableStock()) {
+        $.ajax({
+          url: '{{ route('stocktransfer.transfer', [$stockItem, 'corpID' => $corpID]) }}',
+          data: {items: getTransferParams() },
+          type: "POST",
+          async: false,
+          success: function(response){
+            showAlertMessage("Items has been transferred successfully", "Success", true);
+          }
+        });
+      }
+    }
+  });
+
 }
 
 
@@ -248,9 +303,11 @@ function myFunction() {
     $('.table-items .form-control').keyup(function() {
       $parent = $(this).parents('td');
       $parentTr = $(this).parents('tr');
+      let maxItem = parseInt($parent.attr('data-max'));
+
       $parent.find('.error').remove();
 
-      if(!$(this).val() || $.isNumeric($(this).val())) {
+      if(!$(this).val() || $.isNumeric($(this).val()) && parseInt($(this).val()) <= maxItem) {
         let qtyTotal = 0;
         $parentTr.find('.col-qty').each(function(el) {
           let colQty = $(this).find('.form-control').val();
@@ -267,7 +324,11 @@ function myFunction() {
 
         $parentTr.find('.col-total').text(qtyTotal);
       }else {
-        $parent.append('<span class="error">Invalid input</span>');
+        if($.isNumeric($(this).val()) && parseInt($(this).val()) > maxItem) {
+          $parent.append('<span class="error">Input can\'t more than the required quantity (' + maxItem + ')</span>');
+        }else {
+          $parent.append('<span class="error">Invalid input</span>');
+        }
       }
     });
 
