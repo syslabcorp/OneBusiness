@@ -303,11 +303,11 @@ transferStocks = () => {
     $('.table-items .form-control').keyup(function() {
       $parent = $(this).parents('td');
       $parentTr = $(this).parents('tr');
-      let maxItem = $parent.attr('data-max');
+      let maxItem = parseInt($parent.attr('data-max'));
 
       $parent.find('.error').remove();
 
-      if(!$(this).val() || $.isNumeric($(this).val()) && $(this).val() <= maxItem) {
+      if(!$(this).val() || $.isNumeric($(this).val()) && parseInt($(this).val()) <= maxItem) {
         let qtyTotal = 0;
         $parentTr.find('.col-qty').each(function(el) {
           let colQty = $(this).find('.form-control').val();
@@ -324,7 +324,7 @@ transferStocks = () => {
 
         $parentTr.find('.col-total').text(qtyTotal);
       }else {
-        if($.isNumeric($(this).val()) && $(this).val() > maxItem) {
+        if($.isNumeric($(this).val()) && parseInt($(this).val()) > maxItem) {
           $parent.append('<span class="error">Input can\'t more than the required quantity (' + maxItem + ')</span>');
         }else {
           $parent.append('<span class="error">Invalid input</span>');
