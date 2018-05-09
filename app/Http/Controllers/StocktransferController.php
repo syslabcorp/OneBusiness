@@ -12,7 +12,6 @@ use App\StockType;
 use App\StockDetail;
 use App\Srcvdetail;
 
-use App\Stxfrhdr;
 use App\Stxfrdetail;
 
 use App\Vendor;
@@ -95,40 +94,89 @@ class StocktransferController extends Controller {
    
     }
 
-    public function saveRowPO(Request $request){
+    public function transfer(Request $request, $id)
+    {
+        $company = Corporation::findOrFail($request->corpID);
 
-        $arr = $request->changeRowArr;
+        $hdrModel = new \App\Models\Stxfr\Hdr;
+        $hdrModel->setConnection($company->database_name);
 
-        foreach ($arr as $item) {
-           
-            // var_dump($item['rowVal']);die;
-            $qty  = $item['rowVal'];
-            $itemCode = $item['itemCode'];
-            $itemID = $item['itemID'];
-            $branchID = $item['branchID'];
-            $date = date('Y-m-d');
-            
-            $srcvDetail = Srcvdetail::where('item_id',$itemID)->first();
-            $movementID = $srcvDetail['Movement_ID'];
-            // dd($movementID);
+        $detailModel = new \App\Models\Stxfr\Detail;
+        $detailModel->setConnection($company->database_name);
 
-        $stxf = Stxfrhdr::create([
-               
-              'Txfr_Date' => $date,
-              'Txfr_To_Branch' =>$branchID,
-              'Rcvd' => 1,
-              'Uploaded' => 1,
-              ]);
-      
-        $stxfdetail = Stxfrdetail::create([
-          
-              'item_id' => $itemID,
-              'ItemCode' =>$itemCode,
-              'Qty' => $qty,
-              'Bal' => 0,
-              'Movement_ID' => $movementID,
-              
-              ]);
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
+
+        $spoModel = new \App\Models\Spo\Hdr;
+        $spoModel->setConnection($company->database_name);
+
+        $stockItem = $spoModel->findOrFail($id);
+
+        if($request->items) {
+            foreach($request->items as $itemCode => $branches) {
+                foreach($branches as $branch => $itemParams) {
+                    $hdrItem = $hdrModel->create([
+                        'Txfr_Date' => date('Y-m-d'),
+                        'Txfr_To_Branch' => $branch,
+                        'Rcvd' => 0,
+                        'Uploaded' => 0
+                    ]);
+
+                    $rcvItems = $rcvModel->where('item_id', $itemParams['ItemId'])
+                                    ->where('Bal', '>', 0)
+                                    ->orderBy('RcvDate', 'ASC')
+                                    ->get();
+
+                    $itemQtyRemaining = $itemParams['Qty'];
+                    foreach($rcvItems as $rcvItem) {
+                        $itemQty = $itemQtyRemaining;
+                        $itemQtyRemaining -= $rcvItem->Bal;
+                        if($itemQty <= $rcvItem->Bal) {
+                            $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
+                        }else {
+                            $itemQty = $rcvItem->Bal;
+                            $rcvItem->update(['Bal' => 0]);
+                        }
+
+                        $detailModel->create([
+                            'Txfr_ID' => $hdrItem->Txfr_ID,
+                            'item_id' => $itemParams['ItemId'],
+                            'ItemCode' =>$itemCode,
+                            'Qty' => $itemQty,
+                            'Bal' => $itemQty,
+                            'Movement_ID' => $rcvItem->Movement_ID,
+                        ]);
+
+                        if($itemQtyRemaining <= 0) {
+                            break;
+                        }
+                    }
+
+                    $poItems = $stockItem->items()
+                                         ->whereRaw('ServedQty < Qty')
+                                         ->where('item_id', $itemParams['ItemId'])
+                                         ->where('Branch', $branch)
+                                         ->get();
+
+                    $itemQtyRemaining = $itemParams['Qty'];
+                    foreach($poItems as $poItem) {
+                        $itemQty = $itemQtyRemaining;
+                        $itemQtyRemaining -= $poItem->Qty - $poItem->ServedQty;
+
+                        if($itemQty <= $poItem->Qty - $poItem->ServedQty) {
+                            $poItem->update(['ServedQty' => $poItem->ServedQty + $itemQty]);
+                        }else {
+                            $poItem->update(['ServedQty' => $poItem->Qty]);
+                        }
+
+                        if($itemQtyRemaining <= 0) {
+                            break;
+                        }
+                    }
+
+                }
+                
+            }
         }
         
       return response()->json([
@@ -209,24 +257,8 @@ class StocktransferController extends Controller {
       return view('stocktransfer/show', [
         'stockItem' => $stockItem,
         'branches' => $branches->get(),
-        'itemRows' => $itemRows
+        'itemRows' => $itemRows,
+        'corpID' => $request->corpID
       ]);
-    }
-
-    public function edit($id)
-    {
-        //
-    }
-
-   
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-   
-    public function destroy($id)
-    {
-        //
     }
 }

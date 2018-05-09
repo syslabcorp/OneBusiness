@@ -5,15 +5,11 @@
     <td>
       {{ $item->template ? $item->template->po_tmpl8_desc : '' }}
     </td>
-    <td 
-      @if($item->served==0)
-      Unserved
-      @elseif($item->served==1)
-      Served
-      @endif
+    <td>
+      {{ $item->served == 1 ? 'Served' : 'Unserved' }}
     </td>
-    <td  style="text-align: center;">{{number_format($item->tot_pcs)}}</td>
-    <td  style="text-align: right;">{{number_format((float)$item->total_amt, 2)}}</td>
+    <td style="text-align: center;">{{number_format($item->tot_pcs)}}</td>
+    <td style="text-align: right;">{{number_format((float)$item->total_amt, 2)}}</td>
     <td>
       <a class="btn btn-primary btn-sm" title="View PO Details"
         {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }}
