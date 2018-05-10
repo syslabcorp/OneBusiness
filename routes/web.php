@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');
+Route::post('stocktransfer/{stock}/transfer', 'StocktransferController@transfer', ['middleware' => 'auth'])->name('stocktransfer.transfer');
 Route::get('stocktransfer/{stock}/original', 'StocktransferController@original', ['middleware' => 'auth'])->name('stocktransfer.original');
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
@@ -24,9 +25,6 @@ Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'au
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
 
 Route::get('{item}/markToserved', 'StocktransferController@markToserved');
-
-Route::post('/saveRowPO', 'StocktransferController@saveRowPO');
-
 
 Auth::routes();
 
