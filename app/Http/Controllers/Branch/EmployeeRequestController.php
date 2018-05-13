@@ -47,11 +47,13 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata.Branch, sysdata.City_ID, cities.Prov_ID, sysdata2.ShortName as "to_branch_name", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.to_branch, employeeRequest.txn_no, employeeRequest.from_branch as from_branch_id, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID ORDER BY DATE(employeeRequest.date_rqstd) DESC');
-
+		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata.Branch, sysdata.City_ID, sysdata2.City_ID as City_ID2, provinces.Prov_ID, provinces2.Prov_ID as Prov_ID2, sysdata2.ShortName as "to_branch_name", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.to_branch, employeeRequest.from_branch as from_branch_id, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID LEFT JOIN global.t_cities as cities2 ON sysdata2.City_ID = cities2.City_ID LEFT JOIN global.t_provinces as provinces ON cities.Prov_ID = provinces.Prov_ID LEFT JOIN global.t_provinces as provinces2 ON cities2.Prov_ID = provinces2.Prov_ID ORDER BY DATE(employeeRequest.date_rqstd) DESC');
 		
-		$query1 = $this->filter_results_according_access_rights($query1, $request);
 		// dd($query1);
+
+		$query1 = $this->filter_results_according_access_rights($query1, $request);
+
+			
 		// if($request->search["value"]) { $query1 = $this->applySearchToArray($query1, $request->search["value"]); }
 		if(!is_null($request->approved) && $request->approved != "any"){
 			if($request->approved == "uploaded") {
@@ -60,17 +62,20 @@ class EmployeeRequestController extends Controller
 				});
 			}
 
+
 			if($request->approved == "approved") {
 				$query1 = array_filter($query1, function ($arr){
 					return $arr->approved == 1;
 				});
 			}
+
 			
 			if($request->approved == "for_approval") {
 				$query1 = array_filter($query1, function ($arr){
 					return $arr->approved == 0;
 				});
 			}
+
 
 		}
 
@@ -184,19 +189,24 @@ class EmployeeRequestController extends Controller
 		if($user->Area_type == "BR") {
 			$allowed_branches = explode(",", UserArea::where("user_ID", $user->UserID)->first()->branch);
 		            	$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_branches){
-				return in_array($arr->from_branch_id, $allowed_branches) || in_array($arr->to_branch, $allowed_branches);
+		            	if($arr->type == 1 || $arr->type ==3) { return in_array($arr->to_branch, $allowed_branches); }
+		            	if($arr->type == 2 || $arr->type ==4) { return in_array($arr->from_branch_id, $allowed_branches); }
 			});
 		}
+
+
 		if($user->Area_type == "CT") {
 			$allowed_cities = explode(",", UserArea::where("user_ID", $user->UserID)->first()->city);
+
             			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_cities){
-				return in_array($arr->City_ID, $allowed_cities);
+				return in_array($arr->City_ID, $allowed_cities) || in_array($arr->City_ID2, $allowed_cities);
 		    	});
 		}
+
 		if($user->Area_type == "PR") {
 			$allowed_provincies = explode(",", UserArea::where("user_ID", $user->UserID)->first()->province);
             			$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_provincies){
-				return in_array($arr->Prov_ID, $allowed_provincies);
+				return in_array($arr->Prov_ID, $allowed_provincies) || in_array($arr->Prov_ID2, $allowed_provincies);
 		    	});
 		}
 		return $query1;
@@ -207,7 +217,7 @@ class EmployeeRequestController extends Controller
 		if($user->Area_type == "BR") {
 			$allowed_branches = explode(",", UserArea::where("user_ID", $user->UserID)->first()->branch);
 		            	$query1 =  array_filter($query1, function ($arr) use ($request, $allowed_branches){
-				return in_array($arr->Branch, $allowed_branches) or in_array($arr->SQ_Branch, $allowed_branches);
+				return in_array($arr->Branch, $allowed_branches) || in_array($arr->SQ_Branch, $allowed_branches);
 			});
 		}
 		if($user->Area_type == "CT") {
