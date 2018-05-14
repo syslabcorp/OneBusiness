@@ -14,4 +14,15 @@ class Hdr extends Model
         'Txfr_Date', 'Txfr_To_Branch', 'Rcvd',
         'DateRcvd', 'Shift_ID', 'Uploaded'
     ];
+
+
+    public function branch()
+    {
+        return $this->belongsTo(\App\Branch::class, 'Txfr_To_Branch', 'Branch');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(Detail::class, 'Txfr_ID', 'Txfr_ID');
+    }
 }

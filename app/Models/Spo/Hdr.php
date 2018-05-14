@@ -11,7 +11,7 @@ class Hdr extends Model {
 
   protected $fillable = [
     'po_date', 'tot_pcs', 'Prodserved_Line',
-    'total_amt', 'po_tmpl8_id'
+    'total_amt', 'po_tmpl8_id','served'
   ];
 
   public function template() {

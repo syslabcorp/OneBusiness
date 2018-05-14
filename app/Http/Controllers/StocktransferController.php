@@ -23,6 +23,7 @@ use App\ProductLine;
 use DB;
 use Validator;
 use Datetime;
+use App\Transformers\Stxfr\DetailTransformer;
 
 
 
@@ -32,14 +33,14 @@ use App\Http\Controllers\Controller;
 class StocktransferController extends Controller {
   public function index(Request $request) {
     $status= $request->status ? $request->status : 1;
-    $company = Corporation::findOrFail($request->corpID);
-
-    $delivery_data = Delivery::limit(1000)->get();
+    $stockStatus = $request->stockStatus ? $request->stockStatus : 1;
+    $tab = $request->tab ? $request->tab : 'auto';
 
     return view('stocktransfer/index', [
       'corpID' => $request->corpID,
-      'delivery_data' => $delivery_data,
-      'status' => $status
+      'status' => $status,
+      'stockStatus' => $stockStatus,
+      'tab' => $tab
     ]);
   }
 
@@ -64,7 +65,30 @@ class StocktransferController extends Controller {
       ]);
     }
 
+    public function deliveryItems(Request $request)
+    {
+        $company = Corporation::findOrFail($request->corpID);
 
+        $detailModel = new \App\Models\Stxfr\Hdr;
+        $detailModel->setConnection($company->database_name);
+
+        $items = $detailModel->orderBy('Txfr_ID', 'DESC');
+
+        switch($request->stockStatus) {
+            case 1:
+                $items = $items->where('Rcvd', 0);
+                break;
+            case 2:
+                $items = $items->where('Rcvd', 1);
+                break;
+            default:
+                break;
+        }
+
+        $items = $items->get();
+
+        return fractal($items, new DetailTransformer)->toJson();
+    }
 
     public function original(Request $request, $id) {
       $company = Corporation::findOrFail($request->corpID);
@@ -115,6 +139,10 @@ class StocktransferController extends Controller {
         if($request->items) {
             foreach($request->items as $itemCode => $branches) {
                 foreach($branches as $branch => $itemParams) {
+                    if($itemParams['Qty'] == 0) {
+                        continue;
+                    }
+
                     $hdrItem = $hdrModel->create([
                         'Txfr_Date' => date('Y-m-d'),
                         'Txfr_To_Branch' => $branch,
@@ -173,67 +201,116 @@ class StocktransferController extends Controller {
                             break;
                         }
                     }
-
                 }
-                
             }
         }
-        
+
       return response()->json([
         'success'=> 'success'
       ]);
     }
 
-    public function markToserved($id){
-        $tmaster = Tmaster::where( 'po_no',$id)->update([
-            'served'=>1
-        ]);   
-        return response()->json(array('msg'=>'success'), 200);   
+    public function markToServed(Request $request, $id){
+        $company = Corporation::findOrFail($request->corpID);
+
+        $spoModel = new \App\Models\Spo\Hdr;
+        $spoModel->setConnection($company->database_name);
+
+        $stockItem = $spoModel->findOrFail($id);
+
+        $stockItem->update(['served' => 1]);
+
+        return response()->json([
+            'success'=> 'success'
+        ]);
     }
 
-    public function create(Request $request) {
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
-      \Session::flash('error', "You don't have permission"); 
-      return redirect("/home"); 
-    }
-    $company = Corporation::findOrFail($request->corpID);
-    $stockModel = new \App\Stock;
-    $stockModel->setConnection($company->database_name);
-    $purchaseOrderModel = new \App\PurchaseOrder;
-    $purchaseOrderModel->setConnection($company->database_name);
-    $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
-    $typeID = [0,$retailID];
-
-    $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
-    $vendors = Vendor::orderBy('VendorName')->get();
-
-    $brands = Brand::all();
-
-    $prod_lines = ProductLine::all();
-
-    $prod_lines = $prod_lines->map(function ($prod_lines) {
-      return $prod_lines->Product;
-    });
-    $brands = $brands->map(function ($brands) {
-      return $brands->Brand;
-    });
-    // dd(Brand::all());
-    $pos = $purchaseOrderModel->where('served', 0)->orderBy('po_no', 'desc')->get();
-    return view('stocktransfer.create',
-      [
-        'brands' => $brands,
-        'prod_lines' => $prod_lines,
-        'corpID' => $request->corpID,
-        'vendors' => $vendors,
-        'pos' => $pos,
-        'stockitems' => $stockitems
-      ]
-    )->with('corpID', $request->corpID);
-  }
-
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+        }
+
+        $company = Corporation::findOrFail($request->corpID);
+
+        $hdrModel = new \App\Models\Stxfr\Hdr;
+        $hdrModel->setConnection($company->database_name);
+
+        // $hdrItem = $hdrModel->
+
+        $purchaseOrderModel = new \App\PurchaseOrder;
+        $purchaseOrderModel->setConnection($company->database_name);
+
+        $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
+        $typeID = [0,$retailID];
+
+        $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
+        $vendors = Vendor::orderBy('VendorName')->get();
+
+        $prod_lines = ProductLine::all();
+
+        $branches = $company->branches()->where('Active', 1)
+                            ->orderBy('ShortName', 'ASC')
+                            ->get();
+
+        $prod_lines = $prod_lines->map(function ($prod_lines) {
+            return $prod_lines->Product;
+        });
+
+        $pos = $purchaseOrderModel->where('served', 0)->orderBy('po_no', 'desc')->get();
+        return view('stocktransfer.create', [
+            'branches' => $branches,
+            'prod_lines' => $prod_lines,
+            'corpID' => $request->corpID,
+            'vendors' => $vendors,
+            'pos' => $pos,
+            'stockitems' => $stockitems
+        ]);
+    }
+
+    public function edit(Request $request, $id)
+    {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
+        $company = Corporation::findOrFail($request->corpID);
+
+        $hdrModel = new \App\Models\Stxfr\Hdr;
+        $hdrModel->setConnection($company->database_name);
+
+        $hdrItem = $hdrModel->findOrFail($id);
+
+        $purchaseOrderModel = new \App\PurchaseOrder;
+        $purchaseOrderModel->setConnection($company->database_name);
+        $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
+        $typeID = [0,$retailID];
+
+        $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
+        $vendors = Vendor::orderBy('VendorName')->get();
+
+        $prod_lines = ProductLine::all();
+
+        $branches = $company->branches()->where('Active', 1)
+                            ->orderBy('ShortName', 'ASC')
+                            ->get();
+
+        $prod_lines = $prod_lines->map(function ($prod_lines) {
+            return $prod_lines->Product;
+        });
+
+        $pos = $purchaseOrderModel->where('served', 0)->orderBy('po_no', 'desc')->get();
+        return view('stocktransfer.edit', [
+            'branches' => $branches,
+            'prod_lines' => $prod_lines,
+            'corpID' => $request->corpID,
+            'vendors' => $vendors,
+            'pos' => $pos,
+            'stockitems' => $stockitems,
+            'hdrItem' => $hdrItem
+        ]);
     }
 
    
@@ -260,5 +337,20 @@ class StocktransferController extends Controller {
         'itemRows' => $itemRows,
         'corpID' => $request->corpID
       ]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $company = Corporation::findOrFail($request->corpID);
+
+        $deliveryModel = new \App\Models\Stxfr\Hdr;
+        $deliveryModel->setConnection($company->database_name);
+
+        $deliveryItem = $deliveryModel->findOrFail($id);
+        $deliveryItem->delete();
+
+        return response()->json([
+            'success'=> true
+        ]);
     }
 }

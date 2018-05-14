@@ -134,7 +134,7 @@ use App\Srcvdetail;
                                 </div>
                                 <div class="tab-pane fade " id="tasks">
                                 </div>
-                                </div>
+                              </div>
                             </div>
                         </div>
                     </div>

@@ -23,7 +23,9 @@
                 <div class="col-sm-6">
                   <select class="form-control" name="sort" id="sort">
                     @foreach($branches as $branch)
-                    <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                      <option value="{{ $branch->Branch }}"
+                        {{ $hdrItem->Txfr_To_Branch == $branch->Branch ? 'selected' : '' }}
+                        >{{ $branch->ShortName }}</option>
                     @endforeach
                   </select>  
                 </div>
@@ -31,23 +33,22 @@
               </div>
             
               <div class="col-xs-4">
-                  <div class="form-group">
+                <div class="form-group">
                   <label class="control-label col-sm-3"  style="padding-left: 0;">Date</label>
                   <div class="col-xs-8">
-                    <input type="date" class="form-control" name="RcvDate" id="" value="{{date('Y-m-d')}}" >
+                    <input type="date" class="form-control" name="RcvDate" id="" value="{{ $hdrItem->Txfr_Date }}" >
                   </div>
-                  </div>
+                </div>
               </div>
-
               <div class="col-xs-4">
-                  <div class="form-group">
+                <div class="form-group">
                   <label class="control-label col-sm-3"   style="padding-left: 0;">D.R#:</label>
                   <div class="col-xs-8">
-                    <input type="text" data-validation="required,length" data-validation-length="max12" data-validation-error-msg="D.R.# is required" data-validation-error-msg-length="D.R.# should not exceed 12 characters" class="form-control" name="RR_No"   >
+                    <input type="text" data-validation="required,length" data-validation-length="max12" data-validation-error-msg="D.R.# is required" data-validation-error-msg-length="D.R.# should not exceed 12 characters" class="form-control" name="RR_No"
+                      value="{{ $hdrItem->Txfr_ID }}">
                   </div>
-                  </div>
+                </div>
               </div>
-
               </div>
 
               <div class="form-group">
@@ -68,50 +69,36 @@
                   <th>Product Line</th>
                   <th>Brand</th>
                   <th>Description</th>
-                  <th>Cost/Unit</th>
-                  <th>Served</th>
                   <th>Qty</th>
-                  <th>Subtotal</th>
                   <th>Unit</th>
                   <th style="min-width: 100px;">Action</th>
                 </tr>
-
-                <tr class="editable" id="example" data-id="" style="display: none;">
+                @foreach($hdrItem->details as $detail)
+                <tr class="editable" data-id="" >
                   <input type="hidden" name="add_type[]" class="input_type" value="add">
                   <td class="edit_ItemCode"  data-field="ItemCode" >
-                    <span class="value_ItemCode"></span>
+                    <span class="value_ItemCode">{{ $detail->ItemCode }}</span>
                     <input class="input_old_item_id" type="hidden" name="add_old_item_id[]" value="" >
                     <input class="input_item_id" type="hidden" name="add_item_id[]" value="" >
                     <input autocomplete="off" class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
                   </td>
                   <td class="edit_Prod_Line" data-field="Prod_Line" >
-                    <span class="value_Prod_Line"></span>
+                    <span class="value_Prod_Line">{{ $detail->item->product_line->Product }}</span>
                     <input autocomplete="off" class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
                   </td>
                   <td class="edit_Brand" data-field="Brand" >
-                    <span class="value_Brand"></span>
+                    <span class="value_Brand">{{ $detail->item->brand ? $detail->item->brand->Brand : '' }}</span>
                     <input autocomplete="off" class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
                   </td>
                   <td class="edit_Description" >
-                    <span class="value_Description"></span>
-                  </td>
-                  <td class="edit_Cost text-right" data-field="Cost" >
-                  <span class="value_Cost"></span>
-                    <input type="hidden" class="input_Cost" data-validation-error-msg="Invalid input: Please enter a number." data-validation="number" data-validation-allowing="float" data-validation-optional="true"  name="add_Cost[]" id="" value="" >
-                  </td>
-                  <td class="edit_ServedQty text-right" >
-                    <span class="value_ServedQty"></span>
+                    <span class="value_Description">{{ $detail->item->Description }}</span>
                   </td>
                   <td class="edit_Qty text-right" data-field="Qty" >
-                    <span class="value_Qty"></span>
+                    <span class="value_Qty">{{ $detail->Qty }}</span>
                     <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="add_Qty[]" id="" value="" >
                   </td>
-                  <td class="edit_Sub text-right" >
-                    <span class="value_Sub"></span>
-                    <input type="hidden" class="input_Sub"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="add_Sub[]" id="" value="" >
-                  </td>
                   <td class="edit_Unit" >
-                    <span class="value_Unit"></span>
+                    <span class="value_Unit">{{ $detail->item->Unit }}</span>
                   </td>
                   <td class="text-center" >
                     <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " >
@@ -122,6 +109,7 @@
                     </a>
                   </td>
                 </tr>
+                @endforeach
 
                 <tr class="" id="add-row" style="display: none;">
                   <input type="hidden" name="item_id" value="" class="input_item_id">
@@ -129,10 +117,7 @@
                   <td> <input autocomplete="off" type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
                   <td> <input autocomplete="off" type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                   <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
-                  <td> <input type="text" name="Cost" id="" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="form-control input_Cost"> </td>
-                  <td>0</td>
                   <td> <input type="text" name="Qty" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" value="1" data-validation-optional="true" class="input_Qty form-control"> </td>
-                  <td> <input type="text" name="Sub" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub form-control"> </td>
                   <td class="input_Unit" ></td>
                   <td class="text-center" >
                     <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" 
@@ -144,11 +129,9 @@
                     </a>
                   </td>
                 </tr>
-
               </tbody>
             </table>
           </div>
-
 
           <table class="table table-bordered" id="recommend-table" style=" display: none; " >
             <thead>

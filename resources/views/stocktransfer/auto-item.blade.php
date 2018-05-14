@@ -1,5 +1,5 @@
 @foreach ($items as $item) 
-  <tr id="emp{{$item->po_no}}">
+  <tr>
     <td>{{$item->po_no}}</td>
     <td>{{$item->po_date}}</td>
     <td>
@@ -18,13 +18,13 @@
       </a>
       <a class="btn btn-warning btn-sm blue-tooltip" title="View original Details" 
         {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }}
-        href="{{ route('stocktransfer.original',$item->po_no) }}">
+        href="{{ route('stocktransfer.original', [$item, 'corpID' => $corpID]) }}">
         <span class="glyphicon glyphicon-inbox"></span>
       </a>
       @if($item->served == '0')
       <a class="btn btn-success btn-sm blue-tooltip" title="Edit" 
         {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}
-        onclick="confirm('Serve PO: Are you sure you want to mark {{ $item->po_no }} as served?') && markToserved({{$item->po_no}})">
+        onclick="markToserved(event, {{$item->po_no}})">
         <span class="glyphicon glyphicon-ok"></span>
       </a>
       @endif

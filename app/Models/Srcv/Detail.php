@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models\Srcv;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Srcvdetail extends Model
+class Detail extends Model
 {
     public $timestamps = false;
     protected $table = "s_rcv_detail";
