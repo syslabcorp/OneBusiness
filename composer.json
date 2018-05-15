@@ -11,6 +11,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "nexmo/laravel": "^0.4.0",
+        "spatie/laravel-fractal": "^4.0",
         "yajra/laravel-datatables-oracle": "~7.0"
     },
     "require-dev": {

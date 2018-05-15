@@ -14,4 +14,9 @@ class Detail extends Model
         'item_id', 'ItemCode', 'Qty',
         'Bal', 'Movement_ID', 'Txfr_ID'
     ];
+
+    public function item()
+    {
+        return $this->belongsTo(\App\StockItem::class, 'item_id', 'item_id');
+    }
 }

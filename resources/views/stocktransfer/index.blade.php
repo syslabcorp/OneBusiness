@@ -31,46 +31,33 @@
 			 <h3 class="text-center">Stock Transfer</h3>
     	<div class="row">    
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    
+              <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-9">
-                        <h4>Stock Transfer</h4>
-                    </div>
-                    <div class="col-xs-3"  id="addNewTransfer" >
-
-
-                        <!-- <a href="http://onebusiness.shacknet.biz/OneBusiness/stocks/create?corpID=7" class="pull-right">Add Stock</a> -->
-                        
-                        
-                    </div>
-               
-                    </div>   
+                  <div class="col-xs-9">
+                    <h4>Stock Transfer</h4>
+                  </div>
+                  <div class="col-xs-3"  id="addNewTransfer" >
+                  </div>
                 </div>
-                <div class="panel-body">
-
-
-               <!-- www -->
+              </div>
+              <div class="panel-body">
                <section class="content">
-                      <!--main content-->
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel">
                               
                                 <div class="panel-body">
                                     <div class="bs-example">
-                                      	<ul class="nav nav-tabs" style="margin-bottom: 15px;">
-                                          <li class="active">
-                                              <a href="#access" data-toggle="tab"  onclick="showHidden(false)">Auto stock transfer</a>
+                                        <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                                          <li class="{{ $tab == 'auto' ? 'active' : '' }}">
+                                            <a href="#access" data-toggle="tab"  onclick="showHidden(false)">Auto stock transfer</a>
                                           </li>
-                                          <li>
-                                              <a href="#tasks" data-toggle="tab" onclick="showHidden(true)">Stock Delivery</a>
+                                          <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                                            <a href="#tasks" data-toggle="tab" onclick="showHidden(true)">Stock Delivery</a>
                                           </li>
-                                   
-                                        
                                       	</ul>
                                         <div  class="tab-content" style="padding: 1em;">
-                                          <div class="tab-pane fade active in" id="access" >
+                                          <div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="access" >
                                             @if(\Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V'))
                                             <div class="row">
                                               <div class="table-responsive">
@@ -94,64 +81,30 @@
                                             @else
                                             <div class="alert alert-danger no-close">
                                               You don't have permission
-                                          </div>
+                                            </div>
                                             @endif
                                           </div>
-                                            <div class="tab-pane fade " id="tasks" >
+                                            <div class="tab-pane fade {{ $tab == 'stock' ? 'active in' : '' }}" id="tasks" >
                                               <div class="row">
-                                                  <div class="table-responsive">
-                                                  <table id="list_menu_delivery" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                                    <thead>
-                                                      <tr>
-                                                        <th>D.R.No</th>
-                                                        <th>Date</th>
-                                                        <th>Destination</th>
-                                                        <th>Rcvd</th>
-                                                        <th>Uploaded</th>
-                                                        <th>Action</th>
-                                                      </tr>
-                                                    </thead>
-                                                    <tbody >
-                                                      @foreach ($delivery_data as $item) 
-                                                          <tr  class="editable"   data-id="1">
-                                                              <td  data-field="Txfr_ID">{{$item->Txfr_ID}}</td>
-                                                              <td  data-field="Txfr_Date">{{$item->Txfr_Date}}</td>
-                                                              <td  data-field="Destination"></td>
-                                                              <td  style="text-align:center;">
-                                                              @if($item->Rcvd==1)
-                                                                  <input type="checkbox" checked disabled class="rcvdCheckbox{{$item->Txfr_ID}}">
-                                                              @else
-                                                                  <input type="checkbox" disabled  class="rcvdCheckbox{{$item->Txfr_ID}}">
-                                                              @endif
-                                                              </td>
-                                                              <td  style="text-align:center;">
-                                                              @if($item->Uploaded==1)
-                                                                  <input type="checkbox" checked  disabled class="uploadCheckbox{{$item->Txfr_ID}}">
-                                                              @else
-                                                                  <input type="checkbox"  disabled class="uploadCheckbox{{$item->Txfr_ID}}">
-                                                              @endif
-                                                              </td>
-                                                              <td  style="text-align:center;">
-
-                                                              <a class="btn btn-primary btn-md blue-tooltip edit" data-title="Edit"  onclick="onEditRow({{$item->Txfr_ID}})"
-                                                                    data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Corporation">
-                                                                  <span  id="editable{{$item->Txfr_ID}}" class="glyphicon glyphicon-pencil"></span>
-                                                                </a>
-                                                              <a class="btn btn-danger btn-md sweet-4 red-tooltip " data-title="Delete" href="#" rel=""
-                                                                  id="11" corp-name="Corp test" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Corporation">
-                                                                  <span class="glyphicon glyphicon-trash"></span>
-                                                              </a>
-                                                              </td>
-                                                          </tr>
-                                                      @endforeach
-                                                              
-                                                          </tbody>
-                                                      </table>
-                                                  </div>   
+                                                <div class="table-responsive">
+                                                <table id="table-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                                  <thead>
+                                                    <tr>
+                                                      <th>D.R.No</th>
+                                                      <th>Date</th>
+                                                      <th>Destination</th>
+                                                      <th>Rcvd</th>
+                                                      <th>Uploaded</th>
+                                                      <th>Action</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody >
+                                                  </tbody>
+                                                  </table>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
-     
                                         </div>
                                     </div>
                                 </div>
@@ -175,18 +128,85 @@
 <script>
 
 $(document).ready(function() {
-    
-
-    $('#list_menu_delivery').DataTable({
-      "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId_1">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+    $('#table-deliveries').DataTable({
+      "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#stockStatus">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: function() {
-      }
+        $("#stockStatus").append('<div class="filterDiv1"><label class="filterLabel1"><strong>Filters:</strong> </label><select onChange="filterStatusStock()" class="form-control"><option value="1">In-transit</option><option value="2">Received</option><option value="3">All </option></select></div>');
+        $("#stockStatus select").val('{{ $stockStatus }}');
+      },
+      ajaxSource: '{{ route('stocktransfer.deliveryItems', ['corpID' => $corpID]) }}&stockStatus= {{ $stockStatus }}',
+      columnDefs: [
+        {
+          targets: 0,
+          data: "Txfr_ID"
+        },
+        {
+          targets: 1,
+          data: "Txfr_Date"
+        },
+        {
+          targets: 2,
+          data: "Txfr_To_Branch"
+        },
+        {
+          targets: 3,
+          data: 'Rcvd',
+          className: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" onclick="return false;"/>'
+          }
+        },
+        {
+          targets: 4,
+          data: 'Uploaded',
+          className: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" onclick="return false;" ' + (data == 1 ? 'checked' : '') + '/>'
+          }
+        },
+        {
+          targets: 5,
+          data: '',
+          render: (data, type, row, meta) => {
+            return '<a class="btn btn-primary btn-sm edit" title="Edit" \
+              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?corpID={{ $corpID }}">\
+                <i class="glyphicon glyphicon-pencil"></i>\
+              </a>\
+              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')">\
+                <i class="glyphicon glyphicon-trash"></i> \
+              </a>';
+          }
+        }
+      ],
+      order: [
+        [0, 'desc']
+      ]
     });
+  });
 
-    $("#selectId_1").append('<div class="filterDiv1"><label class="filterLabel1">Filters </label><select class="filterSelect2"><option value="1">In-transit</option><option value="2">Received</option><option value="3">All </option></select></div>');
+  deleteStock = (id) => {
+    let self = $(event.target)
 
-    $('#selectId select').val('{{ $status }}');
-});
+    swal({
+      title: "<div class='delete-title'>Confirm Delete</div>",
+      text:  "<div class='delete-text'>Are you sure you want to delete DR#" + id + "?</strong></div>",
+      html:  true,
+      customClass: 'swal-wide',
+      showCancelButton: true,
+      confirmButtonClass: 'btn-success',
+      closeOnConfirm: false,
+      closeOnCancel: true
+    },(confirm) => {
+      $.ajax({
+        url : 'stocktransfer/' + id + '?corpID={{ $corpID }}' ,
+        type : 'DELETE',
+        success: (res) => {
+          showAlertMessage('DR#' + id + ' has been served', 'Success')
+          self.parents('tr').remove()
+        }
+      })
+    })
+  }
 
 
 
@@ -205,16 +225,16 @@ function onEditRow(param){
     
 }
 
-// $('#tasks').click(function(){
-//     alert('ssss');
-// })
-
-function showHidden(p){
-    if(p==true)
-    $('#addNewTransfer').append('<a href="{{route('stocktransfer.create' , ['corpID' => '7'] )}}"  class="pull-right">New Stock Transfer</a>');
-    else
-    $('#addNewTransfer').empty();
+showHidden = (isShow) => {
+  if(isShow)
+    $('#addNewTransfer').append('<a href="{{route('stocktransfer.create' , ['corpID' => $corpID] )}}"  class="pull-right">New Stock Transfer</a>')
+  else
+    $('#addNewTransfer').empty()
 }
+
+@if($tab == 'stock')
+  showHidden(true)
+@endif
 
 </script>
 
@@ -222,41 +242,64 @@ function showHidden(p){
     var tmasterId;
     var urlmarkToserved;
 
+    filterStatusStock = () => {
+      let path = location.search.replace(/&stockStatus=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
+      path = path.replace(/&tab=[a-z]+/g, '') + "&tab=stock"
+      path +=  "&stockStatus=" + $('#stockStatus select').val()
+      window.location = location.pathname + path
+    } 
 
     function filterStatus(event) {
-      window.location = location.pathname + location.search.replace(/&status=[0-9]+/g, '') + "&status=" + $('#selectId select').val();
+      let path = location.search.replace(/&statusStock=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
+      path = path.replace(/&tab=[a-z]+/g, '') + "&tab=auto"
+      path +=  "&status=" + $('#selectId select').val()
+      window.location = location.pathname + path
     }
 
+  showAlertMessage = (message, title = "Alert", isReload = false) => {
+    swal({
+      title: "<div class='delete-title'>" + title + "</div>",
+      text:  "<div class='delete-text'>" + message + "</strong></div>",
+      html:  true,
+      customClass: 'swal-wide',
+      showCancelButton: false,
+      closeOnConfirm: true,
+      allowEscapeKey: !isReload
+    }, (data) => {
+      if(isReload) {
+        window.location.reload()
+      }
+    });
+  }
 
-    function markToserved(id){
+  markToserved = (event, id) => {
+    let self = $(event.target)
 
-    tmasterId = id;
-    urlmarkToserved=tmasterId+'/markToserved';
-
-
-        $.ajax(
-        {
-        url : urlmarkToserved,
-        type : 'GET',
-        success: function(response)
-        {
-            
-            $('#emp'+tmasterId).addClass('selected');
-            var table = $('#emp'+tmasterId).closest('table').DataTable();
-            table.row('.selected').remove().draw( false );
-            $('#emp'+tmasterId).closest('table').DataTable().destroy();
-            $('#delete_confirm').modal('hide');            
-            alert(id + ' has been served');
+    swal({
+      title: "<div class='delete-title'>Mark to served</div>",
+      text:  "<div class='delete-text'>Serve PO: Are you sure you want to mark " + id + " as served?</strong></div>",
+      html:  true,
+      customClass: 'swal-wide',
+      showCancelButton: true,
+      confirmButtonClass: 'btn-success',
+      closeOnConfirm: false,
+      closeOnCancel: true
+    },(confirm) => {
+      $.ajax({
+        url : 'stocktransfer/' + id + '/served?corpID={{ $corpID }}' ,
+        type : 'POST',
+        success: (res) => {
+          showAlertMessage('P.O.# ' + id + ' has been served', 'Success')
+          self.parents('tr').remove()
         }
-        
-        });
-    }
+      })
+    })
+  }
+
 </script>
 
 <script>
     $(function() {
-        
-        // $("input.rcvdCheckbox").attr("disabled", true);
       var pickers = {};
 
       $('table tr').editable({
@@ -270,13 +313,6 @@ function showHidden(p){
             .removeClass('glyphicon-pencil')
             .addClass('glyphicon-ok')
             .attr('title', 'Save');
-
-           
-
-        //   pickers[this] = new Pikaday({
-        //     field: $("td[data-field=birthday] input", this)[0],
-        //     format: 'MMM D, YYYY'
-        //   });
         },
         save: function(values) {
           $(".edit span", this)

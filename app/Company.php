@@ -12,5 +12,9 @@ class Company extends Model
     public function branchs() {
         return $this->hasMany(\App\Branch::class, 'corp_id', 'corp_id');
     }
-    
+
+    public function branches()
+    {
+        return $this->hasMany(\App\Branch::class, 'corp_id', 'corp_id');
+    }
 }
