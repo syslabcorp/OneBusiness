@@ -24,7 +24,6 @@ use DB;
 use Validator;
 use Datetime;
 use App\Transformers\Stxfr\DetailTransformer;
-use App\Models\SItem\Cfg as SItemCfg;
 
 
 
@@ -239,14 +238,16 @@ class StocktransferController extends Controller {
         $hdrModel = new \App\Models\Stxfr\Hdr;
         $hdrModel->setConnection($company->database_name);
 
-        // $hdrItem = $hdrModel->
+        $cfgModel = new \App\Models\SItem\Cfg;
+        $cfgModel->setConnection($company->database_name);
+
 
         $purchaseOrderModel = new \App\PurchaseOrder;
         $purchaseOrderModel->setConnection($company->database_name);
 
-        $suggestItems = SItemCfg::where('Active', 1)
-                                    ->orderBy('ItemCode', 'ASC')
-                                    ->get();
+        $suggestItems = $cfgModel->where('Active', 1)
+                                ->orderBy('ItemCode', 'ASC')
+                                ->get();
 
         $vendors = Vendor::orderBy('VendorName')->get();
 
