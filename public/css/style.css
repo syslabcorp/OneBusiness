@@ -1,3 +1,66 @@
+.form-group label {
+  font-weight: 400;
+}
+
+.rown {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.rown:before, .rown:after {
+  display: table;
+  content: " ";
+}
+
+.rown:after {
+  clear: both;
+}
+
+.has-group-line {
+  margin-top: -30px;
+}
+
+.has-group-line .horizontal{
+  width: 30px;
+  height: 1px;
+  background: #000;
+  display: inline-block;
+  position: absolute;
+  left: -15px;
+  top: 15px;
+}
+.has-group-line .vertical{
+  background: #000;
+  position: absolute;
+  width: 1px;
+  display: inline-block;
+  height: 52px;
+  left: -16px;
+  top: -9px;
+}
+
+.has-group-line:after {
+  content: " ";
+  width: 40px;
+  height: 1px;
+  background: #000;
+  display: inline-block;
+  position: absolute;
+  left: -55px;
+  top: 42px;
+}
+
+.has-group-line:before {
+  content: " ";
+  width: 40px;
+  height: 1px;
+  background: #000;
+  display: inline-block;
+  position: absolute;
+  left: -55px;
+  top: -10px;
+}
+
 .rate-page .table tr.selected .form-control {
   background: green;
   color: #FFF;

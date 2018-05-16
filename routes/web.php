@@ -23,6 +23,8 @@ Route::post('stocktransfer/{stock}/transfer', 'StocktransferController@transfer'
 Route::get('stocktransfer/{stock}/original', 'StocktransferController@original', ['middleware' => 'auth'])->name('stocktransfer.original');
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
+Route::post('payrolls/deduct', 'PayrollsController@deduct', ['middleware' => 'auth'])->name('payrolls.deduct');
+Route::resource('payrolls', 'PayrollsController', ['middleware' => 'auth']);
 
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
 
