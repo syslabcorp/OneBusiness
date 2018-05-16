@@ -49,9 +49,6 @@ use App\Srcvdetail;
                               <li class="active">
                                 <a href="#access" data-toggle="tab">Auto stock transfer</a>
                               </li>
-                              <li>
-                                <a href="#tasks" data-toggle="tab">Stock Delivery</a>
-                              </li>
                             </ul>
                             <div  class="tab-content">
                               <div class="tab-pane fade active in" id="access" >
@@ -85,12 +82,12 @@ use App\Srcvdetail;
                                   <div class="col-md-12" style="margin-top: 10px;">
                                     <div class="row">
                                       <div class="table-responsive">
-                                        <table id="table_editable_1" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                                        <table id="table_editable_1" class="col-sm-12 table table-striped table-bordered">
                                           <thead>
                                             <tr>
-                                              <th>Item Code</th>
+                                              <th style="min-width: 150px;">Item Code</th>
                                               @foreach($branches as $branch)
-                                                <th>{{ $branch->ShortName }}</th>
+                                                <th style="width: 250px; min-width: 150px">{{ $branch->ShortName }}</th>
                                               @endforeach
                                               <th style="color:blue; width:15%;">TOTAL</th>
                                               <th style="color:red;">STOCK</th>
@@ -104,7 +101,7 @@ use App\Srcvdetail;
                                                 @php
                                                   $maxQty = $row->where('Branch', $branch->Branch)->sum('Qty') - $row->where('Branch', $branch->Branch)->sum('ServedQty')
                                                 @endphp
-                                                <td style="width: 350px;" class="col-qty" 
+                                                <td style="width: 250px; min-width: 150px" class="col-qty" 
                                                   data-branch="{{ $branch->Branch }}" data-max="{{ $maxQty }}">
                                                   <input type="text" class="form-control"
                                                     value="{{ $maxQty }}" {{ $maxQty == 0 ? 'disabled' : '' }}>
@@ -119,12 +116,15 @@ use App\Srcvdetail;
                                       </div>
                                     </div>
                                   </div>
-                                </div>
                                 </form>
                                 <div class="col-md-12">
                                   <div class="row">
                                     <div class="col-md-6">
-                                      <button class="btn btn-default" style="width:8em;"  onclick="goBack()"><span style="margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>Back</button>
+                                      <a class="btn btn-default" style="width:8em;"
+                                        href="{{ route('stocktransfer.index', ['corpID' => $corpID, 'tab' => 'auto']) }}">
+                                        <span style="margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>
+                                        Back
+                                      </a>
                                     </div>
 
                                     <div class="col-md-6">
@@ -132,8 +132,8 @@ use App\Srcvdetail;
                                     </div>
                                   </div>
                                 </div>
-                                <div class="tab-pane fade " id="tasks">
-                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="tasks">
                               </div>
                             </div>
                         </div>

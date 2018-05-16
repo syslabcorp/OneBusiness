@@ -20,30 +20,30 @@
     <div>
       <ul class="nav nav-tabs" role="tablist">
         @if(!$action || $tab == 'deduct')
-        <li role="presentation" class="active">
+        <li role="presentation" class="{{ $tab == 'deduct' ? 'active' : '' }}">
           <a href="#con" aria-controls="con" role="tab" data-toggle="tab">Deductions</a>
         </li>
         @endif
         @if(!$action || $tab == 'benefit')
-        <li role="presentation">
+        <li role="presentation" class="{{ $tab == 'benefit' ? 'active' : '' }}">
           <a href="#cat" aria-controls="cat" role="tab" data-toggle="tab">Benefits</a>
         </li>
         @endif
         @if(!$action || $tab == 'expense')
-        <li role="presentation">
+        <li role="presentation" class="{{ $tab == 'expense' ? 'active' : '' }}">
           <a href="#sub" aria-controls="sub" role="tab" data-toggle="tab">Expense</a>
         </li>
         @endif
       </ul>
 
       <div class="tab-content" style="margin-top: 30px;">
-        <div role="tabpanel" class="tab-pane active deductions-tab" id="con">
+        <div role="tabpanel" class="tab-pane deductions-tab {{ $tab == 'deduct' ? 'active' : '' }}" id="con">
           @include('payrolls.deductions-tab')
         </div>
-        <div role="tabpanel" class="tab-pane" id="cat">
+        <div role="tabpanel" class="tab-pane {{ $tab == 'benefit' ? 'active' : '' }}" id="cat">
           @include('payrolls.benefits-tab')
         </div>
-        <div role="tabpanel" class="tab-pane" id="sub">
+        <div role="tabpanel" class="tab-pane {{ $tab == 'expense' ? 'active' : '' }}" id="sub">
           @include('payrolls.expense-tab')
         </div>
       </div>

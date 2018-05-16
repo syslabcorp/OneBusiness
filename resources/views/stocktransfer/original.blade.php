@@ -49,9 +49,6 @@ use App\Srcvdetail;
                                           <li class="active">
                                             <a href="#access" data-toggle="tab">Auto stock transfer</a>
                                           </li>
-                                          <li>
-                                            <a href="#tasks" data-toggle="tab">Stock Delivery</a>
-                                          </li>
                                       	</ul>
                                         <div  class="tab-content">
                                           <div class="tab-pane fade active in" id="access" >
@@ -91,9 +88,11 @@ use App\Srcvdetail;
                                                                  <table id="table_editable_1" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
                                                                     <thead>
                                                                       <tr>
-                                                                        <th>Item Code</th>
+                                                                        <th style="min-width: 150px;">Item Code</th>
                                                                         @foreach($branches as $branch)
-                                                                          <th class="text-center" style="width:15%;">{{$branch->ShortName}}</th>
+                                                                          <th class="text-center" style="width: 250px; min-width: 150px">
+                                                                            {{$branch->ShortName}}
+                                                                          </th>
                                                                         @endforeach
                                                                         <th class="text-center" style="color:blue;width:15%;">TOTAL</th>
                                                                         <th class="text-center" style="color:red;">STOCK</th>
@@ -126,15 +125,15 @@ use App\Srcvdetail;
                                                 </form>
 
                                                 <div class="col-md-12">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <button class="btn btn-default" style="width:8em;"  onclick="goBack()"><span style="    margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>Back</button>
-                                                        </div>
-
-                                                        <div class="col-md-6">
-                                                            <button disabled="true" class="btn btn-info" style="background-color:green;width:9em;float:right;" >Transfer Stocks</button>
-                                                        </div>
+                                                  <div class="rown">
+                                                    <div class="col-md-6">
+                                                      <a class="btn btn-default" style="width:8em;"
+                                                        href="{{ route('stocktransfer.index', ['corpID' => $corpID, 'tab' => 'auto']) }}">
+                                                        <span style="margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>
+                                                        Back
+                                                      </a>
                                                     </div>
+                                                  </div>
                                                 </div>
 
 	                                            <div class="tab-pane fade " id="tasks">

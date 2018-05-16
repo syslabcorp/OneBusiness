@@ -12,7 +12,7 @@
             </div>
           </div>
         </div>
-      <form class="form-horizontal" action="{{ route('stocks.store', [ 'corpID' => $corpID]) }}" method="POST" >
+      <form class="form-horizontal" action="{{ route('stocktransfer.store', [ 'corpID' => $corpID]) }}" method="POST" >
           {{ csrf_field() }}
           <input type="hidden" name="corpID" value="{{$corpID}}" >
 
@@ -21,33 +21,31 @@
               <div class="col-xs-4" style="padding-left: 0;">
                 <label for="sort" class="col-sm-3 control-label"  style="padding-left: 0;">Transfer to: </label>
                 <div class="col-sm-6">
-                  <select class="form-control" name="sort" id="sort">
+                  <select class="form-control" name="Txfr_To_Branch" onchange="branchChange()">
                     @foreach($branches as $branch)
                     <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                     @endforeach
                   </select>  
                 </div>
-                <label class="col-sm-3 checkbox-inline"><input type="checkbox" value="">All Items</label>
               </div>
             
               <div class="col-xs-4">
-                  <div class="form-group">
+                <div class="form-group">
                   <label class="control-label col-sm-3"  style="padding-left: 0;">Date</label>
                   <div class="col-xs-8">
-                    <input type="date" class="form-control" name="RcvDate" id="" value="{{date('Y-m-d')}}" >
+                    <input type="date" class="form-control" name="Txfr_Date" value="{{date('Y-m-d')}}" >
                   </div>
-                  </div>
+                </div>
               </div>
 
               <div class="col-xs-4">
-                  <div class="form-group">
+                <div class="form-group">
                   <label class="control-label col-sm-3"   style="padding-left: 0;">D.R#:</label>
                   <div class="col-xs-8">
-                    <input type="text" data-validation="required,length" data-validation-length="max12" data-validation-error-msg="D.R.# is required" data-validation-error-msg-length="D.R.# should not exceed 12 characters" class="form-control" name="RR_No"   >
+                    <input type="text" class="form-control" value="NEW" readonly>
                   </div>
-                  </div>
+                </div>
               </div>
-
               </div>
 
               <div class="form-group">
@@ -62,59 +60,44 @@
               
           <div class="table-responsive">
             <table id="table_editable" class="table table-bordered" style="width: 100% !important; dispaly: table;" >
-              <tbody>
+              <thead>
                 <tr>
-                  <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Item Code</th>
+                  <th style="min-width: 100px;">Item Code</th>
                   <th>Product Line</th>
                   <th>Brand</th>
                   <th>Description</th>
-                  <th>Cost/Unit</th>
-                  <th>Served</th>
                   <th>Qty</th>
-                  <th>Subtotal</th>
                   <th>Unit</th>
                   <th style="min-width: 100px;">Action</th>
                 </tr>
-
-                <tr class="editable" id="example" data-id="" style="display: none;">
-                  <input type="hidden" name="add_type[]" class="input_type" value="add">
-                  <td class="edit_ItemCode"  data-field="ItemCode" >
+              </thead>
+              <tbody>
+                <tr class="editable" id="example" style="display: none;">
+                  <td class="edit_ItemCode" data-field="ItemCode" >
                     <span class="value_ItemCode"></span>
-                    <input class="input_old_item_id" type="hidden" name="add_old_item_id[]" value="" >
-                    <input class="input_item_id" type="hidden" name="add_item_id[]" value="" >
-                    <input autocomplete="off" class="show_suggest input_ItemCode" type="hidden" name="add_ItemCode[]" id="" value="" >
+                    <input class="input_item_id" type="hidden" value="" >
+                    <input autocomplete="off" class="show_suggest input_ItemCode" type="hidden">
                   </td>
                   <td class="edit_Prod_Line" data-field="Prod_Line" >
                     <span class="value_Prod_Line"></span>
-                    <input autocomplete="off" class="show_suggest input_Prod_Line" type="hidden" name="add_Prod_Line[]" value="" >
+                    <input autocomplete="off" class="show_suggest input_Prod_Line" type="hidden"  >
                   </td>
                   <td class="edit_Brand" data-field="Brand" >
                     <span class="value_Brand"></span>
-                    <input autocomplete="off" class="show_suggest input_Brand" type="hidden" name="add_Brand[]" id="" value="" >
+                    <input autocomplete="off" class="show_suggest input_Brand" type="hidden" >
                   </td>
                   <td class="edit_Description" >
                     <span class="value_Description"></span>
                   </td>
-                  <td class="edit_Cost text-right" data-field="Cost" >
-                  <span class="value_Cost"></span>
-                    <input type="hidden" class="input_Cost" data-validation-error-msg="Invalid input: Please enter a number." data-validation="number" data-validation-allowing="float" data-validation-optional="true"  name="add_Cost[]" id="" value="" >
-                  </td>
-                  <td class="edit_ServedQty text-right" >
-                    <span class="value_ServedQty"></span>
-                  </td>
                   <td class="edit_Qty text-right" data-field="Qty" >
                     <span class="value_Qty"></span>
-                    <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="add_Qty[]" id="" value="" >
-                  </td>
-                  <td class="edit_Sub text-right" >
-                    <span class="value_Sub"></span>
-                    <input type="hidden" class="input_Sub"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" name="add_Sub[]" id="" value="" >
+                    <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" value="" >
                   </td>
                   <td class="edit_Unit" >
                     <span class="value_Unit"></span>
                   </td>
-                  <td class="text-center" >
-                    <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " >
+                  <td class="text-center">
+                    <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }}" >
                       <i class="fa fa-pencil"></i>
                     </a>
                     <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " >
@@ -129,11 +112,8 @@
                   <td> <input autocomplete="off" type="text" name="Prod_Line" class="form-control check_focus input_Prod_Line"> </td>
                   <td> <input autocomplete="off" type="text" name="Brand" class="form-control check_focus input_Brand"> </td>
                   <td> <input type="text" name="Description" id="" class="form-control input_Description"> </td>
-                  <td> <input type="text" name="Cost" id="" data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float"  data-validation-optional="true" class="form-control input_Cost"> </td>
-                  <td>0</td>
                   <td> <input type="text" name="Qty" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" value="1" data-validation-optional="true" class="input_Qty form-control"> </td>
-                  <td> <input type="text" name="Sub" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub form-control"> </td>
-                  <td class="input_Unit" ></td>
+                  <td class="input_Unit"></td>
                   <td class="text-center" >
                     <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" 
                       href="javascript:void(0);">
@@ -152,27 +132,25 @@
 
           <table class="table table-bordered" id="recommend-table" style=" display: none; " >
             <thead>
-              <tr style="display:table;width:99%;table-layout:fixed; background:  #f27b82" >
+              <tr style="display:table;width:99%;table-layout:fixed; background:#f27b82" >
                 <th>Item Code</th>
                 <th>Product Line</th>
                 <th>Brand</th>
                 <th>Description</th>
                 <th>Unit</th>
-                <th>Unit Cost</th>
               </tr>
             </thead>
             <tbody style="display:block; max-height:300px; overflow-y:scroll; background: #f4b2b6;">
-              @foreach($stockitems as $stockitem )
-                <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" >
-                  <td class="recommend_item_id" style="display: none;">{{$stockitem->item_id}} </td>
-                  <td class="recommend_itemcode" >{{$stockitem->ItemCode}}</td>
-                  <td class="recommend_prod_line" >{{$stockitem->product_line->Product}} </td>
-                  <td class="recommend_prod_line_id" style="display: none;" >{{$stockitem->Prod_Line}} </td>
-                  <td class="recommend_brand"  >{{$stockitem->brand->Brand}}</td>
-                  <td class="recommend_brand_id" style="display: none;" >{{$stockitem->Brand_ID}}</td>
-                  <td class="recommend_description">{{$stockitem->Description}}</td>
-                  <td class="recommend_unit">{{$stockitem->Unit}}</td>
-                  <td class="recommend_cost">{{$stockitem->LastCost}}</td>
+              @foreach($suggestItems as $suggestItem )
+                <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" data-branch="{{ $suggestItem->Branch }}">
+                  <td class="recommend_item_id" style="display: none;">{{$suggestItem->item_id}} </td>
+                  <td class="recommend_itemcode" >{{$suggestItem->ItemCode}}</td>
+                  <td class="recommend_prod_line" >{{$suggestItem->item->product_line->Product}} </td>
+                  <td class="recommend_prod_line_id" style="display: none;" >{{$suggestItem->item->Prod_Line}} </td>
+                  <td class="recommend_brand"  >{{$suggestItem->item->brand->Brand}}</td>
+                  <td class="recommend_brand_id" style="display: none;" >{{$suggestItem->item->Brand_ID}}</td>
+                  <td class="recommend_description">{{$suggestItem->item->Description}}</td>
+                  <td class="recommend_unit">{{$suggestItem->item->Unit}}</td>
                 </tr>
               @endforeach
             </tbody>
@@ -181,8 +159,6 @@
           <div class="row" style="margin-top: 200px;">
             <div class="col-sm-3 pull-right">
               <h4>
-                <!-- <strong>TOTAL AMOUNT:</strong> -->
-                <!-- <span id="total_amount" style="color:red">0.00</span> -->
                 <input type="hidden" name="total_amt" id="total_amt">
               </h4>
             </div>
@@ -195,40 +171,11 @@
               </a>
             </div>
             <div class="col-md-6">
-              <button type="button" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
+              <button type="button" data-toggle="modal" class="btn btn-success pull-right btn-save {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
                 Save
               </button>
             </div>
           </div>
-
-              <div class="modal fade" id="confirm_save" role="dialog">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      <h4 class="modal-title">
-                        <strong>Confirm Save</strong>
-                      </h4>
-                    </div>
-                    <div class="modal-body">
-                      <p> Are you sure you want to save? </p>
-                      <div class="checkbox">
-                        <label> <input type="checkbox" name="PrintRR" id=""> Print RR Stub </label>
-                      </div>
-                    </div>
-                    <div class="modal-footer" style="margin-top: 100px;">
-                      <div class="col-md-6">
-                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
-                          <i class="fa fa-reply"></i> Back  
-                        </button>
-                      </div>
-                      <div class="col-md-6">
-                        <button class="btn btn-primary" id="submit-form" type="submit">Save</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
         </div>
       </form>
         
@@ -260,8 +207,18 @@
 @endsection
 
 @section('pageJS')
-  <script>
+  <script type="text/javascript">
+    branchChange = () => {
+      let branchId = $('select[name="Txfr_To_Branch"]').val()
 
+      $('#recommend-table tbody tr').css('display', 'none')
+      $('#recommend-table tbody tr[data-branch="' + branchId + '"]').css('display', 'table')
+    }
+
+    branchChange()
+  </script>
+  
+  <script type="text/javascript">
     $.validate({
       form : 'form'
     });
@@ -274,70 +231,11 @@
 
     var old_total = parseFloat($('#total_amount').text().replace(",", ""));
   
-    function refresh_sub()
-    {
-      var sub = 0;
-      $( ".editable" ).each(function() {
-        if(!$(this).is(':hidden'))
-        {
-          if( $(this).find('.input_Sub').val() != 0 )
-          {
-            sub += parseFloat($(this).find('.input_Sub').val().replace(',', '') );
-          }
-        }
-      });
 
-      $( "#add-row" ).each(function() {
-        if(!$(this).is(':hidden'))
-        {
-          if( $(this).find('.input_Sub').val() != 0 )
-          {
-            sub += parseFloat($(this).find('.input_Sub').val().replace(',', '') );
-          }
-        }
-      });
-
-      $('#total_amount').text(sub.numberFormat(2));
-      $('#total_amt').val(sub);
-    }
-
-    function update_old_sub()
-    {
-      var sub = 0;
-      $( ".editable" ).each(function() {
-        if(!$(this).is(':hidden'))
-        {
-          sub += parseFloat($(this).find('.input_Sub').val());
-        }
-      });
-      old_total = sub;
-    }
-
-    $('body').on('click', '.delete_row', function(event)
-    {
+    $('body').on('click', '.delete_row', function(event) {
       event.preventDefault();
-      $self = $(this);
-      if($self.parents('.editable').find('.input_type').val() == 'add')
-      {
-        $self.parents('.editable').remove();
-      }
-      else
-      {
-        $self.parents('.editable').find('.input_type').val('deleted');
-        $self.parents('.editable').css('display', 'none');
-      }
-      refresh_sub();
-      update_old_sub();
+      $(this).closest('tr').remove();
     });
-
-    $('#submit-form').on('click', function(event)
-    {
-      event.preventDefault();
-      $('#add-row').remove();
-      $('#example').remove();
-      // $('#total_amt').val($('#total_amount').text());
-      $('form').submit();
-    })
 
     $('.add_detail').on('click', function()
     {
@@ -353,19 +251,22 @@
 
       $('#recommend-table').css('display', "none");
       
-      if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error')  )
-        {
+      if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error')) {
           var $add_row = $('#add-row');
           var new_element = $('#example').clone();
+          let countItem = $("#table_editable tr").length
 
           new_element.css("display", "").removeAttr('id');
 
 
           $('.editable').last().after(new_element);
+
           
           //ItemCode
           new_element.find('.input_item_id').val($add_row.find('.input_item_id').val());
+          new_element.find('.input_item_id').attr('name', 'details[' + countItem + '][item_id]')
           new_element.find('.input_ItemCode').val($add_row.find('.input_ItemCode').val());
+          new_element.find('.input_ItemCode').attr('name', 'details[' + countItem + '][ItemCode]')
           new_element.find('.value_ItemCode').text($add_row.find('.input_ItemCode').val());
           
           //ProductLine
@@ -379,21 +280,6 @@
           //Description
           new_element.find('.value_Description').text($add_row.find('.input_Description').val());
 
-          //Cost/Unit
-          if ($add_row.find('.input_Cost').val() != '')
-          {
-            new_element.find('.value_Cost').text( parseFloat($add_row.find('.input_Cost').val()).toFixed(2) );
-            new_element.find('.input_Cost').val( parseFloat($add_row.find('.input_Cost').val()).toFixed(2) );
-          }
-          else
-          {
-            new_element.find('.value_Cost').text('0.00');
-            new_element.find('.input_Cost').val('0.00');
-          }
-
-          //Served
-          new_element.find('.value_ServedQty').text("0");
-          
           //Qty
           if($add_row.find('.input_Qty').val() != '')
           {
@@ -406,18 +292,7 @@
             new_element.find('.input_Qty').val( '0.00' );
           }
 
-          
-          //Subtotal
-          if( $add_row.find('.input_Sub').val() != '' )
-          {
-            new_element.find('.value_Sub').text( parseFloat($add_row.find('.input_Sub').val()).toFixed(2) );
-            new_element.find('.input_Sub').val( parseFloat($add_row.find('.input_Sub').val()).toFixed(2) );
-          }
-          else
-          {
-            new_element.find('.value_Sub').text( '0.00' );
-            new_element.find('.input_Sub').val( '0.00' );
-          }
+          new_element.find('.input_Qty').attr('name', 'details[' + countItem + '][Qty]')
 
           //Unit
           new_element.find('.value_Unit').text($add_row.find('.input_Unit').text());
@@ -429,9 +304,6 @@
           $('#add-row').css('display', 'none');
           $('.recommend_row').removeClass('row-highlight');
           
-          //reupdate sub total
-          update_old_sub();
-          refresh_sub();
         }
 
     });
@@ -456,78 +328,7 @@
       {
         $('#recommend-table').css('display', "");
         $('.recommend_row').css('display', "table");
-        // $('.recommend_row').removeClass('row-highlight');
       }
-    });
-
-    $('#PO').on('change', function()
-    {
-      if( $('#PO').val() != ""  )
-      {
-        var _token = $("meta[name='csrf-token']").attr("content");
-        var po = $('#PO').val();
-        $(".editable:not(#example)").remove();
-        $.ajax({
-        url: "{{ route('stocks.get_details', [ 'corpID' => $corpID]) }}",
-        type: "POST",
-        data: {_token,po},
-        success: function(res){
-          $.each(res.details , function($index, $value)
-          {
-            var $add_row = $('#add-row');
-            var new_element = $('#example').clone();
-            new_element.css("display", "").removeAttr('id');
-
-            $('.editable').last().after(new_element);
-            
-            //ItemCode
-            new_element.find('.input_item_id').val($value.item_id);
-            new_element.find('.input_ItemCode').val($value.ItemCode);
-            new_element.find('.value_ItemCode').text($value.ItemCode);
-            
-            //ProductLine
-            new_element.find('.value_Prod_Line').text($value.Prod_Line);
-            new_element.find('.input_Prod_Line').val($value.Prod_Line);
-
-            //Brand
-            new_element.find('.value_Brand').text($value.Brand);
-            new_element.find('.input_Brand').val($value.Brand);
-
-            //Description
-            new_element.find('.value_Description').text($value.Description);
-
-            //Cost/Unit
-            new_element.find('.value_Cost').text($value.Cost);
-            new_element.find('.input_Cost').val($value.Cost);
-
-            //Served
-            new_element.find('.value_ServedQty').text($value.ServedQty);
-            
-            //Qty
-            new_element.find('.value_Qty').text($value.Qty);
-            new_element.find('.input_Qty').val($value.Qty);
-            
-            //Subtotal
-            new_element.find('.value_Sub').text(($value.Cost * $value.Qty).toFixed(2));
-            new_element.find('.input_Sub').val(($value.Cost * $value.Qty).toFixed(2));
-
-            //Unit
-            new_element.find('.value_Unit').text($value.Unit);
-
-
-            $('#add-row').find('input').val('');
-            $('#add-row').find('.input_Qty').val('1');
-            $('#add-row').find('.input_Unit').text('');
-            $('#add-row').css('display', 'none');
-            $('.recommend_row').removeClass('row-highlight');
-            
-          }
-          );
-          refresh_sub();
-          }
-        });
-      }
-
     });
 
     $('.recommend_row').click(function(){
@@ -578,7 +379,6 @@
           }
         }
       }
-      refresh_sub();
     });
 
     $('body').on('click', '.edit', function(){
@@ -653,7 +453,6 @@
         
         }
       }
-      refresh_sub();
     });
 
     $(document).keydown(function(e) {
@@ -731,7 +530,6 @@
             $parent.find('.input_Cost').val('0');
           }
         }
-        refresh_sub();
       }
       else
       {
@@ -806,7 +604,6 @@
 
         return false;
       }
-      $('.recommend_row').css('display', 'table');
       $self = $(this);
 
       if ($self.parents('#add-row').length) 
@@ -878,10 +675,9 @@
       $('.input_Sub').val('');
       $('.input_item_id').val('');
       $('#recommend-table').css('display', "none");
-      refresh_sub();
     });
 
-    $('.save_button').on('click', function(event) {
+    $('.btn-save').on('click', function(event) {
       $('#table_editable td span.error').remove();
       $('#table_editable input[value="editting"]').each(function() {
         $(this).parents('.editable').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
@@ -916,7 +712,19 @@
         }
         else
         {
-          $('#confirm_save').modal('show');
+          swal({
+            title: "<div class='delete-title'>Transfer</div>",
+            text:  "<div class='delete-text'>Are you sure you want to save?</strong></div>",
+            html:  true,
+            customClass: 'swal-wide',
+            showCancelButton: true,
+            confirmButtonClass: 'btn-success',
+            closeOnConfirm: false,
+            closeOnCancel: true
+          },
+          (isConfirm) => {
+            $(this).closest('form').submit()
+          })
         }
       }
     });
