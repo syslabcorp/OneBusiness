@@ -24,6 +24,7 @@ use DB;
 use Validator;
 use Datetime;
 use App\Transformers\Stxfr\DetailTransformer;
+use App\Models\SItem\Cfg as SItemCfg;
 
 
 
@@ -113,7 +114,8 @@ class StocktransferController extends Controller {
     return view('stocktransfer/original', [
       'stockItem' => $stockItem,
       'branches' => $branches->get(),
-      'itemRows' => $itemRows
+      'itemRows' => $itemRows,
+      'corpID' => $request->corpID
     ]);
    
     }
@@ -242,10 +244,10 @@ class StocktransferController extends Controller {
         $purchaseOrderModel = new \App\PurchaseOrder;
         $purchaseOrderModel->setConnection($company->database_name);
 
-        $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
-        $typeID = [0,$retailID];
+        $suggestItems = SItemCfg::where('Active', 1)
+                                    ->orderBy('ItemCode', 'ASC')
+                                    ->get();
 
-        $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
         $vendors = Vendor::orderBy('VendorName')->get();
 
         $prod_lines = ProductLine::all();
@@ -265,8 +267,69 @@ class StocktransferController extends Controller {
             'corpID' => $request->corpID,
             'vendors' => $vendors,
             'pos' => $pos,
-            'stockitems' => $stockitems
+            'suggestItems' => $suggestItems
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $company = Corporation::findOrFail($request->corpID);
+
+        $hdrModel = new \App\Models\Stxfr\Hdr;
+        $hdrModel->setConnection($company->database_name);
+
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
+
+        $hdrParams = [
+            'Txfr_Date' => $request->Txfr_Date,
+            'Txfr_To_Branch' => $request->Txfr_To_Branch,
+            'Rcvd' => 0,
+            'Uploaded' => 0
+        ];
+
+
+        $hdrItem = $hdrModel->create($hdrParams);
+
+        if($request->details) {
+            foreach($request->details as $itemParams) {
+                $rcvItems = $rcvModel->where('item_id', $itemParams['item_id'])
+                                    ->where('Bal', '>', 0)
+                                    ->orderBy('RcvDate', 'ASC')
+                                    ->get();
+
+                $itemQtyRemaining = $itemParams['Qty'];
+                foreach($rcvItems as $rcvItem) {
+                    $itemQty = $itemQtyRemaining;
+                    $itemQtyRemaining -= $rcvItem->Bal;
+                    if($itemQty <= $rcvItem->Bal) {
+                        $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
+                    }else {
+                        $itemQty = $rcvItem->Bal;
+                        $rcvItem->update(['Bal' => 0]);
+                    }
+
+                    $hdrItem->details()->create([
+                        'item_id' => $itemParams['item_id'],
+                        'ItemCode' => $itemParams['ItemCode'],
+                        'Qty' => $itemQty,
+                        'Bal' => $itemQty,
+                        'Movement_ID' => $rcvItem->Movement_ID,
+                    ]);
+
+                    if($itemQtyRemaining <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        \Session::flash('success', "Stock item has been created successfully"); 
+
+        return redirect(route('stocktransfer.index', [
+            'corpID' => $request->corpID,
+            'tab' => 'stock'
+        ]));
     }
 
     public function edit(Request $request, $id)

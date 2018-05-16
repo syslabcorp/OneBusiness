@@ -29,7 +29,6 @@
                     @endforeach
                   </select>  
                 </div>
-                <label class="col-sm-3 checkbox-inline"><input type="checkbox" value="">All Items</label>
               </div>
             
               <div class="col-xs-4">

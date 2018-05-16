@@ -1,7 +1,8 @@
 <div class="rown">
   <div class="col-md-2 text-right col-md-offset-10">
     <div class="form-group">
-      <select class="form-control" onchange="statusChange(event, 'deduct')">
+      <select class="form-control" onchange="statusChange(event, 'deduct')"
+        {{ $action == 'new' ? 'disabled' : '' }}>
         <option {{ $status == 1 ? 'selected' : '' }} value="1">Active</option>
         <option {{ $status == 0 ? 'selected' : '' }} value="0">Inactive</option>
       </select>
