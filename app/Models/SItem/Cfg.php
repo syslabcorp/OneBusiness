@@ -8,7 +8,6 @@ class Cfg extends Model {
   public $timestamps = false;
   protected $table = "s_item_cfg";
   protected $primaryKey = "Branch";
-  protected $connection = 'mysql';
 
   protected $fillable = [
   ];
