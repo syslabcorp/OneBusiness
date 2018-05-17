@@ -31,7 +31,9 @@
             
               <div class="col-xs-4">
                 <div class="form-group">
-                  <label class="control-label col-sm-3"  style="padding-left: 0;">Date</label>
+                  <label class="control-label col-sm-3"  style="padding-left: 0;">
+                    <strong>Date</strong>
+                  </label>
                   <div class="col-xs-8">
                     <input type="date" class="form-control" name="Txfr_Date" value="{{date('Y-m-d')}}" >
                   </div>
@@ -40,7 +42,9 @@
 
               <div class="col-xs-4">
                 <div class="form-group">
-                  <label class="control-label col-sm-3"   style="padding-left: 0;">D.R#:</label>
+                  <label class="control-label col-sm-3"   style="padding-left: 0;">
+                    <strong>D.R#</strong>
+                  </label>
                   <div class="col-xs-8">
                     <input type="text" class="form-control" value="NEW" readonly>
                   </div>

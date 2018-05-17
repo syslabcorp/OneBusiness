@@ -272,6 +272,40 @@ class StocktransferController extends Controller {
         ]);
     }
 
+    public function edit(Request $request, $id)
+    {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
+        $company = Corporation::findOrFail($request->corpID);
+
+        $hdrModel = new \App\Models\Stxfr\Hdr;
+        $hdrModel->setConnection($company->database_name);
+
+        $hdrItem = $hdrModel->findOrFail($id);
+
+        $cfgModel = new \App\Models\SItem\Cfg;
+        $cfgModel->setConnection($company->database_name);
+
+        $suggestItems = $cfgModel->where('Active', 1)
+                                ->orderBy('ItemCode', 'ASC')
+                                ->get();
+
+
+        $branches = $company->branches()->where('Active', 1)
+                            ->orderBy('ShortName', 'ASC')
+                            ->get();
+
+        return view('stocktransfer.edit', [
+            'branches' => $branches,
+            'corpID' => $request->corpID,
+            'suggestItems' => $suggestItems,
+            'hdrItem' => $hdrItem
+        ]);
+    }
+
     public function store(Request $request)
     {
         $company = Corporation::findOrFail($request->corpID);
@@ -333,48 +367,73 @@ class StocktransferController extends Controller {
         ]));
     }
 
-    public function edit(Request $request, $id)
-    {
-        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
 
+    public function update(Request $request, $id)
+    {
         $company = Corporation::findOrFail($request->corpID);
 
         $hdrModel = new \App\Models\Stxfr\Hdr;
         $hdrModel->setConnection($company->database_name);
 
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
+
         $hdrItem = $hdrModel->findOrFail($id);
 
-        $purchaseOrderModel = new \App\PurchaseOrder;
-        $purchaseOrderModel->setConnection($company->database_name);
-        $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
-        $typeID = [0,$retailID];
+        $hdrItem->update($request->only([
+            'Txfr_Date', 'Txfr_To_Branch'
+        ]));
 
-        $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
-        $vendors = Vendor::orderBy('VendorName')->get();
+        foreach($hdrItem->details as $detail) {
+            $rcvItem = $rcvModel->where('Movement_ID', $detail->Movement_ID)
+                            ->first();
 
-        $prod_lines = ProductLine::all();
+            if($rcvItem) {
+                $rcvItem->update(['Bal' => $rcvItem->Bal + $detail->Bal]);
+            }
+        }
 
-        $branches = $company->branches()->where('Active', 1)
-                            ->orderBy('ShortName', 'ASC')
-                            ->get();
+        $hdrItem->details()->delete();
 
-        $prod_lines = $prod_lines->map(function ($prod_lines) {
-            return $prod_lines->Product;
-        });
+        if($request->details) {
+            foreach($request->details as $itemParams) {
+                $rcvItems = $rcvModel->where('item_id', $itemParams['item_id'])
+                                    ->where('Bal', '>', 0)
+                                    ->orderBy('RcvDate', 'ASC')
+                                    ->get();
 
-        $pos = $purchaseOrderModel->where('served', 0)->orderBy('po_no', 'desc')->get();
-        return view('stocktransfer.edit', [
-            'branches' => $branches,
-            'prod_lines' => $prod_lines,
+                $itemQtyRemaining = $itemParams['Qty'];
+                foreach($rcvItems as $rcvItem) {
+                    $itemQty = $itemQtyRemaining;
+                    $itemQtyRemaining -= $rcvItem->Bal;
+                    if($itemQty <= $rcvItem->Bal) {
+                        $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
+                    }else {
+                        $itemQty = $rcvItem->Bal;
+                        $rcvItem->update(['Bal' => 0]);
+                    }
+
+                    $hdrItem->details()->create([
+                        'item_id' => $itemParams['item_id'],
+                        'ItemCode' => $itemParams['ItemCode'],
+                        'Qty' => $itemQty,
+                        'Bal' => $itemQty,
+                        'Movement_ID' => $rcvItem->Movement_ID,
+                    ]);
+
+                    if($itemQtyRemaining <= 0) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        \Session::flash('success', "Stock item has been updated successfully"); 
+
+        return redirect(route('stocktransfer.index', [
             'corpID' => $request->corpID,
-            'vendors' => $vendors,
-            'pos' => $pos,
-            'stockitems' => $stockitems,
-            'hdrItem' => $hdrItem
-        ]);
+            'tab' => 'stock'
+        ]));
     }
 
    
