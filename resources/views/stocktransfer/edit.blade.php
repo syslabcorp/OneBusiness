@@ -283,12 +283,7 @@
 
     $('body').on('click', '.delete_row', function(event) {
       event.preventDefault();
-      if($(this).closest('tr').find('.rowMethod').length > 0) {
-        $(this).closest('tr').find('.rowMethod').val('delete')
-        $(this).closest('tr').css('display', 'none')
-      }else {
-        $(this).closest('tr').remove();
-      }
+      $(this).closest('tr').remove();
     });
 
     $('.add_detail').on('click', function()

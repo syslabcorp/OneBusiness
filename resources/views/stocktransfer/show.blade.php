@@ -89,8 +89,8 @@ use App\Srcvdetail;
                                               @foreach($branches as $branch)
                                                 <th style="width: 250px; min-width: 150px">{{ $branch->ShortName }}</th>
                                               @endforeach
-                                              <th style="color:blue; width:15%;">TOTAL</th>
-                                              <th style="color:red;">STOCK</th>
+                                              <th class="text-center" style="color:blue; min-width: 100px;">TOTAL</th>
+                                              <th class="text-center" style="color:red; min-width: 100px;">STOCK</th>
                                             </tr>
                                           </thead>
                                           <tbody>
@@ -107,8 +107,8 @@ use App\Srcvdetail;
                                                     value="{{ $maxQty }}" {{ $maxQty == 0 ? 'disabled' : '' }}>
                                                 </td>
                                               @endforeach
-                                              <td class="col-total">{{ $row->sum('Qty')  - $row->sum('ServedQty') }}</td>
-                                              <td class="col-stock">{{ $row->first()->rcvDetails()->sum('Bal') }}</td>
+                                              <td class="col-total text-center">{{ $row->sum('Qty')  - $row->sum('ServedQty') }}</td>
+                                              <td class="col-stock text-center">{{ $row->first()->rcvDetails()->sum('Bal') }}</td>
                                             </tr>
                                             @endforeach
                                           </tbody>

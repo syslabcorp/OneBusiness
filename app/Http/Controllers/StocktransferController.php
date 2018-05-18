@@ -24,7 +24,7 @@ use DB;
 use Validator;
 use Datetime;
 use App\Transformers\Stxfr\DetailTransformer;
-
+use App\Transformers\Spo\HdrTransformer;
 
 
 use Illuminate\Http\Request;
@@ -59,10 +59,9 @@ class StocktransferController extends Controller {
         $items = $items->where('served', 1);
       }
 
-      return view('stocktransfer/auto-item', [
-        'items' => $items->get(),
-        'corpID' => $request->corpID
-      ]);
+        $items = $items->get();
+
+        return fractal($items, new HdrTransformer)->toJson();
     }
 
     public function deliveryItems(Request $request)
