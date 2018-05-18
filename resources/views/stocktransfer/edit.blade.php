@@ -66,7 +66,7 @@
               </div>
               
           <div class="table-responsive">
-            <table id="table_editable" class="table table-bordered" style="width: 100% !important; dispaly: table;" >
+            <table id="table_editable" class="table table-bordered" style="width: 100% !important; display: table;" >
               <thead>
                 <tr>
                   <th style="min-width: 100px;">Item Code</th>
@@ -82,6 +82,14 @@
                 @foreach($hdrItem->details as $detail)
                 <tr class="editable">
                   <td class="edit_ItemCode" data-field="ItemCode" >
+                    <input type="hidden" name="details[{{ $loop->index }}][Movement_ID]"
+                      value="{{ $detail->Movement_ID }}">
+                    <input type="hidden" name="details[{{ $loop->index }}][OldQty]"
+                        value="{{ $detail->Qty }}">
+                    <input type="hidden" name="details[{{ $loop->index }}][Bal]"
+                      value="{{ $detail->Bal }}">
+                    <input type="hidden" name="details[{{ $loop->index }}][method]"
+                      value="" class="rowMethod">
                     <span class="value_ItemCode">{{ $detail->ItemCode }}</span>
                     <input class="input_item_id" type="hidden" value="{{ $detail->item_id }}" 
                       name="details[{{ $loop->index }}][item_id]">
@@ -177,19 +185,20 @@
           </div>
 
 
-          <table class="table table-bordered" id="recommend-table" style=" display: none; " >
+          <table class="table table-bordered" id="recommend-table" style="display: none; " >
             <thead>
-              <tr style="display:table;width:99%;table-layout:fixed; background:#f27b82" >
+              <tr style="display:table;width:100%;table-layout:fixed; background:#f27b82" >
                 <th>Item Code</th>
                 <th>Product Line</th>
                 <th>Brand</th>
                 <th>Description</th>
+                <th>Qty On Hand</th>
                 <th>Unit</th>
               </tr>
             </thead>
-            <tbody style="display:block; max-height:300px; overflow-y:scroll; background: #f4b2b6;">
+            <tbody style="max-height:300px; overflow-y:scroll; background: #f4b2b6;">
               @foreach($suggestItems as $suggestItem )
-                <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" data-branch="{{ $suggestItem->Branch }}">
+                <tr class="recommend_row" style="display:none;width:100%;table-layout:fixed;" data-branch="{{ $suggestItem->Branch }}">
                   <td class="recommend_item_id" style="display: none;">{{$suggestItem->item_id}} </td>
                   <td class="recommend_itemcode" >{{$suggestItem->ItemCode}}</td>
                   <td class="recommend_prod_line" >{{$suggestItem->item->product_line->Product}} </td>
@@ -197,19 +206,17 @@
                   <td class="recommend_brand"  >{{$suggestItem->item->brand->Brand}}</td>
                   <td class="recommend_brand_id" style="display: none;" >{{$suggestItem->item->Brand_ID}}</td>
                   <td class="recommend_description">{{$suggestItem->item->Description}}</td>
+                  <td>{{ $rcvModel->where('item_id', $suggestItem->item_id)->sum('Bal') }}</td>
                   <td class="recommend_unit">{{$suggestItem->item->Unit}}</td>
                 </tr>
               @endforeach
+              <tr style="display: none;" class="empty">
+                <td colspan="6">
+                  <span class="error">No active items for this branch</span>
+                </td>
+              </tr>
             </tbody>
           </table>
-
-          <div class="row" style="margin-top: 200px;">
-            <div class="col-sm-3 pull-right">
-              <h4>
-                <input type="hidden" name="total_amt" id="total_amt">
-              </h4>
-            </div>
-          </div>
 
           <div class="row">
             <div class="col-md-6">
@@ -260,9 +267,11 @@
 
       $('#recommend-table tbody tr').css('display', 'none')
       $('#recommend-table tbody tr[data-branch="' + branchId + '"]').css('display', 'table')
+      
+      if($('#recommend-table tbody tr:not(:hidden)').length == 0) {
+        $('#recommend-table tbody tr.empty').css('display', 'table-row')
+      }
     }
-
-    branchChange()
   </script>
   
   <script type="text/javascript">
@@ -281,7 +290,12 @@
 
     $('body').on('click', '.delete_row', function(event) {
       event.preventDefault();
-      $(this).closest('tr').remove();
+      if($(this).closest('tr').find('.rowMethod').length > 0) {
+        $(this).closest('tr').find('.rowMethod').val('delete')
+        $(this).closest('tr').css('display', 'none')
+      }else {
+        $(this).closest('tr').remove();
+      }
     });
 
     $('.add_detail').on('click', function()
@@ -389,7 +403,6 @@
         $('#add-row').find('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
         $('#add-row').find('.input_Brand').val($(this).find('.recommend_brand').text());
         $('#add-row').find('.input_Description').val($(this).find('.recommend_description').text());
-        $('#add-row').find('.input_Cost').val($(this).find('.recommend_cost').text());
         if($(this).find('.recommend_cost').text() != "")
         {
           $('#add-row').find('.input_Cost').val($(this).find('.recommend_cost').text());
@@ -413,18 +426,8 @@
         $('.last_focus').parents('.editable').find('.edit_Prod_Line').find(".input_Prod_Line").val($(this).find('.recommend_prod_line').text());
         $('.last_focus').parents('.editable').find('.edit_Description').find(".value_Description").text($(this).find('.recommend_description').text());
         $('.last_focus').parents('.editable').find('.edit_Unit').find(".value_Unit").text($(this).find('.recommend_unit').text());
-        $('.last_focus').parents('.editable').find(".input_Cost").val($(this).find('.recommend_cost').text());
-        $('.last_focus').parents('.editable').find(".input_Cost").change();
 
         $('#recommend-table').css('display', "none");
-        if($(this).find('.recommend_cost').text() != "")
-        {
-          $parent.find('.input_Cost').val($(this).find('.recommend_cost').text());
-          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
-          {
-            var val = parseFloat( $parent.find('.input_Cost').val() ) * parseFloat($parent.find('.input_Qty').val());
-          }
-        }
       }
     });
 
@@ -440,8 +443,6 @@
         $(this).parents('.editable').find( ".input_Prod_Line" ).val($(this).parents('.editable').find('.value_Prod_Line').text()).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_Brand" ).val($(this).parents('.editable').find('.value_Brand').text()).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_Qty" ).val($(this).parents('.editable').find('.value_Qty').text()).attr("type", "text") ;
-        $(this).parents('.editable').find( ".input_Cost" ).val($(this).parents('.editable').find('.value_Cost').text().replace(',', '')).attr("type", "text") ;
-        $(this).parents('.editable').find( ".input_Sub" ).val($(this).parents('.editable').find('.value_Sub').text().replace(',', '')).attr("type", "text") ;
         $(this).parents('.editable').find( ".input_type" ).val('editting') ;
         $(this).parents('.editable').find('.value_ItemCode, .value_Prod_Line, .value_Brand, .value_Qty, .value_Cost, .value_Sub').text("");
       }
@@ -519,68 +520,7 @@
 
     $('body').on('click', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(){
       $('#recommend-table').css('display', "");
-    });
-
-    $('body').on( 'change paste keyup', '.input_Cost ,.input_Qty, .input_Sub', function()
-    {
-      $self = $(this);
-      if ($self.parents('#add-row').length) 
-      {
-        $parent = $self.parents('#add-row');
-      }
-      else
-      {
-        $parent = $self.parents('.editable');
-      }
-      if( ($parent.find('.input_Cost').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Cost').val() == "" ) && 
-      ($parent.find('.input_Qty').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Qty').val() == "" ) &&
-      ($parent.find('.input_Sub').val().match(/^-?\d+(?:[.]\d*?)?$/)  || $parent.find('.input_Sub').val() == "" ) )
-      {
-        if ($self.hasClass('input_Cost') || $self.hasClass('input_Qty'))
-        {
-          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Qty').val() != "" ) )
-          {
-            var val = parseFloat($parent.find('.input_Cost').val()) * parseFloat($parent.find('.input_Qty').val());
-            $parent.find('.input_Sub').val(val);
-          }
-          else
-          {
-            $parent.find('.input_Sub').val('');
-            if( $self.hasClass('input_Cost') )
-            {
-              $parent.find('.input_Sub').val('0');
-            }
-            else
-            {
-              $parent.find('.input_Sub').val('0');
-            }
-          }
-        }
-
-        if ($self.hasClass('input_Sub'))
-        {
-          if( ($parent.find('.input_Cost').val() != "" ) && ($parent.find('.input_Sub').val() != "" ) )
-          {
-            var val = parseFloat($parent.find('.input_Sub').val()) / parseFloat($parent.find('.input_Qty').val());
-            $parent.find('.input_Cost').val(val);
-          }
-          else
-          {
-          }
-
-          if($parent.find('.input_Sub').val() != "" )
-          {
-            var newtotal = (old_total + parseFloat( $parent.find('.input_Sub').val() ));
-          }
-          else
-          {
-            $parent.find('.input_Cost').val('0');
-          }
-        }
-      }
-      else
-      {
-      }
+      branchChange()
     });
 
     var ignore_key = false;
