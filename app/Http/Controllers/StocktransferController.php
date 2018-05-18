@@ -241,6 +241,8 @@ class StocktransferController extends Controller {
         $cfgModel = new \App\Models\SItem\Cfg;
         $cfgModel->setConnection($company->database_name);
 
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
 
         $purchaseOrderModel = new \App\PurchaseOrder;
         $purchaseOrderModel->setConnection($company->database_name);
@@ -249,26 +251,15 @@ class StocktransferController extends Controller {
                                 ->orderBy('ItemCode', 'ASC')
                                 ->get();
 
-        $vendors = Vendor::orderBy('VendorName')->get();
-
-        $prod_lines = ProductLine::all();
-
         $branches = $company->branches()->where('Active', 1)
                             ->orderBy('ShortName', 'ASC')
                             ->get();
 
-        $prod_lines = $prod_lines->map(function ($prod_lines) {
-            return $prod_lines->Product;
-        });
-
-        $pos = $purchaseOrderModel->where('served', 0)->orderBy('po_no', 'desc')->get();
         return view('stocktransfer.create', [
             'branches' => $branches,
-            'prod_lines' => $prod_lines,
             'corpID' => $request->corpID,
-            'vendors' => $vendors,
-            'pos' => $pos,
-            'suggestItems' => $suggestItems
+            'suggestItems' => $suggestItems,
+            'rcvModel' => $rcvModel
         ]);
     }
 
@@ -289,6 +280,9 @@ class StocktransferController extends Controller {
         $cfgModel = new \App\Models\SItem\Cfg;
         $cfgModel->setConnection($company->database_name);
 
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
+
         $suggestItems = $cfgModel->where('Active', 1)
                                 ->orderBy('ItemCode', 'ASC')
                                 ->get();
@@ -302,7 +296,8 @@ class StocktransferController extends Controller {
             'branches' => $branches,
             'corpID' => $request->corpID,
             'suggestItems' => $suggestItems,
-            'hdrItem' => $hdrItem
+            'hdrItem' => $hdrItem,
+            'rcvModel' => $rcvModel
         ]);
     }
 
@@ -387,12 +382,10 @@ class StocktransferController extends Controller {
         foreach($hdrItem->details as $detail) {
             $rcvItem = $rcvModel->where('Movement_ID', $detail->Movement_ID)
                             ->first();
-
             if($rcvItem) {
                 $rcvItem->update(['Bal' => $rcvItem->Bal + $detail->Bal]);
             }
         }
-
         $hdrItem->details()->delete();
 
         if($request->details) {
@@ -401,7 +394,6 @@ class StocktransferController extends Controller {
                                     ->where('Bal', '>', 0)
                                     ->orderBy('RcvDate', 'ASC')
                                     ->get();
-
                 $itemQtyRemaining = $itemParams['Qty'];
                 foreach($rcvItems as $rcvItem) {
                     $itemQty = $itemQtyRemaining;
@@ -412,7 +404,6 @@ class StocktransferController extends Controller {
                         $itemQty = $rcvItem->Bal;
                         $rcvItem->update(['Bal' => 0]);
                     }
-
                     $hdrItem->details()->create([
                         'item_id' => $itemParams['item_id'],
                         'ItemCode' => $itemParams['ItemCode'],
@@ -420,13 +411,13 @@ class StocktransferController extends Controller {
                         'Bal' => $itemQty,
                         'Movement_ID' => $rcvItem->Movement_ID,
                     ]);
-
                     if($itemQtyRemaining <= 0) {
                         break;
                     }
                 }
             }
         }
+
 
         \Session::flash('success', "Stock item has been updated successfully"); 
 
@@ -466,11 +457,26 @@ class StocktransferController extends Controller {
     {
         $company = Corporation::findOrFail($request->corpID);
 
-        $deliveryModel = new \App\Models\Stxfr\Hdr;
-        $deliveryModel->setConnection($company->database_name);
+        $hdrModel = new \App\Models\Stxfr\Hdr;
+        $hdrModel->setConnection($company->database_name);
 
-        $deliveryItem = $deliveryModel->findOrFail($id);
-        $deliveryItem->delete();
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
+
+        $hdrItem = $hdrModel->findOrFail($id);
+
+        foreach($hdrItem->details as $detail) {
+            $rcvItem = $rcvModel->where('Movement_ID', $detail->Movement_ID)
+                            ->first();
+
+            if($rcvItem) {
+                $rcvItem->update(['Bal' => $rcvItem->Bal + $detail->Bal]);
+            }
+        }
+
+        $hdrItem->details()->delete();
+
+        $hdrItem->delete();
 
         return response()->json([
             'success'=> true
