@@ -379,102 +379,45 @@ class StocktransferController extends Controller {
             'Txfr_Date', 'Txfr_To_Branch'
         ]));
 
-        $detailItems = (array) $request->details;
-        
-        // Delete Or Update Item
-        foreach($detailItems as $key => $itemsParams) {
-            if(isset($itemsParams['Movement_ID'])) {
-                $detailItem = $hdrItem->details()
-                                    ->where('item_id', $itemsParams['item_id'])
-                                    ->where('Bal', $itemsParams['Bal'])
-                                    ->where('Movement_ID', $itemsParams['Movement_ID'])
-                                    ->where('Qty', $itemsParams['OldQty'])
-                                    ->first();
+        foreach($hdrItem->details as $detail) {
+            $rcvItem = $rcvModel->where('Movement_ID', $detail->Movement_ID)
+                            ->first();
+            if($rcvItem) {
+                $rcvItem->update(['Bal' => $rcvItem->Bal + $detail->Bal]);
+            }
+        }
+        $hdrItem->details()->delete();
 
-                $rcvItem = $rcvModel->where('Movement_ID', $itemsParams['Movement_ID'])
-                                    ->first();
-                // Delete
-                if($itemsParams['method'] == 'delete') {
-                    $rcvItem->update([
-                        'Bal' => $rcvItem->Bal + $detailItem->Bal
-                    ]);
-                    $detailItem->delete();
-                    unset($detailItems[$key]);
-                    continue;
-                }
-
-                // Update
-                if($itemsParams['Qty'] < $itemsParams['OldQty']) {
-                    $detailItem->update([
-                        'Qty' => $itemsParams['Qty'],
-                        'Bal' => $itemsParams['Qty']
-                    ]);
-                    $rcvItem->update([
-                        'Bal' => $rcvItem->Bal + $itemsParams['OldQty'] - $itemsParams['Qty']
-                    ]);
-                }else if($itemsParams['Qty'] > $itemsParams['OldQty']) {
-                    if($rcvItem->Bal >= $itemsParams['Qty'] - $itemsParams['OldQty']) {
-                        $detailItem->update([
-                            'Qty' => $itemsParams['Qty'],
-                            'Bal' => $itemsParams['Qty']
-                        ]);
-
-                        $rcvItem->update([
-                            'Bal' => $rcvItem->Bal - ($itemsParams['Qty'] - $itemsParams['OldQty'])
-                        ]);
+        if($request->details) {
+            foreach($request->details as $itemParams) {
+                $rcvItems = $rcvModel->where('item_id', $itemParams['item_id'])
+                                    ->where('Bal', '>', 0)
+                                    ->orderBy('RcvDate', 'ASC')
+                                    ->get();
+                $itemQtyRemaining = $itemParams['Qty'];
+                foreach($rcvItems as $rcvItem) {
+                    $itemQty = $itemQtyRemaining;
+                    $itemQtyRemaining -= $rcvItem->Bal;
+                    if($itemQty <= $rcvItem->Bal) {
+                        $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
                     }else {
-                        $detailItem->update([
-                            'Qty' => $detailItem->Qty + $rcvItem->Bal,
-                            'Bal' => $detailItem->Bal + $rcvItem->Bal
-                        ]);
-
-                        array_push($detailItems, [
-                            'item_id' => $itemsParams['item_id'],
-                            'ItemCode' => $itemsParams['ItemCode'],
-                            'Qty' => $itemsParams['Qty'] - $itemsParams['OldQty'] - $rcvItem->Bal
-                        ]);
-
-                        $rcvItem->update([
-                            'Bal' => 0
-                        ]);
+                        $itemQty = $rcvItem->Bal;
+                        $rcvItem->update(['Bal' => 0]);
+                    }
+                    $hdrItem->details()->create([
+                        'item_id' => $itemParams['item_id'],
+                        'ItemCode' => $itemParams['ItemCode'],
+                        'Qty' => $itemQty,
+                        'Bal' => $itemQty,
+                        'Movement_ID' => $rcvItem->Movement_ID,
+                    ]);
+                    if($itemQtyRemaining <= 0) {
+                        break;
                     }
                 }
-
-                unset($detailItems[$key]);
             }
         }
 
-        // Add Item
-        foreach($detailItems as $itemParams) {
-            $rcvItems = $rcvModel->where('item_id', $itemParams['item_id'])
-                                ->where('Bal', '>', 0)
-                                ->orderBy('RcvDate', 'ASC')
-                                ->get();
-
-            $itemQtyRemaining = $itemParams['Qty'];
-            foreach($rcvItems as $rcvItem) {
-                $itemQty = $itemQtyRemaining;
-                $itemQtyRemaining -= $rcvItem->Bal;
-                if($itemQty <= $rcvItem->Bal) {
-                    $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
-                }else {
-                    $itemQty = $rcvItem->Bal;
-                    $rcvItem->update(['Bal' => 0]);
-                }
-
-                $hdrItem->details()->create([
-                    'item_id' => $itemParams['item_id'],
-                    'ItemCode' => $itemParams['ItemCode'],
-                    'Qty' => $itemQty,
-                    'Bal' => $itemQty,
-                    'Movement_ID' => $rcvItem->Movement_ID,
-                ]);
-
-                if($itemQtyRemaining <= 0) {
-                    break;
-                }
-            }
-        }
 
         \Session::flash('success', "Stock item has been updated successfully"); 
 

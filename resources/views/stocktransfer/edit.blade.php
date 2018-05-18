@@ -79,17 +79,10 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($hdrItem->details as $detail)
+                @foreach($hdrItem->details()->get()->groupBy('item_id') as $row)
+                @php $detail = $row->first() @endphp
                 <tr class="editable">
                   <td class="edit_ItemCode" data-field="ItemCode" >
-                    <input type="hidden" name="details[{{ $loop->index }}][Movement_ID]"
-                      value="{{ $detail->Movement_ID }}">
-                    <input type="hidden" name="details[{{ $loop->index }}][OldQty]"
-                        value="{{ $detail->Qty }}">
-                    <input type="hidden" name="details[{{ $loop->index }}][Bal]"
-                      value="{{ $detail->Bal }}">
-                    <input type="hidden" name="details[{{ $loop->index }}][method]"
-                      value="" class="rowMethod">
                     <span class="value_ItemCode">{{ $detail->ItemCode }}</span>
                     <input class="input_item_id" type="hidden" value="{{ $detail->item_id }}" 
                       name="details[{{ $loop->index }}][item_id]">
@@ -110,8 +103,8 @@
                     <span class="value_Description">{{$detail->item->Description}}</span>
                   </td>
                   <td class="edit_Qty text-right" data-field="Qty" >
-                    <span class="value_Qty">{{$detail->Qty }}</span>
-                    <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" value="{{ $detail->Qty }}"
+                    <span class="value_Qty">{{ $row->sum('Qty') }}</span>
+                    <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" value="{{ $row->sum('Qty') }}"
                       name="details[{{ $loop->index }}][Qty]">
                   </td>
                   <td class="edit_Unit" >
