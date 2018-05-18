@@ -94,8 +94,8 @@ use App\Srcvdetail;
                                                                             {{$branch->ShortName}}
                                                                           </th>
                                                                         @endforeach
-                                                                        <th class="text-center" style="color:blue;width:15%;">TOTAL</th>
-                                                                        <th class="text-center" style="color:red;">STOCK</th>
+                                                                        <th class="text-center" style="color:blue;min-width: 100px;">TOTAL</th>
+                                                                        <th class="text-center" style="color:red;min-width: 100px;">STOCK</th>
                                                                       </tr>
                                                                     </thead>
 

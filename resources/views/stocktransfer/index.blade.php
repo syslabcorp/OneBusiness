@@ -346,23 +346,72 @@ showHidden = (isShow) => {
 @section('footer-scripts')
 <script type="text/javascript">
   (function() {
-    $.ajax({
-      url: '{{ route('stocktransfer.autoItems') }}' + location.search,
-      type: 'GET',
-      success: function(res) {
-        $("#list_menu tbody").html(res);
-        $('#list_menu').DataTable({
-          "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
-          order: [[0, 'desc']],
-          deferRender: true,
-          initComplete: function() {
-            $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1"><strong>Filters:</strong> </label><select onChange="filterStatus()" class="form-control"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
-            $("#selectId select").val('{{ $status }}');
+    $('#list_menu').DataTable({
+      "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#selectId">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      order: [[0, 'desc']],
+      ajaxSource: '{{ route('stocktransfer.autoItems') }}' + location.search,
+      initComplete: function() {
+        $("#selectId").append('<div class="filterDiv1"><label class="filterLabel1"><strong>Filters:</strong> </label><select onChange="filterStatus()" class="form-control"><option value="1">Unserved</option><option value="2">Served </option><option value="3">All </option></select></div>');
+        $("#selectId select").val('{{ $status }}');
+      },
+      columnDefs: [
+        {
+          targets: 0,
+          data: "po_no"
+        },
+        {
+          targets: 1,
+          data: "po_date"
+        },
+        {
+          targets: 2,
+          data: "template"
+        },
+        {
+          targets: 3,
+          data: 'served',
+          render: (data, type, row, meta) => {
+            return data == 1 ? 'Served' : 'Unserved'
           }
-        });
-      }
+        },
+        {
+          targets: 4,
+          data: 'tot_pcs',
+          className: 'text-center'
+        },
+        {
+          targets: 5,
+          data: 'total_amt',
+          className: 'text-right'
+        },
+        {
+          targets: 6,
+          data: '',
+          render: (data, type, row, meta) => {
+            let resultHTML =  '<a class="btn btn-primary btn-sm" title="View PO Details" \
+              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }} \
+              href="{{ route('stocktransfer.index') }}/' + row.po_no + '?corpID={{$corpID}}"> \
+                <span class="glyphicon glyphicon-eye-open"></span> \
+            </a> \
+            <a class="btn btn-warning btn-sm" title="View original Details"  \
+              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }} \
+              href="{{ route('stocktransfer.index') }}/' + row.po_no + '/original?corpID={{$corpID}}"> \
+              <span class="glyphicon glyphicon-inbox"></span> \
+            </a> ';
+          
+            if(row.served == '0') {
+              resultHTML += '<a class="btn btn-success btn-sm" title="Edit" \
+              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}\
+              onclick="markToserved(event,' + row.po_no + ')">\
+               <span class="glyphicon glyphicon-ok"></span>\
+              </a>'
+            }
+
+            return resultHTML
+          }
+        }
+      ],
     })
-    
   })()
 </script>
 @endsection
