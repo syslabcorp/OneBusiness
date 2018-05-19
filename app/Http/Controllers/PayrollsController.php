@@ -12,6 +12,11 @@ class PayrollsController extends Controller
 {
     public function index(Request $request)
     {
+        if(!\Auth::user()->checkAccessById(39, 'V')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $company = Corporation::findOrFail($request->corpID);
         $status = isset($request->status) ? $request->status : '1';
         $tab = $request->tab ? $request->tab : 'deduct';

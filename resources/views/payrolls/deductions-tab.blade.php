@@ -58,7 +58,7 @@
       <div class="rown">
         <div class="col-md-2 text-right">
           Column <br>
-          (on spreedsheet report):
+          (on spreadsheet report):
         </div>
         <div class="col-md-4">
           <div class="form-group">
@@ -88,7 +88,7 @@
             </div>
             <div class="col-md-2">
               <input type="text" class="form-control" disabled validation="number" 
-                value="{{ number_format($deductItem->fixed_amt, 2, '.', '') }}" name="fixed_amt">
+                value="{{ $deductItem->type == 3 ? number_format($deductItem->fixed_amt, 2, '.', '') : '0.00' }}" name="fixed_amt">
             </div>
             <div class="col-md-2">
               out of
@@ -111,7 +111,7 @@
             </div>
             <div class="col-md-2">
               <input type="text" class="form-control" disabled validation="number"
-                value="{{ number_format($deductItem->fixed_amt, 2, '.', '') }}" name="fixed_amt">
+                value="{{$deductItem->type == 2 ? number_format($deductItem->fixed_amt, 2, '.', '') : '0.00'}}" name="fixed_amt">
             </div>
             <div class="col-md-2">
               pesos of
@@ -186,7 +186,7 @@
                 @if(count($deductItem->details) == 0)
                 <tr class="empty">
                   <td colspan="5">
-                    Not found any items
+                    No items
                   </td>
                 </tr>
                 @endif
@@ -204,14 +204,5 @@
         </div>
       </div>
     </form>
-    <div class="text-right">
-      <button class="btn btn-info btn-edit">
-        <i class="glyphicon glyphicon-pencil"></i> Edit
-      </button>
-      <button class="btn btn-success btn-save" style="display: none;">
-        <i class="glyphicon glyphicon-floppy-disk"></i>
-        {{ $action == 'new' ? 'Create' : 'Save' }}
-      </button>
-    </div>
   </div>
 </div>
