@@ -24,6 +24,8 @@ Route::get('stocktransfer/{stock}/original', 'StocktransferController@original',
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
 Route::post('payrolls/deduct', 'PayrollsController@deduct', ['middleware' => 'auth'])->name('payrolls.deduct');
+Route::post('payrolls/benefit', 'PayrollsController@benefit', ['middleware' => 'auth'])->name('payrolls.benefit');
+Route::post('payrolls/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
 Route::resource('payrolls', 'PayrollsController', ['middleware' => 'auth']);
 
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');

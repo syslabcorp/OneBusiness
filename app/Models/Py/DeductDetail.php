@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Deduct;
+namespace App\Models\Py;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Detail extends Model {
+class DeductDetail extends Model {
   public $timestamps = false;
-  protected $table = "deduct_detail";
+  protected $table = "py_deduct_detail";
 
   protected $fillable = [
     'range1', 'range2', 'multi'

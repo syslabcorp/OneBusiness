@@ -8,7 +8,8 @@
       </div>
       <div class="col-sm-6 text-right">
         @if($action != 'new')
-        <a href="{{ route('payrolls.index', ['corpID' => $corpID, 'tab' => $tab, 'action' => 'new', 'status' => $status]) }}">
+        <a href="{{ route('payrolls.index', ['corpID' => $corpID, 'tab' => $tab, 'action' => 'new', 'status' => $status]) }}"
+          class="addCategory">
           Add Category
         </a>
         @endif
@@ -21,29 +22,29 @@
       <ul class="nav nav-tabs" role="tablist">
         @if(!$action || $tab == 'deduct')
         <li role="presentation" class="{{ $tab == 'deduct' ? 'active' : '' }}">
-          <a href="#con" aria-controls="con" role="tab" data-toggle="tab">Deductions</a>
+          <a href="#deduct" aria-controls="deduct" role="tab" data-toggle="tab">Deductions</a>
         </li>
         @endif
         @if(!$action || $tab == 'benefit')
         <li role="presentation" class="{{ $tab == 'benefit' ? 'active' : '' }}">
-          <a href="#cat" aria-controls="cat" role="tab" data-toggle="tab">Benefits</a>
+          <a href="#benefit" aria-controls="benefit" role="tab" data-toggle="tab">Benefits</a>
         </li>
         @endif
         @if(!$action || $tab == 'expense')
         <li role="presentation" class="{{ $tab == 'expense' ? 'active' : '' }}">
-          <a href="#sub" aria-controls="sub" role="tab" data-toggle="tab">Expense</a>
+          <a href="#expense" aria-controls="expense" role="tab" data-toggle="tab">Expense</a>
         </li>
         @endif
       </ul>
 
       <div class="tab-content" style="margin-top: 30px;">
-        <div role="tabpanel" class="tab-pane deductions-tab {{ $tab == 'deduct' ? 'active' : '' }}" id="con">
+        <div role="tabpanel" class="tab-pane deductions-tab {{ $tab == 'deduct' ? 'active' : '' }}" id="deduct">
           @include('payrolls.deductions-tab')
         </div>
-        <div role="tabpanel" class="tab-pane {{ $tab == 'benefit' ? 'active' : '' }}" id="cat">
+        <div role="tabpanel" class="tab-pane benefit-tab {{ $tab == 'benefit' ? 'active' : '' }}" id="benefit">
           @include('payrolls.benefits-tab')
         </div>
-        <div role="tabpanel" class="tab-pane {{ $tab == 'expense' ? 'active' : '' }}" id="sub">
+        <div role="tabpanel" class="tab-pane benefit-tab expense-tab {{ $tab == 'expense' ? 'active' : '' }}" id="expense">
           @include('payrolls.expense-tab')
         </div>
       </div>
@@ -62,6 +63,7 @@
 
 @section('pageJS')
   @include('payrolls.deductions-js')
+  @include('payrolls.benefit-js')
 
   <script type="text/javascript">
     (function() {
@@ -71,7 +73,7 @@
 
       $('.btn-reset').click(function(event) {
         $(this).closest('.table-wages').find('tbody').html(' \
-          <tr class="empty"><td colspan="4">Not found any items</td></tr> \
+          <tr class="empty"><td colspan="5">Not found any items</td></tr> \
         ')
       })
 
@@ -97,6 +99,14 @@
         }
       })
 
+      $('.nav.nav-tabs li a').click(function(event) {
+        let link = $('.addCategory').attr('href')
+        link = link.replace(/&tab=[a-z]*/g, '')
+        link += '&tab=' + $(this).attr('aria-controls')
+
+        $('.addCategory').attr('href', link)
+      })
+
       $('.btn-add').click(function(event) {
         addRowToTableWage()
       })
@@ -106,30 +116,48 @@
 
         let lastIndex = $('.tab-pane.active .table-wages').find('tbody tr').length
 
-        $('.tab-pane.active .table-wages').find('tbody').append(' \
-          <tr> \
-            <td> \
+        let fromField = 'range1'
+        let toField = 'range1'
+        let shareField = 'multi'
+
+        if(!$('.tab-pane.active').hasClass('deductions-tab')) {
+          fromField = 'range_1'
+          toField = 'range_2'
+          shareField = 'emp_share'
+        }
+
+        let rowHTML = '<tr> \
+              <td> \
+                <input type="text" class="form-control" value="0.00" \
+                  readonly name="details[' + lastIndex + '][' + fromField + ']"> \
+              </td> \
+              <td> \
+                <input type="text" class="form-control" value="0.00" \
+                readonly name="details[' + lastIndex + '][' + toField + ']"> \
+              </td> \
+              <td> \
+                <input type="text" class="form-control" value="0.00" \
+                readonly name="details[' + lastIndex + '][' + shareField + ']"> \
+              </td>'
+
+        if($('.tab-pane.active').hasClass('expense-tab')) {
+          rowHTML += '<td> \
               <input type="text" class="form-control" value="0.00" \
-                readonly name="details[' + lastIndex + '][range1]"> \
-            </td> \
-            <td> \
-              <input type="text" class="form-control" value="0.00" \
-              readonly name="details[' + lastIndex + '][range2]"> \
-            </td> \
-            <td> \
-              <input type="text" class="form-control" value="0.00" \
-              readonly name="details[' + lastIndex + '][multi]"> \
-            </td> \
-            <td> \
-              <button class="btn btn-sm btn-primary btn-edit-row" title="Edit" type="button"> \
-                <i class="glyphicon glyphicon-pencil"></i> \
-              </button> \
-              <button class="btn btn-sm btn-danger btn-remove-row" title="Delete" type="button"> \
-                <i class="glyphicon glyphicon-trash"></i> \
-              </button> \
-            </td> \
-          </tr> \
-        ')
+                readonly name="details[' + lastIndex + '][empr_share]"> \
+              </td>'
+        }
+
+        rowHTML += '<td> \
+                <button class="btn btn-sm btn-primary btn-edit-row" title="Edit" type="button"> \
+                  <i class="glyphicon glyphicon-pencil"></i> \
+                </button> \
+                <button class="btn btn-sm btn-danger btn-remove-row" title="Delete" type="button"> \
+                  <i class="glyphicon glyphicon-trash"></i> \
+                </button> \
+              </td> \
+            </tr>'
+
+        $('.tab-pane.active .table-wages').find('tbody').append(rowHTML)
         checkTableWages()
       }
 
