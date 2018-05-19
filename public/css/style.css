@@ -61,6 +61,25 @@
   top: -10px;
 }
 
+.has-group-line.middle {
+  margin-top: 0px;
+}
+
+.has-group-line.middle:after {
+  left: -55px;
+  top: 60px;
+}
+
+.has-group-line.middle:before {
+  left: -55px;
+  top: -40px;
+}
+
+.has-group-line.middle .vertical {
+  height: 101px;
+  top: -40px;
+}
+
 .rate-page .table tr.selected .form-control {
   background: green;
   color: #FFF;

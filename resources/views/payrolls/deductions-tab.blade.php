@@ -114,7 +114,7 @@
                 value="{{ number_format($deductItem->fixed_amt, 2, '.', '') }}" name="fixed_amt">
             </div>
             <div class="col-md-2">
-              posos of
+              pesos of
             </div>
             <div class="col-md-6">
             </div>
@@ -147,7 +147,7 @@
         </div>
       </div>
       <div class="rown table-wages" style="display: {{ $deductItem->type == 4 ? 'block' : 'none' }};">
-        <div class="col-md-6 col-md-offset-2">
+        <div class="col-md-8 col-md-offset-2">
           <div class="table-responsive">
             <table class="table table-bordered">
               <thead>

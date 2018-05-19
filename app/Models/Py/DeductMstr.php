@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Deduct;
+namespace App\Models\Py;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Mstr extends Model {
+class DeductMstr extends Model {
   public $timestamps = false;
-  protected $table = "deduct_mstr";
+  protected $table = "py_deduct_mstr";
   protected $primaryKey = "ID_deduct";
 
   protected $fillable = [
@@ -16,6 +16,6 @@ class Mstr extends Model {
 
   public function details()
   {
-    return $this->hasMany(Detail::class, 'id_deduct', 'ID_deduct');
+    return $this->hasMany(DeductDetail::class, 'id_deduct', 'ID_deduct');
   }
 }
