@@ -58,7 +58,7 @@
       <div class="rown">
         <div class="col-md-2 text-right">
           Column <br>
-          (on spreedsheet report):
+          (on spreadsheet report):
         </div>
         <div class="col-md-4">
           <div class="form-group">
@@ -185,7 +185,7 @@
                 @if(count($expItem->details) == 0)
                 <tr class="empty">
                   <td colspan="5">
-                    Not found any items
+                    No items
                   </td>
                 </tr>
                 @endif
@@ -203,14 +203,5 @@
         </div>
       </div>
     </form>
-    <div class="text-right">
-      <button class="btn btn-info btn-edit">
-        <i class="glyphicon glyphicon-pencil"></i> Edit
-      </button>
-      <button class="btn btn-success btn-save" style="display: none;">
-        <i class="glyphicon glyphicon-floppy-disk"></i>
-        {{ $action == 'new' ? 'Create' : 'Save' }}
-      </button>
-    </div>
   </div>
 </div>

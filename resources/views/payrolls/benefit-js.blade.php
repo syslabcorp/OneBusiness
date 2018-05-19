@@ -1,10 +1,16 @@
 <script type="text/javascript">
   (function() {
-    $('.benefit-tab .btn-edit').click(function(event) {
-      let parentElement = $(this).parents('.benefit-tab')
+    $('.btn-edit').click(function(event) {
+      if(!$('.tab-pane.benefit-tab').hasClass('active')) {
+        return;
+      }
+
+      let parentElement = $('.benefit-tab.active')
 
       $(this).css('display', 'none')
-      parentElement.find('.btn-save').css('display', 'inline-block')
+      $('.btn-save').css('display', 'inline-block')
+      $('.btn-cancel').css('display', 'inline-block')
+      $('.nav.nav-tabs li:not(.active)').css('display', 'none')
       parentElement.find('input[type="radio"], input[type="checkbox"]').attr('onclick', '')
       parentElement.find('.listDeductions').css('display', 'none')
       parentElement.find('input[name="description"]').css('display', 'block')

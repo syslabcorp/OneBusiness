@@ -7,7 +7,7 @@
         <strong>Payroll Masterfile</strong>
       </div>
       <div class="col-sm-6 text-right">
-        @if($action != 'new')
+        @if($action != 'new' && \Auth::user()->checkAccessById(39, 'A'))
         <a href="{{ route('payrolls.index', ['corpID' => $corpID, 'tab' => $tab, 'action' => 'new', 'status' => $status]) }}"
           class="addCategory">
           Add Category
@@ -50,14 +50,34 @@
       </div>
     </div>
   </div>
-  @if($action == 'new')
   <div class="panel-footer">
-    <a class="btn btn-default" href="{{ route('payrolls.index', ['corpID' => $corpID, 'tab' => $tab, 'status' => $status]) }}">
-      <i class="glyphicon glyphicon-arrow-left"></i>
-      Back
-    </a>
+    <div class="rown">
+      <div class="col-md-6">
+        @if($action == 'new')
+        <a class="btn btn-default" href="{{ route('payrolls.index', ['corpID' => $corpID, 'tab' => $tab, 'status' => $status]) }}">
+          <i class="glyphicon glyphicon-arrow-left"></i>
+          Back
+        </a>
+        @endif
+      </div>
+      <div class="col-md-6 text-right">
+        @if($action != 'new')
+        <button class="btn btn-default btn-cancel" onclick="cancelEdit()"
+          style="display: none;">
+          <i class="glyphicon glyphicon-remove"></i> Cancel
+        </button>
+        @endif
+        <button class="btn btn-info btn-edit"
+          {{ !\Auth::user()->checkAccessById(39, 'E') ? 'disabled' : '' }}>
+          <i class="glyphicon glyphicon-pencil"></i> Edit
+        </button>
+        <button class="btn btn-success btn-save" style="display: none;">
+          <i class="glyphicon glyphicon-floppy-disk"></i>
+          {{ $action == 'new' ? 'Create' : 'Save' }}
+        </button>
+      </div>
+    </div>
   </div>
-  @endif
 <div>
 @endsection
 
@@ -83,7 +103,9 @@
       })
 
       $('.table-wages').on('click', '.btn-edit-row', function(event) {
-        $(this).closest('tr').find('input').prop('readonly', false)
+        let isReadonly = $(this).closest('tr').find('input').prop('readonly')
+
+        $(this).closest('tr').find('input').prop('readonly', !isReadonly)
       })
 
       $('.table-wages').on('keyup', '.form-control', function(event) {
@@ -110,6 +132,14 @@
       $('.btn-add').click(function(event) {
         addRowToTableWage()
       })
+
+      cancelEdit = () => {
+        let path = location.search
+        path = path.replace(/&tab=[a-z]*/g, '')
+        path += '&tab=' + $('.nav.nav-tabs li.active a').attr('aria-controls')
+
+        window.location = location.pathname + path
+      }
 
       addRowToTableWage = () => {
         $('.tab-pane.active .table-wages').find('tbody .empty').remove()
@@ -204,13 +234,18 @@
         });
       }
 
-      $('.tab-pane .btn-save').click(function(event) {
-        $(this).closest('.tab-pane').find('input[name="description"]').keyup()
+      $('.btn-save').click(function(event) {
+        $('.tab-pane.active').find('input[name="description"]').keyup()
 
-        if($(this).closest('.tab-pane').find('.error').length > 0) {
+        if($('.tab-pane.active').find('.error').length > 0) {
           showAlertMessage('Please check form errors', 'Error')
         }else {
-          $(this).closest('.tab-pane').find('form').submit()
+          if($('.tab-pane.active .table-wages tbody tr:not(.empty)').length == 0 &&
+            $('.tab-pane.active').find('.table-wages').is(':visible')) {
+              showAlertMessage('Please add a row', 'Error')
+          }else {
+            $('.tab-pane.active').find('form').submit()
+          }
         }
       })
 
