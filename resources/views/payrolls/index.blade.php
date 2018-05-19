@@ -7,7 +7,7 @@
         <strong>Payroll Masterfile</strong>
       </div>
       <div class="col-sm-6 text-right">
-        @if($action != 'new' && \Auth::user()->checkAccessById(39, 'A'))
+        @if($action != 'new' && \Auth::user()->checkAccessByIdForCorp($corpID, 39, 'A'))
         <a href="{{ route('payrolls.index', ['corpID' => $corpID, 'tab' => $tab, 'action' => 'new', 'status' => $status]) }}"
           class="addCategory">
           Add Category
@@ -58,17 +58,16 @@
           <i class="glyphicon glyphicon-arrow-left"></i>
           Back
         </a>
-        @endif
-      </div>
-      <div class="col-md-6 text-right">
-        @if($action != 'new')
+        @else
         <button class="btn btn-default btn-cancel" onclick="cancelEdit()"
           style="display: none;">
           <i class="glyphicon glyphicon-remove"></i> Cancel
         </button>
         @endif
+      </div>
+      <div class="col-md-6 text-right">
         <button class="btn btn-info btn-edit"
-          {{ !\Auth::user()->checkAccessById(39, 'E') ? 'disabled' : '' }}>
+          {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 39, 'E') ? 'disabled' : '' }}>
           <i class="glyphicon glyphicon-pencil"></i> Edit
         </button>
         <button class="btn btn-success btn-save" style="display: none;">
@@ -104,6 +103,11 @@
 
       $('.table-wages').on('click', '.btn-edit-row', function(event) {
         let isReadonly = $(this).closest('tr').find('input').prop('readonly')
+        if(isReadonly) {
+          $(this).html('<i class="glyphicon glyphicon-floppy-disk"></i>')
+        }else {
+          $(this).html('<i class="glyphicon glyphicon-pencil"></i>')
+        }
 
         $(this).closest('tr').find('input').prop('readonly', !isReadonly)
       })
@@ -115,7 +119,7 @@
       })
 
       $(document).keyup(function(event) {
-        if(event.which == 113 && $('.tab-pane.active .btn-edit').is(':hidden') &&
+        if(event.which == 113 && $('.btn-edit').is(':hidden') &&
           $('.tab-pane.active .table-wages').is(':visible')) {
           addRowToTableWage()
         }

@@ -27,7 +27,7 @@
       parentElement.find('input[name="type"]').closest('.rown').find('.form-control').prop('disabled', true)
       parentElement.find('input[name="type"]:checked').closest('.rown').find('.form-control').prop('disabled', false)
 
-      if(checkedVal == 3 || checkedVal == 4) {
+      if(checkedVal == 3 || checkedVal == 4 || checkedVal == 2) {
         parentElement.find('.has-group-line .form-control').prop('disabled', false)
       }else {
         parentElement.find('.has-group-line .form-control').prop('disabled', true)
