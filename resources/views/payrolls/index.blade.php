@@ -109,6 +109,11 @@
           $(this).html('<i class="glyphicon glyphicon-pencil"></i>')
         }
 
+        if($(this).closest('tr').find('.error').length > 0) {
+          showAlertMessage('Please check row errors', 'Error')
+          return;
+        }
+
         $(this).closest('tr').find('input').prop('readonly', !isReadonly)
       })
 
@@ -162,21 +167,21 @@
 
         let rowHTML = '<tr> \
               <td> \
-                <input type="text" class="form-control" value="0.00" \
+                <input type="text" class="form-control" value="0.00" validation="number"\
                   readonly name="details[' + lastIndex + '][' + fromField + ']"> \
               </td> \
               <td> \
-                <input type="text" class="form-control" value="0.00" \
+                <input type="text" class="form-control" value="0.00" validation="number" \
                 readonly name="details[' + lastIndex + '][' + toField + ']"> \
               </td> \
               <td> \
-                <input type="text" class="form-control" value="0.00" \
+                <input type="text" class="form-control" value="0.00" validation="number" \
                 readonly name="details[' + lastIndex + '][' + shareField + ']"> \
               </td>'
 
         if($('.tab-pane.active').hasClass('expense-tab')) {
           rowHTML += '<td> \
-              <input type="text" class="form-control" value="0.00" \
+              <input type="text" class="form-control" value="0.00" data-validation="number" \
                 readonly name="details[' + lastIndex + '][empr_share]"> \
               </td>'
         }
@@ -196,10 +201,10 @@
       }
 
       checkTableWages = () => {
-        let tableRows = $('.table-wages tbody tr').length
+        let tableRows = $('.deductions-tab .table-wages tbody tr').length
 
         for(let index = 0; index < tableRows; index++) {
-          let checkElement = $($('.table-wages tbody tr')[index]).find('td:eq(0) .form-control')
+          let checkElement = $($('deductions-tab .table-wages tbody tr')[index]).find('td:eq(0) .form-control')
           checkElement.parent('td').find('.error').remove()
 
           if(!$.isNumeric(checkElement.val())) {
@@ -208,7 +213,7 @@
           }
 
           for(let subIndex = index + 1; subIndex < tableRows; subIndex++) {
-            let targetElement = $($('.table-wages tbody tr')[subIndex]).find('td:eq(0) .form-control')
+            let targetElement = $($('deductions-tab .table-wages tbody tr')[subIndex]).find('td:eq(0) .form-control')
 
             if(!$.isNumeric(targetElement.val())) {
               break

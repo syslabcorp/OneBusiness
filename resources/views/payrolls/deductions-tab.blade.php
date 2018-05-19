@@ -163,15 +163,15 @@
                 <tr>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->range1, 2, '.', '') }}"
-                    readonly name="details[{{ $key }}][range1]">
+                    readonly name="details[{{ $key }}][range1]"  validation="number">
                   </td>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->range2, 2, '.', '') }}" 
-                    readonly name="details[{{ $key }}][range2]">
+                    readonly name="details[{{ $key }}][range2]"  validation="number">
                   </td>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->multi, 2, '.', '') }}"
-                    readonly name="details[{{ $key }}][multi]">
+                    readonly name="details[{{ $key }}][multi]"  validation="number">
                   </td>
                   <td>
                     <button class="btn btn-sm btn-primary btn-edit-row" title="Edit" type="button" disabled>

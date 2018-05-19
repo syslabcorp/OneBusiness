@@ -158,19 +158,19 @@
                 <tr>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->range_1, 2, '.', '') }}"
-                    readonly name="details[{{ $key }}][range_1]">
+                    readonly name="details[{{ $key }}][range_1]"  validation="number">
                   </td>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->range_2, 2, '.', '') }}" 
-                    readonly name="details[{{ $key }}][range_2]">
+                    readonly name="details[{{ $key }}][range_2]"  validation="number">
                   </td>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->emp_share, 2, '.', '') }}"
-                    readonly name="details[{{ $key }}][emp_share]">
+                    readonly name="details[{{ $key }}][emp_share]"  validation="number">
                   </td>
                   <td>
                     <input type="text" class="form-control" value="{{ number_format($detail->empr_share, 2, '.', '') }}"
-                    readonly name="details[{{ $key }}][empr_share]">
+                    readonly name="details[{{ $key }}][empr_share]"  validation="number">
                   </td>
                   <td>
                     <button class="btn btn-sm btn-primary btn-edit-row" title="Edit" type="button" disabled>
