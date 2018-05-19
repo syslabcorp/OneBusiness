@@ -12,7 +12,7 @@ class PayrollsController extends Controller
 {
     public function index(Request $request)
     {
-        if(!\Auth::user()->checkAccessById(39, 'V')) {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 39, 'V')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
@@ -135,7 +135,7 @@ class PayrollsController extends Controller
         return redirect(route('payrolls.index', [
             'corpID' => $request->corpID,
             'status' => $deductItem->active,
-            'tab' => $request->tab,
+            'tab' => 'deduct',
             'item' => $deductItem->ID_deduct
         ]));
     }
@@ -174,7 +174,7 @@ class PayrollsController extends Controller
         return redirect(route('payrolls.index', [
             'corpID' => $request->corpID,
             'status' => $benfItem->active,
-            'tab' => $request->tab,
+            'tab' => 'benefit',
             'item' => $benfItem->ID_benf
         ]));
     }
@@ -214,7 +214,7 @@ class PayrollsController extends Controller
         return redirect(route('payrolls.index', [
             'corpID' => $request->corpID,
             'status' => $expItem->active,
-            'tab' => $request->tab,
+            'tab' => 'expense',
             'item' => $expItem->ID_exp
         ]));
     }
