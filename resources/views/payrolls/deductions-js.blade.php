@@ -6,7 +6,8 @@
       }
 
       let parentElement = $('.deductions-tab.active')
-
+      
+      $('.tab-pane.active .table-wages .form-control').prop('readonly', false)
       $(this).css('display', 'none')
       $('.btn-save').css('display', 'inline-block')
       $('.btn-cancel').css('display', 'inline-block')
