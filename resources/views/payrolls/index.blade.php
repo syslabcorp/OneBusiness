@@ -101,22 +101,6 @@
         checkTableWages()
       })
 
-      $('.table-wages').on('click', '.btn-edit-row', function(event) {
-        let isReadonly = $(this).closest('tr').find('input').prop('readonly')
-        if(isReadonly) {
-          $(this).html('<i class="glyphicon glyphicon-floppy-disk"></i>')
-        }else {
-          if($(this).closest('tr').find('.error').length > 0) {
-            showAlertMessage('Please check row errors', 'Error')
-            return;
-          }
-
-          $(this).html('<i class="glyphicon glyphicon-pencil"></i>')
-        }
-
-        $(this).closest('tr').find('input').prop('readonly', !isReadonly)
-      })
-
       $('.table-wages').on('keyup', '.form-control', function(event) {
         if($(this).parent('td').index() == 0) {
           checkTableWages()
@@ -156,7 +140,7 @@
         let lastIndex = $('.tab-pane.active .table-wages').find('tbody tr').length
 
         let fromField = 'range1'
-        let toField = 'range1'
+        let toField = 'range2'
         let shareField = 'multi'
 
         if(!$('.tab-pane.active').hasClass('deductions-tab')) {
@@ -168,28 +152,25 @@
         let rowHTML = '<tr> \
               <td> \
                 <input type="text" class="form-control" value="0.00" validation="number"\
-                  readonly name="details[' + lastIndex + '][' + fromField + ']"> \
+                  name="details[' + lastIndex + '][' + fromField + ']"> \
               </td> \
               <td> \
                 <input type="text" class="form-control" value="0.00" validation="number" \
-                readonly name="details[' + lastIndex + '][' + toField + ']"> \
+                  name="details[' + lastIndex + '][' + toField + ']"> \
               </td> \
               <td> \
                 <input type="text" class="form-control" value="0.00" validation="number" \
-                readonly name="details[' + lastIndex + '][' + shareField + ']"> \
+                  name="details[' + lastIndex + '][' + shareField + ']"> \
               </td>'
 
         if($('.tab-pane.active').hasClass('expense-tab')) {
           rowHTML += '<td> \
               <input type="text" class="form-control" value="0.00" data-validation="number" \
-                readonly name="details[' + lastIndex + '][empr_share]"> \
+                name="details[' + lastIndex + '][empr_share]"> \
               </td>'
         }
 
         rowHTML += '<td> \
-                <button class="btn btn-sm btn-primary btn-edit-row" title="Edit" type="button"> \
-                  <i class="glyphicon glyphicon-pencil"></i> \
-                </button> \
                 <button class="btn btn-sm btn-danger btn-remove-row" title="Delete" type="button"> \
                   <i class="glyphicon glyphicon-trash"></i> \
                 </button> \
@@ -205,6 +186,7 @@
 
         for(let index = 0; index < tableRows; index++) {
           let checkElement = $($('.deductions-tab .table-wages tbody tr')[index]).find('td:eq(0) .form-control')
+          checkElement.removeAttr('validation')
           checkElement.parent('td').find('.error').remove()
 
           if(!$.isNumeric(checkElement.val())) {
@@ -294,6 +276,43 @@
 
         if(messageErr) {
           $(this).closest('div, td').append(' <span class="error">' + messageErr + '</span>')
+        }
+      })
+
+      $('.table-wages').on('keyup', '.form-control', function(event) {
+        let currentCol = $(this).parents('td').index();
+        let currentRow = $(this).parents('tr').index();
+        let parentTable = $(this).closest('.table-wages')
+        let minCol = 0;
+        let maxCol = parentTable.find('tbody tr:eq(0) td').length - 2;
+        let maxRow = parentTable.find('tbody').length;
+
+        switch(event.which) {
+          case 37:
+            currentCol -= 1;
+            break;
+          case 38:
+            currentRow -= 1;
+            break;
+          case 39:
+            currentCol += 1;
+            break;
+          case 40:
+            currentRow += 1;
+            break;
+          default:
+            break;
+        }
+
+        if(currentCol < minCol) {
+          currentCol = maxCol;
+          currentRow -= 1;
+        }else if(currentCol > maxCol) {
+          currentCol = minCol;
+          currentRow += 1;
+        }
+        if(parentTable.find('tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control').length) {
+          parentTable.find('tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control')[0].focus();
         }
       })
     })()

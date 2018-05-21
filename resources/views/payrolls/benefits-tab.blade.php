@@ -168,9 +168,6 @@
                     readonly name="details[{{ $key }}][emp_share]"  validation="number">
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-primary btn-edit-row" title="Edit" type="button" disabled>
-                      <i class="glyphicon glyphicon-pencil"></i>
-                    </button>
                     <button class="btn btn-sm btn-danger btn-remove-row" title="Delete" type="button" disabled>
                       <i class="glyphicon glyphicon-trash"></i>
                     </button>
