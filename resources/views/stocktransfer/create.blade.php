@@ -221,15 +221,15 @@
     }
 
     isItemRowsValid = () => {
-      let isValid = true
-
       for(let index = 0; index < $('#table_editable .editable:visible').length; index++) {
         let checkElement = $($('#table_editable .editable:visible')[index]).find('.input_Qty')
         if(parseInt(checkElement.val()) > parseInt(checkElement.attr('data-max'))) {
           showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
-          return false;
+          return false
         }
       }
+
+      return true
     }
 
     showAlertMessage = (message, title = "Alert", isReload = false) => {
