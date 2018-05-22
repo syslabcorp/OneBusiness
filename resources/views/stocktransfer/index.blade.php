@@ -36,8 +36,10 @@
                   <div class="col-xs-9">
                     <h4>Stock Transfer</h4>
                   </div>
+                  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'A'))
                   <div class="col-xs-3"  id="addNewTransfer" >
                   </div>
+                  @endif
                 </div>
               </div>
               <div class="panel-body">
@@ -85,6 +87,7 @@
                                             @endif
                                           </div>
                                             <div class="tab-pane fade {{ $tab == 'stock' ? 'active in' : '' }}" id="tasks" >
+                                              @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V'))
                                               <div class="row">
                                                 <div class="table-responsive">
                                                 <table id="table-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
@@ -103,6 +106,11 @@
                                                   </table>
                                                 </div>
                                               </div>
+                                              @else
+                                              <div class="alert alert-danger no-close">
+                                                You don't have permission
+                                              </div>
+                                              @endif
                                             </div>
                                           </div>
                                         </div>
@@ -153,7 +161,7 @@ $(document).ready(function() {
           data: 'Rcvd',
           className: 'text-center',
           render: (data, type, row, meta) => {
-            return '<input type="checkbox" onclick="return false;"/>'
+            return '<input type="checkbox" onclick="return false;" ' + (data == 1 ? 'checked' : '') + '/>'
           }
         },
         {
@@ -169,10 +177,12 @@ $(document).ready(function() {
           data: '',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-sm edit" title="Edit" \
-              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?corpID={{ $corpID }}">\
+              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} \
+              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?corpID={{ $corpID }}&stockStatus={{ $stockStatus }}">\
                 <i class="glyphicon glyphicon-pencil"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')">\
+              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" \
+                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'D') ? "" : "disabled" }} >\
                 <i class="glyphicon glyphicon-trash"></i> \
               </a>';
           }
@@ -201,7 +211,7 @@ $(document).ready(function() {
         url : 'stocktransfer/' + id + '?corpID={{ $corpID }}' ,
         type : 'DELETE',
         success: (res) => {
-          showAlertMessage('DR#' + id + ' has been served', 'Success')
+          showAlertMessage('DR#' + id + ' has been deleted!', 'Success')
           self.parents('tr').remove()
         }
       })
@@ -389,12 +399,12 @@ showHidden = (isShow) => {
           data: '',
           render: (data, type, row, meta) => {
             let resultHTML =  '<a class="btn btn-primary btn-sm" title="View PO Details" \
-              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }} \
+              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }} \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '?corpID={{$corpID}}"> \
                 <span class="glyphicon glyphicon-eye-open"></span> \
             </a> \
             <a class="btn btn-warning btn-sm" title="View original Details"  \
-              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }} \
+              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }} \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '/original?corpID={{$corpID}}"> \
               <span class="glyphicon glyphicon-inbox"></span> \
             </a> ';
