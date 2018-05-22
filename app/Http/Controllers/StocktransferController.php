@@ -90,6 +90,11 @@ class StocktransferController extends Controller {
     }
 
     public function original(Request $request, $id) {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 43, 'V')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
       $company = Corporation::findOrFail($request->corpID);
       
       $detailModel = new \App\Models\Spo\Detail;
@@ -227,9 +232,9 @@ class StocktransferController extends Controller {
 
     public function create(Request $request)
     {
-        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
-        \Session::flash('error', "You don't have permission"); 
-        return redirect("/home"); 
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 42, 'A')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
         }
 
         $company = Corporation::findOrFail($request->corpID);
@@ -248,6 +253,7 @@ class StocktransferController extends Controller {
 
         $suggestItems = $cfgModel->where('Active', 1)
                                 ->orderBy('ItemCode', 'ASC')
+                                ->distinct()
                                 ->get();
 
         $branches = $company->branches()->where('Active', 1)
@@ -264,7 +270,7 @@ class StocktransferController extends Controller {
 
     public function edit(Request $request, $id)
     {
-        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 42, 'E')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
@@ -283,6 +289,7 @@ class StocktransferController extends Controller {
         $rcvModel->setConnection($company->database_name);
 
         $suggestItems = $cfgModel->where('Active', 1)
+                                ->distinct()
                                 ->orderBy('ItemCode', 'ASC')
                                 ->get();
 
@@ -296,7 +303,8 @@ class StocktransferController extends Controller {
             'corpID' => $request->corpID,
             'suggestItems' => $suggestItems,
             'hdrItem' => $hdrItem,
-            'rcvModel' => $rcvModel
+            'rcvModel' => $rcvModel,
+            'stockStatus' => $request->stockStatus
         ]);
     }
 
@@ -422,12 +430,18 @@ class StocktransferController extends Controller {
 
         return redirect(route('stocktransfer.index', [
             'corpID' => $request->corpID,
-            'tab' => 'stock'
+            'tab' => 'stock',
+            'stockStatus' => $request->stockStatus
         ]));
     }
 
    
     public function show(Request $request, $id) {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 43, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
       $company = Corporation::findOrFail($request->corpID);
       
       $hdrModel = new \App\Models\Spo\Hdr;

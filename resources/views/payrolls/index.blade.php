@@ -301,6 +301,7 @@
             currentRow += 1;
             break;
           default:
+            return;
             break;
         }
 
@@ -312,7 +313,8 @@
           currentRow += 1;
         }
         if(parentTable.find('tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control').length) {
-          parentTable.find('tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control')[0].focus();
+          parentTable.find('tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control')[0].focus()
+          parentTable.find('tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control')[0].select()
         }
       })
     })()

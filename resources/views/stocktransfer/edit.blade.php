@@ -8,7 +8,7 @@
         <div class="panel-heading">
           <div class="row">
             <div class="col-xs-9">
-              <h4>New Stock Transfer</h4>
+              <h4>Edit Stock Transfer</h4>
             </div>
           </div>
         </div>
@@ -103,8 +103,10 @@
                     <span class="value_Description">{{$detail->item->Description}}</span>
                   </td>
                   <td class="edit_Qty text-right" data-field="Qty" >
+                    @php $maxQty = $row->sum('Qty') + $rcvModel->where('item_id', $detail->item_id)->sum('Bal') @endphp
                     <span class="value_Qty">{{ $row->sum('Qty') }}</span>
                     <input type="hidden" class="input_Qty"  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" value="{{ $row->sum('Qty') }}"
+                    data-max="{{ $maxQty }}"
                       name="details[{{ $loop->index }}][Qty]">
                   </td>
                   <td class="edit_Unit" >
@@ -199,7 +201,7 @@
                   <td class="recommend_brand"  >{{$suggestItem->item->brand->Brand}}</td>
                   <td class="recommend_brand_id" style="display: none;" >{{$suggestItem->item->Brand_ID}}</td>
                   <td class="recommend_description">{{$suggestItem->item->Description}}</td>
-                  <td>{{ $rcvModel->where('item_id', $suggestItem->item_id)->sum('Bal') }}</td>
+                  <td class="qty_on_hand">{{ $rcvModel->where('item_id', $suggestItem->item_id)->sum('Bal') }}</td>
                   <td class="recommend_unit">{{$suggestItem->item->Unit}}</td>
                 </tr>
               @endforeach
@@ -213,7 +215,7 @@
 
           <div class="row">
             <div class="col-md-6">
-              <a type="button" class="btn btn-default" href="{{ route('stocktransfer.index', [ 'corpID' => $corpID, 'tab' => 'stock']) }}">
+              <a type="button" class="btn btn-default" href="{{ route('stocktransfer.index', [ 'corpID' => $corpID, 'tab' => 'stock', 'stockStatus' => $stockStatus]) }}">
               <span style="margin-right: 7px;" class="glyphicon glyphicon-arrow-left"></span>Back
               </a>
             </div>
@@ -231,26 +233,6 @@
   </div>
 </section>
 
-<div class="modal fade" id="alert" role="dialog" >
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">
-          <strong>EDIT DR</strong>
-        </h4>
-      </div>
-      <div class="modal-body">
-        <p>Some or all of the items on this DR have been transferred already. You cannot edit or delete this anymore...</p>
-      </div>
-      <div class="modal-footer" style="margin-top: 100px;">
-        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End modal alert -->
-
 @endsection
 
 @section('pageJS')
@@ -264,6 +246,18 @@
       if($('#recommend-table tbody tr:not(:hidden)').length == 0) {
         $('#recommend-table tbody tr.empty').css('display', 'table-row')
       }
+    }
+
+    isItemRowsValid = () => {
+      for(let index = 0; index < $('#table_editable .editable:visible').length; index++) {
+        let checkElement = $($('#table_editable .editable:visible')[index]).find('.input_Qty')
+        if(parseInt(checkElement.val()) > parseInt(checkElement.attr('data-max'))) {
+          showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
+          return false
+        }
+      }
+
+      return true
     }
   </script>
   
@@ -301,6 +295,12 @@
       $('#recommend-table').css('display', "none");
       
       if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error')) {
+        let inputQtyElement = $('#add-row .input_Qty')
+        if(parseInt(inputQtyElement.val()) > parseInt(inputQtyElement.attr('data-max'))) {
+          showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
+          return false
+        }
+
           var $add_row = $('#add-row');
           var new_element = $('#example').clone();
           let countItem = $("#table_editable tr").length
@@ -321,6 +321,8 @@
           //ProductLine
           new_element.find('.value_Prod_Line').text($add_row.find('.input_Prod_Line').val());
           new_element.find('.input_Prod_Line').val($add_row.find('.input_Prod_Line').val());
+
+          new_element.find('.input_Qty').attr('data-max', $add_row.find('.input_Qty').attr('data-max'));
 
           //Brand
           new_element.find('.value_Brand').text($add_row.find('.input_Brand').val());
@@ -391,6 +393,7 @@
         $('#add-row').find('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
         $('#add-row').find('.input_Brand').val($(this).find('.recommend_brand').text());
         $('#add-row').find('.input_Description').val($(this).find('.recommend_description').text());
+        $('#add-row').find('.input_Qty').attr('data-max', $(this).find('.qty_on_hand').text())
         if($(this).find('.recommend_cost').text() != "")
         {
           $('#add-row').find('.input_Cost').val($(this).find('.recommend_cost').text());
@@ -414,6 +417,7 @@
         $('.last_focus').parents('.editable').find('.edit_Prod_Line').find(".input_Prod_Line").val($(this).find('.recommend_prod_line').text());
         $('.last_focus').parents('.editable').find('.edit_Description').find(".value_Description").text($(this).find('.recommend_description').text());
         $('.last_focus').parents('.editable').find('.edit_Unit').find(".value_Unit").text($(this).find('.recommend_unit').text());
+        $('.last_focus').find('.editable').find('.input_Qty').attr('data-max', $(this).find('.qty_on_hand').text())
 
         $('#recommend-table').css('display', "none");
       }
@@ -436,6 +440,10 @@
       }
       else
       {
+        if(!isItemRowsValid()) {
+          return false
+        }
+
         $(this).parents('tr').find('.error').remove();
         if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error')  )
         {
@@ -652,7 +660,29 @@
       $('#recommend-table').css('display', "none");
     });
 
+    showAlertMessage = (message, title = "Alert", isReload = false) => {
+      swal({
+        title: "<div class='delete-title'>" + title + "</div>",
+        text:  "<div class='delete-text'>" + message + "</strong></div>",
+        html:  true,
+        customClass: 'swal-wide',
+        showCancelButton: false,
+        closeOnConfirm: true,
+        allowEscapeKey: !isReload
+      }, (data) => {
+        if(isReload) {
+          window.location.reload()
+        }
+      });
+    }
+
     $('.btn-save').on('click', function(event) {
+      @if($hdrItem->Rcvd == '1')
+      showAlertMessage('This stock transfer has just been received by the branch! You \
+      can not longer save modifications to this transaction...', 'Save Conflict')
+      return
+      @endif
+
       $('#table_editable td span.error').remove();
       $('#table_editable input[value="editting"]').each(function() {
         $(this).parents('.editable').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
@@ -668,6 +698,10 @@
 
       if( $('form').isValid(false) )
       {
+        if(!isItemRowsValid()) {
+          return false;
+        }
+
         if( $('.editable').length == 1 )
         {
           $('.alert-nothing').remove();

@@ -155,7 +155,7 @@
                   <td class="recommend_brand"  >{{$suggestItem->item->brand->Brand}}</td>
                   <td class="recommend_brand_id" style="display: none;" >{{$suggestItem->item->Brand_ID}}</td>
                   <td class="recommend_description">{{$suggestItem->item->Description}}</td>
-                  <td>{{ $rcvModel->where('item_id', $suggestItem->item_id)->sum('Bal') }}</td>
+                  <td class="qty_on_hand">{{ $rcvModel->where('item_id', $suggestItem->item_id)->sum('Bal') }}</td>
                   <td class="recommend_unit">{{$suggestItem->item->Unit}}</td>
                 </tr>
               @endforeach
@@ -219,6 +219,34 @@
         $('#recommend-table tbody tr.empty').css('display', 'table-row')
       }
     }
+
+    isItemRowsValid = () => {
+      for(let index = 0; index < $('#table_editable .editable:visible').length; index++) {
+        let checkElement = $($('#table_editable .editable:visible')[index]).find('.input_Qty')
+        if(parseInt(checkElement.val()) > parseInt(checkElement.attr('data-max'))) {
+          showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
+          return false
+        }
+      }
+
+      return true
+    }
+
+    showAlertMessage = (message, title = "Alert", isReload = false) => {
+      swal({
+        title: "<div class='delete-title'>" + title + "</div>",
+        text:  "<div class='delete-text'>" + message + "</strong></div>",
+        html:  true,
+        customClass: 'swal-wide',
+        showCancelButton: false,
+        closeOnConfirm: true,
+        allowEscapeKey: !isReload
+      }, (data) => {
+        if(isReload) {
+          window.location.reload()
+        }
+      });
+    }
   </script>
   
   <script type="text/javascript">
@@ -255,6 +283,13 @@
       $('#recommend-table').css('display', "none");
       
       if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error')) {
+        let inputQtyElement = $('#add-row .input_Qty')
+        if(parseInt(inputQtyElement.val()) > parseInt(inputQtyElement.attr('data-max'))) {
+          showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
+          return false
+        }
+          
+
           var $add_row = $('#add-row');
           var new_element = $('#example').clone();
           let countItem = $("#table_editable tr").length
@@ -271,6 +306,8 @@
           new_element.find('.input_ItemCode').val($add_row.find('.input_ItemCode').val());
           new_element.find('.input_ItemCode').attr('name', 'details[' + countItem + '][ItemCode]')
           new_element.find('.value_ItemCode').text($add_row.find('.input_ItemCode').val());
+
+          new_element.find('.input_Qty').attr('data-max', $add_row.find('.input_Qty').attr('data-max'));
           
           //ProductLine
           new_element.find('.value_Prod_Line').text($add_row.find('.input_Prod_Line').val());
@@ -345,6 +382,7 @@
         $('#add-row').find('.input_Prod_Line').val($(this).find('.recommend_prod_line').text());
         $('#add-row').find('.input_Brand').val($(this).find('.recommend_brand').text());
         $('#add-row').find('.input_Description').val($(this).find('.recommend_description').text());
+        $('#add-row').find('.input_Qty').attr('data-max', $(this).find('.qty_on_hand').text())
         $parent.find('.input_Unit').text($(this).find('.recommend_unit').text());
         $parent.find('.input_item_id').val($(this).find('.recommend_item_id').text());
         $('#recommend-table').css('display', "none");
@@ -359,6 +397,7 @@
         $('.last_focus').parents('.editable').find('.edit_Prod_Line').find(".input_Prod_Line").val($(this).find('.recommend_prod_line').text());
         $('.last_focus').parents('.editable').find('.edit_Description').find(".value_Description").text($(this).find('.recommend_description').text());
         $('.last_focus').parents('.editable').find('.edit_Unit').find(".value_Unit").text($(this).find('.recommend_unit').text());
+        $('.last_focus').find('.editable').find('.input_Qty').attr('data-max', $(this).find('.qty_on_hand').text())
 
         $('#recommend-table').css('display', "none");
       }
@@ -382,6 +421,10 @@
       }
       else
       {
+        if(!isItemRowsValid()) {
+          return false
+        }
+
         $(this).parents('tr').find('.error').remove();
         if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error')  )
         {
@@ -614,6 +657,10 @@
 
       if( $('form').isValid(false) )
       {
+        if(!isItemRowsValid()) {
+          return;
+        }
+
         if( $('.editable').length == 1 )
         {
           $('.alert-nothing').remove();
