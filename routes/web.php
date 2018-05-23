@@ -134,7 +134,7 @@ Route::get('/active_users', 'HomeController@login_logs');
 Route::get('/logout', 'HomeController@logout');
 Route::get('/template_exist', 'AccessLevelController@template_exist');
 Route::any('/add_menu/{parent_id?}/{id?}', 'AccessLevelController@add_menu');
-Route::any('/list_menu/{parent_id?}', 'AccessLevelController@list_menu');
+Route::any('/list_menu/{parent_id?}', 'AccessLevelController@list_menu')->name('listmenu');
 Route::get('/delete_menu/{id}', 'AccessLevelController@delete_menu');
 Route::any('/get_child_menu', 'AccessLevelController@get_child_menu');
 Route::any('/add_group/{id?}', 'AccessLevelController@add_group');

@@ -578,6 +578,8 @@
       {
         $parent = $self.parents('.editable');
       }
+
+      branchChange()
       
       if ($self.hasClass('input_ItemCode'))
       {

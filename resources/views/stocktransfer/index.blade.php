@@ -12,15 +12,11 @@
       
       <!-- Sidebar -->
        <div id="sidebar-togle-sidebar-sec">
-      <ul id="sidebar_menu" class="sidebar-nav">
-           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-      </ul>
-        <div class="sidebar-nav" id="sidebar">     
-          <div id="treeview_json"></div>
+          <div class="sidebar-nav">
+            <ul></ul>
+          </div>
         </div>
-      </div>
           
-      <!-- Page content -->
       <div id="page-content-togle-sidebar-sec">
 		@if(Session::has('success'))
 			<div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
