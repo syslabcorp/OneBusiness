@@ -1,4 +1,11 @@
 @import "font-awesome.min";
 @import "AdminLTE.min";
 @import "toastr.min";
+@import "sidebar";
+@import "global";
 @import "style";
+
+
+a:active, a:visited, a:hover {
+    text-decoration: none;
+}
