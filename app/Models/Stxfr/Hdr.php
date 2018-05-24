@@ -25,4 +25,9 @@ class Hdr extends Model
     {
         return $this->hasMany(Detail::class, 'Txfr_ID', 'Txfr_ID');
     }
+
+    public function shift()
+    {
+        return $this->belongsTo(\App\Models\T\Shift::class, 'Shift_ID', 'Shift_ID');
+    }
 }

@@ -80,7 +80,13 @@
               </thead>
               <tbody>
                 @foreach($hdrItem->details()->get()->groupBy('item_id') as $row)
-                @php $detail = $row->first() @endphp
+                @php
+                  $detail = $row->first();
+                  if(!$detail->item) {
+                    continue;
+                  }
+                @endphp
+
                 <tr class="editable">
                   <td class="edit_ItemCode" data-field="ItemCode" >
                     <span class="value_ItemCode">{{ $detail->ItemCode }}</span>
@@ -259,6 +265,17 @@
 
       return true
     }
+
+    checkDuplicateItem = (itemCode) => {
+      for(let index = 0; index < $('#table_editable .editable:visible').length; index++) {
+        let rowElement = $($('#table_editable .editable:visible')[index])
+        if(rowElement.find('.input_item_id').val() == itemCode) {
+          return true
+        }
+      }
+
+      return false
+    }
   </script>
   
   <script type="text/javascript">
@@ -293,6 +310,11 @@
       }
 
       $('#recommend-table').css('display', "none");
+
+      if(checkDuplicateItem($('#add-row .input_item_id').val().trim())) {
+        showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+        return false
+      }
       
       if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error')) {
         let inputQtyElement = $('#add-row .input_Qty')

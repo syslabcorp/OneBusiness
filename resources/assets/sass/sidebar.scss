@@ -11,6 +11,8 @@ nav.navbar-static-top {
     margin-top: 69px;
 }
 div.sidebar-nav {
+    overflow-y: auto;
+    padding-bottom: 100px;
     ul {
         list-style: none;
         padding-left: 0px;
