@@ -163,8 +163,11 @@
 
       setActiveMenu = () => {
         $('.sidebar-nav a[href]').each((index, el) => {
+          let pathname = location.pathname.replace(/\/OneBusiness\//, '').replace(/^\//, '').replace(/\/[\w\D]*/i, '')
           el = $(el)
-          if(el.attr('href').match(new RegExp(location.pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '' }}'))) {
+
+          if(el.attr('href').match(new RegExp(location.pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '' }}')) || 
+            el.attr('href').match(new RegExp(pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '' }}'))) {
             el.addClass('active')
             openMenu(el)
           }

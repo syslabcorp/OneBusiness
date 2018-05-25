@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('root');
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');
@@ -27,7 +27,7 @@ Route::post('payrolls/deduct', 'PayrollsController@deduct', ['middleware' => 'au
 Route::post('payrolls/benefit', 'PayrollsController@benefit', ['middleware' => 'auth'])->name('payrolls.benefit');
 Route::post('payrolls/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
 Route::resource('payrolls', 'PayrollsController', ['middleware' => 'auth']);
-
+Route::resource('departments', 'DepartmentsController', ['middleware' => 'auth']);
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
 
 Auth::routes();

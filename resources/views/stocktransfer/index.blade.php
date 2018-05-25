@@ -94,6 +94,8 @@
                                                       <th>Destination</th>
                                                       <th>Rcvd</th>
                                                       <th>Uploaded</th>
+                                                      <th>Received By</th>
+                                                      <th>Date Received</th>
                                                       <th>Action</th>
                                                     </tr>
                                                   </thead>
@@ -170,6 +172,14 @@ $(document).ready(function() {
         },
         {
           targets: 5,
+          data: 'ReceivedBy'
+        },
+        {
+          targets: 6,
+          data: 'DateRcvd'
+        },
+        {
+          targets: 7,
           data: '',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-sm edit" title="Edit" \
