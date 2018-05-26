@@ -19,7 +19,9 @@
           <div class="panel-body" style="margin: 30px 0px;">
               <div class="row" style="border:1px solid lightgray;padding: 7px 7px 0px 7px;">
               <div class="col-xs-4" style="padding-left: 0;">
-                <label for="sort" class="col-sm-3 control-label"  style="padding-left: 0;">Transfer to: </label>
+                <label for="sort" class="col-sm-3 control-label"  style="padding-left: 0;">
+                  <strong>Transfer to</strong>
+                </label>
                 <div class="col-sm-6">
                   <select class="form-control" name="Txfr_To_Branch" onchange="branchChange()">
                     @foreach($branches as $branch)
