@@ -16,6 +16,11 @@ class Hdr extends Model
     ];
 
 
+    protected $dates = [
+        'Txfr_Date'
+    ];
+
+
     public function branch()
     {
         return $this->belongsTo(\App\Branch::class, 'Txfr_To_Branch', 'Branch');

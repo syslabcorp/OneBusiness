@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Controller;
 use App\Corporation;
 
-class DepartmentsController extends Controller
+class WageTemplatesController extends Controller
 {
     protected $deptModel;
 
     public function __construct(Request $request)
     {
-        $company = Corporation::findOrFail(request()->corpID);
+        $company = Corporation::findOrFail($request->corpID);
       
         $this->deptModel = new \App\Models\T\Depts;
         $this->deptModel->setConnection($company->database_name);
@@ -22,22 +22,12 @@ class DepartmentsController extends Controller
 
     public function index()
     {
-        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'V')) {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
-
-        return view('departments.index', [
+        return view('wage-templates.index', [
         ]);
     }
 
     public function store()
     {
-        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'A')) {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
-
         $dept = $this->deptModel->create($this->deptParams());
 
         \Session::flash('success', "New department {$dept->department} has been created");
@@ -47,11 +37,6 @@ class DepartmentsController extends Controller
 
     public function update($id)
     {
-        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'E')) {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
-
         $dept = $this->deptModel->findOrFail($id);
         $dept->update($this->deptParams());
 

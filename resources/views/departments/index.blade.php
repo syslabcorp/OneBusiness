@@ -8,7 +8,9 @@
           <h4>Departments</h4>
         </div>
         <div class="col-md-6 text-right">
+          @if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'A'))
           <a onclick="addDepartment()" href="#">Add Departments</a>
+          @endif
         </div>
       </div>
     </div>
@@ -16,7 +18,7 @@
       <table class="table table-departments table-striped table-bordered">
         <thead>
           <tr>
-            <th>Depts.ID</th>
+            <th>Dept_ID</th>
             <th>Department</th>
             <th>Main</th>
             <th>Action</th>
@@ -60,10 +62,12 @@
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-sm edit" title="Edit" \
+                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'E') ? '' : 'disabled' }}\
                 onclick="editDepartment(event,' + row.dept_ID + ')">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')"> \
+              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')" \
+                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'D') ? '' : 'disabled' }}> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';
           }
