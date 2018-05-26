@@ -10,130 +10,57 @@ use App\Corporation;
 
 class DepartmentsController extends Controller
 {
-    public function index(Request $request)
+    protected $deptModel;
+
+    public function __construct(Request $request)
     {
         $company = Corporation::findOrFail($request->corpID);
       
-        $deductModel = new \App\Models\Py\DeductMstr;
-        $deductModel->setConnection($company->database_name);
+        $this->deptModel = new \App\Models\T\Depts;
+        $this->deptModel->setConnection($company->database_name);
+    }
 
+    public function index()
+    {
         return view('departments.index', [
         ]);
     }
 
-    public function deduct(Request $request)
+    public function store()
     {
-        $company = Corporation::findOrFail($request->corpID);
+        $dept = $this->deptModel->create($this->deptParams());
 
-        $deductModel = new \App\Models\Py\DeductMstr;
-        $deductModel->setConnection($company->database_name);
-        $deductParams = $request->only([
-            'description', 'type', 'fixed_amt', 'total_amt', 'period',
-            'incl_gross', 'active', 'category'
-        ]);
-        $deductParams['fixed_amt'] = preg_replace("/\,/", '', $deductParams['fixed_amt']);
-        $deductParams['total_amt'] = preg_replace("/\,/", '', $deductParams['total_amt']);
+        \Session::flash('success', "New department {$dept->department} has been created");
 
-        if($request->id) {
-            $deductItem = $deductModel->find($request->id);
-            $deductItem->update($deductParams);
-        }else {
-            $deductItem = $deductModel->create($deductParams);
-        }
-
-        $deductItem->details()->delete();
-        if($request->details) {
-            foreach($request->details as $detail) {
-                $deductItem->details()->create($detail);
-            }
-        }
-
-        \Session::flash('success', "Deduction #{$deductItem->ID_deduct} has been updated.");
-
-        return redirect(route('payrolls.index', [
-            'corpID' => $request->corpID,
-            'status' => $deductItem->active,
-            'tab' => 'deduct',
-            'item' => $deductItem->ID_deduct
-        ]));
+        return redirect(route('departments.index', ['corpID' => request()->corpID]));
     }
 
-    public function benefit(Request $request)
+    public function update($id)
     {
-        $company = Corporation::findOrFail($request->corpID);
+        $dept = $this->deptModel->findOrFail($id);
+        $dept->update($this->deptParams());
 
-        $benfModel = new \App\Models\Py\BenfMstr;
-        $benfModel->setConnection($company->database_name);
+        \Session::flash('success', "Department {$dept->department} has been updated");
 
-        $benfParams = $request->only([
-            'description', 'type', 'fixed_amt', 'perctg', 'period',
-            'incl_gross', 'active', 'category'
-        ]);
-
-        $benfParams['fixed_amt'] = preg_replace("/\,/", '', $benfParams['fixed_amt']);
-        $benfParams['perctg'] = preg_replace("/\,/", '', $benfParams['perctg']);
-
-        if($request->id) {
-            $benfItem = $benfModel->find($request->id);
-            $benfItem->update($benfParams);
-        }else {
-            $benfItem = $benfModel->create($benfParams);
-        }
-
-        $benfItem->details()->delete();
-        if($request->details) {
-            foreach($request->details as $detail) {
-                $benfItem->details()->create($detail);
-            }
-        }
-
-        \Session::flash('success', "Benefit #{$benfItem->ID_benf} has been updated.");
-
-        return redirect(route('payrolls.index', [
-            'corpID' => $request->corpID,
-            'status' => $benfItem->active,
-            'tab' => 'benefit',
-            'item' => $benfItem->ID_benf
-        ]));
+        return redirect(route('departments.index', ['corpID' => request()->corpID]));
     }
 
-    public function expense(Request $request)
+    public function destroy($id)
     {
-        $company = Corporation::findOrFail($request->corpID);
+        $dept = $this->deptModel->findOrFail($id);
+        $dept->delete();
 
-        $expModel = new \App\Models\Py\ExpMstr;
-        $expModel->setConnection($company->database_name);
-
-        $expParams = $request->only([
-            'description', 'type', 'fixed_amt', 'perctg', 'period',
-            'incl_gross', 'active', 'category'
+        return response()->json([
+            'success' => true
         ]);
-
-        $expParams['fixed_amt'] = preg_replace("/\,/", '', $expParams['fixed_amt']);
-        $expParams['perctg'] = preg_replace("/\,/", '', $expParams['perctg']);
-
-        if($request->id) {
-            $expItem = $expModel->find($request->id);
-            $expItem->update($expParams);
-        }else {
-            $expItem = $expModel->create($expParams);
-        }
-
-        $expItem->details()->delete();
-        
-        if($request->details) {
-            foreach($request->details as $detail) {
-                $expItem->details()->create($detail);
-            }
-        }
-
-        \Session::flash('success', "Expense #{$expItem->ID_exp} has been updated.");
-
-        return redirect(route('payrolls.index', [
-            'corpID' => $request->corpID,
-            'status' => $expItem->active,
-            'tab' => 'expense',
-            'item' => $expItem->ID_exp
-        ]));
     }
+
+    private function deptParams()
+    {
+        $params = request()->only(['department', 'main']);
+        $params['main'] = $params['main'] ?: 0;
+
+        return $params;
+    }
+
 }

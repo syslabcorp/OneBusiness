@@ -28,6 +28,11 @@ class Hdr extends Model
 
     public function shift()
     {
-        return $this->belongsTo(\App\Models\T\Shift::class, 'Shift_ID', 'Shift_ID');
+        if ($this->getConnectionName() == 'mysql2') {
+            return $this->belongsTo(\App\Models\T\Shift::class, 'Shift_ID', 'Shift_ID');
+        } else {
+            return $this->belongsTo(\App\KShift::class, 'Shift_ID', 'Shift_ID');
+        }
+        
     }
 }

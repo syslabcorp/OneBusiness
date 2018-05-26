@@ -10,9 +10,13 @@ nav.navbar-static-top {
 #togle-sidebar-sec {
     margin-top: 69px;
 }
-div.sidebar-nav {
+
+#sidebar-togle-sidebar-sec {
     overflow-y: auto;
     padding-bottom: 100px;
+}
+
+div.sidebar-nav {
     ul {
         list-style: none;
         padding-left: 0px;

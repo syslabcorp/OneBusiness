@@ -8,7 +8,7 @@
           <h4>Departments</h4>
         </div>
         <div class="col-md-6 text-right">
-          <a href="#">Add Departments</a>
+          <a onclick="addDepartment()" href="#">Add Departments</a>
         </div>
       </div>
     </div>
@@ -27,6 +27,8 @@
       </table>
     </div>
   </div>
+  @include('departments.edit-modal')
+  @include('departments.add-modal')
 @endsection
 
 @section('pageJS')
@@ -58,11 +60,11 @@
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-sm edit" title="Edit" \
-              href="{{ route('stocktransfer.index') }}/' + row.dept_ID + '/edit">\
-                <i class="glyphicon glyphicon-pencil"></i>\
+                onclick="editDepartment(event,' + row.dept_ID + ')">\
+                <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteStock(' + row.dept_ID + ')"> \
-                <i class="glyphicon glyphicon-trash"></i> \
+              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')"> \
+                <i class="fas fa-trash-alt"></i> \
               </a>';
           }
         }
@@ -71,6 +73,59 @@
         [0, 'desc']
       ]
     })
+
+    addDepartment = () => {
+      $('.modalAddDepartment').modal('show')
+    }
+
+    editDepartment = (event, deptID) => {
+      let departmentName = $(event.target).closest('tr').find('td:eq(1)').text()
+      let mainChecked = $(event.target).closest('tr').find('input[type="checkbox"]').is(':checked')
+
+      $('.modalEditDepartment').find('.departmentName').text(departmentName)
+      $('.modalEditDepartment').find('input[name="department"]').val(departmentName)
+      $('.modalEditDepartment').find('input[type="checkbox"]').prop('checked', mainChecked)
+      $('.modalEditDepartment').find('form').attr('action', '{{ route('departments.index')}}/' + deptID)
+
+      $('.modalEditDepartment').modal('show')
+    }
+
+    $('.modal .btn-save').click(function(event) {
+      let modalElement = $(this).closest('.modal')
+      let parentElement = modalElement.find('input[name="department"]').closest('div')
+
+      if(modalElement.find('input[name="department"]').val().trim() == "") {
+        parentElement.find('.error').remove()
+        parentElement.append(
+          '<span class="error">Input can\'t be blank</span>'
+        )
+
+        event.preventDefault()
+      }
+    })
+
+    deleteDepartment = (event, deptID, deptName) => {
+      swal({
+        title: "<div class='delete-title'>Confirm Delete</div>",
+        text:  "<div class='delete-text'>You are about to delete department " + deptID + " - " + deptName + " <br>Are you sure?</strong></div>",
+        html:  true,
+        customClass: 'swal-wide',
+        showCancelButton: true,
+        confirmButtonClass: 'btn-success',
+        closeOnConfirm: false,
+        closeOnCancel: true
+      },
+      (isConfirm) => {
+        $.ajax({
+          url: '{{ route('departments.index') }}/' + deptID + '?corpID={{ request()->corpID }}',
+          type: 'DELETE',
+          success: (res) => {
+            showAlertMessage(deptID + ' - ' + deptName + ' has been deleted', 'Success')
+            $(event.target).closest('tr').remove()
+          }
+        })
+      })
+    }
   })()
 </script>
 @endsection
