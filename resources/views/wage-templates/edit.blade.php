@@ -108,7 +108,7 @@
                   @endif
                   <td style="width: 30px;">
                     <input type="checkbox" name="details[benf][{{ $item->ID_benf }}]" value="1"
-                      {{ $template->details()->where('ID', $item->ID_benf)->where('pay_db', \App\Models\Py\BenfMstr::class)->first() ? 'checked' : '' }}>
+                      {{ $template->details()->where('ID', $item->ID_benf)->where('pay_db', 'benf_mstr')->first() ? 'checked' : '' }}>
                   </td>
                   <td>{{ $item->description }}</td>
                 </tr>
@@ -122,7 +122,7 @@
                   @endif
                   <td style="width: 30px;">
                     <input type="checkbox" name="details[exp][{{ $item->ID_exp }}]" value="1"
-                      {{ $template->details()->where('ID', $item->ID_exp)->where('pay_db', \App\Models\Py\ExpMstr::class)->first() ? 'checked' : '' }}>
+                      {{ $template->details()->where('ID', $item->ID_exp)->where('pay_db', 'exp_mstr')->first() ? 'checked' : '' }}>
                   </td>
                   <td>{{ $item->description }}</td>
                 </tr>
@@ -136,7 +136,7 @@
                   @endif
                   <td style="width: 30px;">
                     <input type="checkbox" name="details[deduct][{{ $item->ID_deduct }}]" value="1"
-                      {{ $template->details()->where('ID', $item->ID_deduct)->where('pay_db', \App\Models\Py\DeductMstr::class)->first() ? 'checked' : '' }}>
+                      {{ $template->details()->where('ID', $item->ID_deduct)->where('pay_db', 'deduct_mstr')->first() ? 'checked' : '' }}>
                   </td>
                   <td>{{ $item->description }}</td>
                 </tr>
