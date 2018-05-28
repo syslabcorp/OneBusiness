@@ -117,7 +117,7 @@
                 <tr>
                   @if($loop->index == 0)
                   <td rowspan="{{ count($expItems) }}" style="vertical-align: middle;">
-                    Benefits
+                    Expenses
                   </td>
                   @endif
                   <td style="width: 30px;">
@@ -131,7 +131,7 @@
                 <tr>
                   @if($loop->index == 0)
                   <td rowspan="{{ count($deductItems) }}" style="vertical-align: middle;">
-                    Benefits
+                    Deductions
                   </td>
                   @endif
                   <td style="width: 30px;">

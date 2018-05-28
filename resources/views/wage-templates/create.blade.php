@@ -106,7 +106,7 @@
                   @endif
                   <td style="width: 30px;">
                     <input type="checkbox" name="details[benf][{{ $item->ID_benf }}]" value="1" 
-                      {{ $loop->index == 0 || old('details.benf.' . $item->ID_benf) ? 'checked' : '' }}>
+                      {{ old('details.benf.' . $item->ID_benf) ? 'checked' : '' }}>
                   </td>
                   <td>{{ $item->description }}</td>
                 </tr>
@@ -115,12 +115,12 @@
                 <tr>
                   @if($loop->index == 0)
                   <td rowspan="{{ count($expItems) }}" style="vertical-align: middle;">
-                    Benefits
+                  Expenses
                   </td>
                   @endif
                   <td style="width: 30px;">
                     <input type="checkbox" name="details[exp][{{ $item->ID_exp }}]" value="1"
-                      {{ $loop->index == 0 || old('details.exp.' . $item->ID_exp) ? 'checked' : '' }}>
+                      {{ old('details.exp.' . $item->ID_exp) ? 'checked' : '' }}>
                   </td>
                   <td>{{ $item->description }}</td>
                 </tr>
@@ -129,12 +129,12 @@
                 <tr>
                   @if($loop->index == 0)
                   <td rowspan="{{ count($deductItems) }}" style="vertical-align: middle;">
-                    Benefits
+                    Deductions
                   </td>
                   @endif
                   <td style="width: 30px;">
                     <input type="checkbox" name="details[deduct][{{ $item->ID_deduct }}]" value="1"
-                      {{ $loop->index == 0 || old('details.deduct.' . $item->ID_deduct) ? 'checked' : '' }}>
+                      {{ old('details.deduct.' . $item->ID_deduct) ? 'checked' : '' }}>
                   </td>
                   <td>{{ $item->description }}</td>
                 </tr>

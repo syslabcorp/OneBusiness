@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
 use App\Corporation;
+use App\Http\Requests\WageTmpl8\MstrRequest;
 
 class WageTemplatesController extends Controller
 {
@@ -38,12 +39,22 @@ class WageTemplatesController extends Controller
 
     public function index()
     {
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'V')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         return view('wage-templates.index', [
         ]);
     }
 
     public function create()
     {
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'A')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $deductItems = $this->deductModel->where('active', 1)
                         ->whereIn('type', [2,3,4])
                         ->orderBy('description', 'ASC')
@@ -71,6 +82,11 @@ class WageTemplatesController extends Controller
 
     public function edit($id)
     {
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $template = $this->tmplModel->findOrFail($id);
 
         $deductItems = $this->deductModel->where('active', 1)
@@ -99,14 +115,12 @@ class WageTemplatesController extends Controller
         ]);
     }
 
-    public function store()
+    public function store(MstrRequest $request)
     {
-        $this->validate(request(), [
-            'code' => 'required|max:50',
-            'base_rate' => 'numeric',
-            'position' => 'required',
-            'dept_id' => 'required'
-        ]);
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'A')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
 
         $template = $this->tmplModel->create($this->templParams());
         
@@ -139,14 +153,12 @@ class WageTemplatesController extends Controller
         return redirect(route('wage-templates.index', ['corpID' => request()->corpID]));
     }
 
-    public function update($id)
+    public function update(MstrRequest $request, $id)
     {
-        $this->validate(request(), [
-            'code' => 'required|max:50',
-            'base_rate' => 'numeric',
-            'position' => 'required',
-            'dept_id' => 'required'
-        ]);
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
 
         $template = $this->tmplModel->findOrFail($id);
         $template->update($this->templParams());
@@ -184,6 +196,11 @@ class WageTemplatesController extends Controller
 
     public function destroy($id)
     {
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'D')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $template = $this->tmplModel->findOrFail($id);
         $template->delete();
 
