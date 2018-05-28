@@ -129,13 +129,13 @@ class WageTemplatesController extends Controller
                 $class = null;
                 switch($type) {
                     case 'benf':
-                        $class = \App\Models\Py\BenfMstr::class;
+                        $class = 'benf_mstr';
                         break;
                     case 'exp':
-                        $class = \App\Models\Py\ExpMstr::class;
+                        $class = 'exp_mstr';
                         break;
                     case 'deduct':
-                        $class = \App\Models\Py\DeductMstr::class;
+                        $class = 'deduct_mstr';
                         break;
                 }
 
@@ -170,13 +170,13 @@ class WageTemplatesController extends Controller
                 $class = null;
                 switch($type) {
                     case 'benf':
-                        $class = \App\Models\Py\BenfMstr::class;
+                        $class = 'benf_mstr';
                         break;
                     case 'exp':
-                        $class = \App\Models\Py\ExpMstr::class;
+                        $class = 'exp_mstr';
                         break;
                     case 'deduct':
-                        $class = \App\Models\Py\DeductMstr::class;
+                        $class = 'deduct_mstr';
                         break;
                 }
 

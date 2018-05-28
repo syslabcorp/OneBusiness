@@ -27,7 +27,7 @@ class Mstr extends Model {
     public function totalAmt()
     {
         return $this->details()
-                    ->leftJoin((new \App\Models\Py\ExpMstr)->getTable(), 'ID', 'ID_exp')
+                    ->leftJoin((new \App\Models\Py\BenfMstr)->getTable(), 'ID', 'ID_benf')
                     ->where('pay_db', 'benf_mstr')
                     ->where('type', 3)
                     ->sum('fixed_amt');
