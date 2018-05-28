@@ -31,18 +31,6 @@
     padding-right: 15px;
 }
 
-.modalAddDepartment, .modalEditDepartment {
-    .modal-dialog {
-        margin: 0 auto;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        .modal-content {
-            flex: 1 1 auto;
-        }
-    }
-}
-
 td[rowspan] {
     vertical-align: middle;
 }

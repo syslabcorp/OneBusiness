@@ -14,7 +14,7 @@
         <div class="modal-body">
           <div class="form-group">
             <div class="rown">
-              <div class="col-sm-4 text-right">
+              <div class="col-sm-3 text-right">
                 <label>Department:</label>
               </div>
               <div class="col-sm-8">
@@ -24,7 +24,7 @@
           </div>
           <div class="form-group">
             <div class="rown">
-              <div class="col-sm-4 text-right">
+              <div class="col-sm-3 text-right">
                 <label>Main:</label>
               </div>
               <div class="col-sm-8">
