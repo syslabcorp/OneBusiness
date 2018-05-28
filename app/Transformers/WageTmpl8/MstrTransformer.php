@@ -8,13 +8,15 @@ class MstrTransformer extends Fractal\TransformerAbstract
 {
     public function transform(Mstr $item)
     {
+        $total = number_format($item->base_rate + $item->totalAmt(), 2);
+
         return [
             'department' => $item->department ? $item->department->department : '',
             'wage_tmpl8_id' => (int) $item->wage_tmpl8_id,
             'code' => $item->code,
             'position' => $item->position,
             'active' => (int) $item->active,
-            'total' => number_format("0", 2)
+            'total' => $total
         ];
     }
 }

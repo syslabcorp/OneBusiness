@@ -23,4 +23,13 @@ class Mstr extends Model {
     {
         return $this->hasMany(Detail::class, 'wage_tmpl8_id', 'wage_tmpl8_id');
     }
+
+    public function totalAmt()
+    {
+        return $this->details()
+                    ->leftJoin((new \App\Models\Py\ExpMstr)->getTable(), 'ID', 'ID_exp')
+                    ->where('pay_db', 'benf_mstr')
+                    ->where('type', 3)
+                    ->sum('fixed_amt');
+    }
 }

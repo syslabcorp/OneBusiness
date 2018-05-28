@@ -8,7 +8,9 @@
           <h4>Wage Templates</h4>
         </div>
         <div class="col-md-6 text-right">
-          <a href="{{ route('wage-templates.create', ['corpID' => request()->corpID]) }}">Add Template</a>
+          @if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'A'))
+            <a href="{{ route('wage-templates.create', ['corpID' => request()->corpID]) }}">Add Template</a>
+          @endif
         </div>
       </div>
     </div>
@@ -74,10 +76,12 @@
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-sm edit" title="Edit" \
+                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'E') ? '' : 'disabled' }} \
                 href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit?corpID={{ request()->corpID }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')"> \
+              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')" \
+                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'D') ? '' : 'disabled' }}> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';
           }
