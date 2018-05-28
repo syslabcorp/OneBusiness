@@ -124,8 +124,7 @@
           url: '{{ route('departments.index') }}/' + deptID + '?corpID={{ request()->corpID }}',
           type: 'DELETE',
           success: (res) => {
-            showAlertMessage(deptID + ' - ' + deptName + ' has been deleted', 'Success')
-            $(event.target).closest('tr').remove()
+            location.reload()
           }
         })
       })

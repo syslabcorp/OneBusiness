@@ -202,7 +202,10 @@ class WageTemplatesController extends Controller
         }
 
         $template = $this->tmplModel->findOrFail($id);
+        $template->details()->delete();
         $template->delete();
+
+        \Session::flash('success', "Template {$template->code} has been deleted");
 
         return response()->json([
             'success' => true

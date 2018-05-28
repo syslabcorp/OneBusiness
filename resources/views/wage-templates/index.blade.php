@@ -112,8 +112,7 @@
           url: '{{ route('wage-templates.index') }}/' + id + '?corpID={{ request()->corpID }}',
           type: 'DELETE',
           success: (res) => {
-            showAlertMessage('Wage template ' + name + ' has been deleted', 'Success')
-            $(event.target).closest('tr').remove()
+            location.reload();
           }
         })
       })

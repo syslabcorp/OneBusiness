@@ -65,6 +65,8 @@ class DepartmentsController extends Controller
         $dept = $this->deptModel->findOrFail($id);
         $dept->delete();
 
+        \Session::flash('success', "Department {$dept->dept_ID} - {$dept->department} has been deleted");
+
         return response()->json([
             'success' => true
         ]);
