@@ -29,4 +29,5 @@ Route::any('/send_otp', 'LoginController@send_otp');
 
 Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1'], function() {
     Route::resource('departments', 'DepartmentsController');
+    Route::resource('wage-templates', 'WageTemplatesController');
 });

@@ -8,7 +8,7 @@
           <h4>Wage Templates</h4>
         </div>
         <div class="col-md-6 text-right">
-          <a onclick="addDepartment()" href="#">Add Template</a>
+          <a href="{{ route('wage-templates.create', ['corpID' => request()->corpID]) }}">Add Template</a>
         </div>
       </div>
     </div>
@@ -36,44 +36,84 @@
 <script type="text/javascript">
   (() => {
     $('.table-departments').DataTable({
-      ajaxSource: '{{ route('root') }}/api/v1/departments?corpID=' + {{ request()->corpID }},
+      ajaxSource: '{{ route('root') }}/api/v1/wage-templates?corpID=' + {{ request()->corpID }},
       columnDefs: [
         {
+          name: 'department',
           targets: 0,
-          data: "dept_ID",
+          data: "department",
           className: 'text-center'
         },
         {
           targets: 1,
-          data: "department"
+          data: "wage_tmpl8_id"
         },
         {
           targets: 2,
-          data: 'main',
+          data: "code"
+        },
+        {
+          targets: 3,
+          data: "position"
+        },
+        {
+          targets: 4,
+          data: 'active',
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<input type="checkbox" onclick="return false;" ' + (data == 1 ? 'checked' : '') + '/>'
           }
         },
         {
-          targets: 3,
+          targets: 5,
+          data: "total"
+        },
+        {
+          targets: 6,
           data: '',
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-sm edit" title="Edit" \
-                onclick="editDepartment(event,' + row.dept_ID + ')">\
+                href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit?corpID={{ request()->corpID }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')"> \
+              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')"> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';
           }
         }
       ],
       order: [
-        [0, 'desc']
+        [0, 'asc']
+      ],
+      rowsGroup: [
+        'department:name'
       ]
     })
+
+    deleteTemplate = (event, id, name) => {
+      swal({
+        title: "<div class='delete-title'>Confirm Delete</div>",
+        text:  "<div class='delete-text'>You are about to delete template " + id + " - " + name + " <br>Are you sure?</strong></div>",
+        html:  true,
+        customClass: 'swal-wide',
+        showCancelButton: true,
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'DELETE',
+        closeOnConfirm: false,
+        closeOnCancel: true
+      },
+      (isConfirm) => {
+        $.ajax({
+          url: '{{ route('wage-templates.index') }}/' + id + '?corpID={{ request()->corpID }}',
+          type: 'DELETE',
+          success: (res) => {
+            showAlertMessage('Wage template ' + name + ' has been deleted', 'Success')
+            $(event.target).closest('tr').remove()
+          }
+        })
+      })
+    }
   })()
 </script>
 @endsection
