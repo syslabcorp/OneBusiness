@@ -59,7 +59,7 @@
 
               <div class="form-group">
                 <div class="col-sm-6 text-right col-sm-offset-6" style="margin-top: 10px;">
-                  <a class="btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " id="pressF2" >
+                  <a class="btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} " id="pressF2" >
                   Add Row
                   <br>
                   (F2)
@@ -121,10 +121,10 @@
                     <span class="value_Unit">{{ $detail->item->Unit }}</span>
                   </td>
                   <td class="text-center">
-                    <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }}" >
+                    <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" >
                       <i class="fa fa-pencil"></i>
                     </a>
-                    <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " >
+                    <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} " >
                       <i class="fa fa-trash"></i>
                     </a>
                   </td>
@@ -155,10 +155,10 @@
                     <span class="value_Unit"></span>
                   </td>
                   <td class="text-center">
-                    <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }}" >
+                    <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" >
                       <i class="fa fa-pencil"></i>
                     </a>
-                    <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " >
+                    <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} " >
                       <i class="fa fa-trash"></i>
                     </a>
                   </td>
@@ -173,11 +173,11 @@
                   <td> <input type="text" name="Qty" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" value="1" data-validation-optional="true" class="input_Qty form-control"> </td>
                   <td class="input_Unit"></td>
                   <td class="text-center" >
-                    <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" 
+                    <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" 
                       href="javascript:void(0);">
                       <i class="fa fa-check"></i>
                     </a>
-                    <a type="button" data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" href="javascript:void(0);">
+                    <a type="button" data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" href="javascript:void(0);">
                       <i class="fa fa-trash"></i>
                     </a>
                   </td>
@@ -228,7 +228,7 @@
               </a>
             </div>
             <div class="col-md-6">
-              <button type="button" data-toggle="modal" class="btn btn-success pull-right btn-save {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
+              <button type="button" data-toggle="modal" class="btn btn-success pull-right btn-save {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} " >
                 Save
               </button>
             </div>
