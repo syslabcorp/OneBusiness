@@ -439,7 +439,7 @@
       }
       else
       {
-        if(!isItemRowsValid()) {
+        if(!isItemRowsValid() || $(this).parents('tr').find('.error').length > 0) {
           return false
         }
 
