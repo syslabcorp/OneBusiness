@@ -149,7 +149,7 @@
                                             <input type="number" class="form-control" name="points" step="1"
                                               {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>
                                           </div>
-                                          <button type="button" class="btn-set-points btn btn-success btn-sm"
+                                          <button type="button" class="btn-set-points btn btn-success btn-md"
                                             {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Points</button>
                                         </div>
                                         <div class="col-sm-6">
@@ -157,7 +157,7 @@
                                             <label>Price</label>
                                             <input type="number" name="price" class="form-control" {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>
                                           </div>
-                                          <button type="button" class="btn btn-set-price btn-success btn-sm"
+                                          <button type="button" class="btn btn-set-price btn-success btn-md"
                                             {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Price</button>
                                         </div>
                                       </div>
@@ -165,21 +165,21 @@
                                     <div class="col-sm-5">
                                       <div class="row">
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-set-active btn btn-success btn-sm" style="width:100%;"
+                                          <button type="button" class="btn-set-active btn btn-success btn-md" style="width:100%;"
                                             {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Active</button>
                                         </div>
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-set-redeem btn btn-info btn-sm" style="width:100%;"
+                                          <button type="button" class="btn-set-redeem btn btn-info btn-md" style="width:100%;"
                                             {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Set Redeemable</button>
                                         </div>
                                       </div>
                                       <div class="row" style="margin-top: 5px;">
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-unset-active btn btn-success btn-sm" style="width:100%;"
+                                          <button type="button" class="btn-unset-active btn btn-success btn-md" style="width:100%;"
                                             {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Unset Active</button>
                                         </div>
                                         <div class="col-xs-6">
-                                          <button type="button" class="btn-unset-redeem btn btn-info btn-sm" style="width:100%;"
+                                          <button type="button" class="btn-unset-redeem btn btn-info btn-md" style="width:100%;"
                                             {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Unset Redeemable</button>
                                         </div>
                                       </div>
@@ -187,7 +187,7 @@
                                   </div>
                                   <hr>
                                   <div class="text-right" style="margin-bottom: 10px;">
-                                    <button type="button" class="btn-edit btn btn-primary btn-sm"
+                                    <button type="button" class="btn-edit btn btn-primary btn-md"
                                       {{ \Auth::user()->checkAccessById(36, "E") ? '' : 'disabled' }}>Edit Details</button>
                                   </div>
                               </div>

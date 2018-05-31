@@ -68,7 +68,7 @@
       <div class="col-md-6 text-right">
         <button class="btn btn-info btn-edit"
           {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 39, 'E') ? 'disabled' : '' }}>
-          <i class="glyphicon glyphicon-pencil"></i> Edit
+          <i class="fas fa-pencil-alt"></i> Edit
         </button>
         <button class="btn btn-success btn-save" style="display: none;">
           <i class="glyphicon glyphicon-floppy-disk"></i>
@@ -171,7 +171,7 @@
         }
 
         rowHTML += '<td> \
-                <button class="btn btn-sm btn-danger btn-remove-row" title="Delete" type="button"> \
+                <button class="btn btn-md btn-danger btn-remove-row" title="Delete" type="button"> \
                   <i class="glyphicon glyphicon-trash"></i> \
                 </button> \
               </td> \

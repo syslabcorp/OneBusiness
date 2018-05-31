@@ -374,14 +374,14 @@
                                 var info = mainTable.page.info();
 
                                 if (meta.row > 0) {
-                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-md dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }else if(info.page > 0){
-                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-md dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }
 
-                                $( '<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-sm dtMoveDown">' +
+                                $( '<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-md dtMoveDown">' +
                                     '<i class="glyphicon glyphicon-arrow-down"></i>').appendTo($span);
 
                                 return $span.html();
@@ -396,9 +396,9 @@
                             var optionClassDel = "";
                             if(checkAccess == 0 || row.used == 1) { optionClass = 'disabled' };
                             if(checkAccessDel == 0) { optionClassDel = 'disabled' };
-                            return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
-                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
+                            return '<a name="edit" class="btn btn-primary btn-md edit '+optionClass+'">' +
+                                '<i class="fas fa-pencil-alt"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
+                                '<a href="#" name="delete" class="btn btn-danger btn-md delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
                         "targets": 4

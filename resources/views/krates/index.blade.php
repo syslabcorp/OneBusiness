@@ -9,12 +9,12 @@
           Branch: {{ $branch->ShortName }}
 
           @if($rate->tmplate_id && \Auth::user()->checkAccessById(2, "E"))
-          <a class="btn btn-sm btn-info  pull-right" href="{{ route('branchs.krates.edit', [$branch, $rate, 'tmplate_id' => $rate->tmplate_id]) }}">
-            <i class="fa fa-pencil"></i> Edit
+          <a class="btn btn-md btn-info  pull-right" href="{{ route('branchs.krates.edit', [$branch, $rate, 'tmplate_id' => $rate->tmplate_id]) }}">
+            <i class="fas fa-pencil-alt"></i> Edit
           </a>
           @endif
           @if(\Auth::user()->checkAccessById(2, "A"))
-            <a class="btn btn-sm btn-success pull-right" href="{{ route('branchs.krates.create', [$branch]) }}"
+            <a class="btn btn-md btn-success pull-right" href="{{ route('branchs.krates.create', [$branch]) }}"
               style="margin-right: 10px;">
               <i class="fa fa-plus"></i> New
             </a>
@@ -50,7 +50,7 @@
             </form>
             <hr class="col-md-12">
             <div class="col-md-12 text-left">
-              <a class="btn btn-sm btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
+              <a class="btn btn-md btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
                 <i class="fa fa-reply"></i> Back
               </a>
             </div>

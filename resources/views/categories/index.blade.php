@@ -59,7 +59,7 @@
                         <i class="glyphicon glyphicon-plus"></i> New
                       </button>
                       <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
-                        <i class="glyphicon glyphicon-pencil"></i> Edit
+                        <i class="fas fa-pencil-alt"></i> Edit
                       </button>
                       <form action="" method="POST" style="display: inline-block;">
                         {{ csrf_field() }}
@@ -96,7 +96,7 @@
                         <i class="glyphicon glyphicon-plus"></i> New
                       </button>
                       <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
-                        <i class="glyphicon glyphicon-pencil"></i> Edit
+                        <i class="fas fa-pencil-alt"></i> Edit
                       </button>
                       <form action="" method="POST" style="display: inline-block;">
                         {{ csrf_field() }}

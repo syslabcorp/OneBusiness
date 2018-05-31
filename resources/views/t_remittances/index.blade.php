@@ -83,7 +83,7 @@
                       <a href="{{ route('branch_remittances.edit', array_merge([$collection], ['corpID' => $corpID])) }}" style="margin-right: 10px;" 
                         class="btn btn-primary btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "" : "disabled" }}"
                         title="Edit">
-                        <i class="fa fa-pencil"></i>
+                        <i class="fas fa-pencil-alt"></i>
                       </a>
 
                       <form action="{{ route('branch_remittances.destroy', array_merge([$collection], ['corpID' => $corpID])) }}" method="POST"

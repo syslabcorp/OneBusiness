@@ -21,7 +21,7 @@
             <button class="btn btn-primary btn-edit btn-md" data-active="{{ $sub->active }}" data-url="{{ route('pcsubcategories.update', $sub) }}"
               data-branches="{{ $sub->branches->map(function($item){ return $item->sat_branch; }) }}" 
               {{ \Auth::user()->checkAccessById(32, "E") ? '' : 'disabled' }}>
-              <i class="glyphicon glyphicon-pencil"></i>
+              <i class="fas fa-pencil-alt"></i>
             </button>
             <form action="{{ route('pcsubcategories.destroy', $sub) }}" method="POST" style="display: inline-block;">
               {{ csrf_field() }}

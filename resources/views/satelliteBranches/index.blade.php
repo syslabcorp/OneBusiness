@@ -206,9 +206,9 @@
                             var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
                             if(checkAccessDel == 0) { optionClassDel = 'disabled' };
-                            return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
-                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'">'+
+                            return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-md edit '+optionClass+'">' +
+                                '<i class="fas fa-pencil-alt"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
+                                '<a href="#" name="delete" class="btn btn-danger btn-md delete '+optionClassDel+'">'+
                                 '<i class="glyphicon glyphicon-trash"></i></a>';
 
                         },

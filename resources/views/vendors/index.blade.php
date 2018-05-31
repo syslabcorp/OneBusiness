@@ -96,13 +96,13 @@
                                                 <td>@if($vendor->petty_visible == 1) CDS @elseif($vendor->petty_visible == 2) Petty @else CDS&Petty @endif</td>
                                                 <td><input type="checkbox" name="printThis" @if($vendor->withTracking == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="#" name="view" class="btn btn-success btn-sm viewBtn @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
-                                                        <i class="glyphicon glyphicon-eye-open"></i>
+                                                    <a href="#" name="view" class="btn btn-success btn-md viewBtn @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
+                                                        <i class="far fa-eye"></i>
                                                     </a>
-                                                    <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-primary btn-sm @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i>
+                                                    <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-primary btn-md @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
+                                                        <i class="fas fa-pencil-alt"></i>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(29, "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-md delete @if(!\Auth::user()->checkAccessById(29, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $vendor->Supp_ID }}</span>
                                                     </a>
                                                 </td>

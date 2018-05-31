@@ -52,7 +52,7 @@
 													<td>{{ $det->City}}</td>
 													<td>
 													
-													<a href="{{ URL::to('add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="glyphicon glyphicon-pencil"></span></a>
+													<a href="{{ URL::to('add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="fas fa-pencil-alt"></span></a>
 														
 													<a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(18, 'D') ? '' : 'disabled' }}"" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' ))  }}" data-toggle="tooltip" data-placement="top"  city-name="{{ $det->City }}" id="{{ $det->City_ID }}" title="Delete City" ><span class="glyphicon glyphicon-trash"></span></a>
 													</td>

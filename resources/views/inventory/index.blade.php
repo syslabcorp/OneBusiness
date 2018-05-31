@@ -35,12 +35,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -246,9 +243,9 @@
                             var optionClassDel = "";
                             if(checkDelete == 0) { optionClassDel = 'disabled' };
 
-                            return '<a href="inventory/'+row.item_id+'/edit" name="edit" class="btn btn-primary btn-sm" '+optionClass+'>' +
-                                    '<i class="glyphicon glyphicon-pencil"></i></a>' +
-                                    '<a href="#" name="delete" style="margin-left: 2px" class="btn btn-danger btn-sm delete" '+optionClassDel+'>' +
+                            return '<a href="inventory/'+row.item_id+'/edit" name="edit" class="btn btn-primary btn-md" '+optionClass+'>' +
+                                    '<i class="fas fa-pencil-alt"></i></a>' +
+                                    '<a href="#" name="delete" style="margin-left: 2px" class="btn btn-danger btn-md delete" '+optionClassDel+'>' +
                                     '<i class="glyphicon glyphicon-trash"></i><span style="display: none;">'+row.item_id+'</span></a>';
 
 

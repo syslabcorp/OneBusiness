@@ -54,7 +54,7 @@
                                                         <td>{{ isset($detail->description) ? $detail->description : 'System Module' }}</td>
                                                     @endif
                                                     <td>{{ $detail->feature }}</td>
-                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="fas fa-pencil-alt"></span></a>
                                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(12, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Delete Feature" feature-name="{{ $detail->feature }}" id="{{ $detail->feature_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach

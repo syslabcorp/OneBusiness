@@ -57,7 +57,7 @@
           <tbody>
             <tr>
               <td>
-                <button class="btn btn-sm btn-success" type="button">
+                <button class="btn btn-md btn-success" type="button">
                   <i class="fa fa-magic"></i>
                 </button>
               </td>

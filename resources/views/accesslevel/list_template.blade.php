@@ -41,7 +41,7 @@
                                                 <tr>
                                                     <td><span class="dispnone">{{ $list->description }}</span>{{ $list->template_id }}</td>
                                                     <td>{{ $list->description }}</td>
-                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(11, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(11, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="fas fa-pencil-alt"></span></a>
                                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(11, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template" template-name="{{ $list->description }}" id="{{ $list->template_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach

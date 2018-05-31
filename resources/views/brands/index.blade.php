@@ -74,10 +74,10 @@
                                                 <td>{{ $brand->Brand_ID }}</td>
                                                 <td>{{ $brand->Brand }}</td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $brand->Brand_ID }}</span>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-md edit  @if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif">
+                                                        <i class="fas fa-pencil-alt"></i><span style="display: none;">{{ $brand->Brand_ID }}</span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(23, "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-md delete @if(!\Auth::user()->checkAccessById(23, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i>
                                                     </a>
                                                 </td>
