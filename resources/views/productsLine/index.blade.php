@@ -83,10 +83,10 @@
                                                     <input type="checkbox" @if($product->Active) checked @endif disabled>
                                                 </td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(24, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-md edit  @if(!\Auth::user()->checkAccessById(24, "E")) disabled @endif">
+                                                        <i class="fas fa-pencil-alt"></i><span style="display: none;">{{ $product->ProdLine_ID }}</span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete  @if(!\Auth::user()->checkAccessById(24, "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-md delete  @if(!\Auth::user()->checkAccessById(24, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i>
                                                     </a>
                                                 </td>

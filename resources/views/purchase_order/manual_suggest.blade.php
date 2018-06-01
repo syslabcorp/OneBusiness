@@ -113,7 +113,7 @@
                       {{$item['Bal']}}
                     </span>
                   </td>
-                  <td class="text-center"> <button type="button" class="btn btn-primary edit"> <span class="fa fa-pencil"></span> </button> </td>
+                  <td class="text-center"> <button type="button" class="btn btn-primary edit"> <span class="fas fa-pencil-alt"></span> </button> </td>
                 </tr>
                 @endforeach
 

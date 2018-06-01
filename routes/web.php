@@ -146,6 +146,7 @@ Route::get('/list_user', 'AccessLevelController@list_user');
 Route::any('/add_user/{id?}', 'AccessLevelController@add_user');
 Route::any('/city/{user_id?}', 'AccessLevelController@city');
 Route::any('/branch/{user_id?}', 'AccessLevelController@branch');
+Route::resource('provinces', 'ProvincesController', ['middleware' => 'auth']);
 Route::any('/provinces/{user_id?}', 'AccessLevelController@provinces');
 Route::get('/delete_user/{id}', 'AccessLevelController@delete_user');
 
@@ -158,6 +159,7 @@ Route::any('/get_branch_ids', 'AccessLevelController@get_branch_ids');
 Route::any('/get_child_menu_call', 'AccessLevelController@get_child_menu_call');
 
 #Locations
+
 Route::resource('list_provinces', 'LocationsController', ['middleware' => 'auth']);
 Route::get('/view_cities/{prov_id?}','LocationsController@list_cities');// displaying cities within the province selected
 Route::any('add_city/{city_id?}/{prov_id?}','LocationsController@add_city');

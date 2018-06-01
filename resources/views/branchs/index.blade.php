@@ -58,19 +58,19 @@
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
                                     <td>
-                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccessById(1, "E") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.edit', [$branch, 'corpID' => request()->corpID]) }}" style="margin-right: 10px;" class="btn btn-info btn-md {{ \Auth::user()->checkAccessById(1, "E") ? "" : "disabled" }}"
                                             title="Edit">
-                                            <i class="fa fa-pencil"></i>
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         @if($branch->company->corp_type == 'INN')
-                                        <a href="{{ route('branchs.krates.index', [$branch]) }}" style="margin-right: 10px;" 
-                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.krates.index', [$branch, 'corpID' => request()->corpID]) }}" style="margin-right: 10px;" 
+                                            class="btn btn-success btn-md {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
                                         @else
-                                        <a href="{{ route('branchs.rates.index', [$branch]) }}" style="margin-right: 10px;" 
-                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.rates.index', [$branch, 'corpID' => request()->corpID]) }}" style="margin-right: 10px;" 
+                                            class="btn btn-success btn-md {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>

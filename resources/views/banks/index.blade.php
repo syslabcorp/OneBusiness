@@ -288,10 +288,10 @@
                                                         <td>{{ $bank->bank_code }}</td>
                                                         <td>{{ $bank->description }}</td>
                                                         <td>
-                                                            <a href="#" name="edit" class="btn btn-primary btn-sm editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                            <i class="glyphicon glyphicon-pencil"></i>
+                                                            <a href="#" name="edit" class="btn btn-primary btn-md editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <i class="fas fa-pencil-alt"></i>
                                                             </a>
-                                                            <a href="#" name="delete" class="btn btn-danger btn-sm delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <a href="#" name="delete" class="btn btn-danger btn-md delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
                                                                 <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $bank->bank_id }}</span>
                                                             </a>
                                                         </td>
@@ -369,10 +369,10 @@
                                                         <td>{{ $bank->bank_code }}</td>
                                                         <td>{{ $bank->description }}</td>
                                                         <td>
-                                                            <a href="#" name="edit" class="btn btn-primary btn-sm editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                            <i class="glyphicon glyphicon-pencil"></i>
+                                                            <a href="#" name="edit" class="btn btn-primary btn-md editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <i class="fas fa-pencil-alt"></i>
                                                             </a>
-                                                            <a href="#" name="delete" class="btn btn-danger btn-sm delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <a href="#" name="delete" class="btn btn-danger btn-md delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
                                                                 <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $bank->bank_id }}</span>
                                                             </a>
                                                         </td>
@@ -727,13 +727,13 @@
                             var checkDelete = '<?php  if(\Auth::user()->checkAccessById(27, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClassDel = "";
                             if(checkDelete == 0) { optionClassDel = 'disabled' };
-                           return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-sm checkDefaultAcct" '+optionClass+'>' +
+                           return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-md checkDefaultAcct" '+optionClass+'>' +
                             '<i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">'+ row.bank_acct_id +'</span>' +
-                            '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount" '+optionClass+'>' +
-                            '<i class="glyphicon glyphicon-pencil"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
+                            '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-md editAccount" '+optionClass+'>' +
+                            '<i class="fas fa-pencil-alt"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
                             '<span class="editBranchID" style="display: none;">'+row.branch+'</span>' +
                             '<span class="codeNumID" style="display: none;">'+row.bank_id+'</span></a>' +
-                               '<a href="#" name="delete" class="btn btn-danger btn-sm delete-account '+optionClassDel+'">'+
+                               '<a href="#" name="delete" class="btn btn-danger btn-md delete-account '+optionClassDel+'">'+
                                '<i class="glyphicon glyphicon-trash"></i></a>';
                         },
                         "targets": 4

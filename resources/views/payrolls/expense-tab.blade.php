@@ -173,7 +173,7 @@
                     readonly name="details[{{ $key }}][empr_share]"  validation="number">
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-danger btn-remove-row" title="Delete" type="button" disabled>
+                    <button class="btn btn-md btn-danger btn-remove-row" title="Delete" type="button" disabled>
                       <i class="glyphicon glyphicon-trash"></i>
                     </button>
                   </td>

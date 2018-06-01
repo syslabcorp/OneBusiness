@@ -61,12 +61,12 @@
           data: '',
           className: 'text-center',
           render: (data, type, row, meta) => {
-            return '<a class="btn btn-primary btn-sm edit" title="Edit" \
+            return '<a class="btn btn-primary btn-md edit" title="Edit" \
                 {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'E') ? '' : 'disabled' }}\
                 onclick="editDepartment(event,' + row.dept_ID + ')">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')" \
+              <a class="btn btn-danger btn-md" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')" \
                 {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'D') ? '' : 'disabled' }}> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';

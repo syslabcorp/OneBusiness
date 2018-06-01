@@ -182,12 +182,12 @@ $(document).ready(function() {
           targets: 7,
           data: '',
           render: (data, type, row, meta) => {
-            return '<a class="btn btn-primary btn-sm edit" title="Edit" \
+            return '<a class="btn btn-primary btn-md edit" title="Edit" \
               {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} \
               href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?corpID={{ $corpID }}&stockStatus={{ $stockStatus }}">\
-                <i class="glyphicon glyphicon-pencil"></i>\
+                <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" \
+              <a class="btn btn-danger btn-md" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" \
                 {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'D') ? "" : "disabled" }} >\
                 <i class="glyphicon glyphicon-trash"></i> \
               </a>';
@@ -404,19 +404,19 @@ showHidden = (isShow) => {
           targets: 6,
           data: '',
           render: (data, type, row, meta) => {
-            let resultHTML =  '<a class="btn btn-primary btn-sm" title="View PO Details" \
+            let resultHTML =  '<a class="btn btn-primary btn-md" title="View PO Details" \
               {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }} \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '?corpID={{$corpID}}"> \
-                <span class="glyphicon glyphicon-eye-open"></span> \
+                <span class="far fa-eye"></span> \
             </a> \
-            <a class="btn btn-warning btn-sm" title="View original Details"  \
+            <a class="btn btn-warning btn-md" title="View original Details"  \
               {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }} \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '/original?corpID={{$corpID}}"> \
               <span class="glyphicon glyphicon-inbox"></span> \
             </a> ';
           
             if(row.served == '0') {
-              resultHTML += '<a class="btn btn-success btn-sm" title="Edit" \
+              resultHTML += '<a class="btn btn-success btn-md" title="Edit" \
               {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}\
               onclick="markToserved(event,' + row.po_no + ')">\
                <span class="glyphicon glyphicon-ok"></span>\

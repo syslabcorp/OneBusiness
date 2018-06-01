@@ -28,12 +28,12 @@
                       </div>
                       <div class="col-xs-4">
                           @if(\Auth::user()->checkAccess("Stub Footer", "E"))
-                          <button class="btn btn-info btn-sm" title="Up" name="sort" value="up"><i class="fa fa-arrow-up"></i></button>
-                          <button class="btn btn-info btn-sm" title="Down" name="sort" value="down"><i class="fa fa-arrow-down"></i></button>
-                          <button class="btn btn-success btn-sm" title="Save"><i class="fa fa-save"></i></button>
+                          <button class="btn btn-info btn-md" title="Up" name="sort" value="up"><i class="fa fa-arrow-up"></i></button>
+                          <button class="btn btn-info btn-md" title="Down" name="sort" value="down"><i class="fa fa-arrow-down"></i></button>
+                          <button class="btn btn-success btn-md" title="Save"><i class="fa fa-save"></i></button>
                           @endif
                           @if(\Auth::user()->checkAccess("Stub Footer", "D"))
-                          <button class="btn btn-danger btn-sm" name="_method" value="DELETE" title="Delete"><i class="fa fa-trash"></i></button>
+                          <button class="btn btn-danger btn-md" name="_method" value="DELETE" title="Delete"><i class="fa fa-trash"></i></button>
                           @endif
                       </div>
                   </div>
@@ -55,7 +55,7 @@
                           </select>
                       </div>
                       <div class="col-md-3">
-                          <button class="btn btn-info btn-sm" title="Copy To Branch"><i class="fa fa-copy"></i></button>
+                          <button class="btn btn-info btn-md" title="Copy To Branch"><i class="fa fa-copy"></i></button>
                       </div>
                   </div>
               </form>
@@ -79,7 +79,7 @@
                           </div>
                       </div>
                       <div class="col-xs-2">
-                          <button class="btn btn-success btn-sm" title="Add"><i class="fa fa-plus"></i></button>
+                          <button class="btn btn-success btn-md" title="Add"><i class="fa fa-plus"></i></button>
                       </div>
                   </div>
               </form>

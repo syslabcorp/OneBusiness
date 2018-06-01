@@ -75,12 +75,12 @@
           data: '',
           className: 'text-center',
           render: (data, type, row, meta) => {
-            return '<a class="btn btn-primary btn-sm edit" title="Edit" \
+            return '<a class="btn btn-primary btn-md edit" title="Edit" \
                 {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'E') ? '' : 'disabled' }} \
                 href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit?corpID={{ request()->corpID }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-sm" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')" \
+              <a class="btn btn-danger btn-md" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')" \
                 {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'D') ? '' : 'disabled' }}> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';

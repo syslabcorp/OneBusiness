@@ -42,10 +42,10 @@
                 <hr class="col-md-12">
                 @if(\Auth::user()->checkAccessById(2, "E"))
                 <div class="col-md-12 text-right">
-                  <a class="btn btn-sm btn-default pull-left" href="{{ route('branchs.krates.index', [$branch]) }}">
+                  <a class="btn btn-md btn-default pull-left" href="{{ route('branchs.krates.index', [$branch]) }}">
                     <i class="fa fa-reply"></i> Back
                   </a>
-                  <button class="btn btn-sm btn-success btn-save">
+                  <button class="btn btn-md btn-success btn-save">
                     <i class="fa fa-save"></i> Save
                   </button>
                 </div>

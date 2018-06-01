@@ -133,22 +133,22 @@
                                           {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>
                                       </div>
                                       <div class="col-md-2">
-                                        <button type="button" class="btn btn-primary btn-sm btn-set-price"
+                                        <button type="button" class="btn btn-primary btn-md btn-set-price"
                                           {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Set Price</button>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="col-md-8 text-right">
                                     
-                                    <button type="button" class="btn btn-primary btn-sm btn-set-active"  style="margin-left: 5px;"
+                                    <button type="button" class="btn btn-primary btn-md btn-set-active"  style="margin-left: 5px;"
                                       {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Set Active</button>
-                                    <button type="button" class="btn btn-success btn-sm btn-unset-active" style="margin-left: 5px;"
+                                    <button type="button" class="btn btn-success btn-md btn-unset-active" style="margin-left: 5px;"
                                       {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Unset Active</button>
                                   </div>
                                 </div>
                                 <hr>
                                 <div class="text-right" style="margin-bottom: 10px;">
-                                  <button type="button" class="btn btn-primary btn-sm btn-edit"
+                                  <button type="button" class="btn btn-primary btn-md btn-edit"
                                     {{ \Auth::user()->checkAccessById(37, "E") ? '' : 'disabled' }}>Edit Details</button>
                                 </div>
                                   <div class="table-responsive">

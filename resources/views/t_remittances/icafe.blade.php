@@ -127,7 +127,7 @@
                   <button type="button" class="btn btn-primary show_modal {{ \Auth::user()->checkAccessByIdForCorp($company->corp_id, 15, 'E') ? "" : "disabled" }}" 
                     data-shift-id="{{$shift->Shift_ID}}" 
                     data-toggle="modal" data-target="#Modal" data-corp="{{ $company->corp_id }}">
-                    <i class="fa fa-pencil"></i>
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                 </td>
               </tr>

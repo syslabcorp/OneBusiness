@@ -71,7 +71,7 @@
                                                 <td>{{ $template_name }}</td>
                                                 <td>{{ $ar_type }}</td>
                                                 <td>{{ implode(", ", $grpname) }}</td>
-                                                <td class="text-center"><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit User"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <td class="text-center"><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" href="{{ URL::to('add_user/' . $det->UserID) }}" data-toggle="tooltip" data-placement="top" title="Edit User"><span class="fas fa-pencil-alt"></span></a>
                                                 <!-- <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(14, 'D') ? '' : 'disabled' }}" href="#" rel="{{ URL::to('delete_user/' . $det->UserID) }}" data-id ="{{ $det->UserID }}" data-toggle="tooltip" data-placement="top" title="Delete User"><span class="glyphicon glyphicon-trash"></span></a> --></td>
                                             </tr>  
                                         @endforeach 
