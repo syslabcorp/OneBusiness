@@ -34,7 +34,8 @@ class RetailItemPriceConfController extends Controller
       }
 
       $company = Corporation::findOrFail($request->corpID);
-      $itemModel = new \App\SItemCfg;
+      $itemModel = new \App\Models\SItem\Cfg;
+      $itemModel->setConnection($company->database_name);
 
       $stocks = \App\StockItem::whereIn('item_id', explode(',', $request->item_ids))->orderBy('ItemCode', 'ASC')->get();
       $branches = \App\Branch::whereIn('Branch', explode(',', $request->branch_ids))->get();
@@ -57,7 +58,8 @@ class RetailItemPriceConfController extends Controller
      */
     public function store(Request $request) {
       $company = Corporation::findOrFail($request->corpID);
-      $itemModel = new \App\SItemCfg;
+      $itemModel = new \App\Models\SItem\Cfg;
+      $itemModel->setConnection($company->database_name);
 
       foreach($request->items as $item_id => $items) {
         foreach($items as $Branch => $item) {
@@ -101,7 +103,8 @@ class RetailItemPriceConfController extends Controller
 
     public function update(Request $request, $id) {
       $branches = \App\Branch::whereIn('Branch', $request->branch_ids)->get();
-      $itemModel = new \App\SItemCfg;
+      $itemModel = new \App\Models\SItem\Cfg;
+      $itemModel->setConnection($company->database_name);
 
       $items = $itemModel->where('Branch', '=', $request->branch_id)->get();
 

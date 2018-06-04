@@ -115,6 +115,7 @@ Route::get('/get_logout', 'HomeController@get_logout');
 Route::any('/forgot_pass', 'LoginController@forgot_pass');
 Route::any('/change_pass/{user_id?}', 'LoginController@change_pass');
 
+Route::resource('corporations', 'CorporationsController');
 Route::any('/add_corporation/{corp_id?}', 'AccessLevelController@add_corporation');
 Route::get('/list_corporation', 'AccessLevelController@list_corporation');
 Route::get('/delete_corporation/{corp_id}', 'AccessLevelController@destroycorporation');
