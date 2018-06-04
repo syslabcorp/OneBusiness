@@ -24,7 +24,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">List of Modules
                                 @if(\Auth::user()->checkAccessById(12, "A"))
-                                <a href="{{ URL('add_module') }}" class="pull-right">Add Module</a>
+                                <a href="{{ URL('list_module/add_module') }}" class="pull-right">Add Module</a>
                                 @endif
                             </div>
                                 
@@ -47,7 +47,7 @@
                                                     <td>{{ $det->description }}</td>
                                                     <td>
                                                     <a class="btn btn-success btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'V') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_feature/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="List Features"><span class="far fa-eye"></span></a>
-                                                    <a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Module"><span class="fas fa-pencil-alt"></span></a>
+                                                    <a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_module/add_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Module"><span class="fas fa-pencil-alt"></span></a>
                                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(12, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_module/' . $det->module_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Module" module-name="{{ $det->description }}" id="{{ $det->module_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach
