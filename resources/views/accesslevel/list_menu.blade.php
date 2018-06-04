@@ -26,7 +26,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo ($parentcrumb == "0") ? "List of Menus" : $parentcrumb; ?>
                     @if(\Auth::user()->checkAccessById(13, "A")) 
-                    <a href="{{ URL('add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a>
+                    <a href="{{ URL('list_menu/add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a>
                     @endif
                 </div>
                 <div class="panel-body">
@@ -50,7 +50,7 @@
 									<td class="text-center"><?php echo "<span class='$det->icon'></span>"; ?></td>
                                     <td>{{ $det->url }}</td>
                                     <td class="text-center"><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
-                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="fas fa-pencil-alt"></span></a>
+                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_menu/add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="fas fa-pencil-alt"></span></a>
                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(13, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Menu" menu-name="{{ $det->title }}" id="{{ $det->id }}" has-sub-menus ="{{ isset($submenu_count[$det->id]) ? ' and all its sub menus.' : '' }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 </tr>  
                             @endforeach

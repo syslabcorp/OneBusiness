@@ -24,7 +24,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">List of Groups
                             @if(\Auth::user()->checkAccessById(14, "A")) 
-                            <a href="{{ URL('add_group') }}" class="pull-right">Add Group</a>
+                            <a href="{{ URL('list_group/add_group') }}" class="pull-right">Add Group</a>
                             @endif
                         </div>
                         <div class="panel-body">
@@ -47,7 +47,7 @@
                                                     <input id="active_grp" class="active_group {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" type="checkbox" group-id="{{ $det->group_ID }}" name="active_group" {{isset($det->status) && $det->status == 1 ? "checked" : "" }} disabled >
                                                 </td>
 
-                                                <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="fas fa-pencil-alt"></span></a>
+                                                <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(14, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_group/add_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Edit Group"><span class="fas fa-pencil-alt"></span></a>
                                                 <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(14, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_group/' . $det->group_ID) }}" data-toggle="tooltip" data-placement="top" title="Delete Group" group-name="{{ $det->desc }}" id="{{ $det->group_ID }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                             </tr>  
                                         @endforeach
