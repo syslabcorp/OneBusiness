@@ -97,9 +97,9 @@ class LocationsController extends Controller
             Request::Session()->flash('alert-class', 'alert-success');
 			
 			if($prov_id == NULL){
-				return redirect('view_cities');
+				return redirect('provinces/view_cities');
 			}else{
-				return redirect('view_cities/'.$prov_id);
+				return redirect('provinces/view_cities/'.$prov_id);
 			}
 			 
 		  }
@@ -127,9 +127,9 @@ class LocationsController extends Controller
         \Session::flash('flash_message', "City has been deleted.");
 		\Session::flash('alert-class', 'alert-success');
 		if($prov_id == NULL){
-				return redirect('view_cities');
+				return redirect('provinces/view_cities');
 			}else{
-				return redirect('view_cities/'.$prov_id);
+				return redirect('provinces/view_cities/'.$prov_id);
 			}
 			 
 			 

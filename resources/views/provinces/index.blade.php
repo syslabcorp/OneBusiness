@@ -28,7 +28,7 @@
           <td>{{ $province->Prov_ID }}</td>
           <td>{{ $province->Province}}</td>
           <td>
-            <a href="{{ URL::to('view_cities/'.$province->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View"
+            <a href="{{ URL::to('provinces/view_cities/'.$province->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View"
               data-toggle="tooltip" data-placement="top" title="View Province">
               <span class="far fa-eye"></span>
             </a>
