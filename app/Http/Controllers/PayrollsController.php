@@ -12,12 +12,17 @@ class PayrollsController extends Controller
 {
     public function index(Request $request)
     {
-        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 39, 'V')) {
+        $companies = Corporation::where('status', 1)->where('database_name', '<>', '')
+                                 ->orderBy('corp_name')->get();
+
+        $corpID = request()->corpID ?: $companies->first()->corp_id;
+
+        if(!\Auth::user()->checkAccessByIdForCorp($corpID, 39, 'V')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
 
-        $company = Corporation::findOrFail($request->corpID);
+        $company = Corporation::findOrFail($corpID);
         $status = isset($request->status) ? $request->status : '1';
         $tab = $request->tab ? $request->tab : 'deduct';
 
@@ -89,7 +94,8 @@ class PayrollsController extends Controller
 
         return view('payrolls.index', [
             'tab' => $tab,
-            'corpID' => $request->corpID,
+            'corpID' => $corpID,
+            'companies' => $companies,
             'columnOptions' => $columnOptions,
             'periodOptions' => $periodOptions,
             'status' => $status,

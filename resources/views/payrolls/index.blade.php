@@ -241,17 +241,21 @@
       })
 
       statusChange = (event, tab) => {
-        let path = location.search.replace(/&tab=[a-z]+/g, '').replace(/&item=[0-9]+/g, '') + "&tab=" + tab
+        let path = location.search.replace(/&tab=[a-z]+/g, '').replace(/&item=[0-9]+/g, '').replace(/\?tab=[a-z]+/g, '')
+        path += (path ? "&tab=" : "?tab=") + tab
         path = path.replace(/&action=[a-z]*/g, '')
+        path = path.replace(/&corpID=[0-9]*/g, '') + "&corpID=" + {{ $corpID }}
         path = path.replace(/&status=[0-9]*/g, '') + "&status=" + $(event.target).val()
-        window.location = location.pathname + path
+        window.location = location.pathname + path.replace(/^&/, '?')
       }
 
       itemChange = (event, tab) => {
-        let path = location.search.replace(/&tab=[a-z]+/g, '') + "&tab=" + tab
+        let path = location.search.replace(/&tab=[a-z]+/g, '').replace(/\?tab=[a-z]+/g, '')
+        path += (path ? "&tab=" : "?tab=") + tab
         path = path.replace(/&action=[a-z]*/g, '')
+        path = path.replace(/&corpID=[0-9]*/g, '') + "&corpID=" + {{ $corpID }}
         path = path.replace(/&item=[0-9]*/g, '') + "&item=" + $(event.target).val()
-        window.location = location.pathname + path
+        window.location = location.pathname + path.replace(/^&/, '?')
       }
 
       $('body').on('keyup', '.form-control[validation]', function(event) {

@@ -17,34 +17,43 @@ class WageTemplatesController extends Controller
     protected $expModel;
     protected $tmplModel;
 
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $company = Corporation::findOrFail($request->corpID);
-      
-        $this->deptModel = new \App\Models\T\Depts;
-        $this->deptModel->setConnection($company->database_name);
+        $company = Corporation::find(request()->corpID);
+        
+        if ($company) {
+            $this->deptModel = new \App\Models\T\Depts;
+            $this->deptModel->setConnection($company->database_name);
 
-        $this->deductModel = new \App\Models\Py\DeductMstr;
-        $this->deductModel->setConnection($company->database_name);
+            $this->deductModel = new \App\Models\Py\DeductMstr;
+            $this->deductModel->setConnection($company->database_name);
 
-        $this->benfModel = new \App\Models\Py\BenfMstr;
-        $this->benfModel->setConnection($company->database_name);
+            $this->benfModel = new \App\Models\Py\BenfMstr;
+            $this->benfModel->setConnection($company->database_name);
 
-        $this->expModel = new \App\Models\Py\ExpMstr;
-        $this->expModel->setConnection($company->database_name);
+            $this->expModel = new \App\Models\Py\ExpMstr;
+            $this->expModel->setConnection($company->database_name);
 
-        $this->tmplModel = new \App\Models\WageTmpl8\Mstr;
-        $this->tmplModel->setConnection($company->database_name);
+            $this->tmplModel = new \App\Models\WageTmpl8\Mstr;
+            $this->tmplModel->setConnection($company->database_name);
+        }
     }
 
     public function index()
     {
-        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'V')) {
+        $companies = Corporation::where('status', 1)->where('database_name', '<>', '')
+                                 ->orderBy('corp_name')->get();
+
+        $corpID = request()->corpID ?: $companies->first()->corp_id;
+
+        if(!\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'V')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
 
         return view('wage-templates.index', [
+            'companies' => $companies,
+            'corpID' => $corpID
         ]);
     }
 

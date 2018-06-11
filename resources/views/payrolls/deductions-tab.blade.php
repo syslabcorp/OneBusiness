@@ -1,5 +1,13 @@
 <div class="rown">
-  <div class="col-md-2 text-right col-md-offset-10">
+  <div class="col-md-2 col-xs-6 text-right col-md-offset-8">
+    <select name="corpID" class="form-control changePageCompany">
+      @foreach($companies as $company)
+      <option value="{{ $company->corp_id }}"
+        {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+      @endforeach
+    </select>
+  </div>
+  <div class="col-md-2 col-xs-6">
     <div class="form-group">
       <select class="form-control" onchange="statusChange(event, 'deduct')"
         {{ $action == 'new' ? 'disabled' : '' }}>

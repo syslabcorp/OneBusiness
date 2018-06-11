@@ -18,7 +18,12 @@ class CategoriesController extends Controller
       return redirect("/home"); 
     }
 
-    $company = Corporation::findOrFail($request->corpID);
+    $companies = Corporation::where('status', 1)->where('database_name', '<>', '')
+                                 ->orderBy('corp_name')->get();
+
+    $corpID = request()->corpID ?: $companies->first()->corp_id;
+
+    $company = Corporation::find($corpID);
 
     $categoryModel = new \App\HCategory;
     $categoryModel->setConnection($company->database_name);
@@ -27,11 +32,12 @@ class CategoriesController extends Controller
                                 ->orderBy('description', 'asc')->get();
 
 
-    return view('categories.index', [
+    return view('document-category.index', [
       'categories' => $categories,
-      'corpID' => $request->corpID,
+      'corpID' => $corpID,
       'categoryId' => $request->categoryId,
-      'subcategoryId' => $request->subcategoryId
+      'subcategoryId' => $request->subcategoryId,
+      'companies' => $companies
     ]);
   }
 
@@ -44,7 +50,7 @@ class CategoriesController extends Controller
     $category = $categoryModel->create(['description' => $request->description, 'series' => 0]);
     \Session::flash('success', "Category successfully created!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
+    return redirect(route('document-category.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
   }
 
   public function update(Request $request, $id) {
@@ -58,7 +64,7 @@ class CategoriesController extends Controller
 
     \Session::flash('success', "Category successfully updated!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
+    return redirect(route('document-category.index', ['corpID' => $request->corpID, 'categoryId' => $category->doc_no]));
   }
 
   public function destroy(Request $request, $id) {
@@ -72,7 +78,7 @@ class CategoriesController extends Controller
 
     \Session::flash('success', "Category successfully deleted!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('document-category.index', ['corpID' => $request->corpID]));
   }
 
   public function petyCash(Request $request) {

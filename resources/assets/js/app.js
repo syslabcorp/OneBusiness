@@ -390,6 +390,13 @@ $(document).ready(function()
         $("input[name='MinimumTime']").prop("disabled", true);
       }
     })
+
+    $('.changePageCompany').change((event) => {
+        let search = location.search.replace(/&corpID=[0-9]*/g, '')
+        search += (search ? '&corpID=' : '?corpID=') + event.target.value
+
+        window.location = location.pathname + search
+    })
 });
 
 

@@ -8,13 +8,24 @@
           <h4>Departments</h4>
         </div>
         <div class="col-md-6 text-right">
-          @if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'A'))
+          @if(\Auth::user()->checkAccessByIdForCorp($corpID, 44, 'A'))
           <a onclick="addDepartment()" href="#">Add Departments</a>
           @endif
         </div>
       </div>
     </div>
     <div class="panel-body">
+      <div class="row">
+        <div class="col-md-2 form-group">
+          <label>Corporation:</label>
+          <select name="corpID" class="form-control changePageCompany">
+            @foreach($companies as $company)
+            <option value="{{ $company->corp_id }}"
+              {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
       <table class="table table-departments table-striped table-bordered">
         <thead>
           <tr>
@@ -37,7 +48,7 @@
 <script type="text/javascript">
   (() => {
     $('.table-departments').DataTable({
-      ajaxSource: '{{ route('root') }}/api/v1/departments?corpID=' + {{ request()->corpID }},
+      ajaxSource: '{{ route('root') }}/api/v1/departments?corpID=' + {{ $corpID }},
       columnDefs: [
         {
           targets: 0,
@@ -62,12 +73,12 @@
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-md edit" title="Edit" \
-                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'E') ? '' : 'disabled' }}\
+                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 44, 'E') ? '' : 'disabled' }}\
                 onclick="editDepartment(event,' + row.dept_ID + ')">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
               <a class="btn btn-danger btn-md" title="Delete" onclick="deleteDepartment(event,' + row.dept_ID + ', \'' + row.department + '\')" \
-                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'D') ? '' : 'disabled' }}> \
+                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 44, 'D') ? '' : 'disabled' }}> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';
           }
@@ -121,7 +132,7 @@
       },
       (isConfirm) => {
         $.ajax({
-          url: '{{ route('departments.index') }}/' + deptID + '?corpID={{ request()->corpID }}',
+          url: '{{ route('departments.index') }}/' + deptID + '?corpID={{ $corpID }}',
           type: 'DELETE',
           success: (res) => {
             location.reload()
