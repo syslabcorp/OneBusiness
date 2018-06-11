@@ -23,10 +23,10 @@ Route::post('stocktransfer/{stock}/transfer', 'StocktransferController@transfer'
 Route::get('stocktransfer/{stock}/original', 'StocktransferController@original', ['middleware' => 'auth'])->name('stocktransfer.original');
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
-Route::post('payrolls/deduct', 'PayrollsController@deduct', ['middleware' => 'auth'])->name('payrolls.deduct');
-Route::post('payrolls/benefit', 'PayrollsController@benefit', ['middleware' => 'auth'])->name('payrolls.benefit');
-Route::post('payrolls/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
-Route::resource('payrolls', 'PayrollsController', ['middleware' => 'auth']);
+Route::post('payrolls-masterfile/deduct', 'PayrollsController@deduct', ['middleware' => 'auth'])->name('payrolls.deduct');
+Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit', ['middleware' => 'auth'])->name('payrolls.benefit');
+Route::post('payrolls-masterfile/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
+Route::get('payrolls-masterfile', 'PayrollsController@index', ['middleware' => 'auth'])->name('payrolls.index');
 Route::resource('departments', 'DepartmentsController', ['middleware' => 'auth']);
 Route::resource('wage-templates', 'WageTemplatesController', ['middleware' => 'auth']);
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
@@ -87,7 +87,7 @@ Route::post('/checkbooks/get-accounts-for-main', 'CheckbookController@getAccount
 Route::post('/vendors/get-branches', 'VendorController@getBranches')->middleware('auth')->name('vendors.get_branch');
 #End of MasterFile Module
 
-Route::resource('categories', 'CategoriesController', ['middleware' => 'auth']);
+Route::resource('document-category', 'CategoriesController', ['middleware' => 'auth']);
 Route::resource('pccategories', 'Pc\CategoriesController', ['middleware' => 'auth']);
 Route::post('pccategories/updateBranch', 'Pc\CategoriesController@updateBranch')->middleware('auth')->name('pccategories.updateBranch');
 Route::resource('subcategories', 'SubcategoriesController', ['middleware' => 'auth']);

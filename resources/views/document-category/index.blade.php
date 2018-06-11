@@ -24,6 +24,17 @@
             </div>
             <div class="panel-body">
               <div class="row">
+                <div class="col-md-2 form-group">
+                  <label>Corporation:</label>
+                  <select name="corpID" class="form-control changePageCompany">
+                    @foreach($companies as $company)
+                    <option value="{{ $company->corp_id }}"
+                      {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="row">
                 <div class="col-md-6">
                   <div class="panel panel-default box-category">
                     <div class="panel-heading">
@@ -39,7 +50,7 @@
                         </thead>
                         <tbody>
                           @foreach($categories as $category)
-                          <tr data-delete="{{ route('categories.destroy', $category) }}" data-id='{{ $category->doc_no }}'
+                          <tr data-delete="{{ route('document-category.destroy', $category) }}" data-id='{{ $category->doc_no }}'
                             class="{{ $categoryId && $categoryId == $category->doc_no || !$categoryId && $loop->index == 0 ? 'selected' : '' }}" >
                             <td>{{ $category->description }}</td>
                             <td>{{ $category->series }}</td>
@@ -153,7 +164,7 @@
 <div class="modal fade" id="modal-new-category">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form action="{{ route('categories.store') }}" method="POST">
+      <form action="{{ route('document-category.store') }}" method="POST">
         {{ csrf_field() }}
         <input type="hidden" name="corpID" value="{{ $corpID }}">
         <div class="modal-header">

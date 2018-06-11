@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
-use App\Corporation;
+use App\Models\Corporation;
 
 class DepartmentsController extends Controller
 {
@@ -14,20 +14,30 @@ class DepartmentsController extends Controller
 
     public function __construct(Request $request)
     {
-        $company = Corporation::findOrFail(request()->corpID);
+        $company = Corporation::find(request()->corpID);
       
         $this->deptModel = new \App\Models\T\Depts;
-        $this->deptModel->setConnection($company->database_name);
+
+        if ($company) {
+            $this->deptModel->setConnection($company->database_name);
+        }
     }
 
     public function index()
     {
-        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 44, 'V')) {
+        $companies = Corporation::where('status', 1)->where('database_name', '<>', '')
+                                 ->orderBy('corp_name')->get();
+
+        $corpID = request()->corpID ?: $companies->first()->corp_id;
+
+        if(!\Auth::user()->checkAccessByIdForCorp($corpID, 44, 'V')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
 
         return view('departments.index', [
+            'companies' => $companies,
+            'corpID' => $corpID
         ]);
     }
 

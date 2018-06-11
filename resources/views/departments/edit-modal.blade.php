@@ -4,7 +4,7 @@
       <form action="{{ route('departments.store') }}" method="POST">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" name="corpID" value="{{ request()->corpID }}">
+        <input type="hidden" name="corpID" value="{{ $corpID }}">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">

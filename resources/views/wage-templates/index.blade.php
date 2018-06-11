@@ -8,13 +8,24 @@
           <h4>Wage Templates</h4>
         </div>
         <div class="col-md-6 text-right">
-          @if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'A'))
-            <a href="{{ route('wage-templates.create', ['corpID' => request()->corpID]) }}">Add Template</a>
+          @if(\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'A'))
+            <a href="{{ route('wage-templates.create', ['corpID' => $corpID]) }}">Add Template</a>
           @endif
         </div>
       </div>
     </div>
     <div class="panel-body">
+      <div class="row">
+        <div class="col-md-2 form-group">
+          <label>Corporation:</label>
+          <select name="corpID" class="form-control changePageCompany">
+            @foreach($companies as $company)
+            <option value="{{ $company->corp_id }}"
+              {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
       <table class="table table-departments table-striped table-bordered">
         <thead>
           <tr>
@@ -38,7 +49,7 @@
 <script type="text/javascript">
   (() => {
     $('.table-departments').DataTable({
-      ajaxSource: '{{ route('root') }}/api/v1/wage-templates?corpID=' + {{ request()->corpID }},
+      ajaxSource: '{{ route('root') }}/api/v1/wage-templates?corpID=' + {{ $corpID }},
       columnDefs: [
         {
           name: 'department',
@@ -76,12 +87,12 @@
           className: 'text-center',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-md edit" title="Edit" \
-                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'E') ? '' : 'disabled' }} \
-                href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit?corpID={{ request()->corpID }}">\
+                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E') ? '' : 'disabled' }} \
+                href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit?corpID={{ $corpID }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
               <a class="btn btn-danger btn-md" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')" \
-                {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'D') ? '' : 'disabled' }}> \
+                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 45, 'D') ? '' : 'disabled' }}> \
                 <i class="fas fa-trash-alt"></i> \
               </a>';
           }
@@ -109,7 +120,7 @@
       },
       (isConfirm) => {
         $.ajax({
-          url: '{{ route('wage-templates.index') }}/' + id + '?corpID={{ request()->corpID }}',
+          url: '{{ route('wage-templates.index') }}/' + id + '?corpID={{ $corpID }}',
           type: 'DELETE',
           success: (res) => {
             location.reload();
