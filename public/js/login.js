@@ -243,6 +243,7 @@ $(function(){
 $(function()
 {
   $('#brach_remittance_create').on('change', '#remit_group', function(){
+    $('#brach_remittance_create #city').val('')
     $('#brach_remittance_create').submit();
   });
   

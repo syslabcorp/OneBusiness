@@ -54,7 +54,7 @@
                         <div class="form-group">
 						 <div class="row">
 									<div class="col-sm-6">
-                                        <a href="{{ URL::to('view_cities/'.$detail_edit_city->Prov_ID) }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
+                                        <a href="{{ URL::to('provinces/view_cities/'.$detail_edit_city->Prov_ID) }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
                                     </div>
                                     <div class="col-sm-6">
                                        {!! csrf_field() !!}

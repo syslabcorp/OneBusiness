@@ -181,8 +181,9 @@ class BranchRemittanceController extends Controller
     $citiIDs = [];
 
     foreach($branchIds as $id) {
-      if(Branch::find($id)->city)
-      {
+      $branch = Branch::find($id);
+
+      if($branch && $branch->city) {
         $cityID = Branch::find($id)->city()->first()->City_ID;
         array_push($citiIDs, $cityID);
       }
