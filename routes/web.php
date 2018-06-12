@@ -28,6 +28,7 @@ Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit', ['middl
 Route::post('payrolls-masterfile/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
 Route::get('payrolls-masterfile', 'PayrollsController@index', ['middleware' => 'auth'])->name('payrolls.index');
 Route::resource('departments', 'DepartmentsController', ['middleware' => 'auth']);
+Route::post('wage-templates/setup-document', 'WageTemplatesController@setupDocument')->middleware('auth')->name('wage-templates.document');
 Route::resource('wage-templates', 'WageTemplatesController', ['middleware' => 'auth']);
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
 

@@ -12,7 +12,7 @@ class Corporation extends Model
 
     protected $fillable = [
       'corp_name', 'database_name', 'payroll_conn', 'status', 'deleted',
-      'corp_type'
+      'corp_type', 'wt_doc_cat', 'wt_doc_subcat'
     ];
 
     public function branches()

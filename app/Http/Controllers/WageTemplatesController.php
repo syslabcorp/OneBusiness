@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Controllers\Controller;
-use App\Corporation;
+use App\Models\Corporation;
 use App\Http\Requests\WageTmpl8\MstrRequest;
 
 class WageTemplatesController extends Controller
@@ -46,6 +46,17 @@ class WageTemplatesController extends Controller
 
         $corpID = request()->corpID ?: $companies->first()->corp_id;
 
+        $company = Corporation::find($corpID);
+
+        $catModel = new \App\HCategory;
+        $catModel->setConnection($company->database_name);
+
+        $subCatModel = new \App\HSubcategory;
+        $subCatModel->setConnection($company->database_name);
+
+        $categories = $catModel->orderBy('description')->get();
+        $subCategories = $subCatModel->orderBy('description')->get();
+
         if(!\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'V')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -53,7 +64,10 @@ class WageTemplatesController extends Controller
 
         return view('wage-templates.index', [
             'companies' => $companies,
-            'corpID' => $corpID
+            'corpID' => $corpID,
+            'categories' => $categories,
+            'subCategories' => $subCategories,
+            'company' => $company
         ]);
     }
 
@@ -199,6 +213,17 @@ class WageTemplatesController extends Controller
         }
 
         \Session::flash('success', "Template {$template->code} has been updated");
+
+        return redirect(route('wage-templates.index', ['corpID' => request()->corpID]));
+    }
+
+    public function setupDocument(Request $request)
+    {
+        $company = Corporation::find(request()->corpID);
+
+        $company->update($request->only(['wt_doc_cat', 'wt_doc_subcat']));
+
+        \Session::flash('success', "The wage document has been updated");
 
         return redirect(route('wage-templates.index', ['corpID' => request()->corpID]));
     }
