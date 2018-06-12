@@ -16,6 +16,7 @@ class MstrTransformer extends Fractal\TransformerAbstract
             'code' => $item->code,
             'position' => $item->position,
             'active' => (int) $item->active,
+            'entry_level' => (int) $item->entry_level,
             'total' => $total
         ];
     }

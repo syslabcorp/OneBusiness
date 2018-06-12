@@ -5,7 +5,15 @@
     <div class="panel-heading">
       <div class="rown">
         <div class="col-md-6">
-          <h4>Wage Templates</h4>
+          <h4>
+            Wage Templates 
+            @if(\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E'))
+            <small>
+              (Employment Docs - Contracts/Resignation) 
+              <a href="#" onclick="openWageDocument()">Change</a>
+            </small>
+            @endif
+          </h4>
         </div>
         <div class="col-md-6 text-right">
           @if(\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'A'))
@@ -19,9 +27,9 @@
         <div class="col-md-2 form-group">
           <label>Corporation:</label>
           <select name="corpID" class="form-control changePageCompany">
-            @foreach($companies as $company)
-            <option value="{{ $company->corp_id }}"
-              {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+            @foreach($companies as $corp)
+            <option value="{{ $corp->corp_id }}"
+              {{ $corp->corp_id == $corpID ? 'selected' : '' }}>{{ $corp->corp_name }}</option>
             @endforeach
           </select>
         </div>
@@ -34,6 +42,7 @@
             <th>Code</th>
             <th>Position</th>
             <th>Active</th>
+            <th>Entry Level</th>
             <th>Total</th>
             <th>Action</th>
           </tr>
@@ -43,11 +52,29 @@
       </table>
     </div>
   </div>
+  @include('wage-templates.modal-wage-document')
 @endsection
 
 @section('pageJS')
 <script type="text/javascript">
   (() => {
+    openWageDocument = () => {
+      $('.modalWageDocument').modal('show')
+    }
+
+    updateSubCategoryDocument = () => {
+      $('select[name="wt_doc_subcat"]').val('')
+      $('select[name="wt_doc_subcat"] option').css('display', 'none')
+      $('select[name="wt_doc_subcat"] option[data-cat="' + $('select[name="wt_doc_cat"]').val() + '"]').css('display', 'block')
+    }
+    
+    updateSubCategoryDocument()
+
+    $('select[name="wt_doc_cat"]').change(function() {
+      updateSubCategoryDocument();
+    })
+    
+
     $('.table-departments').DataTable({
       ajaxSource: '{{ route('root') }}/api/v1/wage-templates?corpID=' + {{ $corpID }},
       columnDefs: [
@@ -79,10 +106,18 @@
         },
         {
           targets: 5,
-          data: "total"
+          data: 'entry_level',
+          className: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" onclick="return false;" ' + (data == 1 ? 'checked' : '') + '/>'
+          }
         },
         {
           targets: 6,
+          data: "total"
+        },
+        {
+          targets: 7,
           data: '',
           className: 'text-center',
           render: (data, type, row, meta) => {
