@@ -391,7 +391,7 @@ $(document).ready(function()
       }
     })
 
-    $('.changePageCompany').change((event) => {
+    $('body').on('change', '.changePageCompany', (event) => {
         let search = location.search.replace(/&corpID=[0-9]*/g, '')
         search += (search ? '&corpID=' : '?corpID=') + event.target.value
 

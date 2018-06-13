@@ -9,7 +9,8 @@
             Wage Templates 
             @if(\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E'))
             <small>
-              (Employment Docs - Contracts/Resignation) 
+              ({{ $company->category() ? $company->category()->description : 'No Category' }} - 
+              {{ $company->subcategory() ? $company->subcategory()->description : 'No Subcategory' }}) 
               <a href="#" onclick="openWageDocument()">Change</a>
             </small>
             @endif
@@ -23,17 +24,6 @@
       </div>
     </div>
     <div class="panel-body">
-      <div class="row">
-        <div class="col-md-2 form-group">
-          <label>Corporation:</label>
-          <select name="corpID" class="form-control changePageCompany">
-            @foreach($companies as $corp)
-            <option value="{{ $corp->corp_id }}"
-              {{ $corp->corp_id == $corpID ? 'selected' : '' }}>{{ $corp->corp_name }}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
       <table class="table table-departments table-striped table-bordered">
         <thead>
           <tr>
@@ -76,7 +66,18 @@
     
 
     $('.table-departments').DataTable({
+      dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#listCorps">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       ajaxSource: '{{ route('root') }}/api/v1/wage-templates?corpID=' + {{ $corpID }},
+      initComplete: () => {
+        $('#listCorps').append('<div class="rown"><div class="col-xs-12" style="margin: 10px 0px;"> \
+          <label>Filter:</label>\
+          <select name="corpID" class="form-control changePageCompany">\
+            @foreach($companies as $corp)\
+            <option value="{{ $corp->corp_id }}"\
+              {{ $corp->corp_id == $corpID ? 'selected' : '' }}>{{ $corp->corp_name }}</option>\
+            @endforeach \
+          </select></div></div>')
+      },
       columnDefs: [
         {
           name: 'department',

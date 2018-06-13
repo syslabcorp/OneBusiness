@@ -19,4 +19,20 @@ class Corporation extends Model
     {
       return $this->hasMany(\App\Branch::class, "corp_id", "corp_id");
     }
+
+    public function category()
+    {
+        $categoryModel = new \App\HCategory;
+        $categoryModel->setConnection($this->database_name);
+
+        return $categoryModel->find($this->wt_doc_cat);
+    }
+
+    public function subcategory()
+    {
+        $categoryModel = new \App\HSubcategory;
+        $categoryModel->setConnection($this->database_name);
+
+        return $categoryModel->find($this->wt_doc_subcat);
+    }
 }
