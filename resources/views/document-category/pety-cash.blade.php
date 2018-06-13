@@ -17,37 +17,53 @@
         @endif
       </div>
     </div>
-    
   </div>
   <div class="panel-body">
-  <div>
-    <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active">
-        <a href="#con" aria-controls="con" role="tab" data-toggle="tab">Configuration</a>
-      </li>
-      <li role="presentation">
-        <a href="#cat" aria-controls="cat" role="tab" data-toggle="tab">Categories</a>
-      </li>
-      <li role="presentation">
-        <a href="#sub" aria-controls="sub" role="tab" data-toggle="tab">Subcategories</a>
-      </li>
-    </ul>
-
-    <div class="tab-content" style="margin-top: 30px;">
-      <div role="tabpanel" class="tab-pane active" id="con">
-        @include('categories.config-tab')
-      </div>
-      <div role="tabpanel" class="tab-pane" id="cat">
-        @include('categories.category-tab')
-      </div>
-      <div role="tabpanel" class="tab-pane" id="sub">
-        @include('categories.subcategory-tab')
+    <div class="rown">
+      <div class="col-md-3">
+        <div class="rown">
+          <div class="col-xs-3" style="margin-top: 7px;">
+            <label>Filters:</label>
+          </div>
+          <div class="col-xs-9">
+            <select name="corpID" class="form-control changePageCompany">
+              @foreach($companies as $company)
+              <option value="{{ $company->corp_id }}"
+                {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+              @endforeach
+            </select>
+          </div>
+        </div>
       </div>
     </div>
+    <div style="margin-top: 20px;">
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+          <a href="#con" aria-controls="con" role="tab" data-toggle="tab">Configuration</a>
+        </li>
+        <li role="presentation">
+          <a href="#cat" aria-controls="cat" role="tab" data-toggle="tab">Categories</a>
+        </li>
+        <li role="presentation">
+          <a href="#sub" aria-controls="sub" role="tab" data-toggle="tab">Subcategories</a>
+        </li>
+      </ul>
 
+      <div class="tab-content" style="margin-top: 30px;">
+        <div role="tabpanel" class="tab-pane active" id="con">
+          @include('document-category.config-tab')
+        </div>
+        <div role="tabpanel" class="tab-pane" id="cat">
+          @include('document-category.category-tab')
+        </div>
+        <div role="tabpanel" class="tab-pane" id="sub">
+          @include('document-category.subcategory-tab')
+        </div>
+      </div>
+
+      </div>
     </div>
   </div>
-</div>
 
 <div class="modal fade" id="modal-new-subcategory">
   <div class="modal-dialog" role="document">

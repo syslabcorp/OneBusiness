@@ -1,126 +1,112 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 @section('content')
-<div class="container-fluid" id="retailItemPCAppWrapper">
-  <div class="row">
-    <div id="togle-sidebar-sec" class="active">
-      <div id="sidebar-togle-sidebar-sec">
-        <div id="sidebar_menu" class="sidebar-nav">
-          <ul></ul>
+
+<div class="col-md-12 col-xs-12" style="margin-top: 20px;">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <strong>Document Categories</strong>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-3 form-group">
+          <div class="row">
+            <div class="col-xs-3" style="margin-top: 7px;">
+              <label>Filters:</label>
+            </div>
+            <div class="col-xs-9">
+              <select name="corpID" class="form-control changePageCompany">
+                @foreach($companies as $company)
+                <option value="{{ $company->corp_id }}"
+                  {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Page content -->
-      <div id="page-content-togle-sidebar-sec">
-          @if(Session::has('success'))
-              <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
-          @elseif(Session::has('error'))
-              <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
-          @endif
-
-        <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
-          <div class="panel panel-default">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default box-category">
             <div class="panel-heading">
-              <strong>Document Categories</strong>
+              <strong>Categories</strong>
             </div>
             <div class="panel-body">
-              <div class="row">
-                <div class="col-md-2 form-group">
-                  <label>Corporation:</label>
-                  <select name="corpID" class="form-control changePageCompany">
-                    @foreach($companies as $company)
-                    <option value="{{ $company->corp_id }}"
-                      {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="panel panel-default box-category">
-                    <div class="panel-heading">
-                      <strong>Categories</strong>
-                    </div>
-                    <div class="panel-body">
-                      <table class="table table-bordered table-category">
-                        <thead>
-                          <tr>
-                            <th>Category</th>
-                            <th>Series</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          @foreach($categories as $category)
-                          <tr data-delete="{{ route('document-category.destroy', $category) }}" data-id='{{ $category->doc_no }}'
-                            class="{{ $categoryId && $categoryId == $category->doc_no || !$categoryId && $loop->index == 0 ? 'selected' : '' }}" >
-                            <td>{{ $category->description }}</td>
-                            <td>{{ $category->series }}</td>
-                          </tr>
-                          @endforeach
-                          @if(!$categories->count())
-                          <tr class="empty">
-                            <td colspan="2">Not found any categories</td>
-                          </tr>
-                          @endif
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="panel-footer">
-                      <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-category"
-                        {{ \Auth::user()->checkAccessById(33, "A") ? '' : 'disabled' }}>
-                        <i class="glyphicon glyphicon-plus"></i> New
-                      </button>
-                      <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
-                        <i class="fas fa-pencil-alt"></i> Edit
-                      </button>
-                      <form action="" method="POST" style="display: inline-block;">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="_method" value="DELETE">
-                        <input type="hidden" name="corpID" value="{{ $corpID }}">
-                        <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
-                          <i class="glyphicon glyphicon-trash"></i> Delete
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="panel panel-default box-subcategory">
-                    <div class="panel-heading">
-                      <strong>Category: <span class="category-name">{{ $categories->first() ? $categories->first()->description : '' }}</span></strong>
-                    </div>
-                    <div class="panel-body">
-                      <table class="table table-bordered table-subcategory">
-                        <thead>
-                          <tr>
-                            <th>Document</th>
-                            <th>Expires</th>
-                            <th>Multi-Doc</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="panel-footer">
-                      <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-subcategory"
-                        {{ \Auth::user()->checkAccessById(33, "A") ? '' : 'disabled' }}>
-                        <i class="glyphicon glyphicon-plus"></i> New
-                      </button>
-                      <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
-                        <i class="fas fa-pencil-alt"></i> Edit
-                      </button>
-                      <form action="" method="POST" style="display: inline-block;">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="_method" value="DELETE">
-                        <input type="hidden" name="corpID" value="{{ $corpID }}">
-                        <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
-                          <i class="glyphicon glyphicon-trash"></i> Delete
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <table class="table table-bordered table-category">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Series</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($categories as $category)
+                  <tr data-delete="{{ route('document-category.destroy', $category) }}" data-id='{{ $category->doc_no }}'
+                    class="{{ $categoryId && $categoryId == $category->doc_no || !$categoryId && $loop->index == 0 ? 'selected' : '' }}" >
+                    <td>{{ $category->description }}</td>
+                    <td>{{ $category->series }}</td>
+                  </tr>
+                  @endforeach
+                  @if(!$categories->count())
+                  <tr class="empty">
+                    <td colspan="2">Not found any categories</td>
+                  </tr>
+                  @endif
+                </tbody>
+              </table>
+            </div>
+            <div class="panel-footer">
+              <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-category"
+                {{ \Auth::user()->checkAccessById(33, "A") ? '' : 'disabled' }}>
+                <i class="glyphicon glyphicon-plus"></i> New
+              </button>
+              <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
+                <i class="fas fa-pencil-alt"></i> Edit
+              </button>
+              <form action="" method="POST" style="display: inline-block;">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="corpID" value="{{ $corpID }}">
+                <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
+                  <i class="glyphicon glyphicon-trash"></i> Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default box-subcategory">
+            <div class="panel-heading">
+              <strong>Category: <span class="category-name">{{ $categories->first() ? $categories->first()->description : '' }}</span></strong>
+            </div>
+            <div class="panel-body">
+              <table class="table table-bordered table-subcategory">
+                <thead>
+                  <tr>
+                    <th>Document</th>
+                    <th>Expires</th>
+                    <th>Multi-Doc</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+            <div class="panel-footer">
+              <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal-new-subcategory"
+                {{ \Auth::user()->checkAccessById(33, "A") ? '' : 'disabled' }}>
+                <i class="glyphicon glyphicon-plus"></i> New
+              </button>
+              <button class="btn btn-primary btn-xs btn-edit" {{ \Auth::user()->checkAccessById(33, "E") ? '' : 'disabled' }}>
+                <i class="fas fa-pencil-alt"></i> Edit
+              </button>
+              <form action="" method="POST" style="display: inline-block;">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="corpID" value="{{ $corpID }}">
+                <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
+                  <i class="glyphicon glyphicon-trash"></i> Delete
+                </button>
+              </form>
             </div>
           </div>
         </div>

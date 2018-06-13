@@ -87,7 +87,12 @@ class CategoriesController extends Controller
       return redirect("/home"); 
     }
 
-    $company = Corporation::findOrFail($request->corpID);
+    $companies = Corporation::where('status', 1)->where('database_name', '<>', '')
+                                 ->orderBy('corp_name')->get();
+
+    $corpID = request()->corpID ?: $companies->first()->corp_id;
+
+    $company = Corporation::find($corpID);
 
     $categoryModel = new \App\Pc\Cat;
     $categoryModel->setConnection($company->database_name);
@@ -100,12 +105,14 @@ class CategoriesController extends Controller
     $branchs = $branchModel->where('active', '=', 1)
                            ->orderBy('short_name', 'asc')->get();
 
-    return view('categories.pety-cash', [
+
+    return view('document-category.pety-cash', [
       'corpID' => $request->corpID,
       'categories' => $categories,
       'branchs' => $branchs,
       'tab' => $request->tab,
-      'categoryId' => $request->categoryId
+      'categoryId' => $request->categoryId,
+      'companies' => $companies
     ]);
   }
 }
