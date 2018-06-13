@@ -70,7 +70,7 @@
       ajaxSource: '{{ route('root') }}/api/v1/wage-templates?corpID=' + {{ $corpID }},
       initComplete: () => {
         $('#listCorps').append('<div class="rown"><div class="col-xs-12" style="margin: 10px 0px;"> \
-          <label>Filter:</label>\
+          <label>Filters:</label>\
           <select name="corpID" class="form-control changePageCompany">\
             @foreach($companies as $corp)\
             <option value="{{ $corp->corp_id }}"\

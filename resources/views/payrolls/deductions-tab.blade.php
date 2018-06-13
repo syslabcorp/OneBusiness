@@ -1,11 +1,18 @@
 <div class="rown">
-  <div class="col-md-2 col-xs-6 text-right col-md-offset-8">
-    <select name="corpID" class="form-control changePageCompany">
-      @foreach($companies as $company)
-      <option value="{{ $company->corp_id }}"
-        {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
-      @endforeach
-    </select>
+  <div class="col-md-2 col-xs-6">
+    <div class="row">
+      <div class="col-xs-3" style="margin-top: 7px;">
+        <label>Filters:</label>
+      </div>
+      <div class="col-xs-9">
+        <select name="corpID" class="form-control changePageCompany">
+          @foreach($companies as $company)
+          <option value="{{ $company->corp_id }}"
+            {{ $company->corp_id == $corpID ? 'selected' : '' }}>{{ $company->corp_name }}</option>
+          @endforeach
+        </select>
+      </div>
+    </div>
   </div>
   <div class="col-md-2 col-xs-6">
     <div class="form-group">
@@ -16,7 +23,7 @@
       </select>
     </div>
   </div>
-  <div class="col-md-12">
+  <div class="col-md-12" style="margin-top: 15px;">
     <form action="{{ route('payrolls.deduct', ['corpID' => $corpID, 'tab' => $tab, 'status' => $status]) }}" method="POST">
       {{ csrf_field() }}
       <input type="hidden" name="id" value="{{ $deductItem->ID_deduct }}">
