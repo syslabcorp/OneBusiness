@@ -145,6 +145,12 @@ class WageTemplatesController extends Controller
             return redirect("/home"); 
         }
 
+        if($this->tmplModel->where('dept_id', $request->dept_id)->where('entry_level', 1)->count()) {
+            $department = $this->deptModel->find($request->dept_id);
+            \Session::flash('error', "There can only be one (1) entry-level template for {$department->department}"); 
+            return redirect()->back()->withInput();;
+        }
+
         $template = $this->tmplModel->create($this->templParams());
         
         if(is_array(request()->details)) {
@@ -184,6 +190,11 @@ class WageTemplatesController extends Controller
         }
 
         $template = $this->tmplModel->findOrFail($id);
+        if($this->tmplModel->where('wage_tmpl8_id', '<>', $id)->where('dept_id', $request->dept_id)->where('entry_level', 1)->count()) {
+            \Session::flash('error', "There can only be one (1) entry-level template for {$template->department->department}"); 
+            return redirect()->back();
+        }
+
         $template->update($this->templParams());
 
         $template->details()->delete();

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\WageTmpl8;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MstrRequest extends FormRequest
 {
