@@ -190,13 +190,13 @@
           el = $(el)
 
           if(el.attr('href').match(new RegExp(location.pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '$' }}')) || 
-            el.attr('href').match(new RegExp('\/' + pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '($|/)' }}'))) {
+            el.attr('href').match(new RegExp('\/' + pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '($|/)' }}')) ||el.attr('href').match(new RegExp('\/' + pathname + '$'))) {
             el.addClass('active')
             openMenu(el)
           }
         })
       }
-
+ 
       openMenu = (el) => {
         if(!el.closest('ul').closest('li').length) {
           return

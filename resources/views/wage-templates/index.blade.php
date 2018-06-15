@@ -56,6 +56,9 @@
       $('select[name="wt_doc_subcat"]').val('')
       $('select[name="wt_doc_subcat"] option').css('display', 'none')
       $('select[name="wt_doc_subcat"] option[data-cat="' + $('select[name="wt_doc_cat"]').val() + '"]').css('display', 'block')
+      if($('select[name="wt_doc_subcat"] option[selected]').attr('style') == 'display: block;') {
+        $('select[name="wt_doc_subcat"]').val($('select[name="wt_doc_subcat"] option[selected]').val())
+      }
     }
     
     updateSubCategoryDocument()
