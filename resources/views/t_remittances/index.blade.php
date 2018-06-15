@@ -53,6 +53,11 @@
                   <th>Action</th>
                 </tr>
                 @foreach($collections as $collection)
+                  @php
+                    if (!$collection) {
+                      continue;
+                    }
+                  @endphp
                   <tr class="text-center">
                     <td>{{ $collection->ID }}</td>
                     <td>{{ $collection->CreatedAt->format('Y-m-d H:ia') }}</td>
