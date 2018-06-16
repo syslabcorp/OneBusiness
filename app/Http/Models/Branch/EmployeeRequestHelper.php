@@ -22,6 +22,12 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
+	public function get_py_emp_hist_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\py_emp_hist";
+		return new $modelName;
+	}
+
 	public function getT_emp_posModel(){
 		$database_name = $this->getDatabaseName();
 		$modelName = "App\Http\Models\Tables\\".$database_name."\\t_emp_pos";
@@ -59,7 +65,7 @@ class EmployeeRequestHelper
 	}
 
 	public function getEmp_histModel(){
-		if($this->corpId == "6") { 
+		if($this->corpId == "6") {
 			$modelName = "App\Http\Models\Tables\payroll\\emp_hist";
 			return new $modelName;
 		}
