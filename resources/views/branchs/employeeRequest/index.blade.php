@@ -9,6 +9,8 @@
   <script src="{{ url('public/js/bootbox.min.js') }}"></script>
   <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
   <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://unpkg.com/tippy.js@2.5.2/dist/tippy.all.min.js"></script>
+
   <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
   <link rel="stylesheet" type="text/css" href="{{ url("public/css/branches/table_styles.css") }}">
 
@@ -83,5 +85,8 @@
     $("[type='search']").addClass("form-control");
     $("[name='employeeRequestsDatatable_length'],[name='reactivateEmployeeDatatable_length']").addClass("form-control");
   });
+
+  // Initialize all tooltips on page
+ 
   </script>
 @endsection

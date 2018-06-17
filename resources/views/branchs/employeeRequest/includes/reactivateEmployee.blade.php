@@ -118,7 +118,14 @@
                         {data: 'AllowedMins', name: 'AllowedMins'},
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
-                ]
+                ],
+              "drawCallback" : function( settings ) {
+                  tippy("[title]", {
+                      arrow: true,
+                      placement: 'left',
+                      size: "large"
+                  });
+              },
         });
         $('.branch-filter, .active-filter').on('change', function () {
                 reactivateEmployeeDatatable.draw();

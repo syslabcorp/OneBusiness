@@ -34,22 +34,16 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
-	public function getT_emp_rateModel(){
+	public function get_py_emp_rate_Model(){
 		$database_name = $this->getDatabaseName();
-		$modelName = "App\Http\Models\Tables\\".$database_name."\\t_emp_rate";
+		$modelName = "App\Http\Models\Tables\\".$database_name."\py_emp_rate";
 		return new $modelName;
 	}
 
-	public function getUniformModel(){
-		if($this->corpId == "6") { 
-			$modelName = "App\Http\Models\Tables\payroll\uniform";
-			return new $modelName;
-		}
-		if($this->corpId == "7") {
-			$modelName = "App\Http\Models\Tables\og_payroll\uniform";
-			return new $modelName;
-		}
-		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
+	public function get_py_uniforms_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\py_uniforms";
+		return new $modelName;
 	}
 
 	public function getDeduct_mstrModel(){
@@ -59,18 +53,6 @@ class EmployeeRequestHelper
 		}
 		if($this->corpId == "7") {
 			$modelName = "App\Http\Models\Tables\og_payroll\deduct_mstr";
-			return new $modelName;
-		}
-		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
-	}
-
-	public function getEmp_histModel(){
-		if($this->corpId == "6") {
-			$modelName = "App\Http\Models\Tables\payroll\\emp_hist";
-			return new $modelName;
-		}
-		if($this->corpId == "7") { 
-			$modelName = "App\Http\Models\Tables\og_payroll\\emp_hist";
 			return new $modelName;
 		}
 		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
