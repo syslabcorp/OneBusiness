@@ -22,6 +22,18 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
+	public function get_t_depts_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\\t_depts";
+		return new $modelName;
+	}
+
+	public function get_wage_tmpl8_mstr_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\wage_tmpl8_mstr";
+		return new $modelName;
+	}
+
 	public function get_py_emp_hist_Model(){
 		$database_name = $this->getDatabaseName();
 		$modelName = "App\Http\Models\Tables\\".$database_name."\py_emp_hist";

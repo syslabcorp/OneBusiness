@@ -63,6 +63,16 @@
           <input type="password" name="password" class="form-control">
         </div>
       </div>
+      <div class="form-group row">
+        <label style="margin-top: 7px;" class="col-sm-2 col-form-label">Department</label>
+        <div class="col-sm-4">
+          <select name="departmentId" class="form-control"></select>
+        </div>
+        <label style="margin-top: 7px;" for="start_date" class="col-sm-2 col-form-label">Position</label>
+        <div class="col-sm-4">
+          <select name="positionId" class="form-control"></select>
+        </div>
+      </div>
         <input type="hidden" name="requestId">
         <input type="hidden" name="username">
         <hr>
@@ -98,6 +108,20 @@
 </div>
 </form>
 <script>
+        function generateDepartmentsSelect(){
+          $.ajax({
+            method : "POST", 
+            url : "{{ url('getDepartments') }}",
+            data : { _token : '{{ csrf_token() }}', corpId : '{{ $corpId }}' }
+          }).done(function (response){
+            var select = $("[name='departmentId']").empty();
+            $.each(response, function (index, item) {
+              select.append(new Option(item, index));
+            });
+          });
+        }
+
+        generateDepartmentsSelect();
         let reactivateEmployeeDatatable = $('#reactivateEmployeeDatatable').DataTable({
                 processing: true,
                 serverSide: true,
