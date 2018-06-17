@@ -349,7 +349,7 @@ class EmployeeRequestController extends Controller
 			// if((new Carbon($user->LastUnfrmPaid))->diffInDays((new Carbon($request->start_date)), false) >= 255) {
 			if($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date) >= 255) {
 				$user->LastUnfrmPaid = $this->CalculateLast13_Date($request->start_date);
-				$deduct_mstr = $employeeRequestHelper->getDeduct_mstrModel();
+				$deduct_mstr = $employeeRequestHelper->get_py_deduct_mstr_Model();
 				$uniform = $employeeRequestHelper->get_py_uniforms_Model();
 				$uniform->EmpID = $user->UserID;
 				$uniform->Amount = $deduct_mstr::where("ID_deduct", "3")->first()->total_amt;
@@ -374,8 +374,11 @@ class EmployeeRequestController extends Controller
 			$emp_hist->for_qc = 0;
 			$emp_hist->Last13_Date = $this->CalculateLast13_Date($request->start_date);
 			$emp_hist->save();
-			// dd($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date));
-			// dd($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date));
+
+			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
+			$py_emp_rate->wage_tmpl8_id = $request->positionId;
+			$py_emp_rate->effect_date = $request->start_date;
+			$py_emp_rate->save();
 			
 			return ["success" => true, "msg" => "The employee reactivated successfully"];
 		}

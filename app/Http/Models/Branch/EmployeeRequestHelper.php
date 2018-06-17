@@ -58,16 +58,16 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
-	public function getDeduct_mstrModel(){
-		if($this->corpId == "6") { 
-			$modelName = "App\Http\Models\Tables\payroll\deduct_mstr";
-			return new $modelName;
-		}
-		if($this->corpId == "7") {
-			$modelName = "App\Http\Models\Tables\og_payroll\deduct_mstr";
-			return new $modelName;
-		}
-		throw new Exception("Corporation with id ".$this->corpId." is not supported yet!");
+	public function get_py_deduct_detail_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\py_deduct_detail";
+		return new $modelName;
+	}
+
+	public function get_py_deduct_mstr_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\py_deduct_mstr";
+		return new $modelName;
 	}
 
 	public function getDatabaseName(){

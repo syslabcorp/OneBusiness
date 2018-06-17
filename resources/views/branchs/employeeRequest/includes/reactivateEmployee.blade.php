@@ -10,10 +10,10 @@
                    </select>
                    <select style="width: 128px; display: inline;" class="form-control active-filter">
                            <option value="any">Any Status</option>
-                           <option value="1" selected>Active</option>
-                           <option value="0">Inactive</option>
+                           <option value="1">Active</option>
+                           <option value="0" selected>Inactive</option>
                    </select>
-                   <input type="checkbox" name="all-branches"> All Branches
+                   <input type="checkbox" checked name="all-branches"> All Branches
            </div>
 
             <table id="reactivateEmployeeDatatable" class="table table-bordered">
@@ -152,7 +152,7 @@
                         data: function (d) {
                                 d.branch_name = $('.branch-filter').val();
                                 d.isActive = $('.active-filter').val();
-                                d.corpId = {{ $corpId }};
+                                d.corpId = '{{ $corpId }}';
                         }
                 },
                 "order": [],
@@ -185,7 +185,7 @@
 
         function defineBranchId(){
             if($("#reactivateEmployeeForm input[type='checkbox'].MainBranchCheckbox").is(":checked")) {
-              return "-1";
+              return "0";
             } else {
               return $("#reactivateModal :checkbox:checked").next("select").val();
             }
@@ -207,10 +207,12 @@
             corporation_name = defineCorporationName();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
+            departmentId = $("input[name='departmentId']").val();
+            positionId = $("input[name='positionId']").val();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 
-                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : {{ $corpId }} }
+                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : '{{ $corpId }}', departmentId : departmentId, positionId : positionId }
             }).done(function (response){
                 if(response.success == "true") {
                     $('#reactivateModal').modal('hide');
@@ -236,7 +238,7 @@
                 $(this).next("select").css("background-color", "#ffffff");
                 $(this).next("select").find("option[value='null']").remove();
              }
-             $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').not(this).each(function (iterator, value){
+             $('#reactivateEmployeeForm input[type="checkbox"]').not(this).each(function (iterator, value){
                 $(value).prop('checked', false);  
                 $(value).next("select").prop("disabled", "disabled");
                 $(value).next("select").css("background-color", "#ebebe4");
@@ -253,7 +255,7 @@
                   $(value).next("select").css("background-color", "#ebebe4");
                   $(value).next("select").prepend('<option value="null"></option>');
                   $(value).next("select").val("null");
-                  $(value).prop("disabled", true);
+                  // $(value).prop("disabled", true);
                });
              } else {
               $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').each(function (iterator, value){
@@ -266,7 +268,13 @@ $(document).ready(function (){
 });
 
 $('[name="all-branches"]').change(function (){
-  if($(this).is(":checked")){
+  updateAllBrachesValue(this);
+});
+
+updateAllBrachesValue($('[name="all-branches"]'));
+
+function updateAllBrachesValue(element){
+  if($(element).is(":checked")){
     $(".branch-filter").prepend("<option value='any'></option>");
     $(".branch-filter").val("any");
     $(".branch-filter").attr("disabled", "disabled");
@@ -276,5 +284,5 @@ $('[name="all-branches"]').change(function (){
     $(".branch-filter").removeAttr("disabled");
     $(".branch-filter").trigger("change");
   }
-});
+}
 </script>
