@@ -180,3 +180,4 @@ Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmp
 Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
 Route::get("branchRequest", "Branch\EmployeeRequestController@index")->middleware('auth');
 Route::post("getDepartments", "Branch\EmployeeRequestController@getDepartments")->middleware('auth');
+Route::post("getPositions", "Branch\EmployeeRequestController@getPositions")->middleware('auth');

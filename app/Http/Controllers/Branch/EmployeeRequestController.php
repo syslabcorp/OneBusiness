@@ -427,4 +427,10 @@ class EmployeeRequestController extends Controller
 		$t_depts = $employeeRequest->get_t_depts_Model();
 		return $t_depts::all()->pluck("department", "dept_ID");
 	}
+
+	public function getPositions(EmployeeRequestHelper $employeeRequest, Request $request){
+		$employeeRequest->setCorpId($request->corpId);
+		$wage_tmpl8_mstr = $employeeRequest->get_wage_tmpl8_mstr_Model();
+		return $wage_tmpl8_mstr::where("dept_id", $request->departmentId)->where("entry_level", "1")->pluck("position", "wage_tmpl8_id");
+	}
 }

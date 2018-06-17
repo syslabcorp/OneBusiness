@@ -108,20 +108,42 @@
 </div>
 </form>
 <script>
-        function generateDepartmentsSelect(){
-          $.ajax({
-            method : "POST", 
-            url : "{{ url('getDepartments') }}",
-            data : { _token : '{{ csrf_token() }}', corpId : '{{ $corpId }}' }
-          }).done(function (response){
-            var select = $("[name='departmentId']").empty();
+        function generateDepartments(){
+          var callback = function (response){
+            populateSelectOptions("[name='departmentId']", response);
+            generatePositions($("[name='departmentId']").val());
+          }
+          ajaxRequest("POST", "{{ url('getDepartments') }}", { _token : '{{ csrf_token() }}', corpId : '{{ $corpId }}' }, callback);
+        }
+
+        function populateSelectOptions(selectSelector, response){
+            var select = $(selectSelector).empty();
             $.each(response, function (index, item) {
               select.append(new Option(item, index));
             });
-          });
         }
 
-        generateDepartmentsSelect();
+        function ajaxRequest(method, url, data, callback){
+          $.ajax({
+            method : method, 
+            url : url,
+            data : data
+          }).done(callback);
+        }
+
+        generateDepartments();
+
+        $("[name='departmentId']").change(function (){
+          generatePositions($(this).val());
+        });
+
+        function generatePositions(departmentId){
+          var callback = function(response){
+            populateSelectOptions("[name='positionId']", response);
+          };
+          ajaxRequest("POST", "{{ url('getPositions') }}", { _token : '{{ csrf_token() }}', corpId : '{{ $corpId }}', departmentId: departmentId }, callback);
+        }
+
         let reactivateEmployeeDatatable = $('#reactivateEmployeeDatatable').DataTable({
                 processing: true,
                 serverSide: true,
