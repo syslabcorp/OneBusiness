@@ -28,6 +28,12 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
+	public function get_h_docs_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\h_docs";
+		return new $modelName;
+	}
+
 	public function get_wage_tmpl8_mstr_Model(){
 		$database_name = $this->getDatabaseName();
 		$modelName = "App\Http\Models\Tables\\".$database_name."\wage_tmpl8_mstr";

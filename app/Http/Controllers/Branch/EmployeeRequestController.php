@@ -252,15 +252,20 @@ class EmployeeRequestController extends Controller
 
 		if($employeeRequest->type == "2"){
 			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
-			$emp_hist->Branch = $employeeRequest->from_branch;
-			$emp_hist->EmpID = $employeeRequest->userid;
-			$emp_hist->StartDate = $employeeRequest->date_start;
-			$emp_hist->for_qc = 1;
-			$emp_hist->save();
+			$emp = $emp_hist::where("EmpID", $employeeRequest->userid)->where("Branch", $employeeRequest->from_branch)->first();
+			if(!is_null($emp)) {
+				$emp->for_qc = 1;
+				$emp->save();
+			}
+			// $emp_hist->Branch = $employeeRequest->from_branch;
+			// $emp_hist->EmpID = $employeeRequest->userid;
+			// $emp_hist->StartDate = $employeeRequest->date_start;
+			// $emp_hist->for_qc = 1;
+			// $emp_hist->save();
 		}
 
 		if($employeeRequest->type == "4"){
-			
+			$employeeRequest->user()->update(array('template' => null,'template2' => null,'template3' => null,'template4' => null ));
 		}
 		
 		if($employeeRequest->type == "3"){
@@ -297,9 +302,20 @@ class EmployeeRequestController extends Controller
 			$t_emp_pos->emp_id = $user->UserID;
 			$t_emp_pos->save();
 
+			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
+			$emp_hist->Branch = $employeeRequest->to_branch;
+			$emp_hist->EmpID = $user->UserID;
+			$emp_hist->StartDate = $employeeRequest->date_start;
+			$emp_hist->save();
+
 			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
+			$py_emp_rate->txn_id = $emp_hist->txn_id;
+			$py_emp_rate->date_changed = $employeeRequest->DateApproved;
 			$py_emp_rate->effect_date = $employeeRequest->date_start;
 			$py_emp_rate->save();
+
+			// $h_docs = $employeeRequestHelper->get_h_docs_Model();
+
 		}
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->approved = "1";
