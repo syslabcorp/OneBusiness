@@ -107,7 +107,8 @@ class EmployeeRequestController extends Controller
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch_name.'</span>';
                 })
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span></span>';
+                    // return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span></span>';
+                    return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -247,6 +248,20 @@ class EmployeeRequestController extends Controller
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
 		if($employeeRequest->to_branch2 != null) { $branch_name = $employeeRequest->to_branch2->ShortName; }
 		else { $branch_name = null; }
+		dd($employeeRequest);
+
+		if($employeeRequest->type == "2"){
+			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
+			$emp_hist->Branch = $employeeRequest->from_branch;
+			$emp_hist->EmpID = $employeeRequest->userid;
+			$emp_hist->StartDate = $employeeRequest->date_start;
+			$emp_hist->for_qc = 1;
+			$emp_hist->save();
+		}
+
+		if($employeeRequest->type == "4"){
+			
+		}
 		
 		if($employeeRequest->type == "3"){
 			$user = new User();
@@ -268,10 +283,6 @@ class EmployeeRequestController extends Controller
 			$user->Level = 1;
 			$user->level_id = 1;
 			$user->passwrd = ($employeeRequest->pswd != null?(md5($employeeRequest->pswd)):null);
-			// $user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			// $user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
-			// $user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			// $user->Active = ($employeeRequest->to_branch != null?"1":"0");
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false?$employeeRequest->to_branch:"0");
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false?"1":"0");
 			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ') !== false?$employeeRequest->to_branch:"0");
@@ -287,9 +298,6 @@ class EmployeeRequestController extends Controller
 			$t_emp_pos->save();
 
 			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
-			// $py_emp_rate->pay_basis = "3";
-			// $py_emp_rate->rate = "0";
-			// $py_emp_rate->emp_id = $user->UserID;
 			$py_emp_rate->effect_date = $employeeRequest->date_start;
 			$py_emp_rate->save();
 		}
