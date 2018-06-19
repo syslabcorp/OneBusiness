@@ -264,7 +264,7 @@
 </div>
 @endsection
 
-@section('footer-scripts')
+@section('pageJS')
 <script type="text/javascript">
   (function() {
     $('#modal-new-category .btn-create').click(function(event) {

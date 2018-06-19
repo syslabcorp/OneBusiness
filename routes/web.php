@@ -133,6 +133,7 @@ Route::any('/list_feature/add_feature/{feature_id?}/{module_id?}', 'AccessLevelC
 Route::get('/list_feature/{module_id?}', 'AccessLevelController@list_feature');
 Route::get('/delete_feature/{feature_id}/{module_id?}', 'AccessLevelController@destroyfeature');
 
+Route::post('/menus/{id}/order', 'MenusController@order')->middleware('auth')->name('menus.order');
 Route::any('/list_template/add_template/{template_id?}', 'AccessLevelController@add_template');
 Route::any('/template_module', 'AccessLevelController@template_module');
 Route::get('/list_template', 'AccessLevelController@list_template');
