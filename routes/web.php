@@ -14,6 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 })->name('root');
+//Employee
+
+Route::get('employee/delivery-items', 'EmployeesController@deliveryItems', ['middleware' => 'auth'])->name('employee.deliveryItems');
+Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');

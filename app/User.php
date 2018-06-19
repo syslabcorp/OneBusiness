@@ -19,15 +19,15 @@ class User extends Authenticatable
      *
      * @var array
      */
-	 
+
     /* protected $fillable = [
         'name', 'username', 'email', 'password', 'phone', 'pswd_auth', 'otp_auth', 'bio_auth',
     ]; */
 	protected $fillable = [
         'UserName', 'uname','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
-        'otp_generate_time', 'otp'
+        'otp_generate_time', 'otp', 'Bday'
     ];
- 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -37,10 +37,14 @@ class User extends Authenticatable
         'passwrd', 'remember_token',
     ];
 
-    public function branchs()
-    {
-        return $this->hasMany(\App\Branch::class);
-    }
+    protected $dates = [
+        'Bday'
+    ];
+
+    // public function branchs()
+    // {
+    //     return $this->hasMany(\App\Branch::class);
+    // }
 
     public function area() {
         return $this->belongsTo(\App\UserArea::class, 'UserID', 'user_ID');
@@ -51,10 +55,18 @@ class User extends Authenticatable
         return $this->hasMany(\App\Shift::class, 'ShiftOwner', 'UserID');
     }
 
+    public function empHistories($db_name)
+    {
+        $empHistoryModel = new \App\Models\Py\EmpHistory;
+        $empHistoryModel->setConnection($db_name);
+
+        return $empHistoryModel->where('EmpID', $this->UserID);
+    }
+
 	/*
 	paramete should be changed to FEATURE_ID, ACTION
 	*/
-	
+
     public function checkAccess($feature, $action)
     {
         if($this->permissions == null)
@@ -75,7 +87,7 @@ class User extends Authenticatable
 
         return false;
     }
-	
+
 	//this accepts (int,text), like checkAccessById(18,"A")
     public function checkAccessById($feature_id, $action) {
         if($this->permissions == null)
@@ -88,7 +100,7 @@ class User extends Authenticatable
 
         foreach($this->permissions as $permission)
         {
-    
+
             if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type)) {
                 return true;
             }
@@ -127,7 +139,7 @@ class User extends Authenticatable
 
 
     public function checkAccessByPoId($module_ids,$feature_id, $action)
-    {   
+    {
         // if($this->permissions == null)
         // {
 		// 	$fetch_module_ids = \DB::table('rights_detail')
@@ -136,7 +148,7 @@ class User extends Authenticatable
 		// 			->where('rights_detail.feature_id', '=', $feature_id)
 		// 			->groupBy('rights_detail.module_id')
 		// 			->get();
-			
+
 		// 	$all_module_ids = array();
 		// 	foreach($fetch_module_ids AS $fetch_module_id){
 		// 		array_push($all_module_ids, $fetch_module_id->module_id);

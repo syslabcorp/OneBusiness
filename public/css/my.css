@@ -20,3 +20,11 @@ td.myclass
   text-align:center;
   vertical-align:middle;
 }
+
+.empStatus label{
+    padding-right: 5px;
+}
+
+.lvl label{
+    padding-right: 5px;
+}
