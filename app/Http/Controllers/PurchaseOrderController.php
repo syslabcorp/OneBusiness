@@ -458,7 +458,7 @@ class PurchaseOrderController extends Controller
           $header_branch[$branch] = Branch::find($branch)->ShortName; 
         }
       }
-      
+
       if(Request::all()['ItemCode'] && count(Request::all()['ItemCode']) )
       {
         // dd(Config::get('database.connections.mysql.database'));
@@ -822,15 +822,16 @@ class PurchaseOrderController extends Controller
           $SaleDetailModel->setConnection($company->database_name);
           $SaleDetail = $SaleDetailModel->where('item_id', $item_id)->where('Branch', $branch)->distinct()->get();
   
-          $test = DB::connection($company->database_name)->select( " SELECT * from s_hdr order by s_hdr.DateSold DESC LIMIT 1");
+          // $test = DB::connection($company->database_name)->select( " SELECT * from s_hdr order by s_hdr.DateSold DESC LIMIT 1");
           
-          if(count($test) > 0)
-          {
-            $test = $test[0]->DateSold;
-            $to_date = DateTime::createFromFormat('Y-m-d H:i:s', $test);
-            $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($test))));
-          }
-
+          // if(count($test) > 0)
+          // {
+          //   $test = $test[0]->DateSold;
+          //   $to_date = DateTime::createFromFormat('Y-m-d H:i:s', $test);
+          //   $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($test))));
+          // }
+            $to_date = date("Y-m-d H:i:s");
+            $from_date = new DateTime( date( "Y-m-d", strtotime("-".$no_of_date." day", strtotime($to_date))));
           
           // if( count($SaleDetail) > 0 )
           // {
@@ -995,7 +996,6 @@ class PurchaseOrderController extends Controller
           'num_details' => ($PurchaseOrderModel->purchase_order_details()->count() ),
           'total_sold' => $total_sold,
           'pending' => $pending,
-          'test' => $test,
           'error' => $errors,
           'to_date' => $array_today,
           'from_date' => $array_fromday

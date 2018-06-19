@@ -11,7 +11,7 @@
         <div class="col-md-3 form-group">
           <div class="row">
             <div class="col-xs-3" style="margin-top: 7px;">
-              <label>Filters:</label>
+              <label><strong>Filters:</strong></label>
             </div>
             <div class="col-xs-9">
               <select name="corpID" class="form-control changePageCompany">
