@@ -257,11 +257,6 @@ class EmployeeRequestController extends Controller
 				$emp->for_qc = 1;
 				$emp->save();
 			}
-			// $emp_hist->Branch = $employeeRequest->from_branch;
-			// $emp_hist->EmpID = $employeeRequest->userid;
-			// $emp_hist->StartDate = $employeeRequest->date_start;
-			// $emp_hist->for_qc = 1;
-			// $emp_hist->save();
 		}
 
 		if($employeeRequest->type == "4"){
@@ -310,12 +305,20 @@ class EmployeeRequestController extends Controller
 
 			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
 			$py_emp_rate->txn_id = $emp_hist->txn_id;
+			$py_emp_rate->wage_tmpl8_id = $employeeRequest->wage_tmpl8_id;
 			$py_emp_rate->date_changed = $employeeRequest->DateApproved;
 			$py_emp_rate->effect_date = $employeeRequest->date_start;
 			$py_emp_rate->save();
 
-			// $h_docs = $employeeRequestHelper->get_h_docs_Model();
-
+			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
+			$h_docs = $employeeRequestHelper->get_h_docs_Model();
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no;
+			$h_docs->series_no = $series_no;
+			$h_docs->doc_no = $corporation_master->wt_doc_cat;
+			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
+			$h_docs->emp_id  = $user->UserID;
+			$h_docs->branch  = $employeeRequest->to_branch;
+			$h_docs->save();
 		}
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->approved = "1";
