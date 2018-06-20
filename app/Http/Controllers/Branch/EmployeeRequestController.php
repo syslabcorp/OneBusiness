@@ -249,7 +249,6 @@ class EmployeeRequestController extends Controller
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
 		if($employeeRequest->to_branch2 != null) { $branch_name = $employeeRequest->to_branch2->ShortName; }
 		else { $branch_name = null; }
-		dd($employeeRequest);
 
 		if($employeeRequest->type == "2"){
 			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
@@ -313,11 +312,12 @@ class EmployeeRequestController extends Controller
 
 			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
 			$h_docs = $employeeRequestHelper->get_h_docs_Model();
-			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no;
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
 			$h_docs->series_no = $series_no;
 			$h_docs->doc_no = $corporation_master->wt_doc_cat;
 			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
 			$h_docs->emp_id  = $user->UserID;
+			$h_docs->doc_exp  = $employeeRequest->date_start;
 			$h_docs->branch  = $employeeRequest->to_branch;
 			$h_docs->save();
 		}
@@ -353,9 +353,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
-		if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
-			return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
-		}
+		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
+		// 	return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
+		// }
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
@@ -380,7 +380,7 @@ class EmployeeRequestController extends Controller
 				$deduct_mstr = $employeeRequestHelper->get_py_deduct_mstr_Model();
 				$uniform = $employeeRequestHelper->get_py_uniforms_Model();
 				$uniform->EmpID = $user->UserID;
-				$uniform->Amount = $deduct_mstr::where("ID_deduct", "3")->first()->total_amt;
+				$uniform->Amount = null !== $deduct_mstr::where("ID_deduct", "3")->first() ? $deduct_mstr::where("ID_deduct", "3")->first()->total_amt : "";
 				$uniform->DateIssued = $this->CalculateLast13_Date($request->start_date);
 				$uniform->save();
 			}
@@ -404,9 +404,22 @@ class EmployeeRequestController extends Controller
 			$emp_hist->save();
 
 			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
-			$py_emp_rate->wage_tmpl8_id = isset($request->positionId) ? $request->positionId : 0;
+			$py_emp_rate->txn_id = $emp_hist->txn_id;
+			$py_emp_rate->wage_tmpl8_id = isset($request->positionId) ? $request->positionId : 0; 
 			$py_emp_rate->effect_date = $request->start_date;
 			$py_emp_rate->save();
+
+			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
+			$h_docs = $employeeRequestHelper->get_h_docs_Model();
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
+			$h_docs->series_no = $series_no;
+			$h_docs->doc_no = $corporation_master->wt_doc_cat;
+			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
+			$h_docs->emp_id  = $user->UserID;
+			$h_docs->branch  = $request->branch_id;
+			$h_docs->doc_exp  = $request->start_date;
+			$h_docs->notes  = "Reactivated By: " . \Auth::user()->UserID;
+			$h_docs->save();
 			
 			return ["success" => true, "msg" => "The employee reactivated successfully"];
 		}

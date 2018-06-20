@@ -207,14 +207,14 @@
             corporation_name = defineCorporationName();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
-            departmentId = $("input[name='departmentId']").val();
-            positionId = $("input[name='positionId']").val();
+            departmentId = $("[name='departmentId']").val();
+            positionId = $("[name='positionId']").val();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 
-                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : '{{ $corpId }}', departmentId : departmentId, positionId : positionId }
+                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : '{{ $corpId }}', departmentId : departmentId, positionId : positionId,  }
             }).done(function (response){
-                if(response.success == "true") {
+                if(response.success == true) {
                     $('#reactivateModal').modal('hide');
                       reactivateEmployeeDatatable.draw();
                       employeeRequestsDatatable.draw();
