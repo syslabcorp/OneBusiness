@@ -29,19 +29,21 @@ class EmpTransformer extends Fractal\TransformerAbstract
       if ($empHist->first())
       {
         $datehired = $empHist->first()->StartDate ? $empHist->first()->StartDate->format('d/m/Y') : "";
-        if ($empHist->get()->pluck('Branch')->first())
+        if ($empHist->pluck('Branch')->first())
         {
-          $branch = Branch::where('Branch', $empHist->get()->pluck('Branch'))->get()->pluck('ShortName')->toArray();
-          if(count($branch) > 0)
+          // $branch = Branch::whereIn('Branch', $empHist->pluck('Branch'))->toSql();
+
+          $branchs = Branch::whereIn('Branch', $empHist->pluck('Branch'))->pluck('ShortName')->toArray();
+          if(sizeof($branchs) > 0)
           {
-            $branch = implode( ' ', $branch);
+            $branch = implode( ' ', $branchs);
           }
         }
 
         $mstrs = DB::connection($this->database_name)
             ->table('py_emp_rate')->join('py_emp_hist', 'py_emp_hist.txn_id', '=', 'py_emp_rate.txn_id')
             ->join('wage_tmpl8_mstr', 'py_emp_rate.wage_tmpl8_id', '=', 'wage_tmpl8_mstr.wage_tmpl8_id')
-            ->where('py_emp_hist.txn_id', $empHist->get()->pluck('txn_id'));
+            ->whereIn('py_emp_hist.txn_id', $empHist->get()->pluck('txn_id'));
         if($mstrs->first())
         {
           $base_rate = $mstrs->first()->base_rate;

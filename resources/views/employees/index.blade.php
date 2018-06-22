@@ -95,17 +95,20 @@ $(document).ready(function() {
 
       "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-3 branch-filter"><"col-md-3 empStatus"><"col-md-3 lvl"><"col-md-3 sort">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: function() {
-      $(".branch-filter").append('<div class="row"><label class="filterLabel1"> <input type="checkbox" class="check-branch" name="selectBranch" /> Select Branch</label></div><div class="row"><select class="select-branch form-control"><option value="1">In-transit</option><option value="2">Received</option><option value="3">All </option></select></div>')
+      $(".branch-filter").append('<div class="row"><label class="filterLabel1"> <input value="hasBranch" type="checkbox" class="check-branch" name="selectBranch" /> Select Branch</label></div><div class="row"><select name="branch" class="select-branch form-control"></select></div>')
       $(".branch-filter select").val('{{ $branch }}')
       $('.branch-filter .check-branch').prop('checked', {{$branchSelect ? "true" : "false"}})
       $('.select-branch').prop('disabled', {{$branchSelect ? "false" : "true"}} )
 
-      $('.empStatus').append('<div class="row"><label class="filterLabel1"> Employee Status</label></div><div class="row"><label class="filterLabel1"><input type="radio" value="1" name="status">Active</label><label class="filterLabel1"><input type="radio" value="0" name="status">Inactive</label><label class="filterLabel1"><input type="radio" name="status"  value="all">All</label></div>')
+      $('.empStatus').append('<div class="row"><label class="filterLabel1"> Employee Status</label></div><div class="row"><label class="filterLabel1"><input type="radio" value="1" name="status">Active</label><label class="filterLabel1"><input type="radio" value="2" name="status">Inactive</label><label class="filterLabel1"><input type="radio" name="status"  value="all">All</label></div>')
       $(".empStatus input[name=status][value='{{ $status }}']").prop("checked",true)
 
       $('.lvl').append('<div class="row"><label class="filterLabel1"> Level</label></div><div class="row"><label class="filterLabel1"><input value="non-branch" type="radio" name="level">Non-branch</label><label class="filterLabel1"><input type="radio" value="branch" name="level">Branch</label><label class="filterLabel1"><input type="radio" value="all" name="level">All</label></div>')
       $(".lvl input[name=level][value='{{ $level }}']").prop("checked",true);
       $('.sort').append('<div class="row"><a> Sort Order</a></div><div class="row">Branch > Position > Department</div>')
+      @foreach($branches as $branch)
+        $(".branch-filter select").append("<option value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
+      @endforeach
 
       },
 
@@ -192,6 +195,19 @@ $(document).ready(function() {
       ]
     });
 
+    $('body').on('change', 'input[type=radio][name=status], input[type=radio][name=level], .select-branch, .check-branch',
+      () => {
+        let url = "<?php echo route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => 'targetBranchSelect', 'branch' => 'targetBranch', 'status' => "targetStatus", 'level'=>"targetLevel"]) ?>"
+        let status = $('input[type=radio][name=status]:checked').val()
+        let branchSelect = $('input[name=selectBranch]').prop('checked') ? "hasBranch" : ""
+        let branch = $('.select-branch').val();
+        let level = $('input[type=radio][name=level]:checked').val();
+        url = url.replace('targetStatus', status).replace('targetBranchSelect', branchSelect)
+                  .replace('targetBranch', branch).replace('targetLevel', level)
+        table.ajax.url( url ).load()
+      }
+    )
+
     $('body').on( "change", ".check-branch",
       (event) => {
         if ($('.check-branch').is(":checked"))
@@ -204,6 +220,8 @@ $(document).ready(function() {
         }
       }
     )
+
+
   });
 
   // table.columns().flatten().each( function ( Active ) {

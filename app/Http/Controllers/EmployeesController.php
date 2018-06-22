@@ -16,17 +16,33 @@ use App\Http\Controllers\Controller;
 
 class EmployeesController extends Controller {
   public function index(Request $request) {
+    $company = Corporation::findOrFail($request->corpID);
+
     $branchSelect = $request->selectBranch ? $request->selectBranch : false;
     $branch = $request->branch ? $request->branch : 1;
     $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : 'non-branch';
 
+    // $items = User::all();
+
+    // $empHist = EmpHistories($this->database_name);
+
+    $branches =  DB::connection($company->database_name)->table('py_emp_hist')
+        ->join(Config::get('database.connections.mysql.database').".t_users", 'py_emp_hist.EmpID', '=', 't_users.UserID')
+        ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
+        ->select('t_sysdata.Branch', 'ShortName')
+        ->distinct()->get();
+    // dd($branches);
+    // DB::connection($company->database_name)->table('py_emp_hist')
+    //   ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
+    //   ->get();
     return view('employees/index', [
       'corpID' => $request->corpID,
       'branchSelect' => $branchSelect,
       'status' => $status,
       'level' => $level,
-      'branch' => $branch
+      'branch' => $branch,
+      'branches' => $branches
     ]);
   }
 
@@ -34,9 +50,9 @@ class EmployeesController extends Controller {
   {
     $company = Corporation::findOrFail($request->corpID);
 
-    $branchSelect = $request->selectBranch ? $request->selectBranch : false;
+    $branchSelect = $request->branchSelect ? $request->branchSelect : false;
     $branch = $request->branch ? $request->branch : 1;
-    $status= $request->status ? $request->status : "";
+    $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : "non-branch";
 
     // $items = DB::connection($company->database_name)->table('py_emp_hist')
@@ -46,23 +62,48 @@ class EmployeesController extends Controller {
 
     $items = User::all();
 
-    $branches = Branch::find($items->pluck('Branch'));
+    switch($status) {
+      case "1":
+          $items = $items->where('Active', 1);
+          break;
+      case "2":
+          $items = $items->where('Active', 0);
+          break;
+      default:
+          break;
+    }
 
-    // switch($request->status) {
-    //   case 1:
-    //       $items = $items->where('status', 1);
-    //       break;
-    //   case 0:
-    //       $items = $items->where('status', 0);
-    //       break;
-    //   default:
-    //       break;
-    // }
+    $empHistoryModel = new \App\Models\Py\EmpHistory;
+    $empHistoryModel->setConnection($company->database_name);
+
+    if($branchSelect && $branchSelect == "hasBranch")
+    {
+      if($branch)
+      {
+        $empHistory = $empHistoryModel->where('Branch', $branch)->get()->pluck('EmpID')->toArray();
+        $items = $items->whereIn('UserID', $empHistory);
+      }
+    }
+
+    $user_by_branches = $empHistoryModel->join(Config::get('database.connections.mysql.database').'.t_sysdata', 't_sysdata.Branch', '=', 'py_emp_hist.Branch')->get()->pluck('EmpID')->toArray();
+
+
+    switch($level) {
+      case "non-branch":
+        $items = $items->whereNotIn('UserID', $user_by_branches);
+        break;
+      case "branch":
+        $items = $items->whereIn('UserID', $user_by_branches);
+        break;
+      default:
+        break;
+    }
 
     // if($request->selectBranch)
     // {
     //   $items = $items->where('Branch', $branch);
     // }
+    // return response()->json($branchSelect);
 
     return fractal($items, new EmpTransformer($company->database_name))->toJson();
   }
