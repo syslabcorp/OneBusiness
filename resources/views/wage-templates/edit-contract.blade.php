@@ -6,10 +6,17 @@
       <form action="{{ route('wage-templates.edit-contract', [$template, 'corpID' => request()->corpID]) }}" method="POST">
         {{ csrf_field() }}
         <textarea name="contract" rows="10" id="contractEditor" value="{{ $template->contract }}">{{ $template->contract }}</textarea>
-        <div class="form-group">
-          <button class="btn btn-success" style="margin-top: 15px;">
-            Update
-          </button>
+        <div class="rown" style="margin-top: 15px;">
+          <div class="col-sm-6">
+            <a class="btn btn-default" href="{{ route('wage-templates.index', ['corpID' => request()->corpID]) }}">
+              <i class="fas fa-reply"></i> Back
+            </a>
+          </div>
+          <div class="col-sm-6 text-right">
+            <button class="btn btn-success">
+              <i class="fas fa-save"></i> Save
+            </button>
+          </div>
         </div>
       </form>
     </div>
