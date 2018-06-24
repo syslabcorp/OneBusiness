@@ -108,8 +108,8 @@ class EmployeeRequestController extends Controller
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch_name.'</span>';
                 })
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    // return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span></span>';
-                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span></span>';
+                    // return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
+                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -417,7 +417,7 @@ class EmployeeRequestController extends Controller
 			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
 			$h_docs->emp_id  = $user->UserID;
 			$h_docs->branch  = $request->branch_id;
-			$h_docs->doc_exp  = $request->start_date;
+			$h_docs->doc_exp  = "0000-00-00";
 			$h_docs->notes  = "Reactivated By: " . \Auth::user()->UserID;
 			$h_docs->save();
 			
