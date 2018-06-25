@@ -7,11 +7,8 @@
       
       <!-- Sidebar -->
        <div id="sidebar-togle-sidebar-sec">
-		  <ul id="sidebar_menu" class="sidebar-nav">
-			   <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-		  </ul>
-        <div class="sidebar-nav" id="sidebar">     
-          <div id="treeview_json"></div>
+        <div id="sidebar_menu" class="sidebar-nav">
+          <ul></ul>
         </div>
       </div>
           
@@ -57,9 +54,9 @@
 														<td>{{ ++$key }}</td>
 														<td>{{ $det->Province}}</td>
 														<td>
-														<a href="{{ URL::to('view_cities/'.$det->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View" data-toggle="tooltip" data-placement="top" title="View Province"><span class="glyphicon glyphicon-eye-open"></span></a>
+														<a href="{{ URL::to('provinces/view_cities/'.$det->Prov_ID) }}" class="btn btn-success btn-md blue-tooltip" data-title="View" data-toggle="tooltip" data-placement="top" title="View Province"><span class="far fa-eye"></span></a>
 
-														<a href="{{ URL('add_province/'.$det->Prov_ID) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}"  data-title="Edit" data-toggle="tooltip" data-placement="top" title="Edit Province"><span class="glyphicon glyphicon-pencil"></span></a>
+														<a href="{{ URL('add_province/'.$det->Prov_ID) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}"  data-title="Edit" data-toggle="tooltip" data-placement="top" title="Edit Province"><span class="fas fa-pencil-alt"></span></a>
 													   </td>
 
 													</tr>  

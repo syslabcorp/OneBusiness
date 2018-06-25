@@ -120,7 +120,7 @@ class BankAccountController extends Controller
         \Session::flash('flash_message', "Something went wrong!");
         return redirect()->route('banks.index');
     }
-
+    
 
     public function updateAccount(Request $request)
     {
@@ -135,12 +135,15 @@ class BankAccountController extends Controller
         $accountNum = $request->input('bankAccountNumberEdit');
         $accountId = $request->input('accountID');
         $corpId = $request->input('corpId');
-
+        $branch = $request->input('branch');
+        $mainStatus = $request->input('mainStatus');
+        
         //find instance and update
         $accountUpdate = BankAccount::where('bank_acct_id', $accountId)->first();
         $accountUpdate->bank_id = $bankId;
         $accountUpdate->acct_no = $accountNum;
         $accountUpdate->corp_id = $corpId;
+        $accountUpdate->branch = $mainStatus == "on" ? -1 : $branch ;
         $success = $accountUpdate->save();
 
         if($success){

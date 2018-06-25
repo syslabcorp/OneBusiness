@@ -61,12 +61,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -159,7 +156,7 @@
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
                                 <input type="hidden" name="accountId" value=" @if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }}  @endif">
-                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                                <button type="button" class="btn btn-success pull-right" id="submit_by_ajax">Create</button>
                             </div>
                         </div>
                     </div>
@@ -321,14 +318,28 @@
                 "serverSide": true,
                 "ajax" : {
                     type: "POST",
-                    url: "checkbooks/get-checkbooks",
+                    url: "{!! route('checkbooks.get_checkbooks') !!}",
                     data: function (d) {
                         @if(is_object($corporations))
-                        d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
-                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
-                        d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
-                        d.MainStatus = $('#example_ddl5 input').is(":checked");
+                            d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
+                            @if(isset($corporations[0]->corp_id))
+                                d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
+                            @else
+                                d.corpId = $('#example_ddl2 select option:selected').val();
+                            @endif
+
+                            @if(isset($banks[0]->bank_acct_id))
+                                d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $banks[0]->bank_acct_id }}' : $('#example_ddl4 select option:selected').val();
+                            @else
+                                d.branch = $('#example_ddl4 select option:selected').val();
+                            @endif
+
+                            @if(isset($satelliteBranch[0]->Branch))
+                                d.sysBranch = $('#example_ddl1 select option:selected').val() == undefined ? '{{  $satelliteBranch[0]->Branch }}' : $('#example_ddl1 select option:selected').val();
+                            @else
+                                d.sysBranch = $('#example_ddl1 select option:selected').val();
+                            @endif
+                            d.MainStatus = $('#example_ddl5 input').is(":checked");
                         @endif
                     }
                 },
@@ -363,14 +374,14 @@
                                 var info = mainTable.page.info();
 
                                 if (meta.row > 0) {
-                                    $('<a name="edit" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-md dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }else if(info.page > 0){
-                                    $('<a name="edit" class="btn btn-primary btn-sm dtMoveUp">' +
+                                    $('<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-md dtMoveUp">' +
                                         '<i class="glyphicon glyphicon-arrow-up"></i></a>').appendTo($span);
                                 }
 
-                                $( '<a name="edit" class="btn btn-primary btn-sm dtMoveDown">' +
+                                $( '<a name="edit" data-used="'+meta.row.used+'" class="btn btn-primary btn-md dtMoveDown">' +
                                     '<i class="glyphicon glyphicon-arrow-down"></i>').appendTo($span);
 
                                 return $span.html();
@@ -383,11 +394,11 @@
                             var checkAccessDel = '<?php  if(\Auth::user()->checkAccessById(28, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClass = "";
                             var optionClassDel = "";
-                            if(checkAccess == 0) { optionClass = 'disabled' };
+                            if(checkAccess == 0 || row.used == 1) { optionClass = 'disabled' };
                             if(checkAccessDel == 0) { optionClassDel = 'disabled' };
-                            return '<a name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
-                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
+                            return '<a name="edit" class="btn btn-primary btn-md edit '+optionClass+'">' +
+                                '<i class="fas fa-pencil-alt"></i><span style="display: none;">'+row.txn_no+'</span></a>' +
+                                '<a href="#" name="delete" class="btn btn-danger btn-md delete '+optionClassDel+'"><i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
                         "targets": 4
@@ -456,7 +467,7 @@
                 //edit the order of the column
                 $.ajax({
                     method: 'POST',
-                    url: 'checkbooks/edit-row-order',
+                    url: "{!! route('checkbooks.edit_row_order') !!}",
                     data: { rowId : rowId, rowId2 : rowId2, order_num : order_num, order_num2 : order_num2 },
                     success: function () {
                         mainTable.ajax.reload();
@@ -492,7 +503,7 @@
 
                     $.ajax({
                         method: 'POST',
-                        url: 'checkbooks/get-accounts-for-main',
+                        url: "{!! route('checkbooks.get_accounts_for_main') !!}",
                         success: function (data) {
                             data = JSON.parse(data);
                             $.each(data, function (key, val) {
@@ -539,7 +550,7 @@
                     var cnt = 0;
                     $.ajax({
                         method: 'POST',
-                        url: 'checkbooks/get-branches',
+                        url: "{!! route('checkbooks.get_branches') !!}",
                         data: { status : dataStatus, corpId : corpId },
                         success: function (data) {
                             data = JSON.parse(data);
@@ -556,7 +567,10 @@
                         }
 
                     })
-                    mainTable.ajax.reload();
+                    setTimeout(() => {
+                        mainTable.ajax.reload();
+                    }, 200);
+                    
                 }else{
                     $('#example_ddl2 select').val(__previous);
                 }
@@ -600,14 +614,14 @@
 
             $('#example_ddl1').on('change', function () {
                 var branchId = $('#example_ddl1 select option:selected').val();
-
+                
                 var options = $('#example_ddl4 select');
                 options.empty();
                 //get branches
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: 'checkbooks/get-banks',
+                    url: "{!! route('checkbooks.get_banks') !!}",
                     data: { branchId : branchId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -632,7 +646,9 @@
                     }
 
                 })
-                mainTable.ajax.reload();
+                setTimeout(() => {
+                    mainTable.ajax.reload();
+                }, 200);
             })
 
             //reload
@@ -646,7 +662,7 @@
                     var cnt = 0;
                     $.ajax({
                         method: 'POST',
-                        url: 'checkbooks/get-banks',
+                        url: "{!! route('checkbooks.get_banks') !!}",
                         data: { branchId : branchId },
                         success: function (data) {
                             data = JSON.parse(data);
@@ -737,17 +753,24 @@
 
             $(document).on('click', '.edit', function (e) {
                 e.preventDefault();
-                var start = $(this).closest('tr').find('td:nth-child(2)').text();
-                var end = $(this).closest('tr').find('td:nth-child(3)').text();
+                if($(this).data("used") == 1)
+                {
+                    alert("Check box is full: editing not allowed");
+                }
+                else
+                {
+                    var start = $(this).closest('tr').find('td:nth-child(2)').text();
+                    var end = $(this).closest('tr').find('td:nth-child(3)').text();
 
-                var id  = $(this).closest('td').find('span').text();
+                    var id  = $(this).closest('td').find('span').text();
 
-                $('input[name="editAccountId"]').val(id);
+                    $('input[name="editAccountId"]').val(id);
 
-                $('#editStartingNum').val(start);
-                $('#editEndingNum').val(end);
+                    $('#editStartingNum').val(start);
+                    $('#editEndingNum').val(end);
 
-                $('#editCheckbook').modal("toggle");
+                    $('#editCheckbook').modal("toggle");
+                }
             });
 
             $(document).on('submit', '#editCheckbookForm', function (e) {
@@ -808,6 +831,20 @@
                 }
             })
 
+            $(document).on('click', '#submit_by_ajax', function(e){
+                e.preventDefault();
+                $.ajax({
+                    method: 'POST',
+                    url: $('#addNewCheckbook form').attr('action'),
+                    data: $('#addNewCheckbook form').serialize(),
+                    success: function () {
+                        $('#startingNum').val('');
+                        $('#endingNum').val('');
+                        $('#addNewCheckbook').modal("hide");
+                        mainTable.ajax.reload();
+                    }
+                })
+            })
         })(jQuery);
     </script>
 @endsection

@@ -8,6 +8,7 @@ use App\Template;
 use App\UserArea;
 use App\User;
 use Illuminate\Http\Request;
+use App\Corporation;
 
 class BranchsController extends Controller
 {
@@ -95,6 +96,11 @@ class BranchsController extends Controller
             return redirect("/home"); 
         }
 
+        $company = Corporation::findOrFail(request()->corpID);
+      
+        $cfgModel = new \App\Models\SItem\Cfg;
+        $cfgModel->setConnection($company->database_name);
+
         $this->validate($request,[
             'branch_name' => 'required|max:15',
             'operator' => 'required',
@@ -128,9 +134,9 @@ class BranchsController extends Controller
             ]);
         }
 
-        $invtries = \DB::table('s_invtry_hdr')->get();
+        $invtries = \DB::table('s_invtry_hdr')->groupBy('ItemCode')->get();
         foreach($invtries as $invtry) {
-            \DB::table('s_item_cfg')->insert([
+            $cfgModel->create([
                 'item_id' => $invtry->item_id,
                 'Active' => 0,
                 'ItemCode' => $invtry->ItemCode,
@@ -300,5 +306,10 @@ class BranchsController extends Controller
         $branch->update($params);
         \Session::flash('success', "Branch {$branch->ShortName} has been updated!");
         return redirect(route('branchs.edit', [$branch]));
+    }
+
+    public function getBranchsByCity(Request $request){
+        $branchs = Branch::where('City_ID', $request->City_ID)->where('Active', 1)->get();
+        return response()->json( $branchs );
     }
 }

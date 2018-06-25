@@ -58,12 +58,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -80,9 +77,7 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
-                                            @if($vendors->count() > 0 )
-                                                <a href="/vendors">  {{ $vendors[0]->VendorName }} </a>
-                                            @endif
+                                            <a href="{{ route('vendors.index') }}">  {{ $VendorName }} </a>
                                         </div>
                                         <div class="col-xs-6 text-right">
                                             <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
@@ -111,7 +106,7 @@
                                             <tr>
                                                 <td>{{ $vendormgm->corp_name }}</td>
                                                 <td>{{ $vendormgm->corp_id }}</td>
-                                                <td>{{ $vendormgm->ShortName }}</td>
+                                                <td>{{ $vendormgm->nx_branch == -1 ? "MAIN": $vendormgm->ShortName }}</td>
                                                 <td>{{ $vendormgm->acct_num }}</td>
                                                 <td>{{ $vendormgm->description }}</td>
                                                 <td>{{ $vendormgm->days_offset }}</td>
@@ -120,10 +115,10 @@
                                                         <input type="checkbox" disabled>@endif</td>
                                                 <td>{{ $vendormgm->active }}</td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;"></span>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-md edit  @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
+                                                        <i class="fas fa-pencil-alt"></i><span style="display: none;"></span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(29, "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-md delete @if(!\Auth::user()->checkAccessById(29, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $vendormgm->acct_id }}</span>
                                                     </a>
                                                 </td>
@@ -147,7 +142,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h5 class="modal-title">Add Vendor Account</h5>
                 </div>
-                <form class="form-horizontal" action="{{ url('/vendor-management') }}" id="form1" METHOD="POST">
+                <form class="form-horizontal" action="" id="form1" METHOD="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
@@ -156,7 +151,7 @@
                                         <label class="col-md-3 control-label" for="corporationId">Corporation:</label>
                                         <div class="col-md-7">
                                             <select name="corporationId" class="form-control input-md corporationId" id=""
-                                                    data-parsley-required-message="Corporation person is required" required>
+                                                    data-parsley-required-message="Corporation is required" required>
                                                 <option value="">Select Corporation:</option>
                                                 @foreach($corporations as $corporation)
                                                     <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
@@ -190,7 +185,7 @@
                             <label class="col-md-3 col-xs-12 control-label" for="vendorAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
                                 <input id="vendorAccountNumber" name="vendorAccountNumber" type="text" class="form-control input-md"
-                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-required-message="Account number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 50 characters"
                                        data-parsley-maxlength="50"  data-parsley-pattern="^[\d+\-\?]+\d+$" required="">
                             </div>
@@ -227,8 +222,8 @@
                             </div>
                             <div class="col-sm-6">
                                 {!! csrf_field() !!}
-                                <input type="hidden" name="suppId" value="{{ $vendors[0]->supp_id }}">
-                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                                <input type="hidden" name="suppId" value=" @if($vendors->count() > 0 ) {{ $vendors[0]->supp_id}} @endif">
+                                <button type="submit" id="submitAddNewAccount" class="btn btn-success pull-right">Create</button>
                             </div>
                         </div>
                     </div>
@@ -252,6 +247,22 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
+                                    <div class="col-md-7">
+                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
+                                                data-parsley-required-message="Corporation is required" required>
+                                            <option value="">Select Corporation:</option>
+                                            @foreach($corporations as $corporation)
+                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                     <label class="col-md-3 control-label" for="editBranchName">Branch:</label>
                                     <div class="col-md-7">
                                         <select name="editBranchName" class="form-control input-md editBranchName" id="">
@@ -268,27 +279,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
-                                    <label class="col-md-3 control-label" for="editCorporationId">Corporation:</label>
-                                    <div class="col-md-7">
-                                        <select name="editCorporationId" class="form-control input-md editCorporationId" id=""
-                                                data-parsley-required-message="Corporation person is required" required>
-                                            <option value="">Select Corporation:</option>
-                                            @foreach($corporations as $corporation)
-                                                <option value="{{ $corporation->corp_id }}">{{ $corporation->corp_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group acctNumRw">
                             <label class="col-md-3 col-xs-12 control-label" for="editVendorAccountNumber">Account number:</label>
                             <div class="col-md-6 col-xs-10">
                                 <input id="editVendorAccountNumber" name="editVendorAccountNumber" type="text" class="form-control input-md"
-                                       data-parsley-required-message="Account number person is required"
+                                       data-parsley-required-message="Account number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 50 characters"
                                        data-parsley-maxlength="50" data-parsley-pattern="^[\d+\-\?]+\d+$"  required="">
                             </div>
@@ -359,7 +354,7 @@
                         {!! csrf_field() !!}
                         {{ method_field('Delete') }}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger btn-ok" class="deleteItem">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-ok" id="delete_ajax" class="deleteItem">Delete</button>
                     </div>
                 </form>
             </div>
@@ -372,14 +367,26 @@
 @section('footer-scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.7.2/parsley.min.js"></script>
     <script>
+        let selectBranchId = null;
         (function($){
+          $('#addNewAccount #submitAddNewAccount').click(function() {
+            var url = '{{ url('/vendor-management') }}' + getSearchParams();
+            $('#addNewAccount form').attr('action', url);
+          });
 
             $('#form1, #form2').parsley();
 
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-
+                    @if($main == "true")
+                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branch accounts</label>').appendTo("#example_ddlmain");
+                        $('#main_check_box').prop('checked', true);
+                    @else
+                        $('<label class="checkbox-inline"><input type="checkbox" id="main_check_box">View Main branch accounts</label>').appendTo("#example_ddlmain");
+                        $('#main_check_box').prop('checked', false);
+                    @endif
+                    
                     this.api().columns(8).every( function () {
                         var column = this;
                         var select = $('<select class="form-control"><option value="">All</option></select>')
@@ -393,17 +400,16 @@
                                     .search( val ? '^'+val+'$' : '', true, false )
                                     .draw();
                             } );
-
-                        select.append( '<option value="1">Active</option>' )
-                        select.append( '<option value="0">Inactive</option>' )
-
+                          select.append( '<option value="1">Active</option>');
+                          select.append( '<option  value="0">Inactive</option>');
+                          select.val('{{ $active }}')
                     } );
 
                     this.api().columns(1).every( function () {
                         var column = this;
                         var corporationID = $('<select class="form-control"><option value="{{ $corporations[0]->corp_id }}">{{ $corporations[0]->corp_name }}</option></select>')
                             .appendTo('#example_ddl2')
-                            .on( 'change', function () {
+                            .on('change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
                                 );
@@ -420,43 +426,55 @@
                             @if($cnt == 0){
                             <?php $key ?>
                         }@else{
-                            corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            @if( $corpID == $val->corp_id )
+                                corporationID.append('<option selected value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            @else
+                                corporationID.append('<option value="{{ $val->corp_id }}">{{ $val->corp_name }}</option>');
+                            @endif
                         }
                         @endif
-
                         <?php $cnt++; ?>
                         @endforeach
-
+                        
                     });
 
-
-
+                  setTimeout(() => {
+                    this.api().search('');
+                  }, 300);
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
+                "<'row my_custom'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-2.pull-left'<'#example_ddl2'>><'col-sm-2.pull-left'<'#example_ddl3'>><'col-sm-2.pull-left'<'#example_ddlmain.checkbox'>><'col-sm-2.pull-left'<'#example_ddl4'>><'col-sm-2.pull-left'<'#example_ddl5'>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 order: [[ 2, 'asc' ]],
                 "columnDefs": [
-                    { "orderable": false, "targets": [0, 2]},
-                    { "orderable": false, 'visible': false, "targets": [1,8]},
-                    { "orderable": false, "width": "9%", "targets": 5 },
+                    { "orderable": true, "targets": [0, 2]},
+                    { "orderable": true, 'visible': false, "targets": [1,8]},
+                    { "orderable": true, "width": "9%", "targets": 5 },
                     {"className": "dt-center", "targets": [5, 7]}
                 ]
             });
             $('.dataTable').wrap('<div class="dataTables_scroll" />');
+
+            $('#main_check_box').on('change', function(e){
+                e.preventDefault();
+                window.location = location.pathname + getSearchParams()
+            });
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
 
                 var id  = $(this).closest('td').find('span').text();
                 var itemCode  = $(this).closest('tr').find('td:nth-child(1)').text();
-                var description  = $(this).closest('tr').find('td:nth-child(2)').text();
+                var description  = $(this).closest('tr').find('td:nth-child(4)').text();
+                var account_num = $(this).closest('tr').find('td:nth-child(3)').text();
                 $('#confirm-delete').find('.serviceId').val(id);
-                $('#confirm-delete .brandToDelete').text(itemCode);
+                $('#confirm-delete .brandToDelete').text(account_num);
                 $('#confirm-delete .descriptionOfBrand').text(description);
-                $('#confirm-delete form').attr('action', '/OneBusiness/vendor-management/'+id);
+                $('#confirm-delete form').attr('action', '{{ route('vendor-management.index') }}/' + id + getSearchParams());
+                $('#confirm-delete form').append("<input type='hidden' name='corpID' value='"+$('#example_ddl2 select').val()+"'>");
+                $('#confirm-delete form').append("<input type='hidden' name='check_active' value='"+$('#example_ddl3 select').val()+"'>");
                 $('#confirm-delete').modal("show");
             });
 
@@ -483,34 +501,40 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/OneBusiness/vendor-management/get-account-for-vendor",
+                    url: "{!! route('vendor_management.get_account_for_vendor') !!}",
                     data: { id : id },
                     success: function (data) {
-                        if(data.nx_branch == -1){
-                            $('.editMainStatus').attr("checked", true);
-                            $('.editBranchName').attr("disabled", true);
-                        }else{
-                            $('.editBranchName').val(data.nx_branch);
-                        }
                         $('.editCorporationId').val(data.corp_id);
                         $('#editVendorAccountNumber').val(data.acct_num);
                         $('input[name="editDescription"]').val(data.description);
                         $('input[name="editCycleDays"]').val(data.days_offset);
                         $('input[name="editOffsetDays"]').val(data.firstday_offset);
 
-                        if(data.active){
-                            $('input[name="editActiveAccount').attr("checked", true);
+                        $('input[name="editActiveAccount').prop("checked", false);
+                        if(data.active == 1){
+                          $('input[name="editActiveAccount').prop("checked", true);
                         }
-                        $('#editAccount form').attr('action', '/vendor-management/'+id);
+                        $('#editAccount form').attr('action', '{{ route('vendor-management.index') }}/' + id  + getSearchParams());
+                        $('.editCorporationId').change();
+                        if(data.nx_branch == -1){
+                            $('.editMainStatus').attr("checked", true);
+                            $('.editBranchName').attr("disabled", true);
+                        }else{
+                            selectBranchId = data.nx_branch;
+                        }
+                        
                         $('#editAccount').modal("toggle");
                     }
                 })
             });
 
-           /* $(document).on('change', '#example_ddl2', function () {
-                var location = $('#example_ddl2 option:selected').val();
-                window.location.href = '?corp='+location;
-            })*/
+            function getSearchParams() {
+              var queryParams= '?corpID=' + $('#example_ddl2 select').val();
+              queryParams += '&main=' + $('#example_ddlmain input').is(':checked');
+              queryParams += '&active=' + $('#example_ddl3 select').val();
+              return queryParams;
+            }
+
 
             $(document).on('change', '.corporationId', function () {
                 var corpId = $('.corporationId option:selected').val();
@@ -520,7 +544,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '/OneBusiness/vendors/get-branches',
+                    url: '{{ route('vendors.get_branch') }}',
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -533,9 +557,35 @@
                             options.append('<option value="">No options</option>');
                         }
                     }
-
                 })
-            })
+            });
+
+            $(document).on('change', '.editCorporationId', function () {
+                var corpId = $(this).val();
+                var options = $('.editBranchName');
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('vendors.get_branch') }}',
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                            options.val(selectBranchId);
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+                })
+            });
+
+
 
             mainTable.search( $('#example_ddl2 option:selected').text() );
             mainTable.draw();

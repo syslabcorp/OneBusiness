@@ -35,12 +35,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -246,9 +243,9 @@
                             var optionClassDel = "";
                             if(checkDelete == 0) { optionClassDel = 'disabled' };
 
-                            return '<a href="inventory/'+row.item_id+'/edit" name="edit" class="btn btn-primary btn-sm" '+optionClass+'>' +
-                                    '<i class="glyphicon glyphicon-pencil"></i></a>' +
-                                    '<a href="#" name="delete" style="margin-left: 2px" class="btn btn-danger btn-sm delete" '+optionClassDel+'>' +
+                            return '<a href="inventory/'+row.item_id+'/edit" name="edit" class="btn btn-primary btn-md" '+optionClass+'>' +
+                                    '<i class="fas fa-pencil-alt"></i></a>' +
+                                    '<a href="#" name="delete" style="margin-left: 2px" class="btn btn-danger btn-md delete" '+optionClassDel+'>' +
                                     '<i class="glyphicon glyphicon-trash"></i><span style="display: none;">'+row.item_id+'</span></a>';
 
 
@@ -256,17 +253,31 @@
                         "targets": 15
                     },
                     { "orderable": true, "width": "5%", "targets": 0},
-                    { "orderable": true, "width": "2%", "targets": 2 },
-                    { "orderable": true, "width": "3%", "targets": 3 },
-                    { "orderable": false, "width" : "4%", "targets": 5 },
-                    { "orderable": true, "width" : "4%", "targets": 10 }
+                    { "orderable": true, "width": "2%", "targets": 1 },
+                    { "orderable": true, "width": "3%", "targets": 2 },
+                    { "orderable": true, "width" : "4%", "targets": 3 },
+                    { "orderable": true, "width" : "4%", "targets": 4 },
+                    { "orderable": false, "targets": 5 },
+                    { "orderable": false, "targets": 6 },
+                    { "orderable": false, "targets": 7 },
+                    { "orderable": false, "targets": 8 },
+                    { "orderable": false, "targets": 9 },
+                    { "orderable": false, "targets": 10},
+                    { "orderable": false, "targets": 11 },
                 ],
                 "columns": [
                     { "data": "item_id" },
                     { "data": "ItemCode" },
+                    { "data": "Product" },
+                    { "data": "Brand" },
                     { "data": "Description" },
                     { "data": "Unit" },
+                    { "data": "Min_Level" },
+                    { "data": "Packaging" },
+                    { "data": "Threshold" },
+                    { "data": "Multiplier" },
                     { "data": "barcode" },
+                    { "data": "type_desc" },
                 ],
             });
             $('#myTable').wrap('<div class="dataTables_scroll" />');

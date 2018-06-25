@@ -6,12 +6,9 @@
         <div id="togle-sidebar-sec" class="active">
             <!-- Sidebar -->
             <div id="sidebar-togle-sidebar-sec">
-                <ul id="sidebar_menu" class="sidebar-nav">
-                    <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                </ul>
-                <div class="sidebar-nav" id="sidebar">     
-                    <div id="treeview_json"></div>
-                </div>
+              <div id="sidebar_menu" class="sidebar-nav">
+                <ul></ul>
+              </div>
             </div>
               
             <!-- Page content -->
@@ -27,7 +24,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">List of Templates
                                 @if(\Auth::user()->checkAccessById(11, "A"))
-                                <a href="{{ URL('add_template') }}" class="pull-right">Add Template</a></div>
+                                <a href="{{ URL('list_template/add_template') }}" class="pull-right">Add Template</a></div>
                                 @endif
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -44,7 +41,7 @@
                                                 <tr>
                                                     <td><span class="dispnone">{{ $list->description }}</span>{{ $list->template_id }}</td>
                                                     <td>{{ $list->description }}</td>
-                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(11, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(11, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_template/add_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Edit Template"><span class="fas fa-pencil-alt"></span></a>
                                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(11, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_template/' . $list->template_id) }}" data-toggle="tooltip" data-placement="top" title="Delete Template" template-name="{{ $list->description }}" id="{{ $list->template_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach

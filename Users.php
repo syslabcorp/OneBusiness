@@ -12,7 +12,7 @@ class User extends Authenticatable
 /*
 	protected $table = 'sysusers';
 */
-	
+
 
 	protected $table = 't_users';
 

@@ -84,13 +84,13 @@ body
     -moz-user-select: none;
 }
 .control-checkbox input[type=checkbox] + label:before {
-    content: "";  
-    display: inline-block;  
-    width: 20px;  
-    height: 20px;  
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
     vertical-align:middle;
-    margin-right: 8px;  
-    border-radius: 2px;  
+    margin-right: 8px;
+    border-radius: 2px;
     font-size: 18px;
     border: 1px solid #d2d2d2;
 }
@@ -231,3 +231,75 @@ label.error {color: #ff0000;font-size: 12px !important;font-weight: normal;}
   color: #FFF;
 }
 
+
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
+.rown {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.rown:before, .rown:after {
+  display: table;
+  content: " ";
+}
+
+.rown:after {
+  clear: both;
+}
+
+.radio-check-label {line-height: 25px;padding-top: 0 !important;}
+img.business-one-logo {
+ height: 80px;
+ margin: 5px 0;
+}
+.navbar-nav > li > a{ padding-top:24px;  padding-bottom:24px; }
+label.error {color: #ff0000;font-size: 12px;font-weight: normal;}
+.click_module{cursor:pointer}
+.margin-0{ margin: 0 !important; }
+
+.container-fluid {padding-top: 90px;}
+nav.navbar-static-top {position: fixed;width: 100%;z-index: 9;}
+.registermargin-top{margin-top: 110px;}
+
+/*****19-08-2017*******/
+.sweet-overlay{  z-index: 99999 !important;}
+.sweet-alert{  z-index:999999 !important;}
+.visibility-hidden{ visibility: hidden; }
+#page-content-togle-sidebar-sec h3.text-center {padding-top: 20px;}
+.margin-top-20{margin-top:20px;}
+.swal-wide{width: 560px !important; padding: 0 10px 10px 10px !important;}
+.delete-title{float: left;margin-top: 0px;font-size: 20px;border-bottom: 1px solid #ccc;width: 100%;text-align: left;padding-bottom: 6px;}
+.delete-text{clear: left;text-align: left;padding-top: 15px;font-size: 16px;}
+.sa-button-container {text-align: right !important;border-top: 1px solid #ccc !important;padding-top: 6px !important;}
+.btn-lg, .btn-group-lg>.btn {padding: 8px 15px !important;font-size: 15px !important;line-height: 1.0 !important;border-radius: 6px !important;}
+.branchcheckbox{margin-left: 55px;}
+span.error {
+  color: #a94442;
+  font-weight: 400;
+}
+
+.modal-body {
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.modal-backdrop.fade.in {
+  position: fixed;
+}
+
+.table-category tr.selected, .table-subcategory tr.selected {
+  background: #b8d4ea;
+}
+.modal label {
+  font-weight: normal;
+}
+
+.modal {
+  z-index: 1050 !important;
+}
+
+#table-config tr td[rowspan]{
+  text-align: center;
+  vertical-align: middle;
+}

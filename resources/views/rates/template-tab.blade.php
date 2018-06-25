@@ -107,16 +107,16 @@
   <hr style="margin: 0px 0px 10px 0px;">
   <div class="form-group text-center">
     @if(\Auth::user()->checkAccessById(2, "A"))
-    <a class="btn btn-sm btn-success" href="{{ route('branchs.rates.index', [$branch, 'action' => 'new']) }}">
+    <a class="btn btn-md btn-success" href="{{ route('branchs.rates.index', [$branch, 'action' => 'new']) }}">
       <i class="fa fa-plus"></i> New
     </a>
     @endif
     @if($rate && \Auth::user()->checkAccessById(2, "E"))
-    <a class="btn btn-sm btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'tmplate_id' => $rate->tmplate_id]) }}">
-      <i class="fa fa-pencil"></i> Edit
+    <a class="btn btn-md btn-info" href="{{ route('branchs.rates.index', [$branch, 'action' => 'edit', 'tmplate_id' => $rate->tmplate_id]) }}">
+      <i class="fas fa-pencil-alt"></i> Edit
     </a>
     @endif
-    <a class="btn btn-sm btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
+    <a class="btn btn-md btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
       <i class="fa fa-reply"></i> Back
     </a>
   </div>
@@ -193,7 +193,7 @@
         <tbody>
           <tr>
             <td>
-              <button class="btn btn-sm btn-success" type="button">
+              <button class="btn btn-md btn-success" type="button">
                 <i class="fa fa-magic"></i>
               </button>
             </td>
@@ -223,7 +223,7 @@
     <hr>
     @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
-      <button class="btn btn-sm btn-success btn-save">
+      <button class="btn btn-md btn-success btn-save">
         <i class="fa fa-save"></i> Save
       </button>
     </div>
@@ -353,7 +353,7 @@
           <tbody>
             <tr>
               <td>
-                <button class="btn btn-sm btn-success" type="button">
+                <button class="btn btn-md btn-success" type="button">
                   <i class="fa fa-magic"></i>
                 </button>
               </td>
@@ -405,7 +405,7 @@
     <hr>
     @if(\Auth::user()->checkAccessById(2, "E") && $rate->details()->count() > 0)
     <div class="col-md-12 text-right">
-      <button class="btn btn-sm btn-success btn-save">
+      <button class="btn btn-md btn-success btn-save">
         <i class="fa fa-save"></i> Save
       </button>
     </div>

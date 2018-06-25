@@ -243,6 +243,7 @@ $(function(){
 $(function()
 {
   $('#brach_remittance_create').on('change', '#remit_group', function(){
+    $('#brach_remittance_create #city').val('')
     $('#brach_remittance_create').submit();
   });
   
@@ -503,10 +504,117 @@ $(function()
 
     return parts.join(dec_point);
 }
-
-  $(function () {
-    $('#datetimepicker').datetimepicker();
-  });
   
 });
 
+$(function() {
+  $('body').on('change', '.prodline_item', function()
+  {
+    var ProdLine = $(this).val();
+    var _token = $("meta[name='csrf-token']").attr('content');
+    if($(this).is(":checked")) 
+    {
+      $.ajax({
+        url: ajax_url+'/purchase_order/ajax_render_item_by_prodline',
+        data: {_token, ProdLine},
+        type: 'POST',
+        success: function(res){
+          $.each(res.items, function( index, value ) {
+            $('#item_code').append("<li class='ui-widget-content id_"+ProdLine+ " ' data-ItemCode-ID="+value.item_id+">"+value.ItemCode+"</li>");
+          });
+          sortUnorderedList();
+        }
+      });
+    }
+    else
+    {
+      $(".id_" + ProdLine).remove();
+    }
+  });
+
+  function sortUnorderedList() {
+    for(var i = 0, l = $('#item_code li').length; i < l; i++)
+    {
+      for(var j = i, l = $('#item_code li').length; j < l; j ++)
+      {
+        if( $('#item_code li')[i].innerHTML.toUpperCase() > $('#item_code li')[j].innerHTML.toUpperCase() )
+        {
+          var other = $('#item_code li').eq(j).clone();
+          $('#item_code li').eq(i).before(other);
+          $('#item_code li').eq(j+1).remove();
+        }
+      }
+    }
+  }
+
+  $("input[name='branch_type']").change(function() {
+    var self = $(this);
+    if(!(this.checked)) {
+      $('#branch').find('.ui-widget-content').each(function( index ) {
+        if($(this).text().startsWith( self.val() ) )
+        {
+          $(this).removeClass('ui-selected');
+          $(this).hide();
+        }
+      });
+    }
+    else
+    {
+      $('#branch').find('.ui-widget-content').each(function( index ) {
+        if($(this).text().startsWith( self.val() ) )
+        {
+          $(this).show();
+        }
+      });
+    }
+  });
+
+
+  $("#manual_generate").on('click', function(event){
+    if( $('#manualform').valid())
+    { 
+      if($('#item_code .ui-selected').length > 0 && $('.prodline_item:checked').length > 0)
+      {
+
+        $("#manual_generate").prop('disabled', 'disabled');
+        $('#main_tab').hide();
+        $('#loading-animation').show();
+
+        $( "input[name='ItemCode[]']" ).remove();
+        $( "input[name='branch[]']" ).remove();
+        
+        var input;
+        $('#item_code .ui-selected').each(function(el) {
+          input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "ItemCode[]").val($(this).data("itemcode-id"));
+          $('#manualform').append(input);
+        });
+  
+        $('#branch .ui-selected').each(function(el) {
+          input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "branchs[]").val($(this).data("branch"));
+          $('#manualform').append(input);
+        });
+  
+        // $('#manualform').submit();
+  
+        $.ajax({
+          url: ajax_url+'/purchase_order/manual_suggest',
+          data: $('#manualform').serialize(),
+          type: "GET",
+          success: function(res){
+            $('.content').append(res);
+            $('#loading-animation').hide();
+        
+          }
+        });
+      }
+    }
+
+  });
+
+  $( ".selectable" ).selectable();
+
+});

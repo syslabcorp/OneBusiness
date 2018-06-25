@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\BankAccount;
 use App\Checkbook;
+use App\City;
+use App\Branch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -15,9 +17,9 @@ class CheckbookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        
         if(!\Auth::user()->checkAccessById(28, "V"))
         {
             \Session::flash('error', "You don't have permission");
@@ -26,13 +28,57 @@ class CheckbookController extends Controller
 
 
         //get user data
-        $branches = DB::table('user_area')
-            ->where('user_ID', \Auth::user()->UserID)
-            ->pluck('branch');
+        // $branches = DB::table('user_area')
+        //     ->where('user_ID', '=', \Auth::user()->UserID)
+        //     ->pluck('branch');
 
-        $branch = explode(",", $branches[0]);
+        // $branch = explode(",", $branches[0]);
 
+        if((\Auth::user()->area))
+        {
+          if((\Auth::user()->area->branch))
+          {
+            $branch = explode( ',' ,\Auth::user()->area->branch );
+          }
 
+          if((\Auth::user()->area->province))
+          {
+            $provinces_ID = explode( ',' ,\Auth::user()->area->province );
+            $cities = City::WhereIn('Prov_ID', $provinces_ID)->orderBy('City')->get();
+
+            $cities_ID = $cities->map(function($item) {
+              return $item['City_ID'];
+            });
+
+            $branchs_list = Branch::whereIn('City_ID', $cities_ID)->get();
+
+            $branchs_ID = $branchs_list->map(function($item) {
+              return $item['Branch'];
+            });
+
+            $branch = $branchs_ID->toArray();
+          }
+
+          if((\Auth::user()->area->city))
+          {
+            $cities_ID = explode( ',' ,\Auth::user()->area->city );
+            $cities = City::whereIn('City_ID', $cities_ID)->orderBy('City')->get();
+
+            $branchs_list = Branch::whereIn('City_ID', $cities_ID)->get();
+
+            $branchs_ID = $branchs_list->map(function($item) {
+              return $item['Branch'];
+            });
+
+            $branch = $branchs_ID->toArray();
+          }
+        }
+        else
+        {
+            $branch = [];
+        }
+
+        
         //dd($branch);
         $corporations = DB::table('t_sysdata')
             ->join('corporation_masters', 't_sysdata.corp_id', '=', 'corporation_masters.corp_id')
@@ -41,12 +87,12 @@ class CheckbookController extends Controller
             ->orderBy('corporation_masters.corp_name', 'ASC')
             ->distinct()
             ->get();
-
+            
         if(isset($corporations[0]->corp_id)) {
-
+            
             //get records from t_sysdata
             $tSysdata = DB::table('t_sysdata')
-                ->orderBy('Branch', 'ASC')
+                ->orderBy('ShortName', 'ASC')
                 ->where('Active', 1)
                 ->where('corp_id', $corporations[0]->corp_id)
                 ->get();
@@ -62,7 +108,7 @@ class CheckbookController extends Controller
                     'cv_banks.bank_code as bankNameCode', 'cv_bank_acct.bank_id AS bankId', 'cv_bank_acct.acct_no AS accountNo')
                 ->orderBy('cv_banks.bank_code', 'ASC')
                 ->get();
-
+                
         }else{
             $details = array(
                 0 => [
@@ -83,7 +129,7 @@ class CheckbookController extends Controller
                 ]
             );
         }
-
+        
 
 
         return view('checkbooks.index')
@@ -139,13 +185,17 @@ class CheckbookController extends Controller
         $checkbook->lastchknum = $ending;
         $checkbook->bank_code = $bankCode->banks->bank_code;
         $success = $checkbook->save();
-
+        
         if($success) {
-            \Session::flash('success', "Checkbook added successfully");
-            return redirect()->route('checkbooks.index');
+            return response()->json("success", 200);
+            
+            // \Session::flash('success', "Checkbook added successfully");
+            // return redirect()->route('checkbooks.index');
         }
-        \Session::flash('error', "Something went wrong!");
-        return redirect()->route('checkbooks.index');
+        return response()->json("failure", 200);
+        
+        // \Session::flash('error', "Something went wrong!");
+        // return redirect()->route('checkbooks.index');
     }
 
     /**
@@ -411,7 +461,7 @@ class CheckbookController extends Controller
 
         //get records from t_sysdata
         $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
+            ->orderBy('ShortName', 'ASC')
             ->where('Active', intval($status))
             ->where('corp_id', intval($corpId))
             ->select('Branch', 'ShortName')

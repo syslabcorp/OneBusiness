@@ -6,12 +6,9 @@
             <div id="togle-sidebar-sec" class="active">
 					 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 				<!--page content-->
 				<div id="page-content-togle-sidebar-sec">
@@ -57,7 +54,7 @@
                         <div class="form-group">
 						 <div class="row">
 									<div class="col-sm-6">
-                                        <a href="{{ URL::to('view_cities/'.$detail_edit_city->Prov_ID) }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
+                                        <a href="{{ URL::to('provinces/view_cities/'.$detail_edit_city->Prov_ID) }}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
                                     </div>
                                     <div class="col-sm-6">
                                        {!! csrf_field() !!}

@@ -15,11 +15,10 @@ class VendorController extends Controller
      */
     public function index()
     {
-        /*if(!\Auth::user()->checkAccessById(29, "V"))
-        {
+        if(!\Auth::user()->checkAccessById(29, "V")) {
             \Session::flash('error', "You don't have permission");
             return redirect("/home");
-        }*/
+        }
 
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
@@ -107,8 +106,10 @@ class VendorController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Vendor $vendor)
+    public function show(Vendor $vendor,Request $request)
     {
+        
+
         if(!\Auth::user()->checkAccessById(29, "V"))
         {
             \Session::flash('error', "You don't have permission");
@@ -121,12 +122,47 @@ class VendorController extends Controller
 
         //$url = $request->input('corp');
         //$url != null ? session(['corpUrl' => $url]) : null;
-
+        
         $corporations = DB::table('corporation_masters')
             ->orderBy('corp_name', 'ASC')
             ->get();
 
+        if(isset($request->corpID))
+        {
+            $corpID = $request->corpID;
+        }
+        else
+        {
+            $corpID = $corporations->first()->corp_id;
+        }
+        // dd($request->all());
+        $check_active = "";
 
+        if(isset($request->check_active))
+        {
+            if($request->check_active == 1)
+            {
+                $check_active = "active";
+            }
+            if($request->check_active == 0)
+            {
+                $check_active = "inactive";
+            }
+        }
+        
+        // dd($request->corpID);
+        if( isset($request->main) && $request->main == "true" )
+        {
+        $vendors = DB::table('cv_vendacct')
+            ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
+            ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
+            ->where('cv_vendacct.nx_branch', -1)
+            ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
+            ->orderBy('VendorName', 'ASC')
+            ->get();
+        }
+        else
+        {
         $vendors = DB::table('cv_vendacct')
             ->join('s_vendors', 'cv_vendacct.supp_id', '=', 's_vendors.Supp_ID')
             ->join('corporation_masters', 'cv_vendacct.corp_id', '=', 'corporation_masters.corp_id')
@@ -134,6 +170,9 @@ class VendorController extends Controller
             ->where('s_vendors.Supp_ID', $vendor->Supp_ID)
             ->orderBy('VendorName', 'ASC')
             ->get();
+        }
+
+        $vendor_name = $vendor->VendorName;
 
       /*  if($url == null)
         {
@@ -153,13 +192,22 @@ class VendorController extends Controller
         }*/
 
         $branches = DB::table('t_sysdata')
+            ->where('Active', 1)
             ->orderBy('Description', 'ASC')
             ->get();
 
-        return view('vendors.management.index')
+        // return response()->json($vendors, 200);
+        
+        return view('vendors.management.index', [
+          'active' => $request->active
+        ])
             ->with('vendors', $vendors)
             ->with('corporations', $corporations)
-            ->with('branches', $branches);
+            ->with('branches', $branches)
+            ->with('main', $request->main)
+            ->with('corpID', $corpID)
+            ->with('VendorName', $vendor_name)
+            ->with('check_active', $check_active);
     }
 
     /**
@@ -220,8 +268,8 @@ class VendorController extends Controller
         ]);
 
         if($success){
-            \Session::flash('success', "Vendor updated successfully");
-            return redirect()->route('vendors.index');
+          \Session::flash('success', "Vendor updated successfully");
+          return redirect()->route('vendors.index');
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.index');
@@ -261,10 +309,10 @@ class VendorController extends Controller
 
         //get records from t_sysdata
         $tSysdata = DB::table('t_sysdata')
-            ->orderBy('Branch', 'ASC')
+            ->orderBy('ShortName', 'ASC')
             ->where('corp_id', intval($corpId))
             ->where('Active', 1)
-            ->select('Branch', 'ShortName')
+            ->select('Branch', 'ShortName', 'Active')
             ->get();
 
         return response()->json(json_encode($tSysdata), 200);

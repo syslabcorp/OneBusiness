@@ -33,12 +33,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -77,10 +74,10 @@
                                                 <td>{{ $brand->Brand_ID }}</td>
                                                 <td>{{ $brand->Brand }}</td>
                                                 <td>
-                                                    <a href="#" name="edit" class="btn btn-primary btn-sm edit  @if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif">
-                                                        <i class="glyphicon glyphicon-pencil"></i><span style="display: none;">{{ $brand->Brand_ID }}</span>
+                                                    <a href="#" name="edit" class="btn btn-primary btn-md edit  @if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif">
+                                                        <i class="fas fa-pencil-alt"></i><span style="display: none;">{{ $brand->Brand_ID }}</span>
                                                     </a>
-                                                    <a href="#" name="delete" class="btn btn-danger btn-sm delete @if(!\Auth::user()->checkAccessById(23, "D")) disabled @endif">
+                                                    <a href="#" name="delete" class="btn btn-danger btn-md delete @if(!\Auth::user()->checkAccessById(23, "D")) disabled @endif">
                                                         <i class="glyphicon glyphicon-trash"></i>
                                                     </a>
                                                 </td>

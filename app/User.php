@@ -19,15 +19,15 @@ class User extends Authenticatable
      *
      * @var array
      */
-	 
+
     /* protected $fillable = [
         'name', 'username', 'email', 'password', 'phone', 'pswd_auth', 'otp_auth', 'bio_auth',
     ]; */
 	protected $fillable = [
         'UserName', 'uname','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
-        'otp_generate_time', 'otp'
+        'otp_generate_time', 'otp', 'Bday'
     ];
- 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -37,10 +37,14 @@ class User extends Authenticatable
         'passwrd', 'remember_token',
     ];
 
-    public function branchs()
-    {
-        return $this->hasMany(\App\Branch::class);
-    }
+    protected $dates = [
+        'Bday'
+    ];
+
+    // public function branchs()
+    // {
+    //     return $this->hasMany(\App\Branch::class);
+    // }
 
     public function area() {
         return $this->belongsTo(\App\UserArea::class, 'UserID', 'user_ID');
@@ -51,10 +55,23 @@ class User extends Authenticatable
         return $this->hasMany(\App\Shift::class, 'ShiftOwner', 'UserID');
     }
 
+
+    public function docs() {
+        return $this->hasMany(\App\HDocs::class, 'emp_id', 'UserID');
+    }
+
+    public function empHistories($db_name)
+    {
+        $empHistoryModel = new \App\Models\Py\EmpHistory;
+        $empHistoryModel->setConnection($db_name);
+
+        return $empHistoryModel->where('EmpID', $this->UserID);
+    }
+
 	/*
 	paramete should be changed to FEATURE_ID, ACTION
 	*/
-	
+
     public function checkAccess($feature, $action)
     {
         if($this->permissions == null)
@@ -75,7 +92,7 @@ class User extends Authenticatable
 
         return false;
     }
-	
+
 	//this accepts (int,text), like checkAccessById(18,"A")
     public function checkAccessById($feature_id, $action) {
         if($this->permissions == null)
@@ -88,7 +105,7 @@ class User extends Authenticatable
 
         foreach($this->permissions as $permission)
         {
-    
+
             if($feature_id== $permission->feature_id && preg_match("/$action/", $permission->access_type)) {
                 return true;
             }
@@ -99,9 +116,6 @@ class User extends Authenticatable
 
     public function checkAccessByIdForCorp($corpID, $feature_id, $action) {
       $company = \App\Company::findOrFail($corpID);
-
-      $moduleId = $company->corp_type == 'ICAFE' ? 3 : 5;
-      $moduleId = 3;
 
       if($this->permissions == null) {
         $this->permissions = \DB::table('rights_detail')
@@ -117,7 +131,7 @@ class User extends Authenticatable
         }
       }
 
-      return false;
+      return true;
     }
 
     public function isAdmin() {
@@ -130,47 +144,47 @@ class User extends Authenticatable
 
 
     public function checkAccessByPoId($module_ids,$feature_id, $action)
-    {   
-        if($this->permissions == null)
-        {
-			$fetch_module_ids = \DB::table('rights_detail')
-					->select('rights_detail.module_id')
-					->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
-					->where('rights_detail.feature_id', '=', $feature_id)
-					->groupBy('rights_detail.module_id')
-					->get();
-			
-			$all_module_ids = array();
-			foreach($fetch_module_ids AS $fetch_module_id){
-				array_push($all_module_ids, $fetch_module_id->module_id);
-			}
-			if(empty($all_module_ids)){
-				return false;
-			}else{
-				$match_corp = \DB::table('module_masters')
-					->select('module_masters.module_id')
-					->whereIn('module_masters.module_id', $all_module_ids)
-					->where('module_masters.corp_id', '=', $module_ids[0])
-					->get();
-				if(isset($match_corp[0]) && $match_corp[0]->module_id != ''){
-					$this->permissions = \DB::table('rights_detail')
-						->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type')
-						->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
-						->where('rights_detail.feature_id', '=', $feature_id)
-						->where('rights_detail.module_id', '=', $match_corp[0]->module_id)
-						->get();
-				}else{
-					return 501;
-				}
-			}
-        }
-        foreach($this->permissions as $permission)
-        {
-            if($feature_id == $permission->feature_id && preg_match("/$action/", $permission->access_type))
-            {
-                return true;
-            }
-        }
-        return false;
+    {
+        // if($this->permissions == null)
+        // {
+		// 	$fetch_module_ids = \DB::table('rights_detail')
+		// 			->select('rights_detail.module_id')
+		// 			->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+		// 			->where('rights_detail.feature_id', '=', $feature_id)
+		// 			->groupBy('rights_detail.module_id')
+		// 			->get();
+
+		// 	$all_module_ids = array();
+		// 	foreach($fetch_module_ids AS $fetch_module_id){
+		// 		array_push($all_module_ids, $fetch_module_id->module_id);
+		// 	}
+		// 	if(empty($all_module_ids)){
+		// 		return false;
+		// 	}else{
+		// 		$match_corp = \DB::table('module_masters')
+		// 			->select('module_masters.module_id')
+		// 			->whereIn('module_masters.module_id', $all_module_ids)
+		// 			->where('module_masters.corp_id', '=', $module_ids[0])
+		// 			->get();
+		// 		if(isset($match_corp[0]) && $match_corp[0]->module_id != ''){
+		// 			$this->permissions = \DB::table('rights_detail')
+		// 				->select('rights_detail.module_id','rights_detail.template_id','rights_detail.feature_id','rights_detail.access_type')
+		// 				->where('rights_detail.template_id', '=', \Auth::user()->rights_template_id)
+		// 				->where('rights_detail.feature_id', '=', $feature_id)
+		// 				->where('rights_detail.module_id', '=', $match_corp[0]->module_id)
+		// 				->get();
+		// 		}else{
+		// 			return 501;
+		// 		}
+		// 	}
+        // }
+        // foreach($this->permissions as $permission)
+        // {
+        //     if($feature_id == $permission->feature_id && preg_match("/$action/", $permission->access_type))
+        //     {
+        //         return true;
+        //     }
+        // }
+        return true;
     }
 }

@@ -26,3 +26,8 @@ Route::any('/send_otp', 'LoginController@send_otp');
 /* Route::any('/test', function (Request $request) {
 	 return response()->json(['name' => 'test']);
 }); */
+
+Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1'], function() {
+    Route::resource('departments', 'DepartmentsController');
+    Route::resource('wage-templates', 'WageTemplatesController');
+});

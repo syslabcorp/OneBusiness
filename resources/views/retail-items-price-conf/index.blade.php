@@ -20,7 +20,10 @@
         .selectable .ui-selecting { background: #b8d4ea; }
         .selectable .ui-selected { background: #76acd6; color: white; }
         .selectable { list-style-type: none; margin: 0; padding: 0; }
-        .selectable li { margin: 5px; padding: 0.4em; font-size: 14px; }
+        .selectable li { padding: 0.4em; font-size: 14px; border-bottom-width: 0px;}
+        .selectable li:last-child {
+          border-bottom-width: 1px;
+        }
         /* end of -------- css for selectable */
         
         /* css for fixed first column of the table (for confStep 2) */
@@ -29,18 +32,50 @@
         .rightBorder {border-right: 2px solid #ccc;}
         .priceField {width: 50px; text-align: center;}
 
-        table.fixedColumn > thead > tr { background-color: #ddd; padding-top: 20px; padding-bottom: 20px;}
-        table.fixedColumn > thead > tr > th:first-child, table.fixedColumn > tbody > tr > td:first-child  { position: absolute; display: inline-block; background-color: #ccc; width: 140px; vertical-align: middle; }
-        table.fixedColumn > tbody > tr > td {padding-bottom: 15px !important;}
-        table.fixedColumn > tbody > tr > td:first-child {text-align: center;}
+        table.fixedColumn > thead > tr { padding-top: 20px; padding-bottom: 20px;}
+        table.fixedColumn td:not(.rightBorder), table.fixedColumn th:not(.rightBorder) {
+          border-right: 1px solid #ccc;
+        }
+        table.fixedColumn > tbody > tr > td {text-align: center;}
+        table.fixedColumn > thead > tr + tr th {
+          font-weight: normal;
+        }
+        table.fixedColumn {
+          border: 1px solid #ccc;
+        }
+        table.fixedColumn .childControl {
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          padding: 3px 0px;
+          min-height: 28px;
+        }
+        table.fixedColumn .min-width {
+          min-width: 80px;
+          display: block; 
+        }
 
-        .selectedRow, tbody > tr:hover {background-color: #b8d4ea !important;}
+        table.fixedColumn tr>th:nth-child(1), table.fixedColumn tr>th:nth-child(2),
+        table.fixedColumn tr>td:nth-child(1), table.fixedColumn tr>td:nth-child(2) {
+          position: sticky;
+          background: #FFF;
+          z-index: 999;
+          width: 100px;
+          box-shadow: 1px 0px #ccc;
+        }
+        table.fixedColumn tr>th:nth-child(1), table.fixedColumn tr>td:nth-child(1) {
+          left: 0;
+        }
+        table.fixedColumn tr>th:nth-child(2), table.fixedColumn tr>td:nth-child(2) {
+          left: 100px;
+        }
 
+        .selectedRow input {
+          border: none;
+          background: none;
+        }
 
-        table.fixedColumn > thead > tr > th:nth-child(2), table.fixedColumn > tbody > tr > td:nth-child(2) { padding-left:150px !important; }
-        /* end of ----------------- css for fixed first column of the table (for confStep 2) */
-
-        
         #retailItemPCAppWrapper, #retailItemPCAppWrapper select, #retailItemPCAppWrapper select option {font-size: 14px !important;}
 
 
@@ -52,12 +87,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu <span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -68,54 +100,24 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
 
-                    <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Retail Items Price Configuration</h3>
+                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                Price Configuration for Retail Items by Branch
-                                
+                              <div class="row">
+                                <div class="col-sm-6">
+                                  <strong>Retail Items Pricing</strong>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                  @if(\Auth::user()->checkAccessById(36, "E"))
+                                    <button type="button" class="btn btn-success btn-md btn-copy" disabled="true" v-if="confStep === 1">Copy to Branch</button>
+                                  @endif
+                                  <button type="button" class="btn btn-success btn-md" @click="confNext" v-if="confStep === 1"
+                                    {{ \Auth::user()->checkAccessById(36, "V") ? '' : 'disabled' }}>Show</button>
+                                </div>
+                              </div>
                             </div>
                             <div class="panel-body">
-                                <div v-if="confStep === 2">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="row">
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Set Active</button>
-                                                </div>
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Set Redeemable</button>
-                                                </div>
-                                            </div>
-                                            <div class="row" style="margin-top: 5px;">
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Unset Active</button>
-                                                </div>
-                                                <div class="col-xs-6">
-                                                    <button type="button" class="btn btn-success btn-sm">Unset Redeemable</button>
-                                                </div>
-                                            </div>    
-                                        </div>
-                                        <div class="col-sm-8">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <label>Points per peso (SRP)</label><br>
-                                                    <input type="text" name="">
-                                                    <button type="button" class="btn btn-success btn-sm"  style="margin-left: 5px;">Set Points</button>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <label>Price</label><br>
-                                                    <input type="text" name="">
-                                                    <button type="button" class="btn btn-success btn-sm"  style="margin-left: 5px;">Set Price</button>
-                                                </div>
-                                            </div>                                            
-                                        </div>
-                                    </div>
-                                    <hr>
-                                </div>
-
                                 <div v-if="confStep === 1">
-                                    
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="row form-group">
@@ -132,14 +134,18 @@
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    Branches for the corporation
-
-                                                    <select class="form-group pull-right" @change="filterBranchList($event)">
+                                                  <div class="row">
+                                                    <div class="col-sm-7">
+                                                      Branches for the corporation
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                      <select class="form-control" @change="filterBranchList($event)">
                                                         <option value="1">Active</option>
                                                         <option value="0">Inactive</option>
                                                         <option value="2">All</option>
-                                                    </select>
-                                                    <div class="clearfix"></div>
+                                                      </select>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                                 <div class="panel-body" id="branchList">
                                                     <ul v-if="corpBranches.length > 0" id="selectableBranches" class="selectable">
@@ -164,273 +170,36 @@
 
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    Item Codes for this Product 
-
-                                                    <select class="form-group pull-right" @change="filterServiceList($event)">
+                                                  <div class="row">
+                                                    <div class="col-sm-7">
+                                                      Item Codes for this Product
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                      <select class="form-control" @change="filterServiceList($event)">
                                                         <option value="1">Active</option>
                                                         <option value="0">Inactive</option>
                                                         <option value="2">All</option>
-                                                    </select>
-                                                    <div class="clearfix"></div>
+                                                      </select>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                                 <div class="panel-body" id="serviceList">
-                                                    <div v-if="retailItems.length == 0" style="color: #900;">No items for this product line</div>
-                                                    
-                                                    <div v-else>
-                                                        <div v-if="showRetailItemStatus == 1">
-                                                            <!-- work with active items -->
-                                                            <ul v-if="retailItems[0].activeCounter > 0" id="selectableRetailItems" class="selectable">
-                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">No active items for this product line</div>
-                                                        </div>
-
-                                                        <div v-else-if="showRetailItemStatus == 2">
-                                                            <!-- work with all items -->
-                                                            <ul id="selectableRetailItems" class="selectable">
-                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                            </ul>
-                                                        </div>
-
-                                                        <div v-else>
-                                                            <!-- work with inactive items -->
-                                                            <ul v-if="retailItems[0].inactiveCounter > 0" id="selectableRetailItems" class="selectable">
-                                                                <li v-for="retailItem in retailItems" :serviceid="retailItem.id" class="ui-widget-content" v-if="!retailItem.isActive" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
-                                                            </ul>
-                                                            <div v-else style="color: #900;">No inactive items for this product line</div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> <!-- /confStep=1 -->
-                                
-                                <div v-if="confStep === 2">
-                                    <div class="table-responsive">
-                                        <div class="bootstrap-table">
-                                            <div class="fixed-table-container table-no-bordered" style="padding-bottom: 0px;">
-                                                <div class="fixed-table-body">
-                                                    <table id="table" class="table table-hover table-no-bordered fixedColumn">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>
-                                                                    Item Code
-                                                                </th>
-                                                                <th class="customThCss rightBorder" colspan="6" v-for="todo">
-                                                                    Branch 1
-                                                                </th>
-                                                                <th class="customThCss rightBorder" colspan="6">
-                                                                    Branch 2
-                                                                </th>
-                                                                <th class="customThCss rightBorder" colspan="6">
-                                                                    Branch 3
-                                                                </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>
-                                                                    <br>
-                                                                    <br>
-                                                                    <br>
-                                                                </th>
-                                                                <th>
-                                                                    Active
-                                                                </th>
-                                                                <th>
-                                                                    Redeem
-                                                                </th>
-                                                                <th>
-                                                                    Points
-                                                                </th>
-                                                                <th>
-                                                                    SRP
-                                                                </th>
-                                                                <th>
-                                                                    % MarkUp
-                                                                </th>
-                                                                <th class="rightBorder">
-                                                                    Net
-                                                                </th>
-                                                                <th>
-                                                                    Active
-                                                                </th>
-                                                                <th>
-                                                                    Redeem
-                                                                </th>
-                                                                <th>
-                                                                    Points
-                                                                </th>
-                                                                <th>
-                                                                    SRP
-                                                                </th>
-                                                                <th>
-                                                                    % MarkUp
-                                                                </th>
-                                                                <th class="rightBorder">
-                                                                    Net
-                                                                </th>
-                                                                <th>
-                                                                    Active
-                                                                </th>
-                                                                <th>
-                                                                    Redeem
-                                                                </th>
-                                                                <th>
-                                                                    Points
-                                                                </th>
-                                                                <th>
-                                                                    SRP
-                                                                </th>
-                                                                <th>
-                                                                    % MarkUp
-                                                                </th>
-                                                                <th class="rightBorder">
-                                                                    Net
-                                                                </th>
-                                                                
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
-                                                                <td>
-                                                                    ABC-101
-                                                                    <div class="text-center"><i class="glyphicon glyphicon-cog" title="SequelSports Membership Fee"></i> Last Cost: <strong>15.50</strong></div>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                            </tr>
-                                                            <tr @dblclick="toggleRowToEditable($event)" class="selectedRow"> 
-                                                                <td>
-                                                                    ABC-102
-                                                                    <div class="text-center"><i class="glyphicon glyphicon-cog" title="SequelSports Membership Fee"></i> Last Cost: <strong>18.00</strong></div>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="checkbox" name="" class="childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="0" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    <input type="text" name="" value="100" class="priceField childControl" disabled>
-                                                                </td> 
-                                                                <td>
-                                                                    48.39
-                                                                </td> 
-                                                                <td class="rightBorder">
-                                                                    7.50
-                                                                </td> 
-                                                            </tr>
-                                                            
-                                                        </tbody>
-                                                    </table>
+                                                  <div v-if="listItems.length == 0" style="color: #900;">
+                                                    <span v-if="showRetailItemStatus == 2">No items for this product line</span>
+                                                    <span v-if="showRetailItemStatus == 1">No active items</span>
+                                                    <span v-if="showRetailItemStatus == 0">No inactive items</span>
+                                                  </div>
+                                                  
+                                                  <div v-if="listItems.length > 0">
+                                                    <ul id="selectableRetailItems" class="selectable">
+                                                        <li v-for="retailItem in listItems" :serviceid="retailItem.id" class="ui-widget-content" :class="(selectedRetailItemIds.includes(retailItem.id.toString())) ? 'ui-selected' : ''">@{{ retailItem.code }}</li>
+                                                    </ul>
+                                                  </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="panel-footer">
-                                <a href="{{ url('/retail-items-price-conf') }}" class="btn btn-default btn-md pull-left" v-if="confStep === 2">Back</a> 
-
-                                <div class="pull-right">
-                                    <button type="button" class="btn btn-info btn-md" @click="confNext" v-if="confStep === 1">Show</button>
-                                    <button type="button" class="btn btn-primary btn-md" v-if="confStep === 2" style="margin-left: 5px;">Save</button>
-                                </div>
-
-                                <div class="clearfix"></div>
                             </div>
                         </div>
 
@@ -439,7 +208,59 @@
             </div>
         </div>
     </div>
-    
+  <div class="modal modal-copy fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="{{ route('retail-items-price-conf.update', [1]) }}" method="POST">
+          {{ csrf_field() }}
+          <input type="hidden" name="_method" value="PUT">
+          <input type="hidden" name="corpID" value="">
+          <input type="hidden" name="branch_id" value="">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Copy Configuration to other branch</h4>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    @foreach($corporations as $company)
+                      @if($company->branches()->where('Active', '=', 1)->count())
+                      <th>{{ $company->corp_name }}</th>
+                      @endif
+                    @endforeach
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    @foreach($corporations as $company)
+                      @if($company->branches()->where('Active', '=', 1)->count())
+                      <td>
+                        @foreach($company->branches()->where('Active', '=', 1)->orderBy('ShortName','ASC')->get() as $branch)
+                          <div class="form-group">
+                            <label style="font-weight: normal;">
+                              <input type="checkbox" name="branch_ids[]" value="{{ $branch->Branch }}">
+                              {{ $branch->ShortName }}
+                            </label>
+                          </div>
+                        @endforeach
+                      </td>
+                      @endif
+                    @endforeach
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="pull-left btn btn-default" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
+            <button class="btn btn-primary">Copy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('footer-scripts')
@@ -447,68 +268,102 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <script>
+    <script type="text/javascript">
+      var listBranchs = [];
+      
+      $('body').on('click', '.btn-copy', function(event) {
+        if($('#selectableBranches .ui-selected').length != 1) {
+          $('#page-content-togle-sidebar-sec').prepend('\
+            <div class="row alert-nothing">\
+              <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                <span class="fa fa-close"></span> <em>Please select only one(1) branch...</em>\
+              </div>\
+            </div>\
+            ');
+            setTimeout(function() {
+              $('.alert-nothing').remove();
+            }, 3000);
+            return;
+        }
+
+        $('.modal-copy input[name="branch_id"]').val($('#selectableBranches .ui-selected').attr('branchid'));
+        $('.modal-copy input[name="corpID"]').val($('select[name="corp_type"]').val());
+        
+        $('.modal-copy').modal('show');
+      });
+
         var serviceApp = new Vue({
             el: '#retailItemPCAppWrapper',
             data: {
                 confStep: 1,
                 corporations: [
-                    @foreach($corporations as $corporation)
+                  @foreach($corporations as $corporation)
+                    @if($corporation->database_name)
                     {
-                        id: {{ $corporation->corp_id }},
-                        name: '{{ $corporation->corp_name }}',
+                      id: {{ $corporation->corp_id }},
+                      name: '{{ $corporation->corp_name }}',
                     },
-                    @endforeach
+                    @endif
+                  @endforeach
                 ],
                 ri_selectedCorporationId: 0,
                 products: [
                     @foreach($products as $product)
-                    {
+                      @if($product->Active == 1)
+                      {
                         id: {{ $product->ProdLine_ID }},
                         name: '{{ $product->Product }}',
-                    },
+                      },
+                      @endif
                     @endforeach
                 ],
                 selectedProductId: 0,
                 corpBranches: [],
+                listBranches: [],
                 ri_selectedBranchIds: [],
                 retailItems: [],
+                listItems: [],
                 selectedRetailItemIds: [],
                 showBranchStatus: 1,
                 showRetailItemStatus: 1
             },
             methods: {
                 toggleRowToEditable: function(event) {
-                    var element = event.srcElement.closest('TR');
-                    element.classList.toggle('selectedRow');
+                  var element = event.srcElement.closest('TR');
+                  element.classList.toggle('selectedRow');
 
-                    var childControls = element.querySelectorAll('.childControl');
-                    var currentDisabledStatus = childControls[0].getAttribute('disabled');
-                  
-                    if(currentDisabledStatus == null || !currentDisabledStatus) {
-                        for(var i = 0; i < childControls.length; i++) {
-                            childControls[i].setAttribute('disabled', 'true');
-                        }
+                  var childControls = element.querySelectorAll('.childControl');
+                  var currentDisabledStatus = childControls[0].getAttribute('disabled');
+                
+                  if(currentDisabledStatus == null || !currentDisabledStatus) {
+                      for(var i = 0; i < childControls.length; i++) {
+                          childControls[i].setAttribute('disabled', 'true');
+                      }
 
-                    } else {
-                       for(var i = 0; i < childControls.length; i++) {
-                           childControls[i].removeAttribute('disabled');
-                       } 
-                    }
-                        
-
+                  } else {
+                      for(var i = 0; i < childControls.length; i++) {
+                          childControls[i].removeAttribute('disabled');
+                      } 
+                  }
                 },
                 confNext: function() {
-                    var self = this;
+                  var self = this;
 
-                    if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
-                        self.confStep = 2;
-
-                    } else {
-                        alert('Please select branch and retail items first, to proceed to next step.');
-                    }
-
-                    
+                  if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
+                    window.location = "{{ route('retail-items-price-conf.create') }}?branch_ids=" + this.ri_selectedBranchIds + 
+                      "&item_ids=" + this.selectedRetailItemIds + "&corpID=" + this.ri_selectedCorporationId;
+                  } else {
+                    $('#page-content-togle-sidebar-sec').prepend('\
+                    <div class="row alert-nothing">\
+                      <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                        <span class="fa fa-close"></span> <em>Please select Branch and Product first...</em>\
+                      </div>\
+                    </div>\
+                    ');
+                    setTimeout(function() {
+                      $('.alert-nothing').remove();
+                    }, 3000)
+                  }
                 },
                 confBack: function() {
                     var self = this;
@@ -532,6 +387,13 @@
                     if(filterOption == 0) self.showRetailItemStatus = 0;
                     else if(filterOption == 1) self.showRetailItemStatus = 1;
                     else self.showRetailItemStatus = 2;
+
+                    self.listItems = [];
+                    for(var i = 0; i < self.retailItems.length; i++) {
+                      if(self.retailItems[i].isActive == filterOption || filterOption == 2) {
+                        self.listItems.push(self.retailItems[i]);
+                      }
+                    }
                 },
                 loadBranches: function() {
                     var self = this;
@@ -549,6 +411,7 @@
                         axios.get(fetchUrl)
                           .then(function (responsedBranches) {
                             var branches = responsedBranches.data;
+                            listBranchs = branches;
 
                             self.corpBranches = [];
 
@@ -559,12 +422,14 @@
                                     isActive: branch.Active,
                                 });
                             });
+
+                            setTimeout(function() {
+                              self.activateSelectable();
+                            }, 500);
                           })
                           .catch(function (error) {
                             console.log(error);
                           });
-
-                        self.activateSelectable();
                     }
                 },
                 loadItems: function() {
@@ -586,16 +451,22 @@
                             self.retailItems = [];
 
                             responseRetailItems.map(function(retailItem, index) {
-                                self.retailItems.push({
-                                    id: retailItem.id,
-                                    code: retailItem.code,
-                                    description: retailItem.description,
-                                    isActive: retailItem.isActive,
-                                    activeCounter: retailItem.activeCounter,
-                                    inactiveCounter: retailItem.inactiveCounter,
-                                });
+                              self.retailItems.push({
+                                  id: retailItem.id,
+                                  code: retailItem.code,
+                                  description: retailItem.description,
+                                  isActive: retailItem.isActive,
+                                  activeCounter: retailItem.activeCounter,
+                                  inactiveCounter: retailItem.inactiveCounter,
+                              });
                             });
-                            
+
+                            self.listItems = [];
+                            for(var i = 0; i < self.retailItems.length; i++) {
+                              if(self.retailItems[i].isActive == 1) {
+                                self.listItems.push(self.retailItems[i]);
+                              }
+                            }
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -623,11 +494,11 @@
                             self.ri_selectedBranchIds = storedBranchIds;
                         },
                         stop: function( event, ui ) {
-                            if (typeof(Storage) !== "undefined") {
-                                localStorage.setItem("ri_selectedBranchIds", JSON.stringify(self.ri_selectedBranchIds));
-                            } else {
-                                console.log('Sorry! No Web Storage support..');
-                            }
+                          if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
+                            $('.btn-copy').prop('disabled', false);
+                          }else {
+                            $('.btn-copy').prop('disabled', true);
+                          }
                         },
                     });
 
@@ -648,11 +519,11 @@
                             self.selectedRetailItemIds = storedSelectedServiceIds;
                         },
                         stop: function( event, ui ) {
-                            if (typeof(Storage) !== "undefined") {
-                                localStorage.setItem("selectedRetailItemIds", JSON.stringify(self.selectedRetailItemIds));
-                            } else {
-                                console.log('Sorry! No Web Storage support..');
-                            }
+                          if(self.ri_selectedBranchIds.length && self.selectedRetailItemIds.length) {
+                            $('.btn-copy').prop('disabled', false);
+                          }else {
+                            $('.btn-copy').prop('disabled', true);
+                          }
                         },
                     });
 
@@ -660,22 +531,9 @@
                 setLocalStorageVariables: function() {
                     var self = this;
 
-                    if(localStorage.getItem("ri_selectedBranchIds") !== null) {
-                        self.ri_selectedBranchIds = JSON.parse(localStorage.getItem("ri_selectedBranchIds"));
-                    }
-
-                    if(localStorage.getItem("selectedRetailItemIds") !== null) {
-                        self.selectedRetailItemIds = JSON.parse(localStorage.getItem("selectedRetailItemIds"));
-                    }
-
                     if(localStorage.getItem("ri_selectedCorporationId")) {
                         self.ri_selectedCorporationId = localStorage.getItem("ri_selectedCorporationId");
                         self.loadBranches();
-                    }
-
-                    if(localStorage.getItem("selectedProductId")) {
-                        self.selectedProductId = localStorage.getItem("selectedProductId");
-                        self.loadItems();
                     }
                 }
             },

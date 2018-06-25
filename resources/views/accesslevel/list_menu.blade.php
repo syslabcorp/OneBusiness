@@ -8,12 +8,9 @@
       
       <!-- Sidebar -->
        <div id="sidebar-togle-sidebar-sec">
-      <ul id="sidebar_menu" class="sidebar-nav">
-           <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-      </ul>
-        <div class="sidebar-nav" id="sidebar">     
-          <div id="treeview_json"></div>
-        </div>
+          <div id="sidebar_menu" class="sidebar-nav">
+            <ul></ul>
+          </div>
       </div>
           
       <!-- Page content -->
@@ -29,7 +26,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><?php echo ($parentcrumb == "0") ? "List of Menus" : $parentcrumb; ?>
                     @if(\Auth::user()->checkAccessById(13, "A")) 
-                    <a href="{{ URL('add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a>
+                    <a href="{{ URL('list_menu/add_menu/'.$parent_id) }}" class="pull-right">Add Menu</a>
                     @endif
                 </div>
                 <div class="panel-body">
@@ -42,6 +39,7 @@
                                 <th>Icon</th>
                                 <th>Url</th>
                                 <th class="text-center">Sub Menu</th>
+                                <th>Sort</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -53,7 +51,23 @@
 									<td class="text-center"><?php echo "<span class='$det->icon'></span>"; ?></td>
                                     <td>{{ $det->url }}</td>
                                     <td class="text-center"><a href="{{ URL::to('list_menu/'.$det->id) }}">{{ isset($submenu_count[$det->id]) ? count($submenu_count[$det->id]) : 0 }}</a></td>
-                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <td class="text-center">
+                                      <form action="{{ route('menus.order', $det->id) }}" method="POST" style="display: inline;">
+                                        {{ csrf_field() }}
+                                        <input type="hidden" name="order" value="up">
+                                        <button class="btn btn-md btn-info" {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}>
+                                          <i class="fas fa-arrow-up"></i>
+                                        </button>
+                                      </form>
+                                      <form action="{{ route('menus.order', $det->id) }}" method="POST" style="display: inline;">
+                                        {{ csrf_field() }}
+                                        <input type="hidden" name="order" value="down">
+                                        <button class="btn btn-md btn-info" {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}>
+                                          <i class="fas fa-arrow-down"></i>
+                                        </button>
+                                      </form>
+                                    </td>
+                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_menu/add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="fas fa-pencil-alt"></span></a>
                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(13, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Menu" menu-name="{{ $det->title }}" id="{{ $det->id }}" has-sub-menus ="{{ isset($submenu_count[$det->id]) ? ' and all its sub menus.' : '' }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                 </tr>  
                             @endforeach

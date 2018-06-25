@@ -99,12 +99,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -291,11 +288,11 @@
                                                         <td>{{ $bank->bank_code }}</td>
                                                         <td>{{ $bank->description }}</td>
                                                         <td>
-                                                            <a href="#" name="edit" class="btn btn-primary btn-sm editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                            <i class="glyphicon glyphicon-pencil"></i>
+                                                            <a href="#" name="edit" class="btn btn-primary btn-md editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <i class="fas fa-pencil-alt"></i>
                                                             </a>
-                                                            <a href="#" name="delete" class="btn btn-danger btn-sm delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
-                                                                <i class="glyphicon glyphicon-remove"></i><span style="display: none;">{{ $bank->bank_id }}</span>
+                                                            <a href="#" name="delete" class="btn btn-danger btn-md delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                                <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $bank->bank_id }}</span>
                                                             </a>
                                                         </td>
                                                     </tr>
@@ -324,6 +321,87 @@
         </div>
     </div>
     <!-- end modal for adding new bank -->
+
+    <!-- Modal add new bank when edit -->
+    <div id="addNewBankonEdit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Add Bank</h5>
+                </div>
+                <form class="form-horizontal" action="{{ url('/banks') }}" id="form1" METHOD="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label" for="bankName">Bank Name:</label>
+                            <div class="col-md-6 col-xs-10">
+                                <input id="bankName" name="bankName" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Bank Name is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 20 characters"
+                                       data-parsley-maxlength="20" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 col-xs-12 control-label" for="bankName">Description:</label>
+                            <div class="col-md-6 col-xs-10">
+                                <input id="bankDescription" name="bankDescription" type="text" class="form-control input-md"
+                                       data-parsley-required-message="Description is required"
+                                       data-parsley-maxlength-message="The template name may not be greater than 100 characters"
+                                       data-parsley-maxlength="100" required="">
+                            </div>
+                        </div>
+                        <hr class="wide">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="bankTable"  class="table table-striped table-hover responsive">
+                                            <thead>
+                                            <tr>
+                                                <th>Bank Name</th>
+                                                <th>Description</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($selectBank as $bank)
+                                                    <tr>
+                                                        <td>{{ $bank->bank_code }}</td>
+                                                        <td>{{ $bank->description }}</td>
+                                                        <td>
+                                                            <a href="#" name="edit" class="btn btn-primary btn-md editBank  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                            <i class="fas fa-pencil-alt"></i>
+                                                            </a>
+                                                            <a href="#" name="delete" class="btn btn-danger btn-md delete  {{--@if(!\Auth::user()->checkAccessById(23, "E")) disabled @endif--}}">
+                                                                <i class="glyphicon glyphicon-trash"></i><span style="display: none;">{{ $bank->bank_id }}</span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"  data-toggle="modal"
+                                        data-target="#editAccountModal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</button>
+                            </div>
+                            <div class="col-sm-6">
+                                {!! csrf_field() !!}
+                                <button type="submit" class="btn btn-success pull-right">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end modal for adding new bank when edit -->
 
     <!-- Modal delete bank -->
     <div class="modal fade" id="confirm-delete" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -414,31 +492,61 @@
                 <form class="form-horizontal" action="" id="editAccountModalForm">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
-                            <div class="col-md-7 col-xs-12">
-                                <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id=""
-                                        data-parsley-required-message="Bank Code is required" required>
-                                    <option value="">Select Bank:</option>
-                                    @foreach($selectBank as $bank)
-                                        <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 col-xs-12 control-label" for="bankAccountCodeEdit">Bank Code:</label>
+                                    <div class="col-md-9 col-xs-12">
+                                        <select name="bankAccountCodeEdit" id="bankAccountCodeEdit" class="form-control input-md" id=""
+                                                data-parsley-required-message="Bank Code is required" required>
+                                            <option value="">Select Bank:</option>
+                                            @foreach($selectBank as $bank)
+                                                <option value="{{ $bank->bank_id }}">{{ $bank->bank_code }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-12" style="margin-left: -30px;">
+                                    <a href="#" class="addBank" data-dismiss="modal" data-toggle="modal" data-target="#addNewBankonEdit" style="font-size: 0.8em">Add Bank</a>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
                                 <label class="col-md-3 control-label" for="editCorpName">Corporation:</label>
                                 <div class="col-md-9">
-                                    <select name="editCorpName" class="form-control input-md editCorpName" id=""
+                                    <select name="editCorpName" class="form-control input-md editCorpName corpName" id=""
                                             data-parsley-required-message="Corporation is required" required>
                                         <option value="">Select Corporation:</option>
                                         @foreach($selectCorp as $corp)
-                                            <option value="{{ $corp->corp_id }}">{{ $corp->corp_name }}</option>
+                                            <option value="{{ $corp->corp_id }}" >{{ $corp->corp_name }} </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12 bankCodeRw" style="margin-left: 15px">
+                                    <label class="col-md-3 control-label" for="branchName">Branch:</label>
+                                    <div class="col-md-7">
+                                        <select name="editbranchName" class="form-control input-md editbranchName branchName" id="">
+                                            <option value="">Select Branch:</option>
+                                            @if(is_object($satelliteBranch))
+                                            @foreach($satelliteBranch as $branch)
+                                                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                                            @endforeach
+                                                @endif
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-12 pull-left" style="margin-left: -80px;">
+                                    <input type="checkbox" name="mainStatus" class="pull-left editmainStatus" name="" id="">
+                                    <label for="mainStatus" style="margin-top: 2px; margin-left: 1px">Main</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label class="col-md-3 col-xs-12 control-label" for="bankAccountNumberEdit">Account Number:</label>
                             <div class="col-md-7 col-xs-12">
@@ -558,15 +666,18 @@
                         .appendTo('#example_ddl5');
                 },
                "processing": true,
+               bServerSide: false,
+            //    sAjaxSource: true,
                "serverSide": true,
                 "ajax" : {
                    type: "POST",
-                    url: "banks/get-banks-list",
+                    url: "{!! route('banks.get_banks_list') !!}",
                     data: function (d) {
                         d.dataStatus = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val();
                         @if(isset($corporations[0]->corp_id))
                         d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select option:selected').val();
+                        console.log($('#example_ddl4 select').val());
+                        d.branch = $('#example_ddl4 select option:selected').val() == undefined ? '{{ $satelliteBranch[0]->Branch }}' : $('#example_ddl4 select').val();
                         @endif
                         d.MainStatus = $('#example_ddl5 input').is(":checked");
 
@@ -616,12 +727,13 @@
                             var checkDelete = '<?php  if(\Auth::user()->checkAccessById(27, "D")) {  echo 1; }else{ echo 0; } ?>';
                             var optionClassDel = "";
                             if(checkDelete == 0) { optionClassDel = 'disabled' };
-                           return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-sm checkDefaultAcct" '+optionClass+'>' +
+                           return '<a href="#" name="checkDefaultAcct" class="btn btn-success btn-md checkDefaultAcct" '+optionClass+'>' +
                             '<i class="glyphicon glyphicon-ok"></i><span class="changeAccountID" style="display: none;">'+ row.bank_acct_id +'</span>' +
-                            '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-sm editAccount" '+optionClass+'>' +
-                            '<i class="glyphicon glyphicon-pencil"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
+                            '</a>&nbsp<a href="#" name="editAccount" class="btn btn-primary btn-md editAccount" '+optionClass+'>' +
+                            '<i class="fas fa-pencil-alt"></i><span class="editBankID" style="display: none;">'+row.bank_acct_id+'</span>' +
+                            '<span class="editBranchID" style="display: none;">'+row.branch+'</span>' +
                             '<span class="codeNumID" style="display: none;">'+row.bank_id+'</span></a>' +
-                               '<a href="#" name="delete" class="btn btn-danger btn-sm delete-account '+optionClassDel+'">'+
+                               '<a href="#" name="delete" class="btn btn-danger btn-md delete-account '+optionClassDel+'">'+
                                '<i class="glyphicon glyphicon-trash"></i></a>';
                         },
                         "targets": 4
@@ -668,6 +780,14 @@
                 }
             });
 
+            $(document).on('click', '.editmainStatus', function () {
+                if($('.editmainStatus').is(':checked')){
+                    $('.editbranchName').attr('disabled', true).css({"background-color":"#dddddd", "color":"#dddddd"});
+                }else{
+                    $('.editbranchName').attr('disabled', false).css({"background-color":"#FFF", "color":"#333"});
+                }
+            });
+
 
             $(document).on('click', '.delete', function (e) {
                 e.preventDefault();
@@ -707,9 +827,46 @@
 
                 var row = $(this).closest('tr');
                 var hiddenColumnValue = mainTable.row(row).data();
+                console.log(hiddenColumnValue);
                 $('.editCorpName').val(hiddenColumnValue.corp_id);
+                $('.editbranchName').val(hiddenColumnValue.branch);
                 $('.accountID').val(id);
                 $('#editAccountModal').modal("toggle");
+                if(hiddenColumnValue.branch == -1)
+                {
+                    $('.editmainStatus').prop('checked', true);
+                    $('.editbranchName').attr('disabled', true).css({"background-color":"#dddddd", "color":"#dddddd"});
+                }
+                else
+                {
+                    $('.editmainStatus').prop('checked', false);
+                    $('.editbranchName').removeAttr('disabled').css({"background-color":"", "color":""});
+                }
+
+
+                var corpId = hiddenColumnValue.corp_id;
+                var options = $('.editCorpName').parents('form').find('.branchName');
+
+                options.empty();
+                //get branches
+                var cnt = 0;
+                $.ajax({
+                    method: 'POST',
+                    url: "{!! route('vendors.get_branch') !!}",
+                    data: { corpId : corpId },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        $.each(data, function (key, val) {
+                            cnt++;
+                            options.append('<option value="'+val.Branch+'">'+val.ShortName+'</option>');
+                        })
+
+                        if(cnt == 0){
+                            options.append('<option value="">No options</option>');
+                        }
+                    }
+
+                })
             });
 
             $(document).on('click', '.checkDefaultAcct', function (e) {
@@ -720,7 +877,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'bank-accounts/change-default-account',
+                    url: '{!! route("bank_accounts.change_default_account") !!}',
                     data: { id : id },
                     success: function () {
                         ref.closest('tbody').find('input:checked').each(function () {
@@ -759,7 +916,7 @@
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: 'banks/get-branches',
+                    url: "{!! route('checkbooks.get_branches') !!}",
                     data: { status : dataStatus, corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -770,10 +927,13 @@
                         if(cnt == 0){
                             options.append('<option value="">No option</option>');
                         }
+                        setTimeout(() => {
+                            mainTable.ajax.reload();
+                        }, 200);
                     }
 
                 })
-                mainTable.ajax.reload();
+                
             })
 
             $('#example_ddl3').on('change', function () {
@@ -786,7 +946,7 @@
                 //get branches
                 $.ajax({
                     method: 'POST',
-                    url: 'banks/get-branches',
+                    url: "{!! route('banks.get_branches') !!}",
                     data: { status : dataStatus, corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);
@@ -797,10 +957,11 @@
                         if(cnt == 0){
                             options.append('<option value="">No option</option>');
                         }
+                        mainTable.ajax.reload();
                     }
 
                 })
-                mainTable.ajax.reload();
+                
             })
 
             $('#example_ddl4').on('change', function () {
@@ -816,11 +977,20 @@
                 var accountNum = $('#bankAccountNumberEdit').val();
                 var accountID = $('.accountID').val();
                 var corpId = $('.editCorpName option:selected').val();
-
+                var branch = $('.editbranchName option:selected').val();
+                if( $('.editmainStatus').is(':checked') )
+                {
+                    var mainStatus = "on";
+                }
+                else
+                {
+                    var mainStatus = "off";
+                }
+                
                 $.ajax({
-                    url: "/OneBusiness/bank-accounts/update",
+                    url: "{!! route('bank_accounts.update') !!}",
                     method: "POST",
-                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID, corpId : corpId},
+                    data: { bankAccountCodeEdit : bankCode, bankAccountNumberEdit : accountNum, accountID : accountID, corpId : corpId, branch: branch, mainStatus: mainStatus},
                     success: function (data) {
                         if(data == "success"){
                             $('#editAccountModal').modal("toggle");
@@ -903,15 +1073,15 @@
             })
 
             $(document).on('change', '.corpName', function () {
-                var corpId = $('.corpName option:selected').val();
-                var options = $('.branchName');
+                var corpId = $(this).val();
+                var options = $(this).parents('form').find('.branchName');
 
                 options.empty();
                 //get branches
                 var cnt = 0;
                 $.ajax({
                     method: 'POST',
-                    url: '/OneBusiness/vendors/get-branches',
+                    url: "{!! route('vendors.get_branch') !!}",
                     data: { corpId : corpId },
                     success: function (data) {
                         data = JSON.parse(data);

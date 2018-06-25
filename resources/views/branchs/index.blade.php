@@ -7,23 +7,31 @@
           <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-9">
-                        <h4>{{ $company ? $company->corp_name : "Branch Lists" }}</h4>
-                    </div>
-                    <form class="col-xs-3 pull-right" method="GET">
-                        <select name="status" class="form-control" id="filter-branchs">
-                            <option value="all">All</option>
-                            <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
-                            <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
-                        </select>
-                        @if($company)
-                        <input type="hidden" name="corpID" value="{{ $company->corp_id }}" />
-                        @endif
-                    </form>
+                  <div class="col-xs-9">
+                    <h4>{{ $company ? $company->corp_name : "Branch Lists" }}</h4>
+                  </div>
+                  <div class="col-xs-3 text-right" style="margin-top: 10px;">
+                    @if(\Auth::user()->checkAccessById(1, "A"))
+                      <a href="{{ route('branchs.create', ['corpID' => $corpId]) }}">Add Branch</a>
+                    @endif
+                  </div>
                 </div>
             </div>
-            <div class="panel-body" style="margin: 30px 0px;">
+            <div class="panel-body">
+              <div class="rown" style="margin-bottom: 30px;">
+                <form class="col-xs-3 pull-right" method="GET">
+                  <select name="status" class="form-control" id="filter-branchs">
+                      <option value="all">All</option>
+                      <option {{ $status == "active" ? "selected" : "" }} value="active">Active</option>
+                      <option {{ $status == "inactive" ? "selected" : "" }} value="inactive">Inactive</option>
+                  </select>
+                  @if($company)
+                  <input type="hidden" name="corpID" value="{{ $company->corp_id }}" />
+                  @endif
+                </form>
+              </div>
               @if(count($branchs))
+              <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <tbody>
                         <tr>
@@ -58,19 +66,19 @@
                                     <td>{{ $branch->Street }}</td>
                                     <td>{{ $branch->MaxUnits }}</td>
                                     <td>
-                                        <a href="{{ route('branchs.edit', [$branch]) }}" style="margin-right: 10px;" class="btn btn-info btn-xs {{ \Auth::user()->checkAccessById(1, "E") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.edit', [$branch, 'corpID' => request()->corpID]) }}" style="margin-right: 10px;" class="btn btn-info btn-md {{ \Auth::user()->checkAccessById(1, "E") ? "" : "disabled" }}"
                                             title="Edit">
-                                            <i class="fa fa-pencil"></i>
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         @if($branch->company->corp_type == 'INN')
-                                        <a href="{{ route('branchs.krates.index', [$branch]) }}" style="margin-right: 10px;" 
-                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.krates.index', [$branch, 'corpID' => request()->corpID]) }}" style="margin-right: 10px;" 
+                                            class="btn btn-success btn-md {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
                                         @else
-                                        <a href="{{ route('branchs.rates.index', [$branch]) }}" style="margin-right: 10px;" 
-                                            class="btn btn-success btn-xs {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
+                                        <a href="{{ route('branchs.rates.index', [$branch, 'corpID' => request()->corpID]) }}" style="margin-right: 10px;" 
+                                            class="btn btn-success btn-md {{ \Auth::user()->checkAccessById(2, "V") ? "" : "disabled" }}"
                                             title="Rates template and scheduling">
                                             <i class="fa fa-star"></i>
                                         </a>
@@ -83,19 +91,12 @@
                         @endforeach
                     </tbody>
                 </table>
+              </div>
               @else
                 <div class="error">
                     {{ __('No data to display') }}
                 </div>
               @endif
-              <div class="text-left">
-                <a href="/OneBusiness/home" class="btn btn-default">
-                  <i class="fa fa-reply"></i> Back
-                </a>
-                @if(\Auth::user()->checkAccessById(1, "A"))
-                  <a href="{{ route('branchs.create', ['corpID' => $corpId]) }}" class="btn btn-success">New Branch</a>
-                @endif
-              </div>
             </div>
             
           </div>

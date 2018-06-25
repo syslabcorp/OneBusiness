@@ -61,7 +61,8 @@ class StocksController extends Controller
         'stock' => $stock,
         'stock_details' => $stock_details,
         'pos' => $pos,
-        'stockitems' => $stockitems
+        'stockitems' => $stockitems,
+        'print' => $request->print
       ]
     )->with('corpID', $request->corpID);
   }
@@ -73,7 +74,6 @@ class StocksController extends Controller
       return redirect("/home"); 
     }    
     $request->RcvDate = new Datetime($request->RcvDate);
-    $request->RcvDate->setTime( date('H'), date('i'));
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
@@ -86,30 +86,30 @@ class StocksController extends Controller
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvDate = $request->RcvDate;
     $stock->RcvdBy = \Auth::user()->UserID;
+    $stock->DateSaved = date('Y-m-d H:i:s');
     
     $stock->save();
-    if($request->type)
-    {
-      foreach ($request->type as $key => $value)
-      {
+    if($request->type) {
+      foreach ($request->type as $key => $value) {
         $stock_detail = $stockDetailModel->find($key);
-        
+
         //edit row
-        if($value == "none")
-        {
-          if($request->old_item_id[$key] != $request->item_id[$key])
-          {
+        if($value == "none") {
+          if($request->old_item_id[$key] != $request->item_id[$key]) {
             $stock_detail->item_id = intval($request->item_id[$key]);
           }
           //$stock_detail->ItemCode = $request->ItemCode[$key];
+          $stock_detail->RcvDate = date('Y-m-d H:i:s');
           $stock_detail->Qty = floatval($request->Qty[$key]) ;
           $stock_detail->Bal = floatval($request->Qty[$key]);
           $stock_detail->Cost = floatval($request->Cost[$key]);
           $stock_detail->save();
 
           $stock_item = StockItem::find($stock_detail->item_id);
-          $stock_item->LastCost = $stock_detail->Cost;
-          $stock_item->save();
+          if($stock_item) {
+            $stock_item->LastCost = $stock_detail->Cost;
+            $stock_item->save();
+          }
         }
   
         //delete row
@@ -136,9 +136,8 @@ class StocksController extends Controller
           $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
           $stock_detail->Bal = floatval($request->add_Qty[$key]);
           $stock_detail->Cost = floatval($request->add_Cost[$key]);
-          $stock_detail->RcvDate = $request->RcvDate;
+          $stock_detail->RcvDate = date('Y-m-d H:i:s');
           $stock_detail->RR_No = $request->RR_No;
-          
           $stock_detail->save();
 
           $stock_item = StockItem::find($stock_detail->item_id);
@@ -152,7 +151,7 @@ class StocksController extends Controller
     $stock->TotalAmt = floatval($request->total_amt);
     $stock->save();
     \Session::flash('success', "D.R #$stock->RR_No is successfully updated");
-    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID, 'print' => $request->print]);
   }
 
   public function save_new_row_ajax(Request $request)
@@ -328,7 +327,8 @@ class StocksController extends Controller
         'one_vendor' => $one_vendor,
         'vendor_ID' => $vendor_ID,
         'vendor_list_type' => $request->vendor,
-        'next_order' => $next_order
+        'next_order' => $next_order,
+        'sortBy' => $request->sortBy
       ]
     );
   }
@@ -392,6 +392,7 @@ class StocksController extends Controller
     $stock->TotalAmt = floatval($request->total_amt);
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvdBy = \Auth::user()->UserID;
+    $stock->DateSaved = date('Y-m-d H:i:s');
     $success = $stock->save();
 
     if($success && $request->add_type)
@@ -435,7 +436,7 @@ class StocksController extends Controller
       // }
     }
     \Session::flash('success', "D.R #$stock->RR_No is successfully created");
-    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID ]);
+    return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID, 'print' => $request->print ]);
   }
 
   public function destroy_detail(Request $request)

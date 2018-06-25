@@ -6,12 +6,9 @@
         <div id="togle-sidebar-sec" class="active">
             <!-- Sidebar -->
             <div id="sidebar-togle-sidebar-sec">
-                <ul id="sidebar_menu" class="sidebar-nav">
-                    <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                </ul>
-                <div class="sidebar-nav" id="sidebar">     
-                    <div id="treeview_json"></div>
-                </div>
+              <div id="sidebar_menu" class="sidebar-nav">
+                <ul></ul>
+              </div>
             </div>
               
             <!-- Page content -->
@@ -27,23 +24,25 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">Auto Ordering Template
                                 @if(\Auth::user()->checkAccessByPoId([$corp_id],31, "A"))
-                                <a href="{{ URL('purchase_order/'.(isset($corp_id) ? $corp_id : 0).'/'.(isset($cities[0]->City_ID) ? $cities[0]->City_ID : 0)) }}" class="pull-right update-add-url">Add Template</a>
+                            <a href="{{ URL('purchase_order/'.(isset($corp_id) ? $corp_id : 0).'/'.(isset($cities[0]->City_ID) ? $cities[0]->City_ID : 0)) }}?corpID={{ request()->corpID }}" class="pull-right update-add-url">
+                                    Add Template
+                                </a>
                                 @endif
                             </div>
                             <input type ="hidden" name="corp_id" id="corp_id" value="{{ (isset($corp_id) ? $corp_id : 0) }}">
                             <div class="panel-body">
                                 <div class="form-group row">
                                     <div class="col-md-5">
-                                    <div class="row">
-                                        <label for="city_nam" class="col-md-2 control-label">City:</label>
-                                        <div class="col-md-9">
-                                            <select class="form-control required listcity" id="city" name="city_id">
-                                            @foreach ($cities as $city) 
-                                                <option {{ ($city ->City_ID == $city_id) ? "selected" : "" }} value="{{ $city ->City_ID }}" >{{ $city->City }} </option> 
-                                                @endforeach    
-                                        </select>
+                                        <div class="row">
+                                            <label for="city_nam" class="col-md-2 control-label">City:</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control required listcity" id="city" name="city_id">
+                                                @foreach ($cities as $city) 
+                                                    <option {{ ($city ->City_ID == $city_id) ? "selected" : "" }} value="{{ $city ->City_ID }}" >{{ $city->City }} </option> 
+                                                    @endforeach    
+                                            </select>
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
                                     <div class="col-md-2">
                                         <select class="form-control required activelist" id="active" name="active">

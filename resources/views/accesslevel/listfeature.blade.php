@@ -6,12 +6,9 @@
         <div id="togle-sidebar-sec" class="active">
             <!-- Sidebar -->
             <div id="sidebar-togle-sidebar-sec">
-                <ul id="sidebar_menu" class="sidebar-nav">
-                    <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                </ul>
-                <div class="sidebar-nav" id="sidebar">     
-                    <div id="treeview_json"></div>
-                </div>
+              <div id="sidebar_menu" class="sidebar-nav">
+                <ul></ul>
+              </div>
             </div>
               
             <!-- Page content -->
@@ -33,7 +30,7 @@
                                     <a href="{{ URL('list_module') }}" >{{ $desc }}</a>
                             @endif  
                             @if(\Auth::user()->checkAccessById(12, "A")) 
-                            <a href="{{ URL('add_feature'.(($module_id) ? ('/0/'.$module_id) : '' )) }}" class="pull-right">Add Feature</a>
+                            <a href="{{ URL('list_feature/add_feature'.(($module_id) ? ('/0/'.$module_id) : '' )) }}" class="pull-right">Add Feature</a>
                             @endif
                             </div>
                             <div class="panel-body">
@@ -57,7 +54,7 @@
                                                         <td>{{ isset($detail->description) ? $detail->description : 'System Module' }}</td>
                                                     @endif
                                                     <td>{{ $detail->feature }}</td>
-                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                    <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(12, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_feature/add_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Edit Feature"><span class="fas fa-pencil-alt"></span></a>
                                                     <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(12, 'D') ? '' : 'disabled' }}" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_feature/' . $detail->feature_id.(($module_id) ? ('/'.$module_id) : '' )) }}" data-toggle="tooltip" data-placement="top" title="Delete Feature" feature-name="{{ $detail->feature }}" id="{{ $detail->feature_id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
                                                 </tr>  
                                             @endforeach

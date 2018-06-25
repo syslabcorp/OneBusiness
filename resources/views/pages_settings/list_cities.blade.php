@@ -6,12 +6,9 @@
 <div id="togle-sidebar-sec" class="active">
       
       <!-- Sidebar -->
-       <div id="sidebar-togle-sidebar-sec">
-		  <ul id="sidebar_menu" class="sidebar-nav">
-			   <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-		  </ul>
-        <div class="sidebar-nav" id="sidebar">     
-          <div id="treeview_json"></div>
+      <div id="sidebar-togle-sidebar-sec">
+        <div id="sidebar_menu" class="sidebar-nav">
+          <ul></ul>
         </div>
       </div>
           
@@ -32,7 +29,7 @@
 										List of Cities
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
-                                            	@if(\Auth::user()->checkAccessById(18, "A"))<a href="{{ URL('add_city'.(($prov_id) ? ('/0/'.$prov_id) : '' )) }}" class="pull-right">Add City</a>
+                                            	@if(\Auth::user()->checkAccessById(18, "A"))<a href="{{ URL('provinces/add_city'.(($prov_id) ? ('/0/'.$prov_id) : '' )) }}" class="pull-right">Add City</a>
 												@endif 
                                         </div>
                                     </div>
@@ -55,7 +52,7 @@
 													<td>{{ $det->City}}</td>
 													<td>
 													
-													<a href="{{ URL::to('add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="glyphicon glyphicon-pencil"></span></a>
+													<a href="{{ URL::to('provinces/add_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' )) }}" class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(18, 'E') ? '' : 'disabled' }}" data-title="View" data-toggle="tooltip" data-placement="top" title="Edit City"><span class="fas fa-pencil-alt"></span></a>
 														
 													<a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(18, 'D') ? '' : 'disabled' }}"" data-title="Delete" href="javascript:;" rel="{{ URL::to('delete_city/'.$det->City_ID.(($prov_id) ? ('/'.$prov_id) : '' ))  }}" data-toggle="tooltip" data-placement="top"  city-name="{{ $det->City }}" id="{{ $det->City_ID }}" title="Delete City" ><span class="glyphicon glyphicon-trash"></span></a>
 													</td>
@@ -72,7 +69,7 @@
 								<div class="form-group">
 									<div class="row">
 										<div class="col-sm-6">
-											<a href="{{ URL::to('list_provinces')}}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
+											<a href="{{ URL::to('provinces')}}" class="btn btn-default pull-left" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i>&nbspBack</a>
 										</div>
 									</div>
 								</div>

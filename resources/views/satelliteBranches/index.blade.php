@@ -34,6 +34,14 @@
             margin-right: 2px;
         }
 
+        #example_ddl3{
+            margin-left: 5px;
+        }
+
+        #example_ddl2 label{
+            margin-right: 5px;
+        }
+
     </style>
 @endsection
 @section('content')
@@ -42,12 +50,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -130,20 +135,22 @@
 
             var table = $('#myTable').DataTable({
                 initComplete: function () {
-                    $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0]->corp_id)){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else "N/A" @endif</option></select>')
+                    $('<label for="">Filters:</label>').appendTo("#example_ddl2");
+                    var corporationID = $('<select class="form-control"></select>')
                         .appendTo('#example_ddl2');
-                    var cntCorp = 0;
-                    @foreach($corporations as $key => $val)
-                            if(cntCorp != 0) {
-                        corporationID.append('<option value="{{ $val->corp_id }}" >{{ $val->corp_name }}</option>');
 
-                    }
-                    cntCorp++;
+                    @foreach($corporations as $key => $val)
+                      corporationID.append('<option value="{{ $val->corp_id }}" >{{ $val->corp_name }}</option>');
                     @endforeach
-                    var branchStatus = $('<select class="form-control"><option value="1" selected>Active</option></select>')
+                    var branchStatus = $('<select class="form-control"><option value="1">Active</option></select>')
                         .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
+
+                    let initStatus = localStorage.getItem('satellite.active') || 1;
+                    let initCorp = localStorage.getItem('satellite.corpID') || '{{ $corporations[0]->corp_id }}';
+
+                    corporationID.val(initCorp);
+                    branchStatus.val(initStatus);
                 },
                 "processing": true,
                 "serverSide": true,
@@ -152,17 +159,18 @@
                     type: "POST",
                     url: "satellite-branch/get-branch-list",
                     data: function ( d ) {
-                        d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? 1 : $('#example_ddl3 select option:selected').val(),
-                            @if(isset($corporations[0]->corp_id))
-                        d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? '{{ $corporations[0]->corp_id }}' : $('#example_ddl2 select option:selected').val();
-                        @endif
-                        // d.custom = $('#myInput').val();
-                        // etc
+                      let initStatus = localStorage.getItem('satellite.active') || 1;
+                      let initCorp = localStorage.getItem('satellite.corpID') || '{{ $corporations[0]->corp_id }}';
+                
+                      d.statusData = $('#example_ddl3 select option:selected').val() == undefined ? initStatus : $('#example_ddl3 select option:selected').val(),
+                      @if(isset($corporations[0]->corp_id))
+                      d.corpId = $('#example_ddl2 select option:selected').val() == undefined ? initCorp : $('#example_ddl2 select option:selected').val();
+                      @endif
                     }
                 },
                 stateSave: true,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'<'pull-right'f>>>" +
-                "<'row'<'col-sm-2.pull-left'<'#example_ddl'>><'col-sm-5.pull-left'<'#example_ddl2'>><'col-sm-5'<'#example_ddl3'>>>" +
+                "<'row'<'col-sm-12'<'.form-group.pull-left#example_ddl'<'#example_ddl2'>><'.form-group'<'#example_ddl3'>>>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'<'pull-right'p>>>",
                 "columnDefs": [
@@ -198,9 +206,9 @@
                             var optionClassDel = "";
                             if(checkAccess == 0) { optionClass = 'disabled' };
                             if(checkAccessDel == 0) { optionClassDel = 'disabled' };
-                            return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-sm edit '+optionClass+'">' +
-                                '<i class="glyphicon glyphicon-pencil"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
-                                '<a href="#" name="delete" class="btn btn-danger btn-sm delete '+optionClassDel+'">'+
+                            return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-md edit '+optionClass+'">' +
+                                '<i class="fas fa-pencil-alt"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
+                                '<a href="#" name="delete" class="btn btn-danger btn-md delete '+optionClassDel+'">'+
                                 '<i class="glyphicon glyphicon-trash"></i></a>';
 
                         },
@@ -250,6 +258,11 @@
                 $('#confirm-delete .descriptionOfBrand').text(description);
                 $('#confirm-delete form').attr('action', 'satellite-branch/'+id);
                 $('#confirm-delete').modal("show");
+            });
+
+            $(document).on('click', '.edit', function(e) {
+              localStorage.setItem('satellite.corpID', $('#example_ddl2 select').val());
+              localStorage.setItem('satellite.active', $('#example_ddl3 select').val());
             });
 
 

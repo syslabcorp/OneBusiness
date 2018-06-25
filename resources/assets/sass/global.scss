@@ -1,0 +1,36 @@
+.navbar.navbar-static-top {
+    background: #FFF;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
+    .navbar-header {
+        width: 300px;
+        border-right: 1px solid #ccc;
+        img {
+            width: 90px;
+            height: inherit;
+            display: block;
+            margin: 0 auto;
+            padding: 7px 0px;
+        }
+    }
+    .navbar-collapse {
+        padding-left: 300px;
+        padding-right: 20px;
+        ul li a {
+            font-weight: 500;
+            color: #131e22;
+            font-family: Roboto;
+            .fa-user {
+                color:#0288D1;
+            }
+        }
+    }
+}
+
+.box-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+td[rowspan] {
+    vertical-align: middle;
+}

@@ -13,12 +13,9 @@
         <div id="togle-sidebar-sec" class="active">   
             <!-- Sidebar -->
             <div id="sidebar-togle-sidebar-sec">
-                <ul id="sidebar_menu" class="sidebar-nav">
-                    <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                </ul>
-                <div class="sidebar-nav" id="sidebar">     
-                    <div id="treeview_json"></div>
-                </div>
+              <div id="sidebar_menu" class="sidebar-nav">
+                <ul></ul>
+              </div>
             </div>    
             <!-- Page content -->
             <div id="page-content-togle-sidebar-sec">
@@ -37,7 +34,7 @@
                                 <input type="hidden" name="proid" id="proid" value="{{isset($detail_edit_temp_hdr->po_tmpl8_id) ? $detail_edit_temp_hdr->po_tmpl8_id : '' }}">
                                 <input type="hidden" id="corp_id" value="{{ $corp_id }}">
                                 <div class="form-group row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="temp_nam" class="col-md-4 control-label">Template Name</label>
                                         <div class="col-md-8">
                                             <input id="temp_name" type="text" class="form-control required" maxlength=30 name="po_tmpl8_desc"  value="{{isset($detail_edit_temp_hdr->po_tmpl8_desc) ? $detail_edit_temp_hdr->po_tmpl8_desc : old('po_tmpl8_desc') }}"autofocus>
@@ -51,13 +48,13 @@
                                     
 									<div class="col-md-1">
 									<label class="mt-checkbox">
-										<input type="checkbox" name="active" id="active" <?php if(isset($detail_edit_temp_hdr->active) && $detail_edit_temp_hdr->active == 1){ echo 'checked'; }else{echo '';}?>> Active
+										<input type="checkbox" checked name="active" id="active" <?php if(isset($detail_edit_temp_hdr->active) && $detail_edit_temp_hdr->active == 1){ echo 'checked'; }else{echo '';}?>> Active
 										<span></span>
 									</label>
 									</div>
-									<div class="col-md-4">
-										<label for="temp_nam" class="col-md-6 control-label">Ave. Qty Cycle</label>
-										<div class="col-md-6">
+									<div class="col-md-3">
+										<label for="temp_nam" class="col-md-5 control-label">Ave. Qty Cycle</label>
+										<div class="col-md-7">
 										<div class="input-group" id="requestorPhoneLast">
 											<input id="area_cycle" type="text" class="form-control required number" name="po_avg_cycle"  value="{{isset($detail_edit_temp_hdr->po_avg_cycle) ? $detail_edit_temp_hdr->po_avg_cycle : 30 }}" autofocus>
 											<span class="input-group-addon">

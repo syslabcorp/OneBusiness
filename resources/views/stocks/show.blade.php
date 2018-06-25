@@ -136,7 +136,7 @@
                         </td>
                         <td class="text-center" >
                           <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
-                            <i class="fa fa-pencil"></i>
+                            <i class="fas fa-pencil-alt"></i>
                           </a>
                           <a href="{{route('stocks.delete_detail', [ $stock , $detail , 'corpID' => $corpID] )}}" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                             <i class="fa fa-trash"></i>
@@ -191,7 +191,7 @@
                     </td>
                     <td class="text-center" >
                       <a class="btn btn-primary edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'E') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
-                        <i class="fa fa-pencil"></i>
+                        <i class="fas fa-pencil-alt"></i>
                       </a>
                       <a href="#" class="delete_row btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                         <i class="fa fa-trash"></i>
@@ -336,10 +336,62 @@
   </div>
 </div>
 <!-- End modal alert -->
+@if($print)
+  <div class="print-section">
+    <p>
+      SSR #: {{ $stock->txn_no }} <br>
+      Date/Time: {{ $stock->DateSaved->format('m-d-Y h:i:s A') }}
+    </p>
+    <p>
+      PO <br>
+      {{ $stock->vendor->VendorName }} <br>
+      {{ $stock->RR_No }}
+    </p>
+    <table class="table">
+      <tbody>
+      @php $totalCost = 0 @endphp
+      @foreach($stock_details as $detail)
+        @php $totalCost += $detail->Cost * $detail->Qty @endphp
+        <tr>
+          <td>{{ $detail->stock_item->ItemCode }}</td>
+          <td>{{ $detail->Qty }}</td>
+          <td>
+            {{ number_format($detail->Cost, 2) }}<br>
+            {{ number_format($detail->stock_item->LastCost, 2) }}
+          </td>
+          <td>
+            {{ number_format($detail->Cost * $detail->Qty, 2) }} <br>
+            @if($detail->Cost != $detail->stock_item->LastCost)
+            {{ $detail->stock_item->Cost }}
+              {{ number_format(($detail->Cost - $detail->stock_item->LastCost) / $detail->stock_item->LastCost * 100, 2) }}%
+            @else
+              0.00%
+            @endif
+          </td>
+        </tr>
+      @endforeach
+      <tr>
+        <td colspan="2"></td>
+        <td> <i>TOTAL:</i></td>
+        <td><i>{{ number_format($totalCost, 2) }}</i></td>
+      </tr>
+      </tbody>
+    </table>
+    <p>
+      By: {{ \Auth::user()->UserName }}
+    </p> 
+  </div>
+@endif
 
 @endsection
 
 @section('pageJS')
+  @if($print)
+  <script type="text/javascript">
+    window.print();
+  </script>
+  @endif
+
   <script>
 
     $.validate({
@@ -410,6 +462,9 @@
       $('#add-row').remove();
       $('#example').remove();
       $('#total_amt').val($('#total_amount').text());
+      if($('input[name="PrintRR"]:checked').length > 0) {
+        $('form').attr('action', $('form').attr('action') + "&print=true");
+      }
       $('form').submit();
     })
 
@@ -422,6 +477,16 @@
       $.validate({
         form : 'form'
       });
+
+      $trParent = $(this).parents('tr');
+      $trParent.find('td:eq(0) .error').remove();
+      if($trParent.find('input[name="item_id"]').val() == "") {
+        $trParent.find('td:eq(0)').append("<span class='error'>Please select an item.</span>");
+        return;
+      }
+
+      $('#recommend-table').css('display', "none");
+      
       new_element.css("display", "").removeAttr('id');
 
       $('.editable').last().after(new_element);
@@ -584,6 +649,9 @@
       $.validate({
         form : 'form'
       });
+
+      $('#recommend-table').css('display', "none");
+
       if($(this).find('i').hasClass('fa-pencil'))
       {
         $(this).find('i').removeClass('fa-pencil').addClass('fa-save');
@@ -598,6 +666,7 @@
       }
       else
       {
+        $(this).parents('tr').find('.error').remove();
         if( !$('.input_Cost ').hasClass('error') && !$('.input_Qty ').hasClass('error') && !$('.input_Sub ').hasClass('error') )
         {
         self.parents('.editable').find('.value_ItemCode').text(self.parents('.editable').find('.input_ItemCode').val() );
@@ -862,19 +931,32 @@
     {
       $('#add-row').css('display' , 'none'); 
       $('.recommend_row').removeClass('row-highlight');
-      $('.input_ItemCode').val('');
-      $('.input_Prod_Line').val('');
-      $('.input_Brand').val('');
-      $('.input_Description').val('');
-      $('.input_Cost').val('');
-      $('.input_Unit').text('');
-      $('.input_item_id').val('');
+      $('#add-row .input_ItemCode').val('');
+      $('#add-row .input_Prod_Line').val('');
+      $('#add-row .input_Brand').val('');
+      $('#add-row .input_Description').val('');
+      $('#add-row .input_Cost').val('');
+      $('#add-row .input_Unit').text('');
+      $('#add-row .input_item_id').val('');
       $('#recommend-table').css('display', "none");
       refresh_sub();
     });
 
     $('.save_button').on('click', function(event)
     {
+      $('#table_editable td span.error').remove();
+      $('#table_editable input[value="editting"]').each(function() {
+        $(this).parents('.editable').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
+      });
+
+      if($('#add-row').is(':visible')) {
+        $('#add-row').find('td:eq(0)').append("<span class='error'>Please save or delete this row first…</span>");
+      }
+
+      if($('#table_editable input[value="editting"]').length > 0 || $('#add-row').is(':visible')) {
+        return;
+      }
+
       if( $('form').isValid(false) )
       {
         $('#confirm_save').modal('show');

@@ -23,16 +23,16 @@
     </div>
     <hr>
     <div class="form-group text-center">
-      <button class="btn btn-sm btn-primary">
+      <button class="btn btn-md btn-primary">
         Filter
       </button>
       @if(\Auth::user()->checkAccessById(2, "E"))
-      <button class="btn btn-sm btn-success" data-toggle="modal" type="button"
+      <button class="btn btn-md btn-success" data-toggle="modal" type="button"
         data-target="#assign-rate-template">
         Assign Template
       </button>
       @endif
-      <a class="btn btn-sm btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
+      <a class="btn btn-md btn-default" href="{{ route('branchs.index', ['corpID' => $branch->corp_id]) }}">
         Back
       </a>
     </div>

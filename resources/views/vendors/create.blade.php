@@ -54,12 +54,9 @@
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
+                  <div id="sidebar_menu" class="sidebar-nav">
+                    <ul></ul>
+                  </div>
                 </div>
 
                 <!-- Page content -->
@@ -93,15 +90,17 @@
                                                     <div class="col-md-7">
                                                         <input id="vendorName" name="vendorName" type="text" value="{{ old('vendorName') }}"
                                                                data-parsley-required-message="Vendor name is required" class="form-control input-md"
-                                                               data-parsley-maxlength-message="The template name may not be greater than 80 characters"
+                                                               data-parsley-maxlength-message="Vendor name should not exceed 80 characters"
                                                                data-parsley-maxlength="80" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label" for="payTo">Pay To:</label>
                                                     <div class="col-md-7">
-                                                        <input id="payTo" name="payTo" type="text" value="{{ old('payTo') }}"
-                                                               class="form-control input-md">
+                                                        <input id="payTo" name="payTo" type="text" value="{{ old('payTo') }}" class="form-control input-md"
+                                                                data-parsley-maxlength-message="Pay To should not exceed 80 characters"
+                                                                data-parsley-required-message="Pay To is required"
+                                                                data-parsley-maxlength="80" required >
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -114,27 +113,33 @@
                                                     <label class="col-md-3 control-label" for="contactPerson">Contact Person:</label>
                                                     <div class="col-md-5">
                                                         <input id="contactPerson" name="contactPerson" type="text" value="{{ old('contactPerson') }}"
-                                                               data-parsley-required-message="Contact person is required" class="form-control input-md"
-                                                               data-parsley-maxlength-message="The template name may not be greater than 50 characters"
-                                                               data-parsley-maxlength="50" required>
+                                                               class="form-control input-md"
+                                                               data-parsley-maxlength-message="Contact person should not exceed 80 characters"
+                                                               data-parsley-maxlength="80">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label" for="telNo1">Tel. No-Line 1:</label>
                                                     <div class="col-md-5">
-                                                        <input id="telNo1" name="telNo1" type="text" value="{{ old('telNo1') }}" class="form-control input-md">
+                                                        <input id="telNo1" name="telNo1" type="text" value="{{ old('telNo1') }}" class="form-control input-md"
+                                                                data-parsley-maxlength-message="Tel 1 should not exceed 20 characters"
+                                                                data-parsley-maxlength="20">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label" for="telNo2">Tel. No-Line 2:</label>
                                                     <div class="col-md-5">
-                                                        <input id="telNo2" name="telNo2" type="text" value="{{ old('telNo2') }}" class="form-control input-md">
+                                                        <input id="telNo2" name="telNo2" type="text" value="{{ old('telNo2') }}" class="form-control input-md"
+                                                                data-parsley-maxlength-message="Tel 2 should not exceed 20 characters"
+                                                                data-parsley-maxlength="20">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label" for="cellphone">Cellphone No:</label>
                                                     <div class="col-md-5">
-                                                        <input id="cellphone" name="cellphone" type="text" value="{{ old('vendorName') }}" class="form-control input-md" >
+                                                        <input id="cellphone" name="cellphone" type="text" value="{{ old('vendorName') }}" class="form-control input-md" 
+                                                                data-parsley-maxlength-message="Cell No should not exceed 20 characters"
+                                                                data-parsley-maxlength="20">
                                                     </div>
                                                 </div>
                                             </div>

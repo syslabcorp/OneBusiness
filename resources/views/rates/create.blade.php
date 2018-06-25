@@ -122,10 +122,10 @@
   </div>
   <hr style="margin: 0px 0px 10px 0px;">
   <div class="form-group text-center">
-    <button class="btn btn-sm btn-success">
+    <button class="btn btn-md btn-success">
       <i class="fa fa-save"></i> Create
     </button>
-    <a class="btn btn-sm btn-default" href="{{ route('branchs.rates.index', [$branch]) }}">
+    <a class="btn btn-md btn-default" href="{{ route('branchs.rates.index', [$branch]) }}">
       <i class="fa fa-reply"></i> Back
     </a>
   </div>

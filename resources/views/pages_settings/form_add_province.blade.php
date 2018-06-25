@@ -4,16 +4,11 @@
   <div class="container-fluid">
         <div class="row">
             <div id="togle-sidebar-sec" class="active">
-					 <!-- Sidebar -->
-                <div id="sidebar-togle-sidebar-sec">
-                    <ul id="sidebar_menu" class="sidebar-nav">
-                        <li class="sidebar-brand"><a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-                    </ul>
-                    <div class="sidebar-nav" id="sidebar">
-                        <div id="treeview_json"></div>
-                    </div>
-                </div>
-				<!--page content-->
+            <div id="sidebar-togle-sidebar-sec">
+              <div id="sidebar_menu" class="sidebar-nav">
+                <ul></ul>
+              </div>
+            </div>
 				<div id="page-content-togle-sidebar-sec">
                     @if(Session::has('alert-class'))
                         <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>

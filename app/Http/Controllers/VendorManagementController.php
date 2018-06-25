@@ -64,7 +64,12 @@ class VendorManagementController extends Controller
 
         if($success){
             \Session::flash('success', "Vendor account created successfully");
-            return redirect()->route('vendors.show', $suppId);
+            return redirect()->route('vendors.show', [
+              $suppId,
+              'corpID' => $request->corpID,
+              'active' => $request->active,
+              'main' => $request->main
+            ]);
         }
         \Session::flash('error', "Something went wrong!");
         return redirect()->route('vendors.show', $suppId);
@@ -125,12 +130,31 @@ class VendorManagementController extends Controller
             'active' => $activeAccount == "on" ? 1 : 0
         ]);
 
+        if($activeAccount == "on")
+        {
+            $check_active = 1;
+        }
+        else
+        {
+            $check_active = 0;
+        }
+
         if($success){
             \Session::flash('success', "Vendor account updated successfully");
-            return redirect()->route('vendors.show', $suppId);
+            return redirect()->route('vendors.show', [
+              $suppId,
+              'corpID' => $request->corpID,
+              'active' => $request->active,
+              'main' => $request->main
+            ]);
         }
         \Session::flash('error', "Something went wrong!");
-        return redirect()->route('vendors.show', $suppId);
+        return redirect()->route('vendors.show', [
+          $suppId,
+          'corpID' => $request->corpID,
+          'active' => $request->active,
+          'main' => $request->main
+        ]);
     }
 
     /**
@@ -139,7 +163,7 @@ class VendorManagementController extends Controller
      * @param  \App\VendorManagement  $vendorManagement
      * @return \Illuminate\Http\Response
      */
-    public function destroy(VendorManagement $vendorManagement)
+    public function destroy(VendorManagement $vendorManagement, Request $request)
     {
         if(!\Auth::user()->checkAccessById(29, "D"))
         {
@@ -151,10 +175,20 @@ class VendorManagementController extends Controller
         $success = $vendorManagement->delete();
         if($success){
             \Session::flash('success', "Vendor deleted successfully");
-            return redirect()->route('vendors.show', $vendorManagement->supp_id);
+            return redirect()->route('vendors.show', [
+              $vendorManagement->supp_id,
+              'corpID' => $request->corpID,
+              'active' => $request->active,
+              'main' => $request->main
+            ]);
         }
         \Session::flash('error', "Something went wrong!");
-        return redirect()->route('vendors.show', $vendorManagement->supp_id);
+        return redirect()->route('vendors.show', [
+          $vendorManagement->supp_id,
+          'corpID' => $request->corpID,
+          'active' => $request->active,
+          'main' => $request->main
+        ]);
     }
 
     public function getVendorAccount(Request $request){
