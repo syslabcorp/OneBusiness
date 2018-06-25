@@ -183,3 +183,6 @@ Route::post("getDepartments", "Branch\EmployeeRequestController@getDepartments")
 Route::post("getPositions", "Branch\EmployeeRequestController@getPositions")->middleware('auth');
 
 Route::get('/petty-categories', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
+
+Route::post("getDepartments", "Branch\EmployeeRequestController@getDepartments")->middleware('auth');
+Route::post("getPositions", "Branch\EmployeeRequestController@getPositions")->middleware('auth');
