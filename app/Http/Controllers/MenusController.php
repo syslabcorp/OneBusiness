@@ -21,7 +21,7 @@ class MenusController extends Controller
         $menu = Menu::findOrFail($id);
 
         if (request()->order == 'up') {
-            $preMenu = Menu::where('parent_id', 0)->where('sort', '<', $menu->sort)
+            $preMenu = Menu::where('parent_id', '=', 0)->where('sort', '<', $menu->sort)
                             ->orderBy('sort', 'DESC')->first();
 
             if ($preMenu) {
@@ -37,7 +37,7 @@ class MenusController extends Controller
                 ]);
             }
         } else {
-            $nextMenu = Menu::where('parent_id', 0)->where('sort', '>', $menu->sort)
+            $nextMenu = Menu::where('parent_id', '=', 0)->where('sort', '>', $menu->sort)
                             ->orderBy('sort', 'ASC')->first();
 
             if ($nextMenu) {

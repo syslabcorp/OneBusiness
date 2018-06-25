@@ -259,6 +259,33 @@ class WageTemplatesController extends Controller
         ]);
     }
 
+    public function editContract($id)
+    {
+        $template = $this->tmplModel->findOrFail($id);
+
+        return view('wage-templates.edit-contract', [
+            'template' => $template
+        ]);
+    }
+
+    public function updateContract($id)
+    {
+        if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 45, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
+        $template = $this->tmplModel->findOrFail($id);
+
+        $template->update([
+            'contract' => request()->contract
+        ]);
+
+        \Session::flash('success', "Contract {$template->code} has been updated");
+
+        return redirect(route('wage-templates.edit-contract', [$template, 'corpID' => request()->corpID]));
+    }
+
     private function templParams()
     {
         $params = request()->only([

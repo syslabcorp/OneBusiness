@@ -7,13 +7,13 @@
         <div class="col-md-6">
           <h4>
             Wage Templates 
-            @if(\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E'))
             <small>
               ({{ $company->category() ? $company->category()->description : 'No Category' }} - 
               {{ $company->subcategory() ? $company->subcategory()->description : 'No Subcategory' }}) 
-              <a href="#" onclick="openWageDocument()">Change</a>
+              @if(\Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E'))
+                <a href="#" onclick="openWageDocument()">Change</a>
+              @endif
             </small>
-            @endif
           </h4>
         </div>
         <div class="col-md-6 text-right">
@@ -129,6 +129,11 @@
                 {{ \Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E') ? '' : 'disabled' }} \
                 href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit?corpID={{ $corpID }}">\
                 <i class="fas fa-pencil-alt"></i>\
+              </a>\
+              <a class="btn btn-info btn-md" title="View/Edit Document" \
+                href="{{ route('wage-templates.index')}}/' + row.wage_tmpl8_id + '/edit-contract?corpID={{ $corpID }}"\
+                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 45, 'E') ? '' : 'disabled' }}> \
+                <i class="far fa-file-alt"></i> \
               </a>\
               <a class="btn btn-danger btn-md" title="Delete" onclick="deleteTemplate(event,' + row.wage_tmpl8_id + ', \'' + row.code + '\')" \
                 {{ \Auth::user()->checkAccessByIdForCorp($corpID, 45, 'D') ? '' : 'disabled' }}> \
