@@ -181,6 +181,3 @@ Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@react
 Route::get("branchRequest", "Branch\EmployeeRequestController@index")->middleware('auth');
 
 Route::get('/petty-categories', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
-
-Route::post("getDepartments", "Branch\EmployeeRequestController@getDepartments")->middleware('auth');
-Route::post("getPositions", "Branch\EmployeeRequestController@getPositions")->middleware('auth');
