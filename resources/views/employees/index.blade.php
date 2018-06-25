@@ -61,7 +61,6 @@
                                               <th style="min-width: 90px">HDMF#</th>
                                               <th style="min-width: 70px">Account#</th>
                                               <th style="min-width: 70px">Type</th>
-                                              <th style="display: none">Active</th>
                                             </tr>
                                           </thead>
                                           <tbody >
@@ -122,7 +121,7 @@ $(document).ready(function() {
           targets: 1,
           data: "UserName",
           render: (data, type, row, meta) => {
-            return "<a>" + data + "</a>"
+            return "<a href='{{ route('employee.index') }}/" + row.UserID + "?corpID={{ $corpID }}'>"+ data +"</a>";
           }
         },
         {
@@ -184,10 +183,6 @@ $(document).ready(function() {
         {
           targets: 16,
           data: "Type"
-        },
-        {
-          targets: 17,
-          data: "Active"
         }
       ],
       order: [

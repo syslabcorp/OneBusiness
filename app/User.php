@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->hasMany(\App\Shift::class, 'ShiftOwner', 'UserID');
     }
 
+
+    public function docs() {
+        return $this->hasMany(\App\HDocs::class, 'emp_id', 'UserID');
+    }
+
     public function empHistories($db_name)
     {
         $empHistoryModel = new \App\Models\Py\EmpHistory;

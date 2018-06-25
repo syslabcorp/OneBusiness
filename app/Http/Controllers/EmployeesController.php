@@ -64,10 +64,10 @@ class EmployeesController extends Controller {
 
     switch($status) {
       case "1":
-          $items = $items->where('Active', 1);
+          $items = $items->where('SQ_Active', 1);
           break;
       case "2":
-          $items = $items->where('Active', 0);
+          $items = $items->where('SQ_Active', 0);
           break;
       default:
           break;
@@ -90,10 +90,10 @@ class EmployeesController extends Controller {
 
     switch($level) {
       case "non-branch":
-        $items = $items->whereNotIn('UserID', $user_by_branches);
+        $items = $items->where('SQ_Branch',  0);
         break;
       case "branch":
-        $items = $items->whereIn('UserID', $user_by_branches);
+        $items = $items->where('SQ_Branch', '!=', 0);
         break;
       default:
         break;
@@ -106,6 +106,18 @@ class EmployeesController extends Controller {
     // return response()->json($branchSelect);
 
     return fractal($items, new EmpTransformer($company->database_name))->toJson();
+  }
+
+  public function show(Request $request, $id)
+  {
+    $tab = "auto";
+    $user = User::find($id);
+    $company = Corporation::findOrFail($request->corpID);
+    return view('employees/show', [
+      'corpID' => $request->corpID,
+      'tab' => $tab,
+      'user' => $user,
+    ]);
   }
 
   public function transfer(Request $request, $id)

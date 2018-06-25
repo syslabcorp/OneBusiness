@@ -57,7 +57,7 @@ class EmpTransformer extends Fractal\TransformerAbstract
           'UserName' => $item->UserName,
           'Address' => (int) $item->Address,
           'BDay' => $item->Bday ? $item->Bday->format('d/m/Y') : "",
-          'Age' => 20,
+          'Age' => $item->Bday ? date_diff($item->Bday, date_create(date("Y-m-d")))->format('%y') : "",
           'Sex' => $item->Sex == "Male" ? 'M' : 'F',
           'Branch' => $branch,
           'Department' => $department,

@@ -13,4 +13,16 @@ class HDocs extends Model
   protected $fillable = [
     'description', 'series'
   ];
+
+  public function user() {
+    return $this->belongsTo(\App\User::class, 'UserID', 'emp_id');
+  }
+
+  public function category() {
+    return $this->belongsTo(\App\HCategory::class, 'doc_no', 'doc_no');
+  }
+
+  public function subcategory() {
+    return $this->belongsTo(\App\HSubcategory::class, 'subcat_id', 'subcat_id');
+  }
 }
