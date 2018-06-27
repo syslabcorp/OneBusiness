@@ -10,10 +10,10 @@
                    </select>
                    <select style="width: 128px; display: inline;" class="form-control active-filter">
                            <option value="any">Any Status</option>
-                           <option value="1" selected>Active</option>
-                           <option value="0">Inactive</option>
+                           <option value="1">Active</option>
+                           <option value="0" selected>Inactive</option>
                    </select>
-                   <input type="checkbox" name="all-branches"> All Branches
+                   <input type="checkbox" checked name="all-branches"> All Branches
            </div>
 
             <table id="reactivateEmployeeDatatable" class="table table-bordered">
@@ -63,6 +63,16 @@
           <input type="password" name="password" class="form-control">
         </div>
       </div>
+      <div class="form-group row">
+        <label style="margin-top: 7px;" class="col-sm-2 col-form-label">Department</label>
+        <div class="col-sm-4">
+          <select name="departmentId" class="form-control"></select>
+        </div>
+        <label style="margin-top: 7px;" for="start_date" class="col-sm-2 col-form-label">Position</label>
+        <div class="col-sm-4">
+          <select name="positionId" class="form-control"></select>
+        </div>
+      </div>
         <input type="hidden" name="requestId">
         <input type="hidden" name="username">
         <hr>
@@ -98,6 +108,42 @@
 </div>
 </form>
 <script>
+        function generateDepartments(){
+          var callback = function (response){
+            populateSelectOptions("[name='departmentId']", response);
+            generatePositions($("[name='departmentId']").val());
+          }
+          ajaxRequest("POST", "{{ url('getDepartments') }}", { _token : '{{ csrf_token() }}', corpId : '{{ $corpId }}' }, callback);
+        }
+
+        function populateSelectOptions(selectSelector, response){
+            var select = $(selectSelector).empty();
+            $.each(response, function (index, item) {
+              select.append(new Option(item, index));
+            });
+        }
+
+        function ajaxRequest(method, url, data, callback){
+          $.ajax({
+            method : method, 
+            url : url,
+            data : data
+          }).done(callback);
+        }
+
+        generateDepartments();
+
+        $("[name='departmentId']").change(function (){
+          generatePositions($(this).val());
+        });
+
+        function generatePositions(departmentId){
+          var callback = function(response){
+            populateSelectOptions("[name='positionId']", response);
+          };
+          ajaxRequest("POST", "{{ url('getPositions') }}", { _token : '{{ csrf_token() }}', corpId : '{{ $corpId }}', departmentId: departmentId }, callback);
+        }
+
         let reactivateEmployeeDatatable = $('#reactivateEmployeeDatatable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -106,7 +152,7 @@
                         data: function (d) {
                                 d.branch_name = $('.branch-filter').val();
                                 d.isActive = $('.active-filter').val();
-                                d.corpId = {{ $corpId }};
+                                d.corpId = '{{ $corpId }}';
                         }
                 },
                 "order": [],
@@ -118,7 +164,14 @@
                         {data: 'AllowedMins', name: 'AllowedMins'},
                         {data: 'LastUnfrmPaid', name: 'LastUnfrmPaid'},
                         {data: 'action', name: 'action', sortable: false, searchable: false}
-                ]
+                ],
+              "drawCallback" : function( settings ) {
+                  tippy("[title]", {
+                      arrow: true,
+                      placement: 'left',
+                      size: "large"
+                  });
+              },
         });
         $('.branch-filter, .active-filter').on('change', function () {
                 reactivateEmployeeDatatable.draw();
@@ -132,7 +185,7 @@
 
         function defineBranchId(){
             if($("#reactivateEmployeeForm input[type='checkbox'].MainBranchCheckbox").is(":checked")) {
-              return "-1";
+              return "0";
             } else {
               return $("#reactivateModal :checkbox:checked").next("select").val();
             }
@@ -154,12 +207,14 @@
             corporation_name = defineCorporationName();
             password = $("input[name='password']").val();
             start_date = $("input[name='start_date']").val();
+            departmentId = $("[name='departmentId']").val();
+            positionId = $("[name='positionId']").val();
             $.ajax({
                 method: "POST", 
                 url : "{{ url('reactivateEmployeeRequest') }}", 
-                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : {{ $corpId }} }
+                data : { "_token" : '{{ csrf_token() }}', branch_id : branch_id, password : password, start_date : start_date, "employeeRequestId" : requestId,  corpId : '{{ $corpId }}', departmentId : departmentId, positionId : positionId,  }
             }).done(function (response){
-                if(response.success == "true") {
+                if(response.success == true) {
                     $('#reactivateModal').modal('hide');
                       reactivateEmployeeDatatable.draw();
                       employeeRequestsDatatable.draw();
@@ -183,7 +238,7 @@
                 $(this).next("select").css("background-color", "#ffffff");
                 $(this).next("select").find("option[value='null']").remove();
              }
-             $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').not(this).each(function (iterator, value){
+             $('#reactivateEmployeeForm input[type="checkbox"]').not(this).each(function (iterator, value){
                 $(value).prop('checked', false);  
                 $(value).next("select").prop("disabled", "disabled");
                 $(value).next("select").css("background-color", "#ebebe4");
@@ -200,7 +255,7 @@
                   $(value).next("select").css("background-color", "#ebebe4");
                   $(value).next("select").prepend('<option value="null"></option>');
                   $(value).next("select").val("null");
-                  $(value).prop("disabled", true);
+                  // $(value).prop("disabled", true);
                });
              } else {
               $('#reactivateEmployeeForm input[type="checkbox"].notMainBranchCheckbox').each(function (iterator, value){
@@ -213,7 +268,13 @@ $(document).ready(function (){
 });
 
 $('[name="all-branches"]').change(function (){
-  if($(this).is(":checked")){
+  updateAllBrachesValue(this);
+});
+
+updateAllBrachesValue($('[name="all-branches"]'));
+
+function updateAllBrachesValue(element){
+  if($(element).is(":checked")){
     $(".branch-filter").prepend("<option value='any'></option>");
     $(".branch-filter").val("any");
     $(".branch-filter").attr("disabled", "disabled");
@@ -223,5 +284,5 @@ $('[name="all-branches"]').change(function (){
     $(".branch-filter").removeAttr("disabled");
     $(".branch-filter").trigger("change");
   }
-});
+}
 </script>

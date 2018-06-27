@@ -27,6 +27,8 @@
                         <th>Start Duty</th>
                         <th>Approved</th>
                         <th>Uploaded</th>
+                        <th>Approved By</th>
+                        <th>Date Approved</th>
                         <th>Sex</th>
                         <th>Birthdate</th>
                         <th>SSS</th>
@@ -47,12 +49,11 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
         processing: true,
         serverSide: true,
         "order": [],
-        // "aaSorting": [],
         "ajax": {
                 url: "{{ url('getEmployeeRequests') }}",
                 data: function (d) {
                         d.approved = $(".approved-filter").val();
-                        d.corpId = {{ $corpId }};
+                        d.corpId = "{{ $corpId }}";
                 }
         },
         columns: [
@@ -64,6 +65,8 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
                 {data: 'date_start', name: 'date_start'},
                 {data: 'approved', name: 'approved'},
                 {data: 'executed', name: 'executed'},
+                {data: 'approvedBy', name: 'approvedBy' },
+                {data: 'DateApproved', name: 'DateApproved'},
                 {data: 'sex', name: 'sex'},
                 {data: 'bday', name: 'bday'},
                 {data: 'SSS', name: 'SSS'},
@@ -71,17 +74,25 @@ let employeeRequestsDatatable = $('#employeeRequestsDatatable').DataTable({
                 {data: 'pagibig', name: 'pagibig'},
                 {data: 'action', name: 'action', sortable: false, searchable: false}
         ],
-        // initComplete: function () {
-        //     this.api().columns().every(function () {
-        //         var column = this;
-        //         var input = document.createElement("input");
-        //         $(input).appendTo($(column.footer()).empty())
-        //         .on('change', function () {
-        //             column.search($(this).val(), false, false, true).draw();
-        //         });
-        //     });
-        // }
+        "drawCallback" : function( settings ) {
+            tippy("[title]", {
+                arrow: true,
+                placement: 'left',
+                size: "large"
+            });
+        },
 });
+
+function defineVisibilityOfColumns() {
+    if($(".approved-filter").val() == "uploaded" || $(".approved-filter").val() == "approved") {
+        employeeRequestsDatatable.column( "th:contains(Approved By)" ).visible( true );
+        employeeRequestsDatatable.column( "th:contains(Date Approved)" ).visible( true );
+    } else {
+        employeeRequestsDatatable.column( "th:contains(Approved By)" ).visible( false );
+        employeeRequestsDatatable.column( "th:contains(Date Approved)" ).visible( false );
+    }
+}
+
 $('.approved-filter').on('change', function () {
         if($(this).val() == "for_approval") {
             // show_table_columns();
@@ -89,6 +100,7 @@ $('.approved-filter').on('change', function () {
             // hide_table_columns();
         }
         employeeRequestsDatatable.draw();
+        defineVisibilityOfColumns();
 });
 
 function hide_table_columns(){
@@ -183,7 +195,6 @@ function deleteRequest(requestId, element){
 
 $(document).ready(function (){
     $("#employee_filters").insertAfter("#employeeRequestsDatatable_wrapper .dataTables_length");
-    // hide_table_columns();
-    // hide_table_columns();
+    defineVisibilityOfColumns();
 });
 </script>
