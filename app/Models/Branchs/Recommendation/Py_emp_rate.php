@@ -16,7 +16,8 @@ class Py_emp_rate extends Model
         'txn_id',
         'wade_tmpl8_id',
         'effect_date',
-        'date_changed'
+        'date_changed',
+        'apprv_type'
         
     ];
 }

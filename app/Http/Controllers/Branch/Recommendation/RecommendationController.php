@@ -135,7 +135,7 @@ class RecommendationController extends Controller
 
         $currentConnection = $this->getConnectionNameByRequest();
         
-//      UPDATE py_emp_rate :
+//      INSERT into py_emp_rate :
 //      
 //      prepare data
         
@@ -147,20 +147,21 @@ class RecommendationController extends Controller
         
         $empRate = new Py_emp_rate();
         $empRate->setConnection($this->getConnectionNameByRequest());
-        
-        $empRateRow = $empRate->first();
+              
         
 //      txn_ID = (latest txn_no of the employee recorded in py_emp_hist)
 //      wage_tmpl8_id = recommendation_rqst.wage_to
 //      effect_date = recommendation_rqst.effective_date
 //      date_changed = date the record was updated
 
-        $empRateRow->txn_ID = $newtxn_ID;
-        $empRateRow->wage_tmpl8_id = $recommendation->to_wage;
-        $empRateRow->effect_date   = $recommendation->effective_date;
-        $empRateRow->date_changed  = \Carbon\Carbon::now();
+        $empRate->txn_ID = $newtxn_ID;
+        $empRate->wage_tmpl8_id = $recommendation->to_wage;
+        $empRate->effect_date   = $recommendation->effective_date;
+        $empRate->date_changed  = \Carbon\Carbon::now();
+        $empRate->approval_code = $recommendation->txn_no;
+        $empRate->apprv_type    = 0;
         
-        $empRateRow->save();
+        $empRate->save();
 
 
 //      Insert INTO h_docs :        
@@ -186,7 +187,10 @@ class RecommendationController extends Controller
         $hDocs->subcat_id   = $corporation->wt_doc_subcat;
         $hDocs->emp_id      = $recommendation->userID;
         $hDocs->branch      = $recommendation->User->Branch;
-                
+        $hDocs->doc_exp     = '0000-00-00';
+        $hDocs->notes       = 'Recommended by: '.auth()->user()->UserName;
+        $hDocs->approval_no = $recommendation->txn_no;
+        
         $hDocs->save();
         
 //      UPDATE h_category.series 

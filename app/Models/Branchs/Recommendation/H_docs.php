@@ -21,6 +21,7 @@ class H_docs extends Model
         'notes',
         'doc_date',
         'doc_exp',
-        'img_file'
+        'img_file',
+        'approval_no'
     ];
 }

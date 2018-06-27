@@ -13,7 +13,7 @@ class Recommendation extends Model
      */
     protected $connection ;
     protected $primaryKey = 'txn_no';
-    protected $table = 'recommendation_rqst';
+    protected $table = 't_recommendation_rqst';
     
     public $timestamps = false;
     
@@ -26,7 +26,8 @@ class Recommendation extends Model
         'recommended_by',
         'date_recommended',
         'isApproved',
-        'isDeleted'
+        'isDeleted',
+        
     ];
     
     public function User() {
