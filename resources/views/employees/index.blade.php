@@ -1,88 +1,64 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-<div class="row">
-
-<div id="togle-sidebar-sec" class="active">
-
-      <!-- Sidebar -->
-       <div id="sidebar-togle-sidebar-sec">
-          <div class="sidebar-nav">
-            <ul></ul>
-          </div>
-        </div>
-
-      <div id="page-content-togle-sidebar-sec">
+  <div class="box-content">
     @if(Session::has('success'))
       <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
     @elseif(Session::has('error'))
       <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
     @endif
-             <div class="col-md-12">
+    <div class="col-md-12">
       <div class="row">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-9">
-                    <h4>Employee Profile</h4>
-                  </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-9">
+                <h4>Employee Profile</h4>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="bs-example">
+              <div class="row">
+                <div class="table-responsive">
+                  <table id="table-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                      <tr>
+                        <th style="min-width: 50px">ID</th>
+                        <th style="min-width: 70px">Employee Name</th>
+                        <th style="min-width: 70px">Address</th>
+                        <th style="min-width: 70px">Date of Birth</th>
+                        <th style="min-width: 40px">Age</th>
+                        <th style="min-width: 30px">Sex</th>
+                        <th style="min-width: 70px">Branch</th>
+                        <th style="min-width: 70px">Department</th>
+                        <th style="min-width: 70px">Position</th>
+                        <th style="min-width: 70px">Date Hired</th>
+                        <th style="min-width: 70px">Base Salary</th>
+                        <th style="min-width: 70px">Pay Code</th>
+                        <th style="min-width: 90px">SSS#</th>
+                        <th style="min-width: 90px">PHIC#</th>
+                        <th style="min-width: 90px">HDMF#</th>
+                        <th style="min-width: 70px">Account#</th>
+                        <th style="min-width: 70px">Type</th>
+                      </tr>
+                    </thead>
+                    <tbody >
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel">
-                                <div class="panel-body">
-                                  <div class="bs-example">
-                                    <div class="row">
-                                      <div class="table-responsive">
-                                        <table id="table-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                          <thead>
-                                            <tr>
-                                              <th style="min-width: 50px">ID</th>
-                                              <th style="min-width: 70px">Employee Name</th>
-                                              <th style="min-width: 70px">Address</th>
-                                              <th style="min-width: 70px">Date of Birth</th>
-                                              <th style="min-width: 40px">Age</th>
-                                              <th style="min-width: 30px">Sex</th>
-                                              <th style="min-width: 70px">Branch</th>
-                                              <th style="min-width: 70px">Department</th>
-                                              <th style="min-width: 70px">Position</th>
-                                              <th style="min-width: 70px">Date Hired</th>
-                                              <th style="min-width: 70px">Base Salary</th>
-                                              <th style="min-width: 70px">Pay Code</th>
-                                              <th style="min-width: 90px">SSS#</th>
-                                              <th style="min-width: 90px">PHIC#</th>
-                                              <th style="min-width: 90px">HDMF#</th>
-                                              <th style="min-width: 70px">Account#</th>
-                                              <th style="min-width: 70px">Type</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody >
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-</div>
-</div>
-</div>
-</div>
+  </div>
+
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>

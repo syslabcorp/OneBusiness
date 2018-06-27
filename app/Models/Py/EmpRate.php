@@ -20,6 +20,6 @@ class EmpRate extends Model
 
     public function mstrs()
     {
-      return $this->hasMany(App\Models\WageTmpl8\Mstr::class, 'wage_tmpl8_id', 'wage_tmpl8_id');
+      return $this->belongsTo(App\Models\WageTmpl8\Mstr::class, 'wage_tmpl8_id', 'wage_tmpl8_id');
     }
 }

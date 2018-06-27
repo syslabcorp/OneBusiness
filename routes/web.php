@@ -18,6 +18,9 @@ Route::get('/', function () {
 
 Route::get('employee/delivery-items', 'EmployeesController@deliveryItems', ['middleware' => 'auth'])->name('employee.deliveryItems');
 Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);
+Route::get('employee/{id}/delivery-documents', 'EmployeesController@deliveryDocuments', ['middleware' => 'auth'])->name('employee.deliveryDocuments');
+Route::get('employee/{id}/delivery-positions', 'EmployeesController@deliveryPositions', ['middleware' => 'auth'])->name('employee.deliveryPositions');
+Route::get('employee/{id}/delivery-wages', 'EmployeesController@deliveryWages', ['middleware' => 'auth'])->name('employee.deliveryWages');
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');

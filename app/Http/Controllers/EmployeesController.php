@@ -9,7 +9,11 @@ use DB;
 use Validator;
 use Datetime;
 use App\Transformers\Py\EmpTransformer;
+use App\Transformers\H\DocTransformer;
+use App\Transformers\Py\PositionTransformer;
+use App\Transformers\WageTmpl8\WageTransformer;
 use Config;
+use App\HDocs;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -108,6 +112,19 @@ class EmployeesController extends Controller {
     return fractal($items, new EmpTransformer($company->database_name))->toJson();
   }
 
+  public function deliveryDocuments(Request $request, $id)
+  {
+    $company = Corporation::findOrFail($request->corpID);
+
+    $user = User::find($id);
+
+    $docModel = new \App\HDocs;
+    $docModel->setConnection($company->database_name);
+    $items = $docModel->where('emp_id', $user->UserID)->get();
+
+    return fractal($items, new DocTransformer)->toJson();
+  }
+
   public function show(Request $request, $id)
   {
     $tab = "auto";
@@ -120,202 +137,33 @@ class EmployeesController extends Controller {
     ]);
   }
 
-  public function transfer(Request $request, $id)
+  public function deliveryPositions(Request $request, $id)
   {
-      $company = Corporation::findOrFail($request->corpID);
+    $company = Corporation::findOrFail($request->corpID);
 
-      $hdrModel = new \App\Models\Stxfr\Hdr;
-      $hdrModel->setConnection($company->database_name);
+    $user = User::find($id);
 
-      $detailModel = new \App\Models\Stxfr\Detail;
-      $detailModel->setConnection($company->database_name);
+    $empHistoryModel = new \App\Models\Py\EmpHistory;
+    $empHistoryModel->setConnection($company->database_name);
+    $items = $empHistoryModel->where('EmpID', $user->UserID)->get();
 
-      $rcvModel = new \App\Srcvdetail;
-      $rcvModel->setConnection($company->database_name);
-
-      $spoModel = new \App\Models\Spo\Hdr;
-      $spoModel->setConnection($company->database_name);
-
-      $stockItem = $spoModel->findOrFail($id);
-
-      if($request->items) {
-          foreach($request->items as $itemCode => $branches) {
-              foreach($branches as $branch => $itemParams) {
-                  if($itemParams['Qty'] == 0) {
-                      continue;
-                  }
-
-                  $hdrItem = $hdrModel->create([
-                      'Txfr_Date' => date('Y-m-d'),
-                      'Txfr_To_Branch' => $branch,
-                      'Rcvd' => 0,
-                      'Uploaded' => 0
-                  ]);
-
-                  $rcvItems = $rcvModel->where('item_id', $itemParams['ItemId'])
-                                  ->where('Bal', '>', 0)
-                                  ->orderBy('RcvDate', 'ASC')
-                                  ->get();
-
-                  $itemQtyRemaining = $itemParams['Qty'];
-                  foreach($rcvItems as $rcvItem) {
-                      $itemQty = $itemQtyRemaining;
-                      $itemQtyRemaining -= $rcvItem->Bal;
-                      if($itemQty <= $rcvItem->Bal) {
-                          $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
-                      }else {
-                          $itemQty = $rcvItem->Bal;
-                          $rcvItem->update(['Bal' => 0]);
-                      }
-
-                      $detailModel->create([
-                          'Txfr_ID' => $hdrItem->Txfr_ID,
-                          'item_id' => $itemParams['ItemId'],
-                          'ItemCode' =>$itemCode,
-                          'Qty' => $itemQty,
-                          'Bal' => $itemQty,
-                          'Movement_ID' => $rcvItem->Movement_ID,
-                      ]);
-
-                      if($itemQtyRemaining <= 0) {
-                          break;
-                      }
-                  }
-
-                  $poItems = $stockItem->items()
-                                       ->whereRaw('ServedQty < Qty')
-                                       ->where('item_id', $itemParams['ItemId'])
-                                       ->where('Branch', $branch)
-                                       ->get();
-
-                  $itemQtyRemaining = $itemParams['Qty'];
-                  foreach($poItems as $poItem) {
-                      $itemQty = $itemQtyRemaining;
-                      $itemQtyRemaining -= $poItem->Qty - $poItem->ServedQty;
-
-                      if($itemQty <= $poItem->Qty - $poItem->ServedQty) {
-                          $poItem->update(['ServedQty' => $poItem->ServedQty + $itemQty]);
-                      }else {
-                          $poItem->update(['ServedQty' => $poItem->Qty]);
-                      }
-
-                      if($itemQtyRemaining <= 0) {
-                          break;
-                      }
-                  }
-              }
-          }
-      }
-
-    return response()->json([
-      'success'=> 'success'
-    ]);
+    return fractal($items, new PositionTransformer)->toJson();
   }
 
+  public function deliveryWages(Request $request, $id)
+  {
+    $company = Corporation::findOrFail($request->corpID);
+    $user = User::find($id);
 
+    $empHistoryModel = new \App\Models\Py\EmpHistory;
+    $empHistoryModel->setConnection($company->database_name);
+    $empHist = $empHistoryModel->where('EmpID', $user->UserID)->get();
+    $empRateModel = new \App\Models\Py\EmpRate;
+    $empRateModel->setConnection($company->database_name);
 
-    public function edit(Request $request, $id)
-    {
-        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 42, 'E')) {
-            \Session::flash('error', "You don't have permission");
-            return redirect("/home");
-        }
+    $items = $empRateModel->whereIn('txn_id', $empHist->pluck('txn_id') )->get();
+    dd($items);
 
-        $company = Corporation::findOrFail($request->corpID);
-
-        $hdrModel = new \App\Models\Stxfr\Hdr;
-        $hdrModel->setConnection($company->database_name);
-
-        $hdrItem = $hdrModel->findOrFail($id);
-
-        $cfgModel = new \App\Models\SItem\Cfg;
-        $cfgModel->setConnection($company->database_name);
-
-        $rcvModel = new \App\Srcvdetail;
-        $rcvModel->setConnection($company->database_name);
-
-        $suggestItems = $cfgModel->where('Active', 1)
-                                ->distinct()
-                                ->orderBy('ItemCode', 'ASC')
-                                ->get();
-
-
-        $branches = $company->branches()->where('Active', 1)
-                            ->orderBy('ShortName', 'ASC')
-                            ->get();
-
-        return view('stocktransfer.edit', [
-            'branches' => $branches,
-            'corpID' => $request->corpID,
-            'suggestItems' => $suggestItems,
-            'hdrItem' => $hdrItem,
-            'rcvModel' => $rcvModel,
-            'stockStatus' => $request->stockStatus
-        ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $company = Corporation::findOrFail($request->corpID);
-
-        $hdrModel = new \App\Models\Stxfr\Hdr;
-        $hdrModel->setConnection($company->database_name);
-
-        $rcvModel = new \App\Srcvdetail;
-        $rcvModel->setConnection($company->database_name);
-
-        $hdrItem = $hdrModel->findOrFail($id);
-
-        $hdrItem->update($request->only([
-            'Txfr_Date', 'Txfr_To_Branch'
-        ]));
-
-        foreach($hdrItem->details as $detail) {
-            $rcvItem = $rcvModel->where('Movement_ID', $detail->Movement_ID)
-                            ->first();
-            if($rcvItem) {
-                $rcvItem->update(['Bal' => $rcvItem->Bal + $detail->Bal]);
-            }
-        }
-        $hdrItem->details()->delete();
-
-        if($request->details) {
-            foreach($request->details as $itemParams) {
-                $rcvItems = $rcvModel->where('item_id', $itemParams['item_id'])
-                                    ->where('Bal', '>', 0)
-                                    ->orderBy('RcvDate', 'ASC')
-                                    ->get();
-                $itemQtyRemaining = $itemParams['Qty'];
-                foreach($rcvItems as $rcvItem) {
-                    $itemQty = $itemQtyRemaining;
-                    $itemQtyRemaining -= $rcvItem->Bal;
-                    if($itemQty <= $rcvItem->Bal) {
-                        $rcvItem->update(['Bal' => $rcvItem->Bal - $itemQty]);
-                    }else {
-                        $itemQty = $rcvItem->Bal;
-                        $rcvItem->update(['Bal' => 0]);
-                    }
-                    $hdrItem->details()->create([
-                        'item_id' => $itemParams['item_id'],
-                        'ItemCode' => $itemParams['ItemCode'],
-                        'Qty' => $itemQty,
-                        'Bal' => $itemQty,
-                        'Movement_ID' => $rcvItem->Movement_ID,
-                    ]);
-                    if($itemQtyRemaining <= 0) {
-                        break;
-                    }
-                }
-            }
-        }
-
-
-        \Session::flash('success', "Stock item has been updated successfully");
-
-        return redirect(route('stocktransfer.index', [
-            'corpID' => $request->corpID,
-            'tab' => 'stock',
-            'stockStatus' => $request->stockStatus
-        ]));
-    }
+    return fractal($items, new WageTransformer($company->database_name))->toJson();
+  }
 }

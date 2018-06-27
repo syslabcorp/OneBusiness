@@ -48,6 +48,15 @@
 
           <div class="form-group">
             <div class="col-md-2">
+              <label for="" class="control-label">Address</label>
+            </div>
+            <div class="col-md-10">
+              <input type="text" name="{{$user->Address}}" id="" class="form-control" disabled="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-md-2">
               <label for="" class="label-control">
                 Position:
               </label>
