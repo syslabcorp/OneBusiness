@@ -1,6 +1,6 @@
 @extends('layouts.custom')
 
-@if( auth()->user()->isAdmin() && !session()->get('error') )
+@if( !session()->get('error') )
 
 @section('head')
 

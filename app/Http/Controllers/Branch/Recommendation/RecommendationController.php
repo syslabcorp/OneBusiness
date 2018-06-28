@@ -25,11 +25,11 @@ class RecommendationController extends Controller
             $helper =new EmployeeRequestHelper();
             $helper->setCorpId($corpId);
             $databaseName = $helper->getDatabaseName(); // throw exception if no corpId
-                      
-            if(!auth()->user()->isAdmin()){
+            
+            if(!auth()->user()->checkAccessByIdForCorp($corpId, 53, 'V')){
                 session()->put('error','You don\'t have permission');
             }
-                       
+            
             return view('branchs.recommendationRequest.index',compact('corpId'));    
         }
         catch(\Exception $ex){
@@ -51,6 +51,8 @@ class RecommendationController extends Controller
 //        {data: 'recommended_by', name: 'recommended_by'},
 //        {data: 'action', name: 'action', sortable: false, searchable: false}
         
+        $user_A_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
+        $user_B_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
         
         $answer = $recommCollect->get()->map( function($recommendation){
             
@@ -61,18 +63,27 @@ class RecommendationController extends Controller
                     'deleted'=>$recommendation->isDeleted,
                     'effective_date'=>$recommendation->effective_date,
                     'recommended_by'=>$recommendation->RecommendedBy->UserName,
-                    'action' => '<span class="btn btn-success actionButton"  onclick="approveRequest('.
-                        $recommendation->txn_no.',\''.
-                        $recommendation->fromWage->code.'\',\''.
-                        $recommendation->toWage->code.'\',\''.
-                        $recommendation->User->UserName.'\')">'.
-                        '<span class="glyphicon glyphicon-ok"></span></span>&nbsp'.
-                        '<span class="btn btn-danger actionButton" onclick="deleteRequest('.
+                    'action' => '<span class="btn btn-success actionButton'.
+                        ($user_A_right ? 
+                            '" onclick="approveRequest('.
+                           $recommendation->txn_no.',\''.
+                           $recommendation->fromWage->code.'\',\''.
+                           $recommendation->toWage->code.'\',\''.
+                           $recommendation->User->UserName.'\')">'.
+                           '<span class="glyphicon glyphicon-ok"></span></span>' 
+                        :
+                        ' disabled"><span class="glyphicon glyphicon-ok"></span></span>')
+                        .'&nbsp'.
+                        '<span class="btn btn-danger actionButton'. 
+                        ($user_A_right ?
+                        '" onclick="deleteRequest('.
                         $recommendation->txn_no.',\''.
                         $recommendation->fromWage->code.'\',\''.
                         $recommendation->toWage->code.'\',\''.
                         $recommendation->User->UserName.'\')">'.
                         '<span class="glyphicon glyphicon-remove"></span></span>'
+                            :
+                        ' disabled"><span class="glyphicon glyphicon-remove"></span></span>')
                 ];
         });
         //requestId, fromWage , toWage , userName
