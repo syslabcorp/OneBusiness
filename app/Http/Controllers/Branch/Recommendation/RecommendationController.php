@@ -66,13 +66,13 @@ class RecommendationController extends Controller
                         $recommendation->fromWage->code.'\',\''.
                         $recommendation->toWage->code.'\',\''.
                         $recommendation->User->UserName.'\')">'.
-                        '<span class="glyphicon glyphicon-ok-sign"></span></span>&nbsp'.
+                        '<span class="glyphicon glyphicon-ok"></span></span>&nbsp'.
                         '<span class="btn btn-danger actionButton" onclick="deleteRequest('.
                         $recommendation->txn_no.',\''.
                         $recommendation->fromWage->code.'\',\''.
                         $recommendation->toWage->code.'\',\''.
                         $recommendation->User->UserName.'\')">'.
-                        '<span class="glyphicon glyphicon-remove-sign"></span></span>'
+                        '<span class="glyphicon glyphicon-remove"></span></span>'
                 ];
         });
         //requestId, fromWage , toWage , userName
