@@ -52,7 +52,7 @@ class RecommendationController extends Controller
 //        {data: 'action', name: 'action', sortable: false, searchable: false}
         
         $user_A_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
-        $user_B_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
+        $user_B_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'D');
         
         $answer = $recommCollect->get()->map( function($recommendation){
             

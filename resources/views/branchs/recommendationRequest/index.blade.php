@@ -1,5 +1,6 @@
 @extends('layouts.custom')
 
+
 @if( !session()->get('error') )
 
 @section('head')
