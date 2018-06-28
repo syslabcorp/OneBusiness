@@ -64,7 +64,6 @@
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
 
 <script>
-
 $(document).ready(function() {
     var table = $('#table-deliveries').DataTable({
 

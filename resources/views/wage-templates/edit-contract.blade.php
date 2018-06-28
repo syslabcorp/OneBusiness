@@ -13,6 +13,10 @@
             </a>
           </div>
           <div class="col-sm-6 text-right">
+            <a class="btn btn-info btn-preview" href="{{ route('wage-templates.preview-contract', [$template, 'corpID' => request()->corpID]) }}"
+              target="_blank">
+              <i class="fas fa-eye"></i> Preview PDF
+            </a>
             <button class="btn btn-success">
               <i class="fas fa-save"></i> Save
             </button>
@@ -27,12 +31,17 @@
 @endsection
 
 @section('pageJS')
-<script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+  <script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
 
   <script type="text/javascript">
+    CKEDITOR.plugins.addExternal('justify', '{{ URL('/plugins/justify') }}/', 'plugin.js' );
+
     (() => {
-      CKEDITOR.replace('contractEditor')
-      CKEDITOR.instances.contractEditor.on('change', (event) => { 
+      CKEDITOR.replace('contractEditor', {
+        extraPlugins: 'justify'
+      })
+      CKEDITOR.instances.contractEditor.on('change', (event) => {
+        $('.btn-preview').addClass('disabled')
         $('.previewEditor').html(event.editor.getData())
       });
     })()
