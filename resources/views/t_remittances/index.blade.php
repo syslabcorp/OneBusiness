@@ -53,11 +53,7 @@
                   <th>Action</th>
                 </tr>
                 @foreach($collections as $collection)
-                  @php
-                    if (!$collection) {
-                      continue;
-                    }
-                  @endphp
+                  @php if(!is_object($collection)) continue; @endphp
                   <tr class="text-center">
                     <td>{{ $collection->ID }}</td>
                     <td>{{ $collection->CreatedAt->format('Y-m-d H:ia') }}</td>
@@ -80,13 +76,13 @@
                     </td>
                     <td>
                       <a href="{{ route('branch_remittances.show', array_merge([$collection], ['corpID' => $corpID])) }}" style="margin-right: 10px;" 
-                        class="btn btn-success btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'V') ? "" : "disabled" }}"
+                        class="btn btn-success btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 15, 'V') ? "" : "disabled" }}"
                         title="View">
-                        <i class="fa fa-eye"></i>
+                        <i class="far fa-eye"></i>
                       </a>
 
                       <a href="{{ route('branch_remittances.edit', array_merge([$collection], ['corpID' => $corpID])) }}" style="margin-right: 10px;" 
-                        class="btn btn-primary btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "" : "disabled" }}"
+                        class="btn btn-primary btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'E') ? "" : "disabled" }}"
                         title="Edit">
                         <i class="fas fa-pencil-alt"></i>
                       </a>
@@ -96,8 +92,8 @@
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="DELETE">
                         <button style="margin-right: 10px;"  title="Delete" data-id="{{ $collection->ID }}"
-                        class="btn btn-danger btn-xs {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'D') ? "" : "disabled" }}" >
-                          <i class="fa fa-trash"></i>
+                        class="btn btn-danger btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 22, 'D') ? "" : "disabled" }}" >
+                          <i class="fas fa-trash-alt"></i>
                         </button>
                       </form>
                     </td>

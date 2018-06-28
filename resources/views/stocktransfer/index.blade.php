@@ -7,16 +7,16 @@
 @section('content')
 <div class="container-fluid">
 <div class="row">
-    
+
 <div id="togle-sidebar-sec" class="active">
-      
+
       <!-- Sidebar -->
        <div id="sidebar-togle-sidebar-sec">
           <div class="sidebar-nav">
             <ul></ul>
           </div>
         </div>
-          
+
       <div id="page-content-togle-sidebar-sec">
 		@if(Session::has('success'))
 			<div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
@@ -25,7 +25,7 @@
 		@endif
              <div class="col-md-12">
 			 <h3 class="text-center">Stock Transfer</h3>
-    	<div class="row">    
+    	<div class="row">
             <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="row">
@@ -43,7 +43,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel">
-                              
+
                                 <div class="panel-body">
                                     <div class="bs-example">
                                         <ul class="nav nav-tabs" style="margin-bottom: 15px;">
@@ -236,9 +236,9 @@ function onEditRow(param){
 
          $(".rcvdCheckbox"+param).attr("disabled", true);
          $(".uploadCheckbox"+param).attr("disabled", true);
-         
+
     }
-    
+
 }
 
 showHidden = (isShow) => {
@@ -263,7 +263,7 @@ showHidden = (isShow) => {
       path = path.replace(/&tab=[a-z]+/g, '') + "&tab=stock"
       path +=  "&stockStatus=" + $('#stockStatus select').val()
       window.location = location.pathname + path
-    } 
+    }
 
     function filterStatus(event) {
       let path = location.search.replace(/&statusStock=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
@@ -319,12 +319,12 @@ showHidden = (isShow) => {
       var pickers = {};
 
       $('table tr').editable({
-          
+
         dropdowns: {
           sex: ['Male', 'Female']
         },
         edit: function(values) {
-           
+
           $(".edit span", this)
             .removeClass('glyphicon-pencil')
             .addClass('glyphicon-ok')
@@ -336,7 +336,7 @@ showHidden = (isShow) => {
             .addClass('glyphicon-pencil')
             .attr('title', 'Edit');
 
-           
+
 
           if (this in pickers) {
             pickers[this].destroy();
@@ -414,7 +414,7 @@ showHidden = (isShow) => {
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '/original?corpID={{$corpID}}"> \
               <span class="glyphicon glyphicon-inbox"></span> \
             </a> ';
-          
+
             if(row.served == '0') {
               resultHTML += '<a class="btn btn-success btn-md" title="Edit" \
               {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}\

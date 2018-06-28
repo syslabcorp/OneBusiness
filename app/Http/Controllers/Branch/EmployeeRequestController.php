@@ -48,13 +48,12 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata.Branch, sysdata.City_ID, sysdata2.City_ID as City_ID2, provinces.Prov_ID, provinces2.Prov_ID as Prov_ID2, sysdata2.ShortName as "to_branch_name", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.to_branch, employeeRequest.from_branch as from_branch_id, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID LEFT JOIN global.t_cities as cities2 ON sysdata2.City_ID = cities2.City_ID LEFT JOIN global.t_provinces as provinces ON cities.Prov_ID = provinces.Prov_ID LEFT JOIN global.t_provinces as provinces2 ON cities2.Prov_ID = provinces2.Prov_ID ORDER BY DATE(employeeRequest.date_rqstd) DESC');
+		$query1 = DB::select('SELECT users.UserName as "users_username", sysdata.ShortName as "from_branch", sysdata.Branch, sysdata.City_ID, sysdata2.City_ID as City_ID2, provinces.Prov_ID, provinces2.Prov_ID as Prov_ID2, sysdata2.ShortName as "to_branch_name", employeeRequest.txn_no as id, employeeRequest.type, employeeRequest.DateApproved, employeeRequest.to_branch, employeeRequest.from_branch as from_branch_id, employeeRequest.date_start, employeeRequest.date_end_in as date_end, employeeRequest.UserName as request_username, employeeRequest.approved, users2.uname as approvedBy, employeeRequest.executed,employeeRequest.sex, employeeRequest.bday, employeeRequest.sss as SSS, employeeRequest.phic as PHIC, employeeRequest.pagibig  from '.$databaseName.'.t_cashr_rqst employeeRequest LEFT JOIN global.t_users as users ON users.UserID = employeeRequest.userid LEFT JOIN global.t_sysdata as sysdata ON employeeRequest.from_branch = sysdata.Branch LEFT JOIN global.t_sysdata as sysdata2 ON employeeRequest.to_branch = sysdata2.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID LEFT JOIN global.t_cities as cities2 ON sysdata2.City_ID = cities2.City_ID LEFT JOIN global.t_provinces as provinces ON cities.Prov_ID = provinces.Prov_ID LEFT JOIN global.t_provinces as provinces2 ON cities2.Prov_ID = provinces2.Prov_ID LEFT JOIN global.t_users as users2 ON users2.UserID = employeeRequest.ApprovedBy ORDER BY DATE(employeeRequest.date_rqstd) DESC');
 		
 		// dd($query1);
 
 		$query1 = $this->filter_results_according_access_rights($query1, $request);
 
-			
 		// if($request->search["value"]) { $query1 = $this->applySearchToArray($query1, $request->search["value"]); }
 		if(!is_null($request->approved) && $request->approved != "any"){
 			if($request->approved == "uploaded") {
@@ -62,22 +61,16 @@ class EmployeeRequestController extends Controller
 					return $arr->executed == 1;
 				});
 			}
-
-
 			if($request->approved == "approved") {
 				$query1 = array_filter($query1, function ($arr){
 					return $arr->approved == 1;
 				});
 			}
-
-			
 			if($request->approved == "for_approval") {
 				$query1 = array_filter($query1, function ($arr){
 					return $arr->approved == 0;
 				});
 			}
-
-
 		}
 
             return Datatables::of($query1)
@@ -115,7 +108,8 @@ class EmployeeRequestController extends Controller
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch_name.'</span>';
                 })
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    return '<span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok-sign"></span></span><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove-sign"></span></span>';
+                    // return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
+                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -158,8 +152,8 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    // return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
-                    return '<span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span>';
+                    // return '<span title="Activate Employee"><span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span></span>';
+                    return '<span title="Activate Employee"><span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
                     return '<input disabled data-NX-id="'.$employeeRequest->UserID.'" type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
@@ -255,6 +249,19 @@ class EmployeeRequestController extends Controller
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
 		if($employeeRequest->to_branch2 != null) { $branch_name = $employeeRequest->to_branch2->ShortName; }
 		else { $branch_name = null; }
+
+		if($employeeRequest->type == "2"){
+			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
+			$emp = $emp_hist::where("EmpID", $employeeRequest->userid)->where("Branch", $employeeRequest->from_branch)->first();
+			if(!is_null($emp)) {
+				$emp->for_qc = 1;
+				$emp->save();
+			}
+		}
+
+		if($employeeRequest->type == "4"){
+			$employeeRequest->user()->update(array('template' => null,'template2' => null,'template3' => null,'template4' => null ));
+		}
 		
 		if($employeeRequest->type == "3"){
 			$user = new User();
@@ -276,10 +283,6 @@ class EmployeeRequestController extends Controller
 			$user->Level = 1;
 			$user->level_id = 1;
 			$user->passwrd = ($employeeRequest->pswd != null?(md5($employeeRequest->pswd)):null);
-			// $user->SQ_Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			// $user->SQ_Active = ($employeeRequest->to_branch != null?"1":"0");
-			// $user->Branch = ($employeeRequest->to_branch != null?$employeeRequest->to_branch:"0");
-			// $user->Active = ($employeeRequest->to_branch != null?"1":"0");
 			$user->SQ_Branch = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false?$employeeRequest->to_branch:"0");
 			$user->SQ_Active = (!is_null($branch_name) && stripos($branch_name,'SQ') !== false?"1":"0");
 			$user->Branch = (!is_null($branch_name) && !stripos($branch_name,'SQ') !== false?$employeeRequest->to_branch:"0");
@@ -294,12 +297,29 @@ class EmployeeRequestController extends Controller
 			$t_emp_pos->emp_id = $user->UserID;
 			$t_emp_pos->save();
 
-			$t_emp_rate = $employeeRequestHelper->getT_emp_rateModel();
-			$t_emp_rate->pay_basis = "3";
-			$t_emp_rate->rate = "0";
-			$t_emp_rate->emp_id = $user->UserID;
-			$t_emp_rate->effect_date = $employeeRequest->date_start;
-			$t_emp_rate->save();
+			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
+			$emp_hist->Branch = $employeeRequest->to_branch;
+			$emp_hist->EmpID = $user->UserID;
+			$emp_hist->StartDate = $employeeRequest->date_start;
+			$emp_hist->save();
+
+			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
+			$py_emp_rate->txn_id = $emp_hist->txn_id;
+			$py_emp_rate->wage_tmpl8_id = $employeeRequest->wage_tmpl8_id;
+			$py_emp_rate->date_changed = $employeeRequest->DateApproved;
+			$py_emp_rate->effect_date = $employeeRequest->date_start;
+			$py_emp_rate->save();
+
+			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
+			$h_docs = $employeeRequestHelper->get_h_docs_Model();
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
+			$h_docs->series_no = $series_no;
+			$h_docs->doc_no = $corporation_master->wt_doc_cat;
+			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
+			$h_docs->emp_id  = $user->UserID;
+			$h_docs->doc_exp  = $employeeRequest->date_start;
+			$h_docs->branch  = $employeeRequest->to_branch;
+			$h_docs->save();
 		}
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->approved = "1";
@@ -333,9 +353,9 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
-		if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
-			return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
-		}
+		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
+		// 	return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
+		// }
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
@@ -357,10 +377,10 @@ class EmployeeRequestController extends Controller
 			// if((new Carbon($user->LastUnfrmPaid))->diffInDays((new Carbon($request->start_date)), false) >= 255) {
 			if($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date) >= 255) {
 				$user->LastUnfrmPaid = $this->CalculateLast13_Date($request->start_date);
-				$deduct_mstr = $employeeRequestHelper->getDeduct_mstrModel();
-				$uniform = $employeeRequestHelper->getUniformModel();
+				$deduct_mstr = $employeeRequestHelper->get_py_deduct_mstr_Model();
+				$uniform = $employeeRequestHelper->get_py_uniforms_Model();
 				$uniform->EmpID = $user->UserID;
-				$uniform->Amount = $deduct_mstr::where("ID_deduct", "3")->first()->total_amt;
+				$uniform->Amount = null !== $deduct_mstr::where("ID_deduct", "3")->first() ? $deduct_mstr::where("ID_deduct", "3")->first()->total_amt : "";
 				$uniform->DateIssued = $this->CalculateLast13_Date($request->start_date);
 				$uniform->save();
 			}
@@ -375,15 +395,31 @@ class EmployeeRequestController extends Controller
 			}
 			$user->save();
 
-			$emp_hist = $employeeRequestHelper->getEmp_histModel();
+			$emp_hist = $employeeRequestHelper->get_py_emp_hist_Model();
 			$emp_hist->Branch = $request->branch_id;
 			$emp_hist->EmpID = $user->UserID;
 			$emp_hist->StartDate = $request->start_date;
 			$emp_hist->for_qc = 0;
 			$emp_hist->Last13_Date = $this->CalculateLast13_Date($request->start_date);
 			$emp_hist->save();
-			// dd($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date));
-			// dd($this->calculateDifferenceBetweenTwoDates($user->LastUnfrmPaid, $request->start_date));
+
+			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
+			$py_emp_rate->txn_id = $emp_hist->txn_id;
+			$py_emp_rate->wage_tmpl8_id = isset($request->positionId) ? $request->positionId : 0; 
+			$py_emp_rate->effect_date = $request->start_date;
+			$py_emp_rate->save();
+
+			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
+			$h_docs = $employeeRequestHelper->get_h_docs_Model();
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
+			$h_docs->series_no = $series_no;
+			$h_docs->doc_no = $corporation_master->wt_doc_cat;
+			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
+			$h_docs->emp_id  = $user->UserID;
+			$h_docs->branch  = $request->branch_id;
+			$h_docs->doc_exp  = "0000-00-00";
+			$h_docs->notes  = "Reactivated By: " . \Auth::user()->UserID;
+			$h_docs->save();
 			
 			return ["success" => true, "msg" => "The employee reactivated successfully"];
 		}
@@ -428,5 +464,17 @@ class EmployeeRequestController extends Controller
 			];
 		}
 		return $corpsAndBranches;
+	}
+
+	public function getDepartments(EmployeeRequestHelper $employeeRequest, Request $request){
+		$employeeRequest->setCorpId($request->corpId);
+		$t_depts = $employeeRequest->get_t_depts_Model();
+		return $t_depts::all()->pluck("department", "dept_ID");
+	}
+
+	public function getPositions(EmployeeRequestHelper $employeeRequest, Request $request){
+		$employeeRequest->setCorpId($request->corpId);
+		$wage_tmpl8_mstr = $employeeRequest->get_wage_tmpl8_mstr_Model();
+		return $wage_tmpl8_mstr::where("dept_id", $request->departmentId)->where("entry_level", "1")->pluck("position", "wage_tmpl8_id");
 	}
 }

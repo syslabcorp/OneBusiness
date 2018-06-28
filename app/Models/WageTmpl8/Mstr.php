@@ -11,7 +11,7 @@ class Mstr extends Model {
 
     protected $fillable = [
         'code', 'position', 'base_rate', 'entry_level', 'notes', 'dept_id',
-        'active'
+        'active', 'contract'
     ];
 
     public function department()

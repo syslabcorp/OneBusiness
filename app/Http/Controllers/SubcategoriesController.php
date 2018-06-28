@@ -38,7 +38,7 @@ class SubcategoriesController extends Controller
 
     \Session::flash('success', "Subcategory successfully created!");
 
-    return redirect(route('categories.index', [
+    return redirect(route('document-category.index', [
       'corpID' => $request->corpID,
       'categoryId' => $category->doc_no,
       'subcategoryId' => $subcategory->subcat_id
@@ -56,7 +56,7 @@ class SubcategoriesController extends Controller
 
     \Session::flash('success', "Subcategory successfully updated!");
 
-    return redirect(route('categories.index', [
+    return redirect(route('document-category.index', [
       'corpID' => $request->corpID,
       'categoryId' => $subcategory->category->doc_no,
       'subcategoryId' => $subcategory->subcat_id
@@ -74,6 +74,6 @@ class SubcategoriesController extends Controller
 
     \Session::flash('success', "Subcategory successfully deleted!");
 
-    return redirect(route('categories.index', ['corpID' => $request->corpID]));
+    return redirect(route('document-category.index', ['corpID' => $request->corpID]));
   }
 }

@@ -11,6 +11,8 @@
     <!--title>{{ config('app.name', 'Laravel') }}</title-->
     
     <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
@@ -28,7 +30,7 @@
     
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-	
+
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -37,7 +39,7 @@
 	<![endif]-->
 
 	<link rel="stylesheet" href="{{ URL('/css/bootstrap-treeview.min.css') }}" />
-
+  @yield('header_styles')
 	<style>
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
@@ -134,7 +136,7 @@
 		var ajax_url = "{{ URL('/') }}";
 		var biometric_url = "{{ URL('/biomertic-login') }}";
     </script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
@@ -152,14 +154,14 @@
 	<script>
     (() => {
       getItemMenuHTML = (item) => {
-        let resultHTML = 
+        let resultHTML =
           '<li> \
             <a href="' + (item.href || '#') + '">'
 
         if(item.icon) {
           resultHTML += '<i class="' + item.icon  + '"></i>'
         }
-        
+
         resultHTML += item.text
 
         if(item.nodes && item.nodes.length) {
@@ -168,7 +170,7 @@
             <i class="fas fa-chevron-up"></i> \
             </span>'
         }
-        
+
         resultHTML += '</a>'
 
         if(item.nodes && item.nodes.length) {
@@ -180,7 +182,7 @@
         }
         resultHTML += '</li>'
         return resultHTML
-        
+
       }
 
       $('.sidebar-nav').on('click', 'a', function(event) {
@@ -197,14 +199,14 @@
           let pathname = location.pathname.replace(/\/OneBusiness\//, '').replace(/^\//, '').replace(/\/[\w\D]*/i, '')
           el = $(el)
 
-          if(el.attr('href').match(new RegExp(location.pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '$' }}')) || 
+          if(el.attr('href').match(new RegExp(location.pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '$' }}')) ||
             el.attr('href').match(new RegExp('\/' + pathname + '{{ isset(request()->corpID) ? "\\\?corpID=" . request()->corpID  : '($|/)' }}')) ||el.attr('href').match(new RegExp('\/' + pathname + '$'))) {
             el.addClass('active')
             openMenu(el)
           }
         })
       }
- 
+
       openMenu = (el) => {
         if(!el.closest('ul').closest('li').length) {
           return
@@ -233,7 +235,7 @@
       });
     })()
       $(document).ready(function() {
-			  $('.alertfade').fadeOut(5000); 
+			  $('.alertfade').fadeOut(5000);
       });
 	</script>
   <script>

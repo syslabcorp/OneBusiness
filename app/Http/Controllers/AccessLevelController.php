@@ -518,7 +518,8 @@ class AccessLevelController extends Controller
         }
         
         if (Request::isMethod('post')){
-			$menus  =  DB::table('menus')->whereIn('id', $temp_menu_array)->select('id', 'parent_id', 'title', 'url','icon')->get(); 
+            $menus  =  DB::table('menus')->whereIn('id', $temp_menu_array)->select('id', 'parent_id', 'title', 'url','icon')
+                                        ->orderBy('sort')->get(); 
             
 			$datamenu = array();
 			$data = array();
@@ -558,7 +559,7 @@ class AccessLevelController extends Controller
             return redirect("/home"); 
         }
         $data['parent_id'] = $parent_id;
-        $menu_detail = DB::table('menus')->orderBy('title', 'asc')->where('parent_id', $parent_id)->get();
+        $menu_detail = DB::table('menus')->orderBy('sort')->where('parent_id', $parent_id)->get();
         $menu_ids = array();
         $child_count = array();
         $url = url('/list_menu/');

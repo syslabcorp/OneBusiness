@@ -84,13 +84,13 @@ body
     -moz-user-select: none;
 }
 .control-checkbox input[type=checkbox] + label:before {
-    content: "";  
-    display: inline-block;  
-    width: 20px;  
-    height: 20px;  
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
     vertical-align:middle;
-    margin-right: 8px;  
-    border-radius: 2px;  
+    margin-right: 8px;
+    border-radius: 2px;
     font-size: 18px;
     border: 1px solid #d2d2d2;
 }
@@ -302,4 +302,22 @@ span.error {
 #table-config tr td[rowspan]{
   text-align: center;
   vertical-align: middle;
+}
+
+#loader
+{
+  margin: auto;
+  margin-top: 55px;
+  vertical-align: middle;
+  border: 8px solid #f3f3f3; /* Light grey */
+  border-top: 8px solid #404040; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

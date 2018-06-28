@@ -14,6 +14,13 @@
 Route::get('/', function () {
 return view('welcome');
 })->name('root');
+//Employee
+
+Route::get('employee/delivery-items', 'EmployeesController@deliveryItems', ['middleware' => 'auth'])->name('employee.deliveryItems');
+Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);
+Route::get('employee/{id}/delivery-documents', 'EmployeesController@deliveryDocuments', ['middleware' => 'auth'])->name('employee.deliveryDocuments');
+Route::get('employee/{id}/delivery-positions', 'EmployeesController@deliveryPositions', ['middleware' => 'auth'])->name('employee.deliveryPositions');
+Route::get('employee/{id}/delivery-wages', 'EmployeesController@deliveryWages', ['middleware' => 'auth'])->name('employee.deliveryWages');
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');
@@ -28,6 +35,8 @@ Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit', ['middl
 Route::post('payrolls-masterfile/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
 Route::get('payrolls-masterfile', 'PayrollsController@index', ['middleware' => 'auth'])->name('payrolls.index');
 Route::resource('departments', 'DepartmentsController', ['middleware' => 'auth']);
+Route::get('wage-templates/{template}/edit-contract', 'WageTemplatesController@editContract')->middleware('auth')->name('wage-templates.edit-contract');
+Route::post('wage-templates/{template}/edit-contract', 'WageTemplatesController@updateContract')->middleware('auth');
 Route::post('wage-templates/setup-document', 'WageTemplatesController@setupDocument')->middleware('auth')->name('wage-templates.document');
 Route::resource('wage-templates', 'WageTemplatesController', ['middleware' => 'auth']);
 Route::get('{item}/tmasterDetail', 'StocktransferController@tmasterDetail')->name('tmaster.details');
@@ -129,6 +138,7 @@ Route::any('/list_feature/add_feature/{feature_id?}/{module_id?}', 'AccessLevelC
 Route::get('/list_feature/{module_id?}', 'AccessLevelController@list_feature');
 Route::get('/delete_feature/{feature_id}/{module_id?}', 'AccessLevelController@destroyfeature');
 
+Route::post('/menus/{id}/order', 'MenusController@order')->middleware('auth')->name('menus.order');
 Route::any('/list_template/add_template/{template_id?}', 'AccessLevelController@add_template');
 Route::any('/template_module', 'AccessLevelController@template_module');
 Route::get('/list_template', 'AccessLevelController@list_template');
@@ -215,6 +225,8 @@ Route::post("approveEmployeeRequest", "Branch\EmployeeRequestController@approveE
 Route::post("deleteEmployeeRequest", "Branch\EmployeeRequestController@deleteEmployeeRequest")->middleware('auth');
 Route::post("reactivateEmployeeRequest", "Branch\EmployeeRequestController@reactivateEmployeeRequest")->middleware('auth');
 Route::get("branchRequest", "Branch\EmployeeRequestController@index")->middleware('auth');
+Route::post("getDepartments", "Branch\EmployeeRequestController@getDepartments")->middleware('auth');
+Route::post("getPositions", "Branch\EmployeeRequestController@getPositions")->middleware('auth');
 
 Route::get('/petty-categories', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
 
@@ -223,6 +235,3 @@ Route::get('RecommendationApprove', 'Branch\Recommendation\RecommendationControl
 Route::get('getRecommendation', 'Branch\Recommendation\RecommendationController@getRecommendation')->middleware('auth')->name('getRecommendation');
 Route::post('approveRecommendation','Branch\Recommendation\RecommendationController@approveRecommendation')->middleware('auth')->name('approveRecommendation');
 Route::post('deleteRecommendation','Branch\Recommendation\RecommendationController@deleteRecommendation')->middleware('auth')->name('deleteRecommendation');
-
-
-
