@@ -50,7 +50,7 @@ class RecommendationController extends Controller
 //        {data: 'effective_date', name: 'effective_date'},
 //        {data: 'recommended_by', name: 'recommended_by'},
 //        {data: 'action', name: 'action', sortable: false, searchable: false}
-        
+        $corpId = request()->corpID;
         $user_A_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
         $user_B_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'D');
         
