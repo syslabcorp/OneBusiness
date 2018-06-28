@@ -50,12 +50,17 @@ class RecommendationController extends Controller
 //        {data: 'effective_date', name: 'effective_date'},
 //        {data: 'recommended_by', name: 'recommended_by'},
 //        {data: 'action', name: 'action', sortable: false, searchable: false}
-        $corpId = request()->corpID;
         
-        $user_A_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
-        $user_B_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'D');
         
         $answer = $recommCollect->get()->map( function($recommendation){
+            
+            $corpId = request()->corpId;
+        
+            $user_A_right = false;
+            $user_D_right = false;
+        
+            $user_A_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'A');
+            $user_D_right = auth()->user()->checkAccessByIdForCorp($corpId, 53, 'D');
             
             return [ 'name' => $recommendation->User->UserName,
                     'from_wage' => $recommendation->fromWage->code,
@@ -76,7 +81,7 @@ class RecommendationController extends Controller
                         ' disabled"><span class="glyphicon glyphicon-ok"></span></span>')
                         .'&nbsp'.
                         '<span class="btn btn-danger actionButton'. 
-                        ($user_A_right ?
+                        ($user_D_right ?
                         '" onclick="deleteRequest('.
                         $recommendation->txn_no.',\''.
                         $recommendation->fromWage->code.'\',\''.
