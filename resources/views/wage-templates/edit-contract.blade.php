@@ -34,7 +34,7 @@
   <script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
 
   <script type="text/javascript">
-    CKEDITOR.plugins.addExternal('justify', '{{ URL('/plugins/justify') }}/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal('justify', '{{ URL('/public/plugins/justify') }}/', 'plugin.js' );
 
     (() => {
       CKEDITOR.replace('contractEditor', {
