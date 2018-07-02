@@ -1,18 +1,18 @@
 <?php
 
 /*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+  |--------------------------------------------------------------------------
+  | Web Routes
+  |--------------------------------------------------------------------------
+  |
+  | Here is where you can register web routes for your application. These
+  | routes are loaded by the RouteServiceProvider within a group which
+  | contains the "web" middleware group. Now create something great!
+  |
+ */
 
 Route::get('/', function () {
-    return view('welcome');
+return view('welcome');
 })->name('root');
 //Employee
 
@@ -35,6 +35,7 @@ Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit', ['middl
 Route::post('payrolls-masterfile/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
 Route::get('payrolls-masterfile', 'PayrollsController@index', ['middleware' => 'auth'])->name('payrolls.index');
 Route::resource('departments', 'DepartmentsController', ['middleware' => 'auth']);
+Route::get('wage-templates/{template}/preview-contract', 'WageTemplatesController@previewContract')->middleware('auth')->name('wage-templates.preview-contract');
 Route::get('wage-templates/{template}/edit-contract', 'WageTemplatesController@editContract')->middleware('auth')->name('wage-templates.edit-contract');
 Route::post('wage-templates/{template}/edit-contract', 'WageTemplatesController@updateContract')->middleware('auth');
 Route::post('wage-templates/setup-document', 'WageTemplatesController@setupDocument')->middleware('auth')->name('wage-templates.document');
@@ -72,9 +73,9 @@ Route::resource('vendor-management', 'VendorManagementController', ['middleware'
 // feature: service & retail item price configuration
 Route::resource('retail-items-price-conf', 'RetailItemPriceConfController', ['middleware' => 'auth']);
 Route::resource('services-price-conf', 'ServicePriceConfController', ['middleware' => 'auth']);
-Route::get('/ajax/branches/{corp_id?}', ['as'=>'ajax.fetch.branches', 'uses'=>'AjaxController@fetchBrances']);
-Route::get('/ajax/services/{service_id_csv?}', ['as'=>'ajax.fetch.services', 'uses'=>'AjaxController@fetchServices']);
-Route::get('/ajax/retail-items/{product_id_csv?}', ['as'=>'ajax.fetch.retail-items', 'uses'=>'AjaxController@fetchRetailItems']);
+Route::get('/ajax/branches/{corp_id?}', ['as' => 'ajax.fetch.branches', 'uses' => 'AjaxController@fetchBrances']);
+Route::get('/ajax/services/{service_id_csv?}', ['as' => 'ajax.fetch.services', 'uses' => 'AjaxController@fetchServices']);
+Route::get('/ajax/retail-items/{product_id_csv?}', ['as' => 'ajax.fetch.retail-items', 'uses' => 'AjaxController@fetchRetailItems']);
 // end of routes for feature: service & retail item price configuration
 
 Route::post('/bank-accounts/update', 'BankAccountController@updateAccount', ['middleware' => 'auth'])->name('bank_accounts.update');
@@ -173,21 +174,21 @@ Route::any('/get_child_menu_call', 'AccessLevelController@get_child_menu_call');
 #Locations
 
 Route::resource('list_provinces', 'LocationsController', ['middleware' => 'auth']);
-Route::get('/provinces/view_cities/{prov_id?}','LocationsController@list_cities');// displaying cities within the province selected
-Route::any('/provinces/add_city/{city_id?}/{prov_id?}','LocationsController@add_city');
-Route::any('/add_province/{prov_id?}','LocationsController@add_province');
+Route::get('/provinces/view_cities/{prov_id?}', 'LocationsController@list_cities'); // displaying cities within the province selected
+Route::any('/provinces/add_city/{city_id?}/{prov_id?}', 'LocationsController@add_city');
+Route::any('/add_province/{prov_id?}', 'LocationsController@add_province');
 Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity');
 
 #Purchase Order Module
 Route::any('/purchase_order/{corp_id}/{city_id}/{id?}', 'PurchaseOrderController@purchase_order');
 Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order');
-Route::any('/purchase_order/create_manual' ,'PurchaseOrderController@manual')->middleware('auth')->name('purchase_order.create_manual');
-Route::any('/purchase_order/create_automate' ,'PurchaseOrderController@automate')->middleware('auth')->name('purchase_order.create_automate');
-Route::any('/purchase_order/manual_suggest' ,'PurchaseOrderController@manual_suggest')->middleware('auth')->name('purchase_order.manual_suggest');
-Route::any('/purchase_order/auto_process' ,'PurchaseOrderController@auto_process')->middleware('auth');
-Route::post('/purchase_order/manual_save' ,'PurchaseOrderController@manual_save')->middleware('auth')->name('purchase_order.manual_save');
-Route::post('/purchase_order/auto_save' ,'PurchaseOrderController@auto_save')->middleware('auth')->name('purchase_order.auto_save');
-Route::any('/purchase_order_pdf/{id}' ,'PurchaseOrderController@pdf')->middleware('auth')->name('purchase_order.pdf');
+Route::any('/purchase_order/create_manual', 'PurchaseOrderController@manual')->middleware('auth')->name('purchase_order.create_manual');
+Route::any('/purchase_order/create_automate', 'PurchaseOrderController@automate')->middleware('auth')->name('purchase_order.create_automate');
+Route::any('/purchase_order/manual_suggest', 'PurchaseOrderController@manual_suggest')->middleware('auth')->name('purchase_order.manual_suggest');
+Route::any('/purchase_order/auto_process', 'PurchaseOrderController@auto_process')->middleware('auth');
+Route::post('/purchase_order/manual_save', 'PurchaseOrderController@manual_save')->middleware('auth')->name('purchase_order.manual_save');
+Route::post('/purchase_order/auto_save', 'PurchaseOrderController@auto_save')->middleware('auth')->name('purchase_order.auto_save');
+Route::any('/purchase_order_pdf/{id}', 'PurchaseOrderController@pdf')->middleware('auth')->name('purchase_order.pdf');
 Route::any('/purchase_order/ajax_render_branch_by_city', 'PurchaseOrderController@ajax_render_branch_by_city');
 Route::any('/purchase_order/ajax_render_item_by_prodline', 'PurchaseOrderController@ajax_render_item_by_prodline');
 Route::any('/purchase_order/ajax_render_branch_by_all_cities', 'PurchaseOrderController@ajax_render_branch_by_all_cities');
@@ -201,18 +202,18 @@ Route::any('/501', 'PurchaseOrderController@module_not_found');
 
 Route::resource('branch_remittances', 'BranchRemittanceController', ['middleware' => 'auth']);
 Route::post('branch_remittances/collections', 'BranchRemittanceController@storeCollections')
-       ->middleware('auth')->name('branch_remittances.collections.store');
+->middleware('auth')->name('branch_remittances.collections.store');
 Route::put('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittances')
-       ->middleware('auth');
+->middleware('auth');
 Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@updateRemittanceStatus')
-       ->middleware('auth');
+->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
 Route::post('/stocks/{stock_id}/update_detail', 'StocksController@update_detail')->middleware('auth')->name('stocks.update_detail');
 Route::post('/stocks/{stock_id}/save_new_row_ajax', 'StocksController@save_new_row_ajax')->middleware('auth')->name('stocks.save_new_row_ajax');
 Route::post('/stocks/get_details', 'StocksController@get_details')->middleware('auth')->name('stocks.get_details');
 Route::resource('stocks', 'StocksController', ['middleware' => 'auth']);
-Route::any('/stocks/{stock_id}/{detail_id}' , 'StocksController@destroy_detail')->middleware('auth')->name('stocks.delete_detail');
+Route::any('/stocks/{stock_id}/{detail_id}', 'StocksController@destroy_detail')->middleware('auth')->name('stocks.delete_detail');
 
 Route::post('users/verify-password', 'UsersController@verifyPassword')->middleware('auth')->name('users.verifyPassword');
 Route::post('users/generate-otp', 'UsersController@generateOTP')->middleware('auth')->name('users.generateOTP');
@@ -229,3 +230,9 @@ Route::post("getDepartments", "Branch\EmployeeRequestController@getDepartments")
 Route::post("getPositions", "Branch\EmployeeRequestController@getPositions")->middleware('auth');
 
 Route::get('/petty-categories', "CategoriesController@petyCash")->middleware('auth')->name('petycash.index');
+
+// Branch Reccomendation Approve Module
+Route::get('RecommendationApprove', 'Branch\Recommendation\RecommendationController@index')->middleware('auth')->name('recommendApprove');
+Route::get('getRecommendation', 'Branch\Recommendation\RecommendationController@getRecommendation')->middleware('auth')->name('getRecommendation');
+Route::post('approveRecommendation','Branch\Recommendation\RecommendationController@approveRecommendation')->middleware('auth')->name('approveRecommendation');
+Route::post('deleteRecommendation','Branch\Recommendation\RecommendationController@deleteRecommendation')->middleware('auth')->name('deleteRecommendation');

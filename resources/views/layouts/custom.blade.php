@@ -9,11 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--title>{{ config('app.name', 'Laravel') }}</title-->
-    @if(\View::hasSection('head'))
-        @yield('head')
-    @else
-        <title>Web Login System</title>
-    @endif
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
@@ -30,7 +26,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}"></script>
-    <!-- <script src="{{ asset('js/tooltipster.bundle.js') }}"></script> -->
+
+
+
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
@@ -47,6 +45,12 @@
 		.dispnone{display:none !important}
 		.pull-right.forgot-password {margin: 1% 27% 0 0;}
 	</style>
+
+        @if(\View::hasSection('head'))
+            @yield('head')
+        @else
+            <title>Web Login System</title>
+        @endif
 </head>
 <body>
     <div id="app">
@@ -105,8 +109,11 @@
                     @endif
                 </div>
               @endif
+
               <div class="box-content">
-                @yield('content')
+
+                    @yield('content')
+
               </div>
             </div>
           </div>
@@ -240,6 +247,14 @@
       }
     });
   </script>
+
+  @if(\View::hasSection('indexpageScripts'))
+            @yield('indexpageScripts')
+  @endif
+  @if(\View::hasSection('pageScripts'))
+            @yield('pageScripts')
+  @endif
+
   @yield('pageJS')
 </body>
 </html>
