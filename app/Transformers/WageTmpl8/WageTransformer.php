@@ -12,20 +12,31 @@ use DB;
 class WageTransformer extends Fractal\TransformerAbstract
 {
     private $database_name;
+    private $user;
 
-    public function __construct($database_name) {
+    public function __construct($database_name, $user) {
       $this->database_name = $database_name;
+      $this->user = $user;
     }
 
     public function transform(EmpRate $item)
     {
-      $empHist = $item->empHistories($this->database_name);
-
+      switch ($user->PayBasis) {
+        case 3:
+          $basic = "Hourly";
+          break;
+        case 4:
+          $basic = "Monthly";
+          break;
+        default:
+          $basic = "";
+          break;
+      }
       return [
-          'EffectiveDate' => (int) $item->UserID,
-          'BaseRate' => $item->UserName,
-          'PayCode' => (int) $item->Address,
-          'PayBasic' => $item->Bday ? $item->Bday->format('d/m/Y') : "",
+          'EffectiveDate' => $item->effect_date,
+          'BaseRate' => $item->mstrs ? $item->mstrs()->first()->base_rate : "",
+          'PayCode' => $item->mstrs ? $item->mstrs()->first()->code : "",
+          'PayBasic' => $basic,
       ];
     }
 }

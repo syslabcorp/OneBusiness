@@ -1,4 +1,4 @@
-window.$ = window.jQuery = require('jquery');
+    window.$ = window.jQuery = require('jquery');
 toastr = require('toastr');
 
 $(document).ready(function()
@@ -136,7 +136,7 @@ $(document).ready(function()
                         {
                             partIps[0] = 1;
                         }
-                        
+
                     }
                 }
             });
@@ -157,7 +157,7 @@ $(document).ready(function()
                 toastr.error("Field Range and Start Ip Address can't be blank");
                 return;
             }
-        
+
         if(ipAddress.match("[^0-9\.]") || ipAddress.split(".").length != 4)
         {
             return toastr.error("IP Address format is invalid");
@@ -397,7 +397,12 @@ $(document).ready(function()
 
         window.location = location.pathname + search
     })
+
+    $('.tooltipster').tooltipster({
+           animation: 'fade',
+   delay: 200,
+   theme: 'tooltipster-punk',
+   trigger: 'hover',
+   theme: 'tooltipster-noir',
+    });
 });
-
-
-

@@ -72,7 +72,7 @@
 <script>
 
 $(document).ready(function() {
-   var tableDocument = $('#table-document-deliveries').DataTable({
+  var tableDocument = $('#table-document-deliveries').DataTable({
 
       initComplete: function() {
 
@@ -133,9 +133,9 @@ $(document).ready(function() {
       order: [
         [0, 'desc']
       ]
-    });
+  });
 
-   var tablePosition = $('#table-position-deliveries').DataTable({
+  var tablePosition = $('#table-position-deliveries').DataTable({
 
       initComplete: function() {
 
@@ -167,9 +167,41 @@ $(document).ready(function() {
       order: [
         [0, 'desc']
       ]
-    });
+  });
+
+  var tableWage = $('#table-wage-deliveries').DataTable({
+
+    initComplete: function() {
+
+    },
+
+    ajax: '{{ route('employee.deliveryWages', ['id' => $user->UserID,'corpID' => $corpID]) }}',
+    columns: [
+      {
+        targets: 0,
+        data: "EffectiveDate"
+      },
+      {
+        targets: 1,
+        data: "BaseRate",
+      },
+      {
+        targets: 2,
+        data: "PayCode"
+      },
+      {
+        targets: 3,
+        data: "PayBasic"
+      }
+    ],
+    order: [
+      [0, 'desc']
+    ]
+  });
 
   });
+
+
 
   deleteStock = (id) => {
     let self = $(event.target)

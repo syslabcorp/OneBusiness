@@ -162,8 +162,8 @@ class EmployeesController extends Controller {
     $empRateModel->setConnection($company->database_name);
 
     $items = $empRateModel->whereIn('txn_id', $empHist->pluck('txn_id') )->get();
-    dd($items);
+    // dd($items);
 
-    return fractal($items, new WageTransformer($company->database_name))->toJson();
+    return fractal($items, new WageTransformer($company->database_name, $user))->toJson();
   }
 }

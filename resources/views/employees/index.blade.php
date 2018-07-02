@@ -12,20 +12,29 @@
       <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
     @endif
     <div class="col-md-12">
+<span class="tooltipster" data-tooltip-content="#tooltip_content">This span has a tooltip with HTML when you hover over it!</span>
+
+<!-- <div class="tooltip_templates">
+    <span id="tooltip_content">
+       <strong>This is the content of my tooltip!</strong>
+    </span>
+</div> -->
+
       <div class="row">
         <div class="panel panel-default">
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
                 <h4>Employee Profile</h4>
+
               </div>
             </div>
           </div>
           <div class="panel-body">
             <div class="bs-example">
-              <div class="row">
-                <div class="table-responsive">
-                  <table id="table-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+              <div  id="tablescroll" class="tablescroll">
+                <div class="table-wrap">
+                  <table id="table-deliveries" class="stripe table table-bordered nowrap" width="100%">
                     <thead>
                       <tr>
                         <th style="min-width: 50px">ID</th>
@@ -51,6 +60,7 @@
                     </tbody>
                   </table>
                 </div>
+
               </div>
             </div>
           </div>
@@ -85,20 +95,24 @@ $(document).ready(function() {
         $(".branch-filter select").append("<option value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
 
+
       },
 
       ajax: '{{ route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => $branchSelect, 'branch' => $branch, 'status' => $status, 'level'=>$level]) }}',
+      "fnDrawCallback": () => {
+        $('.clone').remove();
+      },
       columns: [
         {
           targets: 0,
-          data: "UserID"
+          data: "UserID",
         },
         {
           targets: 1,
           data: "UserName",
           render: (data, type, row, meta) => {
             return "<a href='{{ route('employee.index') }}/" + row.UserID + "?corpID={{ $corpID }}'>"+ data +"</a>";
-          }
+          },
         },
         {
           targets: 2,
@@ -163,7 +177,12 @@ $(document).ready(function() {
       ],
       order: [
         [0, 'desc']
-      ]
+      ],
+      scrollX:        true,
+      scrollCollapse: true,
+      fixedColumns:   {
+        leftColumns: 2
+      }
     });
 
     $('body').on('change', 'input[type=radio][name=status], input[type=radio][name=level], .select-branch, .check-branch',
@@ -191,184 +210,6 @@ $(document).ready(function() {
         }
       }
     )
-
-
   });
-
-  // table.columns().flatten().each( function ( Active ) {
-  //     // Create the select list and search operation
-
-  //         .on( 'change', function () {
-  //             table
-  //                 .column( Active )
-  //                 .search( $(this).val() )
-  //                 .draw();
-  //         } );
-
-  //     // Get the search data for the first column and add to the select list
-  //     table
-  //         .column( colIdx )
-  //         .cache( 'search' )
-  //         .sort()
-  //         .unique()
-  //         .each( function ( d ) {
-  //             select.append( $('<option value="'+d+'">'+d+'</option>') );
-  //         } );
-  // } );
-
-
-  deleteStock = (id) => {
-    let self = $(event.target)
-
-    swal({
-      title: "<div class='delete-title'>Confirm Delete</div>",
-      text:  "<div class='delete-text'>Are you sure you want to delete DR#" + id + "?</strong></div>",
-      html:  true,
-      customClass: 'swal-wide',
-      showCancelButton: true,
-      confirmButtonClass: 'btn-success',
-      closeOnConfirm: false,
-      closeOnCancel: true
-    },(confirm) => {
-      $.ajax({
-        url : 'stocktransfer/' + id + '?corpID={{ $corpID }}' ,
-        type : 'DELETE',
-        success: (res) => {
-          showAlertMessage('DR#' + id + ' has been deleted!', 'Success')
-          self.parents('tr').remove()
-        }
-      })
-    })
-  }
-
-
-
-
-function onEditRow(param){
-    if($('#editable'+param).hasClass('glyphicon-pencil')){
-
-         $(".rcvdCheckbox"+param).attr("disabled", false);
-         $(".uploadCheckbox"+param).attr("disabled", false);
-    }
-    else{
-
-         $(".rcvdCheckbox"+param).attr("disabled", true);
-         $(".uploadCheckbox"+param).attr("disabled", true);
-
-    }
-
-}
-
-showHidden = (isShow) => {
-  if(isShow)
-    $('#addNewTransfer').append('<a href="{{route('stocktransfer.create' , ['corpID' => $corpID] )}}"  class="pull-right">New Stock Transfer</a>')
-  else
-    $('#addNewTransfer').empty()
-}
-
 </script>
-
-<script>
-    var tmasterId;
-    var urlmarkToserved;
-
-    filterStatusStock = () => {
-      let path = location.search.replace(/&stockStatus=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
-      path = path.replace(/&tab=[a-z]+/g, '') + "&tab=stock"
-      path +=  "&stockStatus=" + $('#stockStatus select').val()
-      window.location = location.pathname + path
-    }
-
-    function filterStatus(event) {
-      let path = location.search.replace(/&statusStock=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
-      path = path.replace(/&tab=[a-z]+/g, '') + "&tab=auto"
-      path +=  "&status=" + $('#selectId select').val()
-      window.location = location.pathname + path
-    }
-
-  showAlertMessage = (message, title = "Alert", isReload = false) => {
-    swal({
-      title: "<div class='delete-title'>" + title + "</div>",
-      text:  "<div class='delete-text'>" + message + "</strong></div>",
-      html:  true,
-      customClass: 'swal-wide',
-      showCancelButton: false,
-      closeOnConfirm: true,
-      allowEscapeKey: !isReload
-    }, (data) => {
-      if(isReload) {
-        window.location.reload()
-      }
-    });
-  }
-
-  markToserved = (event, id) => {
-    let self = $(event.target)
-
-    swal({
-      title: "<div class='delete-title'>Mark to served</div>",
-      text:  "<div class='delete-text'>Serve PO: Are you sure you want to mark " + id + " as served?</strong></div>",
-      html:  true,
-      customClass: 'swal-wide',
-      showCancelButton: true,
-      confirmButtonClass: 'btn-success',
-      closeOnConfirm: false,
-      closeOnCancel: true
-    },(confirm) => {
-      $.ajax({
-        url : 'stocktransfer/' + id + '/served?corpID={{ $corpID }}' ,
-        type : 'POST',
-        success: (res) => {
-          showAlertMessage('P.O.# ' + id + ' has been served', 'Success')
-          self.parents('tr').remove()
-        }
-      })
-    })
-  }
-
-</script>
-
-<script>
-    $(function() {
-      var pickers = {};
-
-      $('table tr').editable({
-
-        dropdowns: {
-          sex: ['Male', 'Female']
-        },
-        edit: function(values) {
-
-          $(".edit span", this)
-            .removeClass('glyphicon-pencil')
-            .addClass('glyphicon-ok')
-            .attr('title', 'Save');
-        },
-        save: function(values) {
-          $(".edit span", this)
-            .removeClass('glyphicon-ok')
-            .addClass('glyphicon-pencil')
-            .attr('title', 'Edit');
-
-
-
-          if (this in pickers) {
-            pickers[this].destroy();
-            delete pickers[this];
-          }
-        },
-        cancel: function(values) {
-          $(".edit i", this)
-            .removeClass('glyphicon-ok')
-            .addClass('glyphicon-pencil')
-            .attr('title', 'Edit');
-
-          if (this in pickers) {
-            pickers[this].destroy();
-            delete pickers[this];
-          }
-        }
-      });
-    });
-  </script>
 @endsection
