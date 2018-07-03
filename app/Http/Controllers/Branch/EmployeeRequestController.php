@@ -109,7 +109,7 @@ class EmployeeRequestController extends Controller
                 })
                 ->addColumn('action', function ($employeeRequest) use ($request) {
                     // return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
-                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
+                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"> </span></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -263,7 +263,7 @@ class EmployeeRequestController extends Controller
 			$employeeRequest->user()->update(array('template' => null,'template2' => null,'template3' => null,'template4' => null ));
 		}
 		
-		if($employeeRequest->type == "3"){
+		if($employeeRequest->type == "3"){ 
 			$user = new User();
 			$user->UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
 			$user->uname = ""; 
@@ -301,6 +301,7 @@ class EmployeeRequestController extends Controller
 			$emp_hist->Branch = $employeeRequest->to_branch;
 			$emp_hist->EmpID = $user->UserID;
 			$emp_hist->StartDate = $employeeRequest->date_start;
+			$emp_hist->Last13_Date = $this->CalculateLast13_Date($employeeRequest->date_start);
 			$emp_hist->save();
 
 			$py_emp_rate = $employeeRequestHelper->get_py_emp_rate_Model();
@@ -308,18 +309,26 @@ class EmployeeRequestController extends Controller
 			$py_emp_rate->wage_tmpl8_id = $employeeRequest->wage_tmpl8_id;
 			$py_emp_rate->date_changed = $employeeRequest->DateApproved;
 			$py_emp_rate->effect_date = $employeeRequest->date_start;
+			$py_emp_rate->apprv_type = 1;
 			$py_emp_rate->save();
 
 			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
 			$h_docs = $employeeRequestHelper->get_h_docs_Model();
-			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->get()->pop()->series_no + 1;
 			$h_docs->series_no = $series_no;
 			$h_docs->doc_no = $corporation_master->wt_doc_cat;
 			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
 			$h_docs->emp_id  = $user->UserID;
-			$h_docs->doc_exp  = $employeeRequest->date_start;
+			$h_docs->doc_exp  = "0000-00-00";
 			$h_docs->branch  = $employeeRequest->to_branch;
+			$h_docs->approval_no  = $employeeRequest->txn_no;
+			$h_docs->notes  = "New employee approved by: " . \Auth::user()->UserID;
 			$h_docs->save();
+
+			$h_categoryModel = $employeeRequestHelper->get_h_category_Model();
+			$h_category = $h_categoryModel::where("doc_no", $corporation_master->wt_doc_cat)->first();
+			$h_category->series = $series_no;
+			$h_category->save();
 		}
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->approved = "1";
@@ -407,11 +416,14 @@ class EmployeeRequestController extends Controller
 			$py_emp_rate->txn_id = $emp_hist->txn_id;
 			$py_emp_rate->wage_tmpl8_id = isset($request->positionId) ? $request->positionId : 0; 
 			$py_emp_rate->effect_date = $request->start_date;
+			$py_emp_rate->date_changed = Carbon::now();
+			$py_emp_rate->apprv_type = null;
 			$py_emp_rate->save();
 
 			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
 			$h_docs = $employeeRequestHelper->get_h_docs_Model();
-			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
+			// $series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->get()->pop()->series_no + 1;
 			$h_docs->series_no = $series_no;
 			$h_docs->doc_no = $corporation_master->wt_doc_cat;
 			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
@@ -420,6 +432,11 @@ class EmployeeRequestController extends Controller
 			$h_docs->doc_exp  = "0000-00-00";
 			$h_docs->notes  = "Reactivated By: " . \Auth::user()->UserID;
 			$h_docs->save();
+
+			$h_categoryModel = $employeeRequestHelper->get_h_category_Model();
+			$h_category = $h_categoryModel::where("doc_no", $corporation_master->wt_doc_cat)->first();
+			$h_category->series = $series_no;
+			$h_category->save();
 			
 			return ["success" => true, "msg" => "The employee reactivated successfully"];
 		}
