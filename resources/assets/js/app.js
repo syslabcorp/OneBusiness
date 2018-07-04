@@ -399,10 +399,10 @@ $(document).ready(function()
     })
 
     $('.tooltipster').tooltipster({
-           animation: 'fade',
-   delay: 200,
-   theme: 'tooltipster-punk',
-   trigger: 'hover',
-   theme: 'tooltipster-noir',
+         animation: 'fade',
+         delay: 200,
+         theme: 'tooltipster-punk',
+         trigger: 'hover',
+         theme: 'tooltipster-noir',
     });
 });

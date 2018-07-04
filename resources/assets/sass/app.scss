@@ -9,3 +9,50 @@
 a:active, a:visited, a:hover {
     text-decoration: none;
 }
+
+.tooltipp {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipp .tooltiptext {
+    z-index: 999;
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltipp .tooltiptext::after {
+    z-index: 999;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltipp:hover .tooltiptext {
+    z-index: 9999;
+    visibility: visible;
+    opacity: 1;
+}
+.dataTables_wrapper {
+position: relative;
+min-height: 302px;
+_height: 302px;
+zoom: 1; /* Feeling sorry for IE */
+}

@@ -2,6 +2,12 @@
 
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
+  <style type="text/css">
+    table.dataTable {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+    }
+  </style>
 @endsection
 
 @section('content')
@@ -12,14 +18,6 @@
       <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
     @endif
     <div class="col-md-12">
-<span class="tooltipster" data-tooltip-content="#tooltip_content">This span has a tooltip with HTML when you hover over it!</span>
-
-<!-- <div class="tooltip_templates">
-    <span id="tooltip_content">
-       <strong>This is the content of my tooltip!</strong>
-    </span>
-</div> -->
-
       <div class="row">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -151,7 +149,10 @@ $(document).ready(function() {
         },
         {
           targets: 11,
-          data: "PayCode"
+          data: "PayCode",
+          render: (data, type, row, meta) => {
+            return "<div class='tooltipp'>"+data+"<div class='tooltiptext'>Tooltip text <strong>aaaa</strong></div></div>";
+          },
         },
         {
           targets: 12,
