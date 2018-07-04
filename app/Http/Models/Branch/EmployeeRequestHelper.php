@@ -70,6 +70,12 @@ class EmployeeRequestHelper
 		return new $modelName;
 	}
 
+	public function get_h_category_Model(){
+		$database_name = $this->getDatabaseName();
+		$modelName = "App\Http\Models\Tables\\".$database_name."\h_category";
+		return new $modelName;
+	}
+
 	public function get_py_deduct_mstr_Model(){
 		$database_name = $this->getDatabaseName();
 		$modelName = "App\Http\Models\Tables\\".$database_name."\py_deduct_mstr";
