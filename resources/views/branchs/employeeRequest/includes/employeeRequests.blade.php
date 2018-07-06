@@ -121,15 +121,14 @@ function sendApproveRequest(requestId){
         url : "{{ url('approveEmployeeRequest') }}",
         data : {"_token" : "{{ csrf_token() }}", "employeeRequestId" : requestId, corpId :  {{ $corpId }}}
     }).done(function (response){
-        if(response == "true") { 
+        if(response == "true") {
                 employeeRequestsDatatable.draw();
                 reactivateEmployeeDatatable.draw();
                 showSuccessAlert(" The employee request successfully approved!");
                 // showAlertModal("Success", "The employee request was approved!");
         }
-        else { 
-            showDangerAlert("Something went wrong, please contact administration"); 
-            // showAlertModal("Error", "Something went wrong, please contact administration") 
+        else {
+            showDangerAlert(" " + response); 
         }
     });
 }
@@ -149,7 +148,7 @@ function sendDeleteRequest(requestId, element){
                 // showAlertModal("Success", "The employee request was deleted!"); 
         }
         else { 
-            showDangerAlert("Something Went Wrong, Please Contact Administration");
+            showDangerAlert(" Something Went Wrong, Please Contact Administration");
             // showAlertModal("Error", "Something Went Wrong, Please Contact Administration") 
         }
     });

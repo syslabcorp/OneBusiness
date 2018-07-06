@@ -247,6 +247,7 @@ class EmployeeRequestController extends Controller
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$employeeRequest = $employeeRequestModel::where("txn_no", $request->employeeRequestId)->first();
+
 		if($employeeRequest->to_branch2 != null) { $branch_name = $employeeRequest->to_branch2->ShortName; }
 		else { $branch_name = null; }
 
@@ -263,10 +264,17 @@ class EmployeeRequestController extends Controller
 			$employeeRequest->user()->update(array('template' => null,'template2' => null,'template3' => null,'template4' => null ));
 		}
 		
-		if($employeeRequest->type == "3"){ 
+		if($employeeRequest->type == "3"){
+			$UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
+			$user = User::where("UserName", $UserName)->first();
+			if(!is_null($user)) { return "This name has a similar record in database: Duplicate entry is not allowed"; }
 			$user = new User();
-			$user->UserName = $employeeRequest->LastName . ", " . $employeeRequest->FirstName . " " . $employeeRequest->SuffixName; 
+			$user->UserName = $UserName;
 			$user->uname = ""; 
+			$user->Firstname = $employeeRequest->FirstName;
+			$user->MidName = $employeeRequest->MidName;
+			$user->LastName = $employeeRequest->LastName;
+			$user->SuffixName = $employeeRequest->SuffixName;
 			$user->mobile_no = "";
 			$user->email = "";
 			$user->Bday = $employeeRequest->bday;
@@ -309,12 +317,13 @@ class EmployeeRequestController extends Controller
 			$py_emp_rate->wage_tmpl8_id = $employeeRequest->wage_tmpl8_id;
 			$py_emp_rate->date_changed = $employeeRequest->DateApproved;
 			$py_emp_rate->effect_date = $employeeRequest->date_start;
+			$py_emp_rate->approval_code = $employeeRequest->txn_no;
 			$py_emp_rate->apprv_type = 1;
 			$py_emp_rate->save();
 
 			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
 			$h_docs = $employeeRequestHelper->get_h_docs_Model();
-			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->get()->pop()->series_no + 1;
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('series_no', 'desc')->first()->series_no + 1;
 			$h_docs->series_no = $series_no;
 			$h_docs->doc_no = $corporation_master->wt_doc_cat;
 			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
@@ -322,7 +331,7 @@ class EmployeeRequestController extends Controller
 			$h_docs->doc_exp  = "0000-00-00";
 			$h_docs->branch  = $employeeRequest->to_branch;
 			$h_docs->approval_no  = $employeeRequest->txn_no;
-			$h_docs->notes  = "New employee approved by: " . \Auth::user()->UserID;
+			$h_docs->notes  = "New employee approved by: " . \Auth::user()->uname;
 			$h_docs->save();
 
 			$h_categoryModel = $employeeRequestHelper->get_h_category_Model();
@@ -332,10 +341,12 @@ class EmployeeRequestController extends Controller
 		}
 		if(!is_null($employeeRequest)) {
 			$employeeRequest->approved = "1";
+			$employeeRequest->ApprovedBy = \Auth::user()->UserID;
+			$employeeRequest->DateApproved = Carbon::now();
 			$employeeRequest->save();
 			return "true";
 		}
-		return "false";
+		return "Something went wrong, please contact administration";
 	}
 
 	private function getLastUnfrmPaid(){
@@ -422,15 +433,15 @@ class EmployeeRequestController extends Controller
 
 			$corporation_master = Corporation::where("corp_id", $request->corpId)->first();
 			$h_docs = $employeeRequestHelper->get_h_docs_Model();
-			// $series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->first()->series_no + 1;
-			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('doc_no', 'desc')->get()->pop()->series_no + 1;
+			$series_no = $h_docs::where("doc_no", $corporation_master->wt_doc_cat)->orderBy('series_no', 'desc')->first()->series_no + 1;
 			$h_docs->series_no = $series_no;
 			$h_docs->doc_no = $corporation_master->wt_doc_cat;
 			$h_docs->subcat_id = $corporation_master->wt_doc_subcat;
 			$h_docs->emp_id  = $user->UserID;
 			$h_docs->branch  = $request->branch_id;
 			$h_docs->doc_exp  = "0000-00-00";
-			$h_docs->notes  = "Reactivated By: " . \Auth::user()->UserID;
+			$h_docs->approval_no  = isset($employeeRequest->txn_no) ? $employeeRequest->txn_no : 0;
+			$h_docs->notes  = "Reactivated By: " . \Auth::user()->uname;
 			$h_docs->save();
 
 			$h_categoryModel = $employeeRequestHelper->get_h_category_Model();
