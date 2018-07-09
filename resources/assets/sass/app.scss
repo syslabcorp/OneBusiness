@@ -20,8 +20,6 @@ a:active, a:visited, a:hover {
     z-index: 999;
     visibility: hidden;
     width: 120px;
-    background-color: #555;
-    color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
@@ -46,13 +44,24 @@ a:active, a:visited, a:hover {
 }
 
 .tooltipp:hover .tooltiptext {
-    z-index: 9999;
+    z-index: 100;
     visibility: visible;
     opacity: 1;
 }
-.dataTables_wrapper {
-position: relative;
-min-height: 302px;
-_height: 302px;
-zoom: 1; /* Feeling sorry for IE */
+
+.ui-sortable{
+  list-style: none;
+  padding-left: 0px;
+}
+
+#table-deliveries thead{
+    z-index: 2;
+}
+
+#table-deliveries th{
+    z-index: 2;
+}
+
+.w-100{
+    width: 100px;
 }

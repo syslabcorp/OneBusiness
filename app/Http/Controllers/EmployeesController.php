@@ -58,6 +58,7 @@ class EmployeesController extends Controller {
     $branch = $request->branch ? $request->branch : 1;
     $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : "non-branch";
+    $order = $request->order ? $request_order : "";
 
     // $items = DB::connection($company->database_name)->table('py_emp_hist')
     //     ->join(Config::get('database.connections.mysql.database').".t_users", 'py_emp_hist.EmpID', '=', 't_users.UserID')

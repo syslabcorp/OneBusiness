@@ -327,3 +327,14 @@ span.error {
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
+
+.ui-state-default{
+  display: inline-block;
+  width: 100%;
+}
+
+.ui-state-default div{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-right: 1px solid #d3d3d3;
+}

@@ -65,6 +65,57 @@
         </div>
       </div>
     </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Sort Order</h4>
+          </div>
+          <div class="modal-body">
+            <p><strong>Current Order:</strong class="current_sort"> <span class="current_sort">Branch > Position > Department</span> </p>
+            <div id="ListElement">
+              <ul id="sortable">
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-10 sort-item">Branch</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-10 sort-item">Position</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-10 sort-item">Department</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author"/></div>
+                  <div class="col-md-10 sort-item">Date Hired</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author"/></div>
+                  <div class="col-md-10 sort-item">Name</div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="sort-button" data-dismiss="modal">Sort</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
@@ -75,7 +126,7 @@
 $(document).ready(function() {
     var table = $('#table-deliveries').DataTable({
 
-      "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-3 branch-filter"><"col-md-3 empStatus"><"col-md-3 lvl"><"col-md-3 sort">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-2 branch-filter"><"col-md-3 empStatus"><"col-md-3 lvl"><"col-md-3 sort"><"col-md-1 o-i">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: function() {
       $(".branch-filter").append('<div class="row"><label class="filterLabel1"> <input value="hasBranch" type="checkbox" class="check-branch" name="selectBranch" /> Select Branch</label></div><div class="row"><select name="branch" class="select-branch form-control"></select></div>')
       $(".branch-filter select").val('{{ $branch }}')
@@ -87,7 +138,9 @@ $(document).ready(function() {
 
       $('.lvl').append('<div class="row"><label class="filterLabel1"> Level</label></div><div class="row"><label class="filterLabel1"><input value="non-branch" type="radio" name="level">Non-branch</label><label class="filterLabel1"><input type="radio" value="branch" name="level">Branch</label><label class="filterLabel1"><input type="radio" value="all" name="level">All</label></div>')
       $(".lvl input[name=level][value='{{ $level }}']").prop("checked",true);
-      $('.sort').append('<div class="row"><a> Sort Order</a></div><div class="row">Branch > Position > Department</div>')
+      $('.sort').append('<div class="row"><a data-toggle="modal" data-target="#myModal"> Sort Order</a></div><div class="row current_sort">Branch > Position > Department</div>')
+      $('.o-i').append('<button class="btn btn-primary pull-right">I/O</button>')
+      $(".branch-filter select").append("<option value=''></option>")
       @foreach($branches as $branch)
         $(".branch-filter select").append("<option value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
@@ -151,7 +204,7 @@ $(document).ready(function() {
           targets: 11,
           data: "PayCode",
           render: (data, type, row, meta) => {
-            return "<div class='tooltipp'>"+data+"<div class='tooltiptext'>Tooltip text <strong>aaaa</strong></div></div>";
+            return "<div class='tooltipp'>"+data+"<div class='tooltiptext panel'> <div class='panel-heading'>Includes:</div><div class='panel-body'><div class='w-100'><p>Benefits:</p><p>Deductions:</p></div><div class='w-100'>Expense:</div></div></div></div>";
           },
         },
         {
@@ -176,7 +229,7 @@ $(document).ready(function() {
         }
       ],
       order: [
-        [0, 'desc']
+        [0, 'asc']
       ],
       scrollX:        true,
       scrollCollapse: true,
@@ -210,6 +263,51 @@ $(document).ready(function() {
         }
       }
     )
+
+    $("#sortable").sortable({
+      change: ( event, ui ) => {
+      }
+    });
+
+
+    $('#sort-button').click(
+      () => {
+        change_current_sort()
+      }
+    )
+
+    const LISTSORT = {
+      'Branch': 6,
+      'Position': 8,
+      'Department': 7,
+      'Date Hired': 9,
+      'Name': 1
+    }
+  
+    function change_current_sort(){
+      var new_sort = ""
+      $('#sortable').find('input:checked').each(function(index){
+          var self = $(this)
+          if(index == 0){
+            new_sort += self.parents('.ui-state-default').find('.sort-item').text()
+          }else{
+            new_sort += (" > " + self.parents('.ui-state-default').find('.sort-item').text())
+          }
+          position_sort = LISTSORT[self.parents('.ui-state-default').find('.sort-item').text()]
+      })
+      
+      $('.current_sort').text(new_sort)
+
+      new_sort_array = new_sort.split(" > ").reverse();
+      $.each(new_sort_array, function( index, value ) {
+        $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
+        if($('.dataTables_scrollHeadInner').find("th:contains("+value+")").hasClass('sorting_desc')){
+          $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
+        }
+      });
+    }
   });
+
+  
 </script>
 @endsection
