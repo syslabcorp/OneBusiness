@@ -42,7 +42,21 @@
               </label>
             </div>
             <div class="col-md-2">
-              <input type="text" name="suffix" id="" value="{{$user->SuffixName}}" class="form-control" disabled>
+              <select type="text" name="suffix" id="" class="form-control" disabled>
+                <option value=""></option>
+                <option value="">JR</option>
+                <option value="">SR</option>
+                <option value="">I</option>
+                <option value="">II</option>
+                <option value="">III</option>
+                <option value="">IV</option>
+                <option value="">V</option>
+                <option value="">VI</option>
+                <option value="">VII</option>
+                <option value="">VIII</option>
+                <option value="">IX</option>
+                <option value="">X</option>
+              </select>
             </div>
           </div>
 
@@ -137,7 +151,7 @@
         </div>
         <div class="col-md-4">
           <div class="row">
-            <button class="btn btn-primary">Edit</button>
+            <button type="button" class="btn btn-primary">Edit</button>
           </div>
 
           <div class="row form-group" style="border: 1px solid #ddd; margin: 1px; padding: 10px; border-radius: 5px;">
