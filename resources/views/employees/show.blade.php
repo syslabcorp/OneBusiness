@@ -60,6 +60,7 @@
         </div>
         <div class="panel-footer">
           <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
+          <a class="btn btn-primary pull-right" id="save_employee" style="display: none;">Save</a>
         </div>
       </div>
     </div>
@@ -199,7 +200,13 @@ $(document).ready(function() {
     ]
   });
 
-  });
+  $("#edit_employee").click(function(){
+    $(this).attr("disabled", true);
+    $('.disabled').removeAttr('disabled');
+    $('#save_employee').show();
+  })
+
+});
 
 
 

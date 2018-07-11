@@ -21,7 +21,7 @@ class WageTransformer extends Fractal\TransformerAbstract
 
     public function transform(EmpRate $item)
     {
-      switch ($user->PayBasis) {
+      switch ($this->user->PayBasis) {
         case 3:
           $basic = "Hourly";
           break;

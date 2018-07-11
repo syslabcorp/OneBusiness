@@ -10,7 +10,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="name" id="" class="form-control" value="{{$user->FirstName}}" disabled>
+              <input type="text" name="name" id="" class="form-control disabled" value="{{$user->FirstName}}" disabled>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -22,7 +22,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="name" id="" class="form-control" value="{{$user->MiddleName}}" disabled>
+              <input type="text" name="name" id="" class="form-control disabled" value="{{$user->MiddleName}}" disabled>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -34,7 +34,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="name" id="" class="form-control" value="{{$user->LastName}}" disabled>
+              <input type="text" name="name" id="" class="form-control disabled" value="{{$user->LastName}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -42,7 +42,7 @@
               </label>
             </div>
             <div class="col-md-2">
-              <select type="text" name="suffix" id="" class="form-control" disabled>
+              <select type="text" name="suffix" id="" class="form-control disabled" disabled>
                 <option value=""></option>
                 <option value="">JR</option>
                 <option value="">SR</option>
@@ -65,7 +65,7 @@
               <label for="" class="control-label">Address</label>
             </div>
             <div class="col-md-10">
-              <input type="text" name="{{$user->Address}}" id="" class="form-control" disabled="">
+              <input type="text" name="{{$user->Address}}" id="" class="form-control disabled" disabled="">
             </div>
           </div>
 
@@ -76,7 +76,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->Position}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->Position}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -84,7 +84,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->TIN}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->TIN}}" disabled>
             </div>
           </div>
 
@@ -95,7 +95,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <select name="sex" id="" class="form-control" disabled>
+              <select name="sex" id="" class="form-control disabled" disabled>
                 <option value="male" {{$user->sex == 'Male' ? checked: ""}} >Male</option>
                 <option value="female" {{$user->sex == 'Female' ? checked: ""}}>Female</option>
               </select>
@@ -106,7 +106,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->SSS}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->SSS}}" disabled>
             </div>
           </div>
 
@@ -117,7 +117,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->Bday ? $user->Bday->format('d/m/Y') : ""}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->Bday ? $user->Bday->format('d/m/Y') : ""}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -125,7 +125,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->PHIC}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->PHIC}}" disabled>
             </div>
           </div>
 
@@ -136,7 +136,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->acct_no}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->acct_no}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -144,14 +144,14 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control" value="{{$user->Pagibig}}" disabled>
+              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->Pagibig}}" disabled>
             </div>
           </div>
 
         </div>
         <div class="col-md-4">
           <div class="row">
-            <button type="button" class="btn btn-primary">Edit</button>
+            <button type="button" class="btn btn-primary" id="edit_employee">Edit</button>
           </div>
 
           <div class="row form-group" style="border: 1px solid #ddd; margin: 1px; padding: 10px; border-radius: 5px;">
