@@ -51,7 +51,7 @@ class EmpTransformer extends Fractal\TransformerAbstract
         {
           $base_rate = $mstrs->first()->base_rate;
           $code = $mstrs->first()->code;
-          $department = DB::connection($this->database_name)->table('t_depts')->where('dept_id', $mstrs->first()->dept_id)->select('department')->department;
+          $department = DB::connection($this->database_name)->table('t_depts')->where('dept_id', $mstrs->first()->dept_id)->first()->department;
           if ($mstrs->details) {
             $exp_ID = $mstrs->details()->exp_mstrs()->get()->pluck('ID');
             $benf_ID = $mstrs->details()->benf_mstrs()->get()->pluck('ID');

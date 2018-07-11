@@ -22,6 +22,7 @@ class PositionTransformer extends Fractal\TransformerAbstract
            $position = $item->rates()->first()->mstr()->first()->position;
          }
       }
+      $branch = $item->branch ? $item->branch()->first()->ShortName : "";
       switch ($item->for_qc) {
         case 0:
           $status = "Active";
@@ -43,7 +44,7 @@ class PositionTransformer extends Fractal\TransformerAbstract
           break;
       }
       return [
-          'Branch' => $item->branch()->first()->ShortName,
+          'Branch' => $branch,
           'StartDate' => $item->StartDate ? $item->StartDate->format('d/m/Y') : "",
           'SeparationDate' => $item->EndDate ? $item->EndDate->format('d/m/Y') : "",
           'Position' => $position,
