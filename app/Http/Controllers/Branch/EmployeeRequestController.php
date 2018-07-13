@@ -19,9 +19,9 @@ class EmployeeRequestController extends Controller
 {
 
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
-		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
-		// 	return view("branchs.employeeRequest.index", ["hasAccess" => false]);
-		// }
+		if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
+			return view("branchs.employeeRequest.index", ["hasAccess" => false]);
+		}
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
@@ -108,8 +108,7 @@ class EmployeeRequestController extends Controller
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch_name.'</span>';
                 })
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    // return '<span title="Approve Request"><span class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"></span></span></span>';
-                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"> </span></span></span>';
+                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"> </span></span></span>';
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -152,8 +151,7 @@ class EmployeeRequestController extends Controller
 		}
             return Datatables::of($query1)
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    // return '<span title="Activate Employee"><span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span></span>';
-                    return '<span title="Activate Employee"><span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span></span>';
+                    return '<span title="Activate Employee"><span class="btn btn-primary actionButton" '.($employeeRequest->Active == 1 || $employeeRequest->SQ_Active == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")?"disabled":"").' data-reactivate-id="'.$employeeRequest->UserID.'" onclick="reactivateEmployee(\''.$employeeRequest->UserID.'\', \''.$employeeRequest->username.'\')"><span class="glyphicon glyphicon-edit"></span></span></span>';
                 })
                 ->addColumn('nx', function ($employeeRequest) {
                     return '<input disabled data-NX-id="'.$employeeRequest->UserID.'" type="checkbox" '.($employeeRequest->Active == 1?"checked":"").'>';
@@ -373,13 +371,12 @@ class EmployeeRequestController extends Controller
 	}
 
 	public function reactivateEmployeeRequest(EmployeeRequestHelper $employeeRequestHelper, Request $request){
-		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
-		// 	return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
-		// }
+		if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
+			return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
+		}
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
-		// $branch_name = $employeeRequest->to_branch2->ShortName;
 		$branch = Branch::where("Branch", $request->branch_id)->first();
 		if(!is_null($branch)) {
 			$branch->Modified = 1;
@@ -440,7 +437,7 @@ class EmployeeRequestController extends Controller
 			$h_docs->emp_id  = $user->UserID;
 			$h_docs->branch  = $request->branch_id;
 			$h_docs->doc_exp  = "0000-00-00";
-			$h_docs->approval_no  = isset($employeeRequest->txn_no) ? $employeeRequest->txn_no : 0;
+			$h_docs->approval_no  = isset($employeeRequest->txn_no) ? $employeeRequest->txn_no : null;
 			$h_docs->notes  = "Reactivated By: " . \Auth::user()->uname;
 			$h_docs->save();
 
