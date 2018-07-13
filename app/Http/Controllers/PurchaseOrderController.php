@@ -48,7 +48,7 @@ class PurchaseOrderController extends Controller
                 return redirect('purchase_order/'.$corp_id.'/'.$city_id.'/'.(is_null($id) ? '' : $id))->withInput();
             }else{
                 if($id == NULL) {
-                    if(!\Auth::user()->checkAccessByPoId([$corp_id],31, "A"))
+                    if(!\Auth::user()->checkAccessByIdForCorp($corp_id, 31, "A"))
                     {
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
@@ -58,7 +58,7 @@ class PurchaseOrderController extends Controller
                 Request::session()->flash('flash_message', 'Product Template has been added.');
                 Request::Session()->flash('alert-class', 'alert-success');
                 }else{
-                    if(!\Auth::user()->checkAccessByPoId([$corp_id],31, "E"))
+                    if(!\Auth::user()->checkAccessByIdForCorp($corp_id, 31, "E"))
                     {
                         \Session::flash('error', "You don't have permission"); 
                         return redirect("/home"); 
@@ -136,7 +136,7 @@ class PurchaseOrderController extends Controller
         $data['product_line'] = DB::table('s_prodline')->where('Active',1)->orderBy('Product')->get();
         $data['cities'] = $cities;
         $data['corp_id'] = $corp_id;
-        if(!\Auth::user()->checkAccessByPoId([$corp_id],31, $accessvariable))
+        if(!\Auth::user()->checkAccessByIdForCorp($corp_id,31, $accessvariable))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
@@ -217,7 +217,7 @@ class PurchaseOrderController extends Controller
             $data['s_po_tmpl8'] = $s_po_tmpl8; 
             return view('accesslevel.list_data_purchase_order',$data);
         }
-        $permission = \Auth::user()->checkAccessByPoId([$corp_id],31, "V");
+        $permission = \Auth::user()->checkAccessByIdForCorp($corp_id, 31, "V");
         if(!$permission)
         {
             \Session::flash('error', "You doncities't have permission"); 

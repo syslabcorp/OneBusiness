@@ -23,7 +23,7 @@
                     <div class="row">  
                         <div class="panel panel-default">
                             <div class="panel-heading">Auto Ordering Template
-                                @if(\Auth::user()->checkAccessByPoId([$corp_id],31, "A"))
+                                @if(\Auth::user()->checkAccessByIdForCorp($corp_id,31 , "A"))
                             <a href="{{ URL('purchase_order/'.(isset($corp_id) ? $corp_id : 0).'/'.(isset($cities[0]->City_ID) ? $cities[0]->City_ID : 0)) }}?corpID={{ request()->corpID }}" class="pull-right update-add-url">
                                     Add Template
                                 </a>
