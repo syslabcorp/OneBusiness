@@ -236,3 +236,5 @@ Route::get('RecommendationApprove', 'Branch\Recommendation\RecommendationControl
 Route::get('getRecommendation', 'Branch\Recommendation\RecommendationController@getRecommendation')->middleware('auth')->name('getRecommendation');
 Route::post('approveRecommendation','Branch\Recommendation\RecommendationController@approveRecommendation')->middleware('auth')->name('approveRecommendation');
 Route::post('deleteRecommendation','Branch\Recommendation\RecommendationController@deleteRecommendation')->middleware('auth')->name('deleteRecommendation');
+
+Route::get("printContract/{corpId}/{employeeRequestId}", "Branch\EmployeeRequestController@printContract")->middleware('auth');
