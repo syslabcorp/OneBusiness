@@ -108,7 +108,11 @@ class EmployeeRequestController extends Controller
                  	return '<span to_branch_id="'.$employeeRequest->id.'">'.$employeeRequest->to_branch_name.'</span>';
                 })
                 ->addColumn('action', function ($employeeRequest) use ($request) {
-                    return '<span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span><span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"> </span></span></span>';
+                	$printHtml = ($request->approved == "approved" || $request->approved == "uploaded") && $employeeRequest->type == "3"  ? '<span title="Print Contract"><span style="display:inline;" class="btn btn-info actionButton"><a href="printContract/'.$request->corpId.'/'.$employeeRequest->id.'" target="_blank"><span class="glyphicon glyphicon-print"> </span></a></span></span>' : "";
+                    return '
+                    <span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span>
+                    <span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"> </span></span></span>
+                    ' . $printHtml;
                 })
                 ->addColumn('username', function ($employeeRequest) {
                 	if($employeeRequest->type == "3") { return $employeeRequest->request_username; }
@@ -142,11 +146,21 @@ class EmployeeRequestController extends Controller
 		}
 		if(!is_null($request->isActive) && $request->isActive != "any"){
 			$query1 = array_filter($query1, function ($arr) use ($request){
-				if($request->branch_name != "any" && stripos($request->branch_name,'SQ') !== false) {
-					return $arr->SQ_Active == $request->isActive;
+				if($request->branch_name == "any" && $request->isActive == 0) {
+					return $arr->SQ_Active == $request->isActive && $arr->Active == $request->isActive;
 				} else {
-					return $arr->Active == $request->isActive;
+					if(stripos($request->branch_name,'SQ') !== false) {
+						return $arr->SQ_Active == $request->isActive;
+					} else {
+						return $arr->Active == $request->isActive;
+					}
 				}
+
+				// if($request->branch_name != "any" && stripos($request->branch_name,'SQ') !== false) {
+				// 	return $arr->SQ_Active == $request->isActive;
+				// } else {
+				// 	return $arr->Active == $request->isActive;
+				// }
 			});
 		}
             return Datatables::of($query1)
@@ -501,5 +515,40 @@ class EmployeeRequestController extends Controller
 		$employeeRequest->setCorpId($request->corpId);
 		$wage_tmpl8_mstr = $employeeRequest->get_wage_tmpl8_mstr_Model();
 		return $wage_tmpl8_mstr::where("dept_id", $request->departmentId)->where("entry_level", "1")->pluck("position", "wage_tmpl8_id");
+	}
+
+	public function printContract(EmployeeRequestHelper $employeeRequestHelper, Request $request){
+		try{
+			// $employeeRequestId = 2020;
+			$employeeRequestId = $request->employeeRequestId;
+			$employeeRequestHelper->setCorpId($request->corpId);
+			$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
+			$employeeRequest = $employeeRequestModel::find($employeeRequestId);
+
+			$txn_id = $employeeRequestHelper->get_py_emp_hist_Model()::where("EmpID", $employeeRequest->user->UserID)->orderBy("txn_id", "desc")->first()->txn_id;
+			$wage_tmpl8_id = $employeeRequestHelper->get_py_emp_rate_Model()::where("txn_id", $txn_id)->first()->wage_tmpl8_id;
+			$contract = $employeeRequestHelper->get_wage_tmpl8_mstr_Model()::where("wage_tmpl8_id", $wage_tmpl8_id)->first();
+			$dom = new \DOMDocument();
+			$dom->loadHTML($contract->contract);
+			$p = $dom->getElementsByTagName('p');
+			$index = 1;
+			foreach ($p as $value) {
+				if($index == 1) {
+					$value->nodeValue = "";
+					$startDate = (new Carbon($employeeRequest->date_start))->toDateString();
+					$value->appendChild($dom->createCDATASection ('<span>Employee: '.$employeeRequest->user->UserName.'</span>    <span style="float:right;">Start of Contract: '.$startDate.'</span>'));
+				}
+				if($index == 2) {
+					$value->nodeValue = "";
+					$value->appendChild($dom->createCDATASection ('<span>Address: '.$employeeRequest->user->Address.'</span>    <span style="float:right;">Branch: '.$employeeRequest->to_branch2->ShortName.'</span>'));
+				}
+				$index++;
+			}
+			$pdf = \App::make('dompdf.wrapper');
+			$pdf->loadHTML($dom->saveHTML());
+			return $pdf->stream();
+		} catch(\Throwable $e){
+			return "Couldn't generate contract for the user";
+		}
 	}
 }

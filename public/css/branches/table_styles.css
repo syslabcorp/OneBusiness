@@ -1,6 +1,6 @@
 #reactivateEmployeeDatatable, #employeeRequestsDatatable 
 {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    /*font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;*/
     border-collapse: collapse;
     width: 100%;
 }
@@ -12,8 +12,18 @@
     padding: 8px;
 }
 
-#employeeRequestsDatatable thead tr th, #reactivateEmployeeDatatable thead tr th {
+#employeeRequestsDatatable thead tr th {
     border-bottom: 2px solid #ddd !important;
+        min-width: 100px;
+}
+
+#employeeRequestsDatatable thead tr th:last-child {
+    min-width: 155px;
+}
+
+#reactivateEmployeeDatatable thead tr th {
+    border-bottom: 2px solid #ddd !important;
+        /*min-width: 115px;*/
 }
 
 table#employeeRequestsDatatable, table#reactivateEmployeeDatatable{
