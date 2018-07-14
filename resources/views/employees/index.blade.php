@@ -1,98 +1,132 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
+  <style type="text/css">
+    table.dataTable {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+    }
+  </style>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-<div class="row">
-
-<div id="togle-sidebar-sec" class="active">
-
-      <!-- Sidebar -->
-       <div id="sidebar-togle-sidebar-sec">
-          <div class="sidebar-nav">
-            <ul></ul>
-          </div>
-        </div>
-
-      <div id="page-content-togle-sidebar-sec">
+  <div class="box-content">
     @if(Session::has('success'))
       <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
     @elseif(Session::has('error'))
       <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
     @endif
-             <div class="col-md-12">
+    <div class="col-md-12">
       <div class="row">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-9">
-                    <h4>Employee Profile</h4>
-                  </div>
-                </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-9">
+                <h4>Employee Profile</h4>
+
               </div>
-              <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel">
-                                <div class="panel-body">
-                                  <div class="bs-example">
-                                    <div class="row">
-                                      <div class="table-responsive">
-                                        <table id="table-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
-                                          <thead>
-                                            <tr>
-                                              <th style="min-width: 50px">ID</th>
-                                              <th style="min-width: 70px">Employee Name</th>
-                                              <th style="min-width: 70px">Address</th>
-                                              <th style="min-width: 70px">Date of Birth</th>
-                                              <th style="min-width: 40px">Age</th>
-                                              <th style="min-width: 30px">Sex</th>
-                                              <th style="min-width: 70px">Branch</th>
-                                              <th style="min-width: 70px">Department</th>
-                                              <th style="min-width: 70px">Position</th>
-                                              <th style="min-width: 70px">Date Hired</th>
-                                              <th style="min-width: 70px">Base Salary</th>
-                                              <th style="min-width: 70px">Pay Code</th>
-                                              <th style="min-width: 90px">SSS#</th>
-                                              <th style="min-width: 90px">PHIC#</th>
-                                              <th style="min-width: 90px">HDMF#</th>
-                                              <th style="min-width: 70px">Account#</th>
-                                              <th style="min-width: 70px">Type</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody >
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+          </div>
+          <div class="panel-body">
+            <div class="bs-example">
+              <div  id="tablescroll" class="tablescroll">
+                <div class="table-wrap">
+                  <table id="table-deliveries" class="stripe table table-bordered nowrap" width="100%">
+                    <thead>
+                      <tr>
+                        <th style="min-width: 50px">ID</th>
+                        <th style="min-width: 70px">Employee Name</th>
+                        <th style="min-width: 70px">Address</th>
+                        <th style="min-width: 70px">Date of Birth</th>
+                        <th style="min-width: 40px">Age</th>
+                        <th style="min-width: 30px">Sex</th>
+                        <th style="min-width: 70px">Branch</th>
+                        <th style="min-width: 70px">Department</th>
+                        <th style="min-width: 70px">Position</th>
+                        <th style="min-width: 70px">Date Hired</th>
+                        <th style="min-width: 70px">Base Salary</th>
+                        <th style="min-width: 70px">Pay Code</th>
+                        <th style="min-width: 90px">SSS#</th>
+                        <th style="min-width: 90px">PHIC#</th>
+                        <th style="min-width: 90px">HDMF#</th>
+                        <th style="min-width: 70px">Account#</th>
+                        <th style="min-width: 70px">Type</th>
+                      </tr>
+                    </thead>
+                    <tbody >
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-</div>
-</div>
-</div>
-</div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Sort Order</h4>
+          </div>
+          <div class="modal-body">
+            <p><strong>Current Order:</strong class="current_sort"> <span class="current_sort">Branch > Position > Department</span> </p>
+            <div id="ListElement">
+              <ul id="sortable">
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-10 sort-item">Branch</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-10 sort-item">Position</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-10 sort-item">Department</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author"/></div>
+                  <div class="col-md-10 sort-item">Date Hired</div>
+                </li>
+
+                <li class="ui-state-default">
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author"/></div>
+                  <div class="col-md-10 sort-item">Name</div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="sort-button" data-dismiss="modal">Sort</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
 
 <script>
-
 $(document).ready(function() {
     var table = $('#table-deliveries').DataTable({
 
-      "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-3 branch-filter"><"col-md-3 empStatus"><"col-md-3 lvl"><"col-md-3 sort">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-2 branch-filter"><"col-md-3 empStatus"><"col-md-3 lvl"><"col-md-3 sort"><"col-md-1 o-i">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: function() {
       $(".branch-filter").append('<div class="row"><label class="filterLabel1"> <input value="hasBranch" type="checkbox" class="check-branch" name="selectBranch" /> Select Branch</label></div><div class="row"><select name="branch" class="select-branch form-control"></select></div>')
       $(".branch-filter select").val('{{ $branch }}')
@@ -104,25 +138,31 @@ $(document).ready(function() {
 
       $('.lvl').append('<div class="row"><label class="filterLabel1"> Level</label></div><div class="row"><label class="filterLabel1"><input value="non-branch" type="radio" name="level">Non-branch</label><label class="filterLabel1"><input type="radio" value="branch" name="level">Branch</label><label class="filterLabel1"><input type="radio" value="all" name="level">All</label></div>')
       $(".lvl input[name=level][value='{{ $level }}']").prop("checked",true);
-      $('.sort').append('<div class="row"><a> Sort Order</a></div><div class="row">Branch > Position > Department</div>')
+      $('.sort').append('<div class="row"><a data-toggle="modal" data-target="#myModal"> Sort Order</a></div><div class="row current_sort">Branch > Position > Department</div>')
+      $('.o-i').append('<button class="btn btn-primary pull-right">I/O</button>')
+      $(".branch-filter select").append("<option value=''></option>")
       @foreach($branches as $branch)
         $(".branch-filter select").append("<option value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
 
+
       },
 
       ajax: '{{ route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => $branchSelect, 'branch' => $branch, 'status' => $status, 'level'=>$level]) }}',
+      "fnDrawCallback": () => {
+        $('.clone').remove();
+      },
       columns: [
         {
           targets: 0,
-          data: "UserID"
+          data: "UserID",
         },
         {
           targets: 1,
           data: "UserName",
           render: (data, type, row, meta) => {
             return "<a href='{{ route('employee.index') }}/" + row.UserID + "?corpID={{ $corpID }}'>"+ data +"</a>";
-          }
+          },
         },
         {
           targets: 2,
@@ -162,7 +202,10 @@ $(document).ready(function() {
         },
         {
           targets: 11,
-          data: "PayCode"
+          data: "PayCode",
+          render: (data, type, row, meta) => {
+            return "<div class='tooltipp'>"+data+"<div class='tooltiptext panel'> <div class='panel-heading'>Includes:</div><div class='panel-body'><div class='w-100'><p>Benefits:</p><p>Deductions:</p></div><div class='w-100'>Expense:</div></div></div></div>";
+          },
         },
         {
           targets: 12,
@@ -186,8 +229,13 @@ $(document).ready(function() {
         }
       ],
       order: [
-        [0, 'desc']
-      ]
+        [0, 'asc']
+      ],
+      scrollX:        true,
+      scrollCollapse: true,
+      fixedColumns:   {
+        leftColumns: 2
+      }
     });
 
     $('body').on('change', 'input[type=radio][name=status], input[type=radio][name=level], .select-branch, .check-branch',
@@ -216,183 +264,50 @@ $(document).ready(function() {
       }
     )
 
-
-  });
-
-  // table.columns().flatten().each( function ( Active ) {
-  //     // Create the select list and search operation
-
-  //         .on( 'change', function () {
-  //             table
-  //                 .column( Active )
-  //                 .search( $(this).val() )
-  //                 .draw();
-  //         } );
-
-  //     // Get the search data for the first column and add to the select list
-  //     table
-  //         .column( colIdx )
-  //         .cache( 'search' )
-  //         .sort()
-  //         .unique()
-  //         .each( function ( d ) {
-  //             select.append( $('<option value="'+d+'">'+d+'</option>') );
-  //         } );
-  // } );
-
-
-  deleteStock = (id) => {
-    let self = $(event.target)
-
-    swal({
-      title: "<div class='delete-title'>Confirm Delete</div>",
-      text:  "<div class='delete-text'>Are you sure you want to delete DR#" + id + "?</strong></div>",
-      html:  true,
-      customClass: 'swal-wide',
-      showCancelButton: true,
-      confirmButtonClass: 'btn-success',
-      closeOnConfirm: false,
-      closeOnCancel: true
-    },(confirm) => {
-      $.ajax({
-        url : 'stocktransfer/' + id + '?corpID={{ $corpID }}' ,
-        type : 'DELETE',
-        success: (res) => {
-          showAlertMessage('DR#' + id + ' has been deleted!', 'Success')
-          self.parents('tr').remove()
-        }
-      })
-    })
-  }
-
-
-
-
-function onEditRow(param){
-    if($('#editable'+param).hasClass('glyphicon-pencil')){
-
-         $(".rcvdCheckbox"+param).attr("disabled", false);
-         $(".uploadCheckbox"+param).attr("disabled", false);
-    }
-    else{
-
-         $(".rcvdCheckbox"+param).attr("disabled", true);
-         $(".uploadCheckbox"+param).attr("disabled", true);
-
-    }
-
-}
-
-showHidden = (isShow) => {
-  if(isShow)
-    $('#addNewTransfer').append('<a href="{{route('stocktransfer.create' , ['corpID' => $corpID] )}}"  class="pull-right">New Stock Transfer</a>')
-  else
-    $('#addNewTransfer').empty()
-}
-
-</script>
-
-<script>
-    var tmasterId;
-    var urlmarkToserved;
-
-    filterStatusStock = () => {
-      let path = location.search.replace(/&stockStatus=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
-      path = path.replace(/&tab=[a-z]+/g, '') + "&tab=stock"
-      path +=  "&stockStatus=" + $('#stockStatus select').val()
-      window.location = location.pathname + path
-    }
-
-    function filterStatus(event) {
-      let path = location.search.replace(/&statusStock=[0-9]+/g, '').replace(/&status=[0-9]+/g, '')
-      path = path.replace(/&tab=[a-z]+/g, '') + "&tab=auto"
-      path +=  "&status=" + $('#selectId select').val()
-      window.location = location.pathname + path
-    }
-
-  showAlertMessage = (message, title = "Alert", isReload = false) => {
-    swal({
-      title: "<div class='delete-title'>" + title + "</div>",
-      text:  "<div class='delete-text'>" + message + "</strong></div>",
-      html:  true,
-      customClass: 'swal-wide',
-      showCancelButton: false,
-      closeOnConfirm: true,
-      allowEscapeKey: !isReload
-    }, (data) => {
-      if(isReload) {
-        window.location.reload()
+    $("#sortable").sortable({
+      change: ( event, ui ) => {
       }
     });
-  }
 
-  markToserved = (event, id) => {
-    let self = $(event.target)
 
-    swal({
-      title: "<div class='delete-title'>Mark to served</div>",
-      text:  "<div class='delete-text'>Serve PO: Are you sure you want to mark " + id + " as served?</strong></div>",
-      html:  true,
-      customClass: 'swal-wide',
-      showCancelButton: true,
-      confirmButtonClass: 'btn-success',
-      closeOnConfirm: false,
-      closeOnCancel: true
-    },(confirm) => {
-      $.ajax({
-        url : 'stocktransfer/' + id + '/served?corpID={{ $corpID }}' ,
-        type : 'POST',
-        success: (res) => {
-          showAlertMessage('P.O.# ' + id + ' has been served', 'Success')
-          self.parents('tr').remove()
-        }
+    $('#sort-button').click(
+      () => {
+        change_current_sort()
+      }
+    )
+
+    const LISTSORT = {
+      'Branch': 6,
+      'Position': 8,
+      'Department': 7,
+      'Date Hired': 9,
+      'Name': 1
+    }
+  
+    function change_current_sort(){
+      var new_sort = ""
+      $('#sortable').find('input:checked').each(function(index){
+          var self = $(this)
+          if(index == 0){
+            new_sort += self.parents('.ui-state-default').find('.sort-item').text()
+          }else{
+            new_sort += (" > " + self.parents('.ui-state-default').find('.sort-item').text())
+          }
+          position_sort = LISTSORT[self.parents('.ui-state-default').find('.sort-item').text()]
       })
-    })
-  }
+      
+      $('.current_sort').text(new_sort)
 
-</script>
-
-<script>
-    $(function() {
-      var pickers = {};
-
-      $('table tr').editable({
-
-        dropdowns: {
-          sex: ['Male', 'Female']
-        },
-        edit: function(values) {
-
-          $(".edit span", this)
-            .removeClass('glyphicon-pencil')
-            .addClass('glyphicon-ok')
-            .attr('title', 'Save');
-        },
-        save: function(values) {
-          $(".edit span", this)
-            .removeClass('glyphicon-ok')
-            .addClass('glyphicon-pencil')
-            .attr('title', 'Edit');
-
-
-
-          if (this in pickers) {
-            pickers[this].destroy();
-            delete pickers[this];
-          }
-        },
-        cancel: function(values) {
-          $(".edit i", this)
-            .removeClass('glyphicon-ok')
-            .addClass('glyphicon-pencil')
-            .attr('title', 'Edit');
-
-          if (this in pickers) {
-            pickers[this].destroy();
-            delete pickers[this];
-          }
+      new_sort_array = new_sort.split(" > ").reverse();
+      $.each(new_sort_array, function( index, value ) {
+        $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
+        if($('.dataTables_scrollHeadInner').find("th:contains("+value+")").hasClass('sorting_desc')){
+          $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
         }
       });
-    });
-  </script>
+    }
+  });
+
+  
+</script>
 @endsection

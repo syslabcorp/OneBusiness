@@ -59,8 +59,8 @@ return [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DBCORP_7', 'forge'),
-            'username' => env('DBUSER_7', 'forge'),
+            'database' => env('DBCORP_7', 'k_master'),
+            'username' => env('DBUSER_7', 'root'),
             'password' => env('DBPSWRD_7', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
@@ -70,7 +70,22 @@ return [
             'engine' => null,
             //'unix_socket' => '/opt/lampp/var/mysql/mysql.sock',
         ],
-
+        // Alex new connection
+        't_master' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DBCORP_6', 't_master'),
+            'username' => env('DBUSER_6', 'root'),
+            'password' => env('DBPSWRD_6', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+        
         'mysql2' => array(
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),

@@ -107,7 +107,7 @@ class CategoriesController extends Controller
 
 
     return view('document-category.pety-cash', [
-      'corpID' => $request->corpID,
+      'corpID' => $corpID,
       'categories' => $categories,
       'branchs' => $branchs,
       'tab' => $request->tab,

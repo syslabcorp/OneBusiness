@@ -1,89 +1,71 @@
-@extends('layouts.app')
+@extends('layouts.custom')
 
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-<div class="row">
 
-<div id="togle-sidebar-sec" class="active">
-
-      <!-- Sidebar -->
-       <div id="sidebar-togle-sidebar-sec">
-          <div class="sidebar-nav">
-            <ul></ul>
+    <div id="page-content-togle-sidebar-sec">
+  @if(Session::has('success'))
+    <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
+  @elseif(Session::has('error'))
+    <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
+  @endif
+  <div class="col-md-12">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-9">
+              <h4>Employee Profile</h4>
+            </div>
           </div>
         </div>
-
-      <div id="page-content-togle-sidebar-sec">
-    @if(Session::has('success'))
-      <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
-    @elseif(Session::has('error'))
-      <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
-    @endif
-    <div class="col-md-12">
-      <div class="row">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-9">
-                    <h4>Employee Profile</h4>
-                  </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="bs-example">
+                <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                  <li class="{{ $tab == 'auto' ? 'active' : '' }}">
+                    <a href="#personInfo" data-toggle="tab">Personal Information</a>
+                  </li>
+                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                    <a href="#document" data-toggle="tab">Document</a>
+                  </li>
+                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                    <a href="#shortages" data-toggle="tab">Shortages</a>
+                  </li>
+                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                    <a href="#tardiness" data-toggle="tab">Tardiness</a>
+                  </li>
+                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                    <a href="#position" data-toggle="tab">Position-Branch Movement</a>
+                  </li>
+                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                    <a href="#wage" data-toggle="tab">Wage Movement</a>
+                  </li>
+                </ul>
+                <div  class="tab-content" style="padding: 1em;">
+                  @include('employees.personInfo', ['user'=> $user])
+                  @include('employees.document', ['user'=> $user])
+                  @include('employees.shortages')
+                  @include('employees.tardiness')
+                  @include('employees.positionBranch', ['user'=> $user])
+                  @include('employees.wage', ['user'=> $user])
                 </div>
               </div>
-              <div class="panel-body">
-                <section class="content">
-                  <div class="row">
-                      <div class="col-md-12">
-                        <div class="panel">
-                          <div class="panel-body">
-                            <div class="bs-example">
-                              <ul class="nav nav-tabs" style="margin-bottom: 15px;">
-                                <li class="{{ $tab == 'auto' ? 'active' : '' }}">
-                                  <a href="#personInfo" data-toggle="tab">Personal Information</a>
-                                </li>
-                                <li class="{{ $tab == 'stock' ? 'active' : '' }}">
-                                  <a href="#document" data-toggle="tab">Document</a>
-                                </li>
-                                <li class="{{ $tab == 'stock' ? 'active' : '' }}">
-                                  <a href="#shortages" data-toggle="tab">Shortages</a>
-                                </li>
-                                <li class="{{ $tab == 'stock' ? 'active' : '' }}">
-                                  <a href="#tardiness" data-toggle="tab">Tardiness</a>
-                                </li>
-                                <li class="{{ $tab == 'stock' ? 'active' : '' }}">
-                                  <a href="#position" data-toggle="tab">Position-Branch Movement</a>
-                                </li>
-                                <li class="{{ $tab == 'stock' ? 'active' : '' }}">
-                                  <a href="#wage" data-toggle="tab">Wage Movement</a>
-                                </li>
-                              </ul>
-                              <div  class="tab-content" style="padding: 1em;">
-                                @include('employees.personInfo', ['user'=> $user])
-                                @include('employees.document')
-                                @include('employees.shortages')
-                                @include('employees.tardiness')
-                                @include('employees.positionBranch')
-                                @include('employees.wage')
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              </div>
             </div>
+          </div>
         </div>
+        <div class="panel-footer">
+          <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
+          <a class="btn btn-primary pull-right" id="save_employee" style="display: none;">Save</a>
+        </div>
+      </div>
     </div>
-</div>
-</div>
-</div>
-</div>
-</div>
+  </div>
+
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
@@ -91,8 +73,142 @@
 <script>
 
 $(document).ready(function() {
+  var tableDocument = $('#table-document-deliveries').DataTable({
 
+      initComplete: function() {
+
+      },
+
+      ajax: '{{ route('employee.deliveryDocuments', ['id' => $user->UserID,'corpID' => $corpID]) }}',
+      columns: [
+        {
+          targets: 0,
+          data: "txn_id"
+        },
+        {
+          targets: 1,
+          data: "Series",
+        },
+        {
+          targets: 2,
+          data: "Approval"
+        },
+        {
+          targets: 3,
+          data: "Branch"
+        },
+        {
+          targets: 4,
+          data: "Category"
+        },
+        {
+          targets: 5,
+          data: "Document"
+        },
+        {
+          targets: 6,
+          data: "Notes"
+        },
+        {
+          targets: 7,
+          data: "Expiry"
+        },
+        {
+          targets: 8,
+          data: "Image",
+          render: (data, type, row, meta) => {
+            return `<a href='{{ route('employee.index') }}/${row.UserID}?corpID={{ $corpID }}'>${data}</a>`;
+          }
+        },
+        {
+          targets: 9,
+          data: "DateArchived"
+        },
+        {
+          targets: 10,
+          render: (data, type, row, meta) => {
+            return `<button class="btn btn-primary fa fa-pencil-alt"> </button>`
+          }
+        }
+      ],
+      order: [
+        [0, 'desc']
+      ]
   });
+
+  var tablePosition = $('#table-position-deliveries').DataTable({
+
+      initComplete: function() {
+
+      },
+
+      ajax: '{{ route('employee.deliveryPositions', ['id' => $user->UserID,'corpID' => $corpID]) }}',
+      columns: [
+        {
+          targets: 0,
+          data: "Branch"
+        },
+        {
+          targets: 1,
+          data: "StartDate",
+        },
+        {
+          targets: 2,
+          data: "SeparationDate"
+        },
+        {
+          targets: 3,
+          data: "Position"
+        },
+        {
+          targets: 4,
+          data: "Status"
+        }
+      ],
+      order: [
+        [0, 'desc']
+      ]
+  });
+
+  var tableWage = $('#table-wage-deliveries').DataTable({
+
+    initComplete: function() {
+
+    },
+
+    ajax: '{{ route('employee.deliveryWages', ['id' => $user->UserID,'corpID' => $corpID]) }}',
+    columns: [
+      {
+        targets: 0,
+        data: "EffectiveDate"
+      },
+      {
+        targets: 1,
+        data: "BaseRate",
+      },
+      {
+        targets: 2,
+        data: "PayCode"
+      },
+      {
+        targets: 3,
+        data: "PayBasic"
+      }
+    ],
+    order: [
+      [0, 'desc']
+    ]
+  });
+
+  $("#edit_employee").click(function(){
+    $(this).attr("disabled", true);
+    $('.disabled').removeAttr('disabled');
+    $('#save_employee').show();
+  })
+
+});
+
+
 
   deleteStock = (id) => {
     let self = $(event.target)
@@ -130,9 +246,7 @@ function onEditRow(param){
 
          $(".rcvdCheckbox"+param).attr("disabled", true);
          $(".uploadCheckbox"+param).attr("disabled", true);
-
     }
-
 }
 
 </script>

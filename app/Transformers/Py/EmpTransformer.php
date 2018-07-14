@@ -26,6 +26,9 @@ class EmpTransformer extends Fractal\TransformerAbstract
       $base_rate = 0;
       $code = "";
       $department = "";
+      $benf = "";
+      $exp = "";
+      $deduct = "";
       if ($empHist->first())
       {
         $datehired = $empHist->first()->StartDate ? $empHist->first()->StartDate->format('d/m/Y') : "";
@@ -48,7 +51,34 @@ class EmpTransformer extends Fractal\TransformerAbstract
         {
           $base_rate = $mstrs->first()->base_rate;
           $code = $mstrs->first()->code;
-          $department = DB::connection($this->database_name)->table('t_depts')->where('dept_id', $mstrs->first()->dept_id)->select('department')->department;
+          $department = DB::connection($this->database_name)->table('t_depts')->where('dept_id', $mstrs->first()->dept_id)->first()->department;
+          if ($mstrs->details) {
+            $exp_ID = $mstrs->details()->exp_mstrs()->get()->pluck('ID');
+            $benf_ID = $mstrs->details()->benf_mstrs()->get()->pluck('ID');
+            $deduct_ID = $mstrs->details()->deduct_mstrs()->get()->pluck('ID');
+
+            $exp_list = DB::connection($this->database_name)->table('py_exp_mstrs')
+                          ->whereIn('ID_exp', $exp_ID);
+            if(sizeof($emp_list) > 0)
+            {
+              $exp = implode( ' ', $emp_list);
+            }
+
+            $benf_list = DB::connection($this->database_name)->table('py_benf_mstrs')
+                          ->whereIn('ID_benf', $exp_ID);
+            if(sizeof($benf_list) > 0)
+            {
+              $benf = implode( ' ', $benf_list);
+            }
+
+            $deduct_list = DB::connection($this->database_name)->table('py_deduct_mstrs')
+                          ->whereIn('ID_exp', $deduct_ID);
+            if(sizeof($deduct_list) > 0)
+            {
+              $deduct = implode( ' ', $deduct_list);
+            }
+
+          }
         }
       }
 
@@ -70,7 +100,10 @@ class EmpTransformer extends Fractal\TransformerAbstract
           'HDMF' => $item->Pagibig,
           'Account' => $item->acct_no,
           'Type' =>$item->split_type,
-          'Active' =>$item->Active
+          'Active' =>$item->Active,
+          'Benf' => $benf,
+          'Exp' => $exp,
+          'Deduct' => $deduct,
       ];
     }
 }

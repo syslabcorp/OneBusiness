@@ -259,6 +259,14 @@ class WageTemplatesController extends Controller
         ]);
     }
 
+    public function previewContract($id) {
+        $template = $this->tmplModel->findOrFail($id);
+
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($template->contract);
+        return $pdf->stream();
+    }
+
     public function editContract($id)
     {
         $template = $this->tmplModel->findOrFail($id);
