@@ -525,9 +525,10 @@ class EmployeeRequestController extends Controller
 			$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 			$employeeRequest = $employeeRequestModel::find($employeeRequestId);
 
-			$txn_id = $employeeRequestHelper->get_py_emp_hist_Model()::where("EmpID", $employeeRequest->user->UserID)->orderBy("txn_id", "desc")->first()->txn_id;
-			$wage_tmpl8_id = $employeeRequestHelper->get_py_emp_rate_Model()::where("txn_id", $txn_id)->first()->wage_tmpl8_id;
-			$contract = $employeeRequestHelper->get_wage_tmpl8_mstr_Model()::where("wage_tmpl8_id", $wage_tmpl8_id)->first();
+			
+			$txn_id = ($employeeRequestHelper->get_py_emp_hist_Model())::where("EmpID", $employeeRequest->user->UserID)->orderBy("txn_id", "desc")->first()->txn_id;
+			$wage_tmpl8_id = ($employeeRequestHelper->get_py_emp_rate_Model())::where("txn_id", $txn_id)->first()->wage_tmpl8_id;
+			$contract = ($employeeRequestHelper->get_wage_tmpl8_mstr_Model())::where("wage_tmpl8_id", $wage_tmpl8_id)->first();
 			$dom = new \DOMDocument();
 			$dom->loadHTML($contract->contract);
 			$p = $dom->getElementsByTagName('p');
