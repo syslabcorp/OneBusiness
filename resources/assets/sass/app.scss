@@ -14,21 +14,23 @@ a:active, a:visited, a:hover {
     position: relative;
     display: inline-block;
     border-bottom: 1px dotted black;
+    cursor: pointer;
 }
 
 .tooltipp .tooltiptext {
     z-index: 999;
-    visibility: hidden;
-    width: 120px;
-    text-align: center;
+    width: 300px;
+    display: none;
+    position: fixed;
     border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
+    position: fixed;
     transition: opacity 0.3s;
+    border: 1px solid #ccc;
+    text-align: left;
+    .panel-heading {
+        background: #ccc;
+        padding: 7px 10px;
+    }
 }
 
 .tooltipp .tooltiptext::after {
@@ -41,12 +43,6 @@ a:active, a:visited, a:hover {
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
-}
-
-.tooltipp:hover .tooltiptext {
-    z-index: 100;
-    visibility: visible;
-    opacity: 1;
 }
 
 .ui-sortable{

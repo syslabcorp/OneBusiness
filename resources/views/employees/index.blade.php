@@ -204,7 +204,14 @@ $(document).ready(function() {
           targets: 11,
           data: "PayCode",
           render: (data, type, row, meta) => {
-            return "<div class='tooltipp'>"+data+"<div class='tooltiptext panel'> <div class='panel-heading'>Includes:</div><div class='panel-body'><div class='w-100'><p>Benefits:</p><p>Deductions:</p></div><div class='w-100'>Expense:</div></div></div></div>";
+            return "<div class='tooltipp'>" + data + "<div class='tooltiptext panel'> <div class='panel-heading'>Includes:</div><div class='panel-body'> \
+                  <strong>Benefits</strong>: <br>"
+                  + row.Benf.map(item => '- ' + item).join('<br>') + 
+                  "<br> <strong>Deductions:</strong> <br>"
+                  + row.Deduct.map(item => '- ' + item).join('<br>') + 
+                  "<br> <strong>Expense:</strong> <br>"
+                  + row.Exp.map(item => '- ' + item).join('<br>') + 
+                "</div></div></div>";
           },
         },
         {
@@ -269,6 +276,16 @@ $(document).ready(function() {
       }
     });
 
+    $('body').on('mouseenter', '.tooltipp', function(event) {
+      $(this).find('.tooltiptext').css({
+        'display': 'block',
+        'top': $(this).offset().top - $(window).scrollTop() - $(this).find('.tooltiptext').height() - 30,
+        'left': $(this).offset().left - $(this).find('.tooltiptext').width() / 2,
+      })
+
+    }).on('mouseleave', '.tooltipp', function(event) {
+      $(this).find('.tooltiptext').css('display', 'none')
+    })
 
     $('#sort-button').click(
       () => {
