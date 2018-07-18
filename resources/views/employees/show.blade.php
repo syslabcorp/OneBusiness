@@ -117,7 +117,7 @@ $(document).ready(function() {
           targets: 8,
           data: "Image",
           render: (data, type, row, meta) => {
-            return `<a href='{{ route('employee.index') }}/${row.UserID}?corpID={{ $corpID }}'>${data}</a>`;
+            return `<a href='{{ route('employee.index') }}/`+ {{$user->UserID}} +`?corpID={{ $corpID }}'>${data}</a>`;
           }
         },
         {
@@ -204,6 +204,10 @@ $(document).ready(function() {
     $(this).attr("disabled", true);
     $('.disabled').removeAttr('disabled');
     $('#save_employee').show();
+  })
+
+  $("#save_employee").click(function(){
+    $('#employee_form').submit();
   })
 
 });

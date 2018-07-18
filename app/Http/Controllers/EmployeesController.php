@@ -69,10 +69,12 @@ class EmployeesController extends Controller {
 
     switch($status) {
       case "1":
-          $items = $items->where('SQ_Active', 1);
+          $items = $items->filter(function($item){
+            return ($item->Active == 1) || ($item->SQ_Active == 1);
+          });
           break;
       case "2":
-          $items = $items->where('SQ_Active', 0);
+          $items = $items->where('SQ_Active', 0)->where('Active', 0);
           break;
       default:
           break;
@@ -95,10 +97,12 @@ class EmployeesController extends Controller {
 
     switch($level) {
       case "non-branch":
-        $items = $items->where('SQ_Branch',  0);
+        $items = $items->where('SQ_Branch',  0)->where('Branch', 0);
         break;
       case "branch":
-        $items = $items->where('SQ_Branch', '!=', 0);
+        $items = $items->filter(function($item){
+          return ($item->Branch != 0) || ($item->SQ_Branch != 0);
+        });
         break;
       default:
         break;
@@ -136,6 +140,22 @@ class EmployeesController extends Controller {
       'tab' => $tab,
       'user' => $user,
     ]);
+  }
+
+  public function update(Request $request, $id)
+  {
+    dd($request->all());
+    $company = Corporation::findOrFail($request->corpID);
+    $user = User::find($id);
+  }
+
+  private function empParams()
+  {
+      
+      $params = request()->only(['FIrstName', 'MiddleName', 'LastName', 'SuffixName', 'Address', 'Position', 'TIN']);
+      $params['main'] = $params['main'] ?: 0;
+
+      return $params;
   }
 
   public function deliveryPositions(Request $request, $id)
