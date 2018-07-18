@@ -1,7 +1,9 @@
 <div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="personInfo" >
   @if(\Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V'))
     <div class="row">
-      <form class="form form-horizontal" action="">
+      <form class="form form-horizontal" action="{{ route('employee.update', [$user, 'corpID' => $corpID]) }}" id="employee_form" method="POST">
+        {{ method_field('patch') }}
+        {{ csrf_field() }}
         <div class="col-md-8">
           <div class="form-group">
             <div class="col-md-2">
@@ -10,7 +12,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="name" id="" class="form-control disabled" value="{{$user->FirstName}}" disabled>
+              <input type="text" name="FirstName" id="" class="form-control disabled" value="{{$user->FirstName}}" disabled>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -22,7 +24,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="name" id="" class="form-control disabled" value="{{$user->MiddleName}}" disabled>
+              <input type="text" name="MiddleName" id="" class="form-control disabled" value="{{$user->MiddleName}}" disabled>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -34,7 +36,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="name" id="" class="form-control disabled" value="{{$user->LastName}}" disabled>
+              <input type="text" name="LastName" id="" class="form-control disabled" value="{{$user->LastName}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -42,20 +44,20 @@
               </label>
             </div>
             <div class="col-md-2">
-              <select type="text" name="suffix" id="" class="form-control disabled" disabled>
+              <select type="text" name="SuffixName" id="" class="form-control disabled" disabled>
                 <option value=""></option>
-                <option value="">JR</option>
-                <option value="">SR</option>
-                <option value="">I</option>
-                <option value="">II</option>
-                <option value="">III</option>
-                <option value="">IV</option>
-                <option value="">V</option>
-                <option value="">VI</option>
-                <option value="">VII</option>
-                <option value="">VIII</option>
-                <option value="">IX</option>
-                <option value="">X</option>
+                <option value="JR">JR</option>
+                <option value="SR">SR</option>
+                <option value="I">I</option>
+                <option value="II">II</option>
+                <option value="III">III</option>
+                <option value="IV">IV</option>
+                <option value="V">V</option>
+                <option value="VI">VI</option>
+                <option value="VII">VII</option>
+                <option value="VIII">VIII</option>
+                <option value="IX">IX</option>
+                <option value="X">X</option>
               </select>
             </div>
           </div>
@@ -65,7 +67,7 @@
               <label for="" class="control-label">Address</label>
             </div>
             <div class="col-md-10">
-              <input type="text" name="{{$user->Address}}" id="" class="form-control disabled" disabled="">
+              <input type="text" name="Address" value="{{$user->Address}}" id="" class="form-control disabled" disabled="">
             </div>
           </div>
 
@@ -76,7 +78,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->Position}}" disabled>
+              <input type="text" name="Position" id="" class="form-control disabled" value="{{$user->Position}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -84,7 +86,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->TIN}}" disabled>
+              <input type="text" name="TIN" id="" class="form-control disabled" value="{{$user->TIN}}" disabled>
             </div>
           </div>
 
@@ -106,7 +108,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->SSS}}" disabled>
+              <input type="text" name="SSS" id="" class="form-control disabled" value="{{$user->SSS}}" disabled>
             </div>
           </div>
 
@@ -117,7 +119,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->Bday ? $user->Bday->format('d/m/Y') : ""}}" disabled>
+              <input type="text" name="Bday" id="" class="form-control disabled" value="{{$user->Bday ? $user->Bday->format('d/m/Y') : ""}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -125,7 +127,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->PHIC}}" disabled>
+              <input type="text" name="PHIC" id="" class="form-control disabled" value="{{$user->PHIC}}" disabled>
             </div>
           </div>
 
@@ -136,7 +138,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->acct_no}}" disabled>
+              <input type="text" name="acct_no" id="" class="form-control disabled" value="{{$user->acct_no}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -144,7 +146,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="position" id="" class="form-control disabled" value="{{$user->Pagibig}}" disabled>
+              <input type="text" name="Pagibig" id="" class="form-control disabled" value="{{$user->Pagibig}}" disabled>
             </div>
           </div>
 
