@@ -17,8 +17,7 @@ class EmpTransformer extends Fractal\TransformerAbstract
       $this->database_name = $database_name;
     }
 
-    public function transform(User $item)
-    {
+    public function transform(User $item) {
       $empHist = $item->empHistories($this->database_name);
 
       $branch = "";
@@ -26,9 +25,9 @@ class EmpTransformer extends Fractal\TransformerAbstract
       $base_rate = 0;
       $code = "";
       $department = "";
-      $benf = "";
-      $exp = "";
-      $deduct = "";
+      $benfItems = [];
+      $expItems = [];
+      $deductItems = [];
       if ($empHist->first())
       {
         $datehired = $empHist->first()->StartDate ? $empHist->first()->StartDate->format('d/m/Y') : "";
@@ -43,43 +42,35 @@ class EmpTransformer extends Fractal\TransformerAbstract
           }
         }
 
-        $mstrs = DB::connection($this->database_name)
+        $template = DB::connection($this->database_name)
             ->table('py_emp_rate')->join('py_emp_hist', 'py_emp_hist.txn_id', '=', 'py_emp_rate.txn_id')
             ->join('wage_tmpl8_mstr', 'py_emp_rate.wage_tmpl8_id', '=', 'wage_tmpl8_mstr.wage_tmpl8_id')
-            ->whereIn('py_emp_hist.txn_id', $empHist->get()->pluck('txn_id'));
-        if($mstrs->first())
-        {
-          $base_rate = $mstrs->first()->base_rate;
-          $code = $mstrs->first()->code;
-          $department = DB::connection($this->database_name)->table('t_depts')->where('dept_id', $mstrs->first()->dept_id)->first()->department;
-          if($mstrs->first()){
-            if ($mstrs->first()->details) {
-              $exp_ID = $mstrs->first()->details()->exp_mstrs()->get()->pluck('ID');
-              $benf_ID = $mstrs->first()->details()->benf_mstrs()->get()->pluck('ID');
-              $deduct_ID = $mstrs->details()->deduct_mstrs()->get()->pluck('ID');
-  
-              $exp_list = DB::connection($this->database_name)->table('py_exp_mstrs')
-                            ->whereIn('ID_exp', $exp_ID);
-              if(sizeof($emp_list) > 0)
-              {
-                $exp = implode( ' ', $emp_list);
-              }
-  
-              $benf_list = DB::connection($this->database_name)->table('py_benf_mstrs')
-                            ->whereIn('ID_benf', $exp_ID);
-              if(sizeof($benf_list) > 0)
-              {
-                $benf = implode( ' ', $benf_list);
-              }
-  
-              $deduct_list = DB::connection($this->database_name)->table('py_deduct_mstrs')
-                            ->whereIn('ID_exp', $deduct_ID);
-              if(sizeof($deduct_list) > 0)
-              {
-                $deduct = implode( ' ', $deduct_list);
-              }
-            }
-          }
+            ->whereIn('py_emp_hist.txn_id', $empHist->get()->pluck('txn_id'))
+            ->first();
+
+        $templateModel = new \App\Models\WageTmpl8\Mstr;
+        $templateModel->setConnection($this->database_name);
+
+        if($template) {
+            $template = $templateModel->find($template->wage_tmpl8_id);
+            $base_rate = $template->base_rate;
+            $code = $template->code;
+        
+          $department = DB::connection($this->database_name)->table('t_depts')->where('dept_id',  $template->dept_id)->first();
+          
+          $department = $department ? $department->department : '';
+
+          $exp_ID =  $template->details()->where('pay_db', 'exp_mstr')->pluck('ID');
+          $benf_ID =  $template->details()->where('pay_db', 'benf_mstr')->pluck('ID');
+          $deduct_ID = $template->details()->where('pay_db', 'deduct_mstr')->pluck('ID');
+
+          $expItems = DB::connection($this->database_name)->table('py_exp_mstr')
+                        ->whereIn('ID_exp', $exp_ID)->pluck('description');
+
+          $benfItems = DB::connection($this->database_name)->table('py_benf_mstr')
+                        ->whereIn('ID_benf', $exp_ID)->pluck('description');
+          $deductItems = DB::connection($this->database_name)->table('py_deduct_mstr')
+                        ->whereIn('ID_deduct', $deduct_ID)->pluck('description');
         }
       }
 
@@ -102,9 +93,9 @@ class EmpTransformer extends Fractal\TransformerAbstract
           'Account' => $item->acct_no,
           'Type' =>$item->split_type,
           'Active' =>$item->Active,
-          'Benf' => $benf,
-          'Exp' => $exp,
-          'Deduct' => $deduct,
+          'Benf' => $benfItems,
+          'Exp' => $expItems,
+          'Deduct' => $deductItems,
       ];
     }
 }
