@@ -267,7 +267,7 @@
             var mainTable = $('#myTable').DataTable({
                 initComplete: function () {
                     $('<label for="">Filters:</label>').appendTo("#example_ddl");
-                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0])){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0]->corp_name)){{ $corporations[0]->corp_name }} @else N/A @endif</option></select>')
+                    var corporationID = $('<select class="form-control"><option value="@if(isset($corporations[0])){{ $corporations[0]->corp_id }} @endif" selected>@if(isset($corporations[0])){{ $corporations[0]->corp_name }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl2');
                     var cntCorp = 0;
                     @if(is_object($corporations))
@@ -279,7 +279,7 @@
                             @endforeach
                         @endif
 
-                    var satelliteBranches = $('<select class="form-control"><option value="@if(isset($satelliteBranch[0])){{ $satelliteBranch[0]->Branch }} @endif">@if(isset($satelliteBranch[0]->ShortName)){{ $satelliteBranch[0]->ShortName }} @else N/A @endif</option></select>')
+                    var satelliteBranches = $('<select class="form-control"><option value="@if(isset($satelliteBranch[0])){{ $satelliteBranch[0]->Branch }} @endif">@if(isset($satelliteBranch[0])){{ $satelliteBranch[0]->ShortName }} @else N/A @endif</option></select>')
                             .appendTo('#example_ddl1');
                     var cntSatellite = 0;
                     @if(is_object($satelliteBranch))
@@ -299,7 +299,7 @@
                             .appendTo('#example_ddl3');
                     branchStatus.append('<option value="0">Inactive</option>');
 
-                    var branches = $('<select class="form-control"><option value="@if(isset($banks[0]->bank_acct_id)){{ $banks[0]->bank_acct_id }} @endif">@if(isset($banks[0])){{ $banks[0]->account_info }} @else N/A @endif</option></select>')
+                    var branches = $('<select class="form-control"><option value="@if(isset($banks[0])){{ $banks[0]->bank_acct_id }} @endif">@if(isset($banks[0])){{ $banks[0]->account_info }} @else N/A @endif</option></select>')
                         .appendTo('#example_ddl4');
                     var cntBranches = 0;
                     @if(is_object($banks))

@@ -263,7 +263,18 @@ class WageTemplatesController extends Controller
         $template = $this->tmplModel->findOrFail($id);
 
         $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadHTML($template->contract);
+        $pdf->setPaper('A4');
+        $pdf->setOptions(['isHtml5ParserEnabled' => true, 'debugCss' => false]);
+        $pdf->loadHTML('<html>
+            <head>
+                <style type="text/css">
+                    @page {
+                        margin: 1in;
+                    }
+                </style>
+            </head>
+            <body>' . $template->contract . '</body></html>'
+        );
         return $pdf->stream();
     }
 

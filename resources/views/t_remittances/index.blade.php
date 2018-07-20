@@ -56,8 +56,8 @@
                   @php if(!is_object($collection)) continue; @endphp
                   <tr class="text-center">
                     <td>{{ $collection->ID }}</td>
-                    <td>{{ $collection->CreatedAt->format('Y-m-d H:ia') }}</td>
-                    <td>{{ $collection->user->UserName }}</td>
+                    <td>{{ $collection->CreatedAt ? $collection->CreatedAt->format('Y-m-d H:ia') : ''}}</td>
+                    <td>{{ $collection->user ? $collection->user->UserName : ''}}</td>
                     <td>{{ number_format($collection->Subtotal, 2) }}</td>
                     <td>
                       <form class="form-horizontal" method="POST" action="" role="form">
