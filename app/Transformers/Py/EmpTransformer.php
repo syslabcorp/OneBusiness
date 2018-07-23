@@ -28,19 +28,27 @@ class EmpTransformer extends Fractal\TransformerAbstract
       $benfItems = [];
       $expItems = [];
       $deductItems = [];
+
+      $branchs_list = Branch::where('Branch', $item->Branch)->orWhere('Branch', $item->SQ_Branch)->get();
+      if ($branchs_list->first())
+      {
+        $branch = $branchs_list->first()->ShortName;
+      }
+
+      // dd(Branch::where('Branch', $item->Branch)->orWhere('Branch', $item->SQ_Branch)->get());
       if ($empHist->first())
       {
-        $datehired = $empHist->first()->StartDate ? $empHist->first()->StartDate->format('d/m/Y') : "";
-        if ($empHist->pluck('Branch')->first())
-        {
-          // $branch = Branch::whereIn('Branch', $empHist->pluck('Branch'))->toSql();
+        // $datehired = $empHist->first()->StartDate ? $empHist->first()->StartDate->format('d/m/Y') : "";
+        // if ($empHist->pluck('Branch')->first())
+        // {
+        //   // $branch = Branch::whereIn('Branch', $empHist->pluck('Branch'))->toSql();
 
-          $branchs = Branch::whereIn('Branch', $empHist->pluck('Branch'))->pluck('ShortName')->toArray();
-          if(sizeof($branchs) > 0)
-          {
-            $branch = implode( ' ', $branchs);
-          }
-        }
+        //   $branchs = Branch::whereIn('Branch', $empHist->pluck('Branch'))->pluck('ShortName')->toArray();
+        //   if(sizeof($branchs) > 0)
+        //   {
+        //     $branch = implode( ' ', $branchs);
+        //   }
+        // }
 
         $template = DB::connection($this->database_name)
             ->table('py_emp_rate')->join('py_emp_hist', 'py_emp_hist.txn_id', '=', 'py_emp_rate.txn_id')

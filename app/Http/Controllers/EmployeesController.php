@@ -31,11 +31,16 @@ class EmployeesController extends Controller {
 
     // $empHist = EmpHistories($this->database_name);
 
-    $branches =  DB::connection($company->database_name)->table('py_emp_hist')
-        ->join(Config::get('database.connections.mysql.database').".t_users", 'py_emp_hist.EmpID', '=', 't_users.UserID')
-        ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
-        ->select('t_sysdata.Branch', 'ShortName')
-        ->distinct()->get();
+    // $branches =  DB::connection($company->database_name)->table('py_emp_hist')
+    //     ->join(Config::get('database.connections.mysql.database').".t_users", 'py_emp_hist.EmpID', '=', 't_users.UserID')
+    //     ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
+    //     ->select('t_sysdata.Branch', 'ShortName')
+    //     ->distinct()->get();
+    $branchList = User::all()->pluck('Branch');
+    $sqBranchList = User::all()->pluck('Branch');
+    
+
+    $branches = Branch::whereIn('Branch', $branchList)->orWhereIn('Branch', $sqBranchList)->distinct()->get();
     // dd($branches);
     // DB::connection($company->database_name)->table('py_emp_hist')
     //   ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
@@ -70,11 +75,11 @@ class EmployeesController extends Controller {
     switch($status) {
       case "1":
           $items = $items->filter(function($item){
-            return ($item->Active == 1) || ($item->SQ_Active == 1);
+            return ($item->Active == 1) || ($item->SQ_Active == 1) || ($item->TechActive == 1);
           });
           break;
       case "2":
-          $items = $items->where('SQ_Active', 0)->where('Active', 0);
+          $items = $items->where('SQ_Active', 0)->where('Active', 0)->where('TechActive', 0);
           break;
       default:
           break;
@@ -87,8 +92,13 @@ class EmployeesController extends Controller {
     {
       if($branch)
       {
-        $empHistory = $empHistoryModel->where('Branch', $branch)->get()->pluck('EmpID')->toArray();
-        $items = $items->whereIn('UserID', $empHistory);
+
+        // $empHistory = $empHistoryModel->where('Branch', $branch)->get()->pluck('EmpID')->toArray();
+        // $items = $items->whereIn('UserID', $empHistory);
+
+        $items = $items->filter(function($item) use ($branch){
+          return ($item->Branch == $branch) || ($item->SQ_Branch == $branch);
+        });
       }
     }
 
@@ -97,12 +107,10 @@ class EmployeesController extends Controller {
 
     switch($level) {
       case "non-branch":
-        $items = $items->where('SQ_Branch',  0)->where('Branch', 0);
+        $items = $items->where('level_id', '>', 9);
         break;
       case "branch":
-        $items = $items->filter(function($item){
-          return ($item->Branch != 0) || ($item->SQ_Branch != 0);
-        });
+        $items = $items->where('level_id', '<=', 9);
         break;
       default:
         break;
