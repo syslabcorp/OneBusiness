@@ -55,6 +55,7 @@
                                       <form action="{{ route('menus.order', $det->id) }}" method="POST" style="display: inline;">
                                         {{ csrf_field() }}
                                         <input type="hidden" name="order" value="up">
+                                        <input type="hidden" name="parent_id" value="{{ $det->parent_id }}">
                                         <button class="btn btn-md btn-info" {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}>
                                           <i class="fas fa-arrow-up"></i>
                                         </button>
@@ -62,13 +63,14 @@
                                       <form action="{{ route('menus.order', $det->id) }}" method="POST" style="display: inline;">
                                         {{ csrf_field() }}
                                         <input type="hidden" name="order" value="down">
+                                        <input type="hidden" name="parent_id" value="{{ $det->parent_id }}">
                                         <button class="btn btn-md btn-info" {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}>
                                           <i class="fas fa-arrow-down"></i>
                                         </button>
                                       </form>
                                     </td>
                                     <td><a class="btn btn-primary btn-md blue-tooltip {{ \Auth::user()->checkAccessById(13, 'E') ? '' : 'disabled' }}" data-title="Edit" href="{{ URL::to('list_menu/add_menu/' .$det->parent_id.'/'.$det->id) }}" data-toggle="tooltip" data-placement="top" title="Edit Menu"><span class="fas fa-pencil-alt"></span></a>
-                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(13, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Menu" menu-name="{{ $det->title }}" id="{{ $det->id }}" has-sub-menus ="{{ isset($submenu_count[$det->id]) ? ' and all its sub menus.' : '' }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <a class="btn btn-danger btn-md sweet-4 red-tooltip {{ \Auth::user()->checkAccessById(13, 'D') ? '' : 'disabled' }}" data-title="Delete" href="#" rel="{{ URL::to('delete_menu/' . $det->id) }}" data-toggle="tooltip" data-placement="top" title="Delete Menu" menu-name="{{ $det->title }}" id="{{ $det->id }}" has-sub-menus ="{{ isset($submenu_count[$det->id]) ? ' and all its sub menus.' : '' }}"><span class="far fa-trash-alt"></span></a></td>
                                 </tr>  
                             @endforeach
                         </tbody>

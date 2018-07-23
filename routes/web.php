@@ -180,7 +180,7 @@ Route::any('/add_province/{prov_id?}', 'LocationsController@add_province');
 Route::get('/delete_city/{city_id}/{prov_id}', 'LocationsController@deletecity');
 
 #Purchase Order Module
-Route::any('/purchase_order/{corp_id}/{city_id}/{id?}', 'PurchaseOrderController@purchase_order');
+Route::any('/list_purchase_order/{corp_id}/{city_id}/{id?}', 'PurchaseOrderController@purchase_order');
 Route::any('/list_purchase_order', 'PurchaseOrderController@list_purchase_order');
 Route::any('/purchase_order/create_manual', 'PurchaseOrderController@manual')->middleware('auth')->name('purchase_order.create_manual');
 Route::any('/purchase_order/create_automate', 'PurchaseOrderController@automate')->middleware('auth')->name('purchase_order.create_automate');

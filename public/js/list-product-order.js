@@ -2,7 +2,7 @@ function get_list_data(){
     var city_id = $('#city option:selected').val();
     var corp_id = $('#corp_id').val();
 
-    $(".update-add-url").attr("href", ajax_url+'/purchase_order/'+corp_id+'/'+city_id + '?corpID=' + corp_id);
+    $(".update-add-url").attr("href", ajax_url+'/list_purchase_order/'+corp_id+'/'+city_id + '?corpID=' + corp_id);
     var active = $('#active option:selected').val();
     var _token = $("meta[name='csrf-token']").attr("content");
     $.ajax({

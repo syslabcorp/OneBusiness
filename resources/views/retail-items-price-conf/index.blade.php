@@ -10,7 +10,7 @@
 
         .panel-body { padding: 15px !important; }
 
-        a.disabled { pointer-events: none; cursor: default; color: transparent; }
+        a.disabled { pointer-events: none; cursor: default;  }
 
         .modal { z-index: 10001 !important; }
 

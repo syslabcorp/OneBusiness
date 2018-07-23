@@ -45,7 +45,7 @@ class PurchaseOrderController extends Controller
             $itemIds = isset($formData['item_id']) ? $formData['item_id'] :array();
             if(empty($branches) || empty($itemIds)){
                 Request::session()->flash('flash_message', 'Select Branch or retail item before you can create this Purchase Order Template');
-                return redirect('purchase_order/'.$corp_id.'/'.$city_id.'/'.(is_null($id) ? '' : $id))->withInput();
+                return redirect('list_purchase_order/'.$corp_id.'/'.$city_id.'/'.(is_null($id) ? '' : $id) . '?corpID=' . $corp_id)->withInput();
             }else{
                 if($id == NULL) {
                     if(!\Auth::user()->checkAccessByIdForCorp($corp_id, 31, "A"))
