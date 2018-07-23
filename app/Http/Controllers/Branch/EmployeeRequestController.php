@@ -355,6 +355,7 @@ class EmployeeRequestController extends Controller
 			$employeeRequest->approved = "1";
 			$employeeRequest->ApprovedBy = \Auth::user()->UserID;
 			$employeeRequest->DateApproved = Carbon::now();
+			$employeeRequest->userid = $user->UserID;
 			$employeeRequest->save();
 			return "true";
 		}
