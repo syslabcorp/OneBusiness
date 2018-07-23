@@ -20,7 +20,6 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
-            color: transparent;
         }
 
         .modal {
@@ -246,7 +245,7 @@
                             return '<a href="inventory/'+row.item_id+'/edit" name="edit" class="btn btn-primary btn-md" '+optionClass+'>' +
                                     '<i class="fas fa-pencil-alt"></i></a>' +
                                     '<a href="#" name="delete" style="margin-left: 2px" class="btn btn-danger btn-md delete" '+optionClassDel+'>' +
-                                    '<i class="glyphicon glyphicon-trash"></i><span style="display: none;">'+row.item_id+'</span></a>';
+                                    '<i class="far fa-trash-alt"></i><span style="display: none;">'+row.item_id+'</span></a>';
 
 
                         },

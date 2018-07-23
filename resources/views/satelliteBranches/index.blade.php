@@ -18,7 +18,6 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
-            color: transparent;
         }
         .modal {
             z-index: 10001 !important;;
@@ -58,9 +57,9 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('success'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fas fa-times"></span><em> {!! session('success') !!}</em></div>
                     @elseif(Session::has('error'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fas fa-times"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
                         <h3 class="text-center">Satellite Branches</h3>
@@ -209,7 +208,7 @@
                             return '<a href="satellite-branch/'+row.sat_branch+'/edit" name="edit" class="btn btn-primary btn-md edit '+optionClass+'">' +
                                 '<i class="fas fa-pencil-alt"></i><span style="display: none;">'+row.sat_branch+'</span></a>' +
                                 '<a href="#" name="delete" class="btn btn-danger btn-md delete '+optionClassDel+'">'+
-                                '<i class="glyphicon glyphicon-trash"></i></a>';
+                                '<i class="far fa-trash-alt"></i></a>';
 
                         },
                         "targets": 4

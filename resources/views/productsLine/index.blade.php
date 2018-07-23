@@ -19,7 +19,6 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
-            color: transparent;
         }
 
         .modal {

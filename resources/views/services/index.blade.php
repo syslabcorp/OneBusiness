@@ -19,7 +19,6 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
-            color: transparent;
         }
 
         .modal {
@@ -79,7 +78,7 @@
                                                         </a>
 
                                                         <a href="#" name="delete" class="btn btn-danger btn-md delete @if(!\Auth::user()->checkAccessById(20, "D")) disabled @endif">
-                                                            <i class="glyphicon glyphicon-trash"></i>
+                                                            <i class="far fa-trash-alt"></i>
                                                         </a>
                                                 </td>
                                             </tr>

@@ -19,9 +19,9 @@ class EmployeeRequestController extends Controller
 {
 
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
-		if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
-			return view("branchs.employeeRequest.index", ["hasAccess" => false]);
-		}
+		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
+		// 	return view("branchs.employeeRequest.index", ["hasAccess" => false]);
+		// }
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
@@ -355,6 +355,7 @@ class EmployeeRequestController extends Controller
 			$employeeRequest->approved = "1";
 			$employeeRequest->ApprovedBy = \Auth::user()->UserID;
 			$employeeRequest->DateApproved = Carbon::now();
+			$employeeRequest->userid = $user->UserID;
 			$employeeRequest->save();
 			return "true";
 		}
@@ -524,11 +525,15 @@ class EmployeeRequestController extends Controller
 			$employeeRequestHelper->setCorpId($request->corpId);
 			$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 			$employeeRequest = $employeeRequestModel::find($employeeRequestId);
-
 			
-			$txn_id = ($employeeRequestHelper->get_py_emp_hist_Model())::where("EmpID", $employeeRequest->user->UserID)->orderBy("txn_id", "desc")->first()->txn_id;
-			$wage_tmpl8_id = ($employeeRequestHelper->get_py_emp_rate_Model())::where("txn_id", $txn_id)->first()->wage_tmpl8_id;
-			$contract = ($employeeRequestHelper->get_wage_tmpl8_mstr_Model())::where("wage_tmpl8_id", $wage_tmpl8_id)->first();
+			$py_emp_hist_Model = $employeeRequestHelper->get_py_emp_hist_Model();
+			$txn_id = $py_emp_hist_Model::where("EmpID", $employeeRequest->user->UserID)->orderBy("txn_id", "desc")->first()->txn_id;
+
+			$py_emp_rate_Model = $employeeRequestHelper->get_py_emp_rate_Model();
+			$wage_tmpl8_id = $py_emp_rate_Model::where("txn_id", $txn_id)->first()->wage_tmpl8_id;
+
+			$wage_tmpl8_mstr_Model = $employeeRequestHelper->get_wage_tmpl8_mstr_Model();
+			$contract = $wage_tmpl8_mstr_Model::where("wage_tmpl8_id", $wage_tmpl8_id)->first();
 			$dom = new \DOMDocument();
 			$dom->loadHTML($contract->contract);
 			$p = $dom->getElementsByTagName('p');
@@ -549,7 +554,7 @@ class EmployeeRequestController extends Controller
 			$pdf->loadHTML($dom->saveHTML());
 			return $pdf->stream();
 		} catch(\Throwable $e){
-			return "Couldn't generate contract for the user";
+			return "Not enough information in database to generate contract for the user<br><br>ERROR MESSAGE: " . $e->getMessage();
 		}
 	}
 }

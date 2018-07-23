@@ -190,7 +190,7 @@
                   </td>
                   <td>
                     <button class="btn btn-md btn-danger btn-remove-row" title="Delete" type="button" disabled>
-                      <i class="glyphicon glyphicon-trash"></i>
+                      <i class="far fa-trash-alt"></i>
                     </button>
                   </td>
                 </tr>

@@ -61,7 +61,7 @@
         @else
         <button class="btn btn-default btn-cancel" onclick="cancelEdit()"
           style="display: none;">
-          <i class="glyphicon glyphicon-remove"></i> Cancel
+          <i class="fas fa-times"></i> Cancel
         </button>
         @endif
       </div>
@@ -172,7 +172,7 @@
 
         rowHTML += '<td> \
                 <button class="btn btn-md btn-danger btn-remove-row" title="Delete" type="button"> \
-                  <i class="glyphicon glyphicon-trash"></i> \
+                  <i class="far fa-trash-alt"></i> \
                 </button> \
               </td> \
             </tr>'

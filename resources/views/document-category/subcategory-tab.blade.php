@@ -29,7 +29,7 @@
               <input type="hidden" name="corpID" value="{{ $corpID }}">
               <button class="btn btn-danger btn-delete btn-md" type="button"
                 {{ \Auth::user()->checkAccessById(32, "D") ? '' : 'disabled' }}>
-                <i class="glyphicon glyphicon-trash"></i>
+                <i class="far fa-trash-alt"></i>
               </button>
             </form>
           </td>

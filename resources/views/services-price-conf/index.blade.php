@@ -10,7 +10,7 @@
 
         .panel-body { padding: 15px !important; }
 
-        a.disabled { pointer-events: none; cursor: default; color: transparent; }
+        a.disabled { pointer-events: none; cursor: default; }
 
         .modal { z-index: 10001 !important; }
 
@@ -68,9 +68,9 @@
                 <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('success'))
-                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
+                        <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fas fa-times"></span><em> {!! session('success') !!}</em></div>
                     @elseif(Session::has('error'))
-                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
+                        <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fas fa-times"></span><em> {!! session('error') !!}</em></div>
                     @endif
 
                     <div class="col-md-12 col-xs-12" style="margin-top: 20px;">

@@ -20,7 +20,6 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
-            color: transparent;
         }
         .modal {
             z-index: 10001 !important;;

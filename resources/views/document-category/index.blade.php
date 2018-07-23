@@ -67,7 +67,7 @@
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="corpID" value="{{ $corpID }}">
                 <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
-                  <i class="glyphicon glyphicon-trash"></i> Delete
+                  <i class="far fa-trash-alt"></i> Delete
                 </button>
               </form>
             </div>
@@ -104,7 +104,7 @@
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="corpID" value="{{ $corpID }}">
                 <button class="btn btn-danger btn-xs btn-delete" type="button" {{ \Auth::user()->checkAccessById(33, "D") ? '' : 'disabled' }}>
-                  <i class="glyphicon glyphicon-trash"></i> Delete
+                  <i class="far fa-trash-alt"></i> Delete
                 </button>
               </form>
             </div>
