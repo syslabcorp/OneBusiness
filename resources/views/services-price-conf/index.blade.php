@@ -55,7 +55,7 @@
     </style>
 @endsection
 @section('content')
-    <div class="container-fluid" id="serviceAppWrapper">
+    <div class="container-fluid">
         <div class="row">
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
@@ -73,7 +73,7 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fas fa-times"></span><em> {!! session('error') !!}</em></div>
                     @endif
 
-                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
+                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;" id="serviceAppWrapper">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                               <div class="row">
