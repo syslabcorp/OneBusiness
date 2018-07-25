@@ -30,10 +30,10 @@ Route::post('stocktransfer/{stock}/transfer', 'StocktransferController@transfer'
 Route::get('stocktransfer/{stock}/original', 'StocktransferController@original', ['middleware' => 'auth'])->name('stocktransfer.original');
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
 
-Route::post('payrolls-masterfile/deduct', 'PayrollsController@deduct', ['middleware' => 'auth'])->name('payrolls.deduct');
-Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit', ['middleware' => 'auth'])->name('payrolls.benefit');
-Route::post('payrolls-masterfile/expense', 'PayrollsController@expense', ['middleware' => 'auth'])->name('payrolls.expense');
-Route::get('payrolls-masterfile', 'PayrollsController@index', ['middleware' => 'auth'])->name('payrolls.index');
+Route::post('payrolls-masterfile/deduct', 'PayrollsController@deduct')->middleware('auth')->name('payrolls.deduct');
+Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit')->middleware('auth')->name('payrolls.benefit');
+Route::post('payrolls-masterfile/expense', 'PayrollsController@expense')->middleware('auth')->name('payrolls.expense');
+Route::get('payrolls-masterfile', 'PayrollsController@index')->middleware('auth')->name('payrolls.index');
 Route::resource('departments', 'DepartmentsController', ['middleware' => 'auth']);
 Route::get('wage-templates/{template}/preview-contract', 'WageTemplatesController@previewContract')->middleware('auth')->name('wage-templates.preview-contract');
 Route::get('wage-templates/{template}/edit-contract', 'WageTemplatesController@editContract')->middleware('auth')->name('wage-templates.edit-contract');
@@ -126,10 +126,10 @@ Route::get('/get_logout', 'HomeController@get_logout');
 Route::any('/forgot_pass', 'LoginController@forgot_pass');
 Route::any('/change_pass/{user_id?}', 'LoginController@change_pass');
 
-Route::resource('corporations', 'CorporationsController');
-Route::any('/add_corporation/{corp_id?}', 'AccessLevelController@add_corporation');
-Route::get('/list_corporation', 'AccessLevelController@list_corporation');
-Route::get('/delete_corporation/{corp_id}', 'AccessLevelController@destroycorporation');
+Route::resource('corporations', 'CorporationsController', ['middleware' => 'auth']);
+Route::any('/add_corporation/{corp_id?}', 'AccessLevelController@add_corporation')->middleware('auth');
+Route::get('/list_corporation', 'AccessLevelController@list_corporation')->middleware('auth');
+Route::get('/delete_corporation/{corp_id}', 'AccessLevelController@destroycorporation')->middleware('auth');
 
 Route::any('/list_module/add_module/{module_id?}', 'AccessLevelController@add_module');
 Route::get('/list_module', 'AccessLevelController@list_module');

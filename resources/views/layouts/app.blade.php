@@ -118,7 +118,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 	<script src="{{ URL('/js/bootstrap-treeview.js') }}"></script>
     <script src="{{ URL('/js/colorpicker.js') }}"></script>
-	<script>
+	<script type="text/javascript">
     (() => {
       getItemMenuHTML = (item) => {
         let resultHTML = 

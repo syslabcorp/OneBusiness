@@ -82,12 +82,12 @@
     </style>
 @endsection
 @section('content')
-    <div class="container-fluid" id="retailItemPCAppWrapper">
+    <div class="container-fluid">
         <div class="row">
             <div id="togle-sidebar-sec" class="active">
                 <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
-                  <div id="sidebar_menu" class="sidebar-nav">
+                  <div class="sidebar-nav">
                     <ul></ul>
                   </div>
                 </div>
@@ -100,7 +100,7 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
 
-                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;">
+                    <div class="col-md-12 col-xs-12" style="margin-top: 20px;" id="retailItemPCAppWrapper">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                               <div class="row">
@@ -553,11 +553,6 @@
 
                 $(function() {
                     self.activateSelectable();
-
-                    $("#menu-toggle").click(function(e) {
-                       e.preventDefault();
-                       $("#togle-sidebar-sec").toggleClass("active");
-                    });
 
                 });
             }
