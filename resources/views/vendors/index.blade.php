@@ -96,7 +96,7 @@
                                                 <td>@if($vendor->petty_visible == 1) CDS @elseif($vendor->petty_visible == 2) Petty @else CDS&Petty @endif</td>
                                                 <td><input type="checkbox" name="printThis" @if($vendor->withTracking == 1) checked @endif disabled></td>
                                                 <td>
-                                                    <a href="#" name="view" class="btn btn-success btn-md viewBtn @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif ">
+                                                    <a href="#" name="view" class="btn btn-success btn-md viewBtn @if(!\Auth::user()->checkAccessById(29, "V")) disabled @endif ">
                                                         <i class="far fa-eye"></i>
                                                     </a>
                                                     <a href="vendors/{{ $vendor->Supp_ID }}/edit" name="edit" class="btn btn-primary btn-md @if(!\Auth::user()->checkAccessById(29, "E")) disabled @endif">
