@@ -140,9 +140,9 @@ $(document).ready(function() {
       $(".lvl input[name=level][value='{{ $level }}']").prop("checked",true);
       $('.sort').append('<div class="row"><a data-toggle="modal" data-target="#myModal"> Sort Order</a></div><div class="row current_sort">Branch > Position > Department</div>')
       $('.o-i').append('<button class="btn btn-primary pull-right">I/O</button>')
-      $(".branch-filter select").append("<option value=''></option>")
+      $(".branch-filter select").append("<option class='first-option' value=''></option>")
       @foreach($branches as $branch)
-        $(".branch-filter select").append("<option value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
+        $(".branch-filter select").append("<option class='value-option' value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
 
 
@@ -170,7 +170,8 @@ $(document).ready(function() {
         },
         {
           targets: 3,
-          data: "BDay"
+          data: "BDay",
+          type: 'date-eu'
         },
         {
           targets: 4,
@@ -247,25 +248,32 @@ $(document).ready(function() {
 
     $('body').on('change', 'input[type=radio][name=status], input[type=radio][name=level], .select-branch, .check-branch',
       () => {
-        let url = "<?php echo route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => 'targetBranchSelect', 'branch' => 'targetBranch', 'status' => "targetStatus", 'level'=>"targetLevel"]) ?>"
-        let status = $('input[type=radio][name=status]:checked').val()
-        let branchSelect = $('input[name=selectBranch]').prop('checked') ? "hasBranch" : ""
-        let branch = $('.select-branch').val();
-        let level = $('input[type=radio][name=level]:checked').val();
-        url = url.replace('targetStatus', status).replace('targetBranchSelect', branchSelect)
-                  .replace('targetBranch', branch).replace('targetLevel', level)
-        table.ajax.url( url ).load()
+        reloadTable();
       }
     )
+
+    function reloadTable(){
+      let url = "<?php echo route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => 'targetBranchSelect', 'branch' => 'targetBranch', 'status' => "targetStatus", 'level'=>"targetLevel"]) ?>"
+      let status = $('input[type=radio][name=status]:checked').val()
+      let branchSelect = $('input[name=selectBranch]').prop('checked') ? "hasBranch" : ""
+      let branch = $('.select-branch').val();
+      let level = $('input[type=radio][name=level]:checked').val();
+      url = url.replace('targetStatus', status).replace('targetBranchSelect', branchSelect)
+                .replace('targetBranch', branch).replace('targetLevel', level)
+      table.ajax.url( url ).load()
+    }
 
     $('body').on( "change", ".check-branch",
       (event) => {
         if ($('.check-branch').is(":checked"))
         {
           $('.select-branch').prop('disabled', false);
+          $('.value-option').first().prop('selected', true);
+          reloadTable();
         }
         else
         {
+          $('.first-option').prop('selected', true);
           $('.select-branch').prop('disabled', true);
         }
       }
