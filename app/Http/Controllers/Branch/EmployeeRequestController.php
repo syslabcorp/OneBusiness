@@ -110,7 +110,7 @@ class EmployeeRequestController extends Controller
                 ->addColumn('action', function ($employeeRequest) use ($request) {
                 	$printHtml = ($request->approved == "approved" || $request->approved == "uploaded") && $employeeRequest->type == "3"  ? '<span title="Print Contract"><span style="display:inline;" class="btn btn-info actionButton"><a href="printContract/'.$request->corpId.'/'.$employeeRequest->id.'" target="_blank"><span class="glyphicon glyphicon-print"> </span></a></span></span>' : "";
                     return '
-                    <span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span>
+                    <span title="Approve Request"><span style="display:inline;" class="btn btn-success actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-approve-id="'.$employeeRequest->id.'" onclick="approveRequest(\''.$employeeRequest->id.'\')"><span class="glyphicon glyphicon-ok"></span></span></span>
                     <span title="Disapprove/Delete Request"><span style="display:inline;" class="btn btn-danger actionButton" '.($employeeRequest->approved == 1 || !\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E") || $request->approved != "for_approval"?"disabled":"").' data-delete-id="'.$employeeRequest->id.'" onclick="deleteRequest(\''.$employeeRequest->id.'\', this)"><span class="glyphicon glyphicon-remove"> </span></span></span>
                     ' . $printHtml;
                 })
@@ -553,18 +553,19 @@ class EmployeeRequestController extends Controller
 				if($index == 1) {
 					$value->nodeValue = "";
 					$startDate = (new Carbon($employeeRequest->date_start))->toDateString();
-					$value->appendChild($dom->createCDATASection ('<div style="margin:0px 25px;"><span>Employee: '.$employeeRequest->user->UserName.'</span>    <span style="float:right;">Start of Contract: '.$startDate.'</span></div>'));
+					$value->appendChild($dom->createCDATASection ('<div style=""><span>Employee: <span style="text-decoration:underline;">'.$employeeRequest->user->UserName.'</span></span>    <span style="float:right;">Start of Contract: <span style="text-decoration:underline;">'.$startDate.'</span></span></div>'));
 				}
 				if($index == 2) {
 					$value->nodeValue = "";
-					$value->appendChild($dom->createCDATASection ('<div style="margin:0px 25px;"><span>Address: '.$employeeRequest->user->Address.'</span>    <span style="float:right;">Branch: '.$employeeRequest->to_branch2->ShortName.'</span></div>'));
+					$value->appendChild($dom->createCDATASection ('<div style=""><span>Address: <span style="text-decoration:underline;">'.$employeeRequest->user->Address.'</span></span>    <span style="float:right;">Branch: <span style="text-decoration:underline;">'.$employeeRequest->to_branch2->ShortName.'</span></span></div>'));
 				}
 				$index++;
 			}
 			$pdf = \App::make('dompdf.wrapper');
 			$pdf->loadHTML($dom->saveHTML());
 			return $pdf->stream();
-		} catch(\Throwable $e){
+		} catch(\Exception $e){
+			return response()->view('errors.4041', [], 500);
 			return "Not enough information in database to generate contract for the user<br><br>ERROR MESSAGE: " . $e->getMessage();
 		}
 	}
