@@ -19,9 +19,9 @@ class EmployeeRequestController extends Controller
 {
 
 	public function index(EmployeeRequestHelper $employeeRequest, Request $request){
-		// if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
-		// 	return view("branchs.employeeRequest.index", ["hasAccess" => false]);
-		// }
+		if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 38, "V")) {
+		  return view("branchs.employeeRequest.index", ["hasAccess" => false]);
+		}
 		try{
 			$id = $request->corpID;
 			$employeeRequest->setCorpId($id);
