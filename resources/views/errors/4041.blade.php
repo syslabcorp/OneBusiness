@@ -13,9 +13,9 @@
 			<center>
 				<div class="error-page" style="width: initial;">
 					<div class="error-content">
-						<h3><i class="fa fa-warning text-yellow"></i> Oops! Contract can not be rendered to PDF.</h3>
+						<h3><i class="fa fa-warning text-yellow"></i> Oops! Contract cannot be rendered to PDF.</h3>
 						<p>
-							Sorry, an error in database has occured, the contract can not be printed. 
+							Sorry, an error in database has occured, the contract cannot be printed. 
 						</p>
 					</div>
 				</div>
