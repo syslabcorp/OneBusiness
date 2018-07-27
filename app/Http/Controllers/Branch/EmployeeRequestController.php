@@ -546,18 +546,23 @@ class EmployeeRequestController extends Controller
 			\Log::info("contract = " . $contract->contract);
 
 			$dom = new \DOMDocument();
-			$dom->loadHTML($contract->contract);
+			// $dom->loadHTML($contract->contract);
+
+
+			$dom->loadHTML('<html><head><style type="text/css">@page {margin: 1in;}</style></head><body>' . $contract->contract . '</body></html>');
+
+
 			$p = $dom->getElementsByTagName('p');
 			$index = 1;
 			foreach ($p as $value) {
 				if($index == 1) {
 					$value->nodeValue = "";
 					$startDate = (new Carbon($employeeRequest->date_start))->toDateString();
-					$value->appendChild($dom->createCDATASection ('<div style=""><span>Employee: <span style="text-decoration:underline;">'.$employeeRequest->user->UserName.'</span></span>    <span style="float:right;">Start of Contract: <span style="text-decoration:underline;">'.$startDate.'</span></span></div>'));
+					$value->appendChild($dom->createCDATASection ('<div style=""><span>Employee: <span style="text-decoration:underline;">'.$employeeRequest->user->UserName.'</span></span>    <span style="float:right; margin-right: 100px; width:200px;">Start of Contract: <span style="text-decoration:underline;">'.$startDate.'</span></span></div>'));
 				}
 				if($index == 2) {
 					$value->nodeValue = "";
-					$value->appendChild($dom->createCDATASection ('<div style=""><span>Address: <span style="text-decoration:underline;">'.$employeeRequest->user->Address.'</span></span>    <span style="float:right;">Branch: <span style="text-decoration:underline;">'.$employeeRequest->to_branch2->ShortName.'</span></span></div>'));
+					$value->appendChild($dom->createCDATASection ('<div style=""><span>Address: <span style="text-decoration:underline;">'.$employeeRequest->user->Address.'</span></span>    <span style="float:right; margin-right: 100px; width:200px;">Branch: <span style="text-decoration:underline;">'.$employeeRequest->to_branch2->ShortName.'</span></span></div>'));
 				}
 				$index++;
 			}
