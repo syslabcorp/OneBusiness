@@ -140,13 +140,70 @@ class EmployeesController extends Controller {
 
   public function show(Request $request, $id)
   {
-    $tab = "auto";
+    $tab = request()->tab ? request()->tab : "auto";
     $user = User::find($id);
     $company = Corporation::findOrFail($request->corpID);
+
+    $shortageItems = collect([]);
+    $tardinessItems = collect([]);
+    $shiftModel = new \App\Shift;
+    $shiftRelationshipKey = 'ShiftOwner';
+    $shiftDateField = 'ShiftDate';
+
+    $tardinessModel = new \App\Models\T\Dtr;
+    $tardinessModel->setConnection($company->database_name);
+
+    if ($company->database_name == 'k_master') {
+      $shiftModel = new \App\KShift;
+      $shiftRelationshipKey = 'user_id';
+      $shiftDateField = 'shift_start';
+    }
+
+    if (request()->from_date && request()->to_date) {
+      $shiftModel->setConnection($company->database_name);
+      $shortageItems = $shiftModel->where($shiftRelationshipKey, '=', $id)
+                          ->selectRaw("*, CAST($shiftDateField AS DATE) AS ShiftDate")
+                          ->whereDate($shiftDateField, '>=', request()->from_date)
+                          ->whereDate($shiftDateField, '<=', request()->to_date)
+                          ->get();
+
+        $shortageItems = $shortageItems->map(function($shift) {
+            $shiftDate = new DateTime($shift->ShiftDate);
+            if ($shiftDate->format('d') <= 15 ) {
+            $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+            } else {
+            $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+            }
+
+            return $shift;
+        });
+
+        $tardinessItems = $tardinessModel
+                          ->where('late_hrs', '>', 0)
+                          ->whereDate('TimeIn', '>=', request()->from_date)
+                          ->whereDate('TimeIn', '<=', request()->to_date)
+                          ->where('UserId', '=', 1164)
+                          ->get();
+
+        $tardinessItems = $tardinessItems->map(function($shift) {
+            $shiftDate = new DateTime($shift->TimeIn);
+            if ($shiftDate->format('d') <= 15 ) {
+            $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+            } else {
+            $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+            }
+
+            return $shift;
+        });
+    }
+
+
     return view('employees/show', [
       'corpID' => $request->corpID,
       'tab' => $tab,
       'user' => $user,
+      'shortageItems' => $shortageItems,
+      'tardinessItems' => $tardinessItems
     ]);
   }
 
@@ -159,7 +216,6 @@ class EmployeesController extends Controller {
 
   private function empParams()
   {
-      
       $params = request()->only(['FIrstName', 'MiddleName', 'LastName', 'SuffixName', 'Address', 'Position', 'TIN']);
       $params['main'] = $params['main'] ?: 0;
 
