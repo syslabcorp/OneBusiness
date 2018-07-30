@@ -182,7 +182,7 @@ class EmployeesController extends Controller {
                           ->where('late_hrs', '>', 0)
                           ->whereDate('TimeIn', '>=', request()->from_date)
                           ->whereDate('TimeIn', '<=', request()->to_date)
-                          ->where('UserId', '=', 1164)
+                          ->where('UserId', '=', $id)
                           ->get();
 
         $tardinessItems = $tardinessItems->map(function($shift) {
