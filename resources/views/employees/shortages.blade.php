@@ -34,7 +34,7 @@
                 {{ $shift->period }}
               </td>
               <td class="text-center">
-                {{ (new DateTime($shift->ShiftDate))->format('m/d/Y') }}
+                {{ $shift->Shift_ID }} - {{ (new DateTime($shift->ShiftDate))->format('m/d/Y') }}
               </td>
               <td class="text-right">
                 {{ $shift->remittance ? number_format($shift->remittance->Adj_Amt, 2) : '0.00' }}

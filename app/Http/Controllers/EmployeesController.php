@@ -170,9 +170,9 @@ class EmployeesController extends Controller {
         $shortageItems = $shortageItems->map(function($shift) {
             $shiftDate = new DateTime($shift->ShiftDate);
             if ($shiftDate->format('d') <= 15 ) {
-            $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+              $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
             } else {
-            $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+              $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
             }
 
             return $shift;
