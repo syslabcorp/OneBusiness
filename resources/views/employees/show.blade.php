@@ -33,10 +33,10 @@
                   <li class="{{ $tab == 'stock' ? 'active' : '' }}">
                     <a href="#document" data-toggle="tab">Document</a>
                   </li>
-                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                  <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
                     <a href="#shortages" data-toggle="tab">Shortages</a>
                   </li>
-                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                  <li class="{{ $tab == 'tardiness' ? 'active' : '' }}">
                     <a href="#tardiness" data-toggle="tab">Tardiness</a>
                   </li>
                   <li class="{{ $tab == 'stock' ? 'active' : '' }}">
@@ -69,11 +69,50 @@
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
-
 <script>
 
 $(document).ready(function() {
-  var tableDocument = $('#table-document-deliveries').DataTable({
+  $('.shortages-datatable').DataTable({
+    bPaginate: false,
+    searching: false,
+    columns: [
+      {
+        name: 'period',
+        title: 'Payroll Period'
+      },
+      {
+        title: 'Branch/Shift Date'
+      },
+      {
+        title: 'Amount'
+      },
+    ],
+    rowsGroup: [
+      'period:name'
+    ]
+  });
+
+  $('.tardiness-datatable').DataTable({
+    bPaginate: false,
+    searching: false,
+    columns: [
+      {
+        name: 'period',
+        title: 'Payroll Period'
+      },
+      {
+        title: 'Branch/Shift Date'
+      },
+      {
+        title: 'Late (in mins)'
+      },
+    ],
+    rowsGroup: [
+      'period:name'
+    ]
+  });
+
+  $('#table-document-deliveries').DataTable({
 
       initComplete: function() {
 
@@ -136,7 +175,7 @@ $(document).ready(function() {
       ]
   });
 
-  var tablePosition = $('#table-position-deliveries').DataTable({
+  $('#table-position-deliveries').DataTable({
 
       initComplete: function() {
 
@@ -170,7 +209,7 @@ $(document).ready(function() {
       ]
   });
 
-  var tableWage = $('#table-wage-deliveries').DataTable({
+  $('#table-wage-deliveries').DataTable({
 
     initComplete: function() {
 
