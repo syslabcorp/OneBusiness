@@ -274,10 +274,12 @@ $(document).ready(function() {
         {
           $('.select-branch').prop('disabled', false);
           $('.value-option').first().prop('selected', true);
+          $('input[name="level"]').prop('disabled', true)
           reloadTable();
         }
         else
         {
+          $('input[name="level"]').prop('disabled', false)
           $('.first-option').prop('selected', true);
           $('.select-branch').prop('disabled', true);
         }

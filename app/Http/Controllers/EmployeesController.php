@@ -93,7 +93,7 @@ class EmployeesController extends Controller {
     $user_by_branches = $empHistoryModel->join(Config::get('database.connections.mysql.database').'.t_sysdata', 't_sysdata.Branch', '=', 'py_emp_hist.Branch')->get()->pluck('EmpID')->toArray();
 
 
-    switch($level) {
+    switch($level && $branchSelect != "hasBranch") {
       case "non-branch":
         $items = $items->where('level_id', '>', 9);
         break;
@@ -145,6 +145,8 @@ class EmployeesController extends Controller {
       $shiftModel->setConnection($company->database_name);
       $shortageItems = $shiftModel->where($shiftRelationshipKey, '=', $id)
                           ->selectRaw("*, CAST($shiftDateField AS DATE) AS ShiftDate")
+                          ->leftJoin('t_remitance', 't_remitance.Shift_ID', '=', $shiftModel->getTable() . '.Shift_ID')
+                          ->where('Adj_Amt', '!=', '0')
                           ->whereDate($shiftDateField, '>=', request()->from_date)
                           ->whereDate($shiftDateField, '<=', request()->to_date)
                           ->get();
@@ -159,6 +161,8 @@ class EmployeesController extends Controller {
 
             return $shift;
         });
+
+        $shortageItems = $shortageItems->groupBy('period');
 
         $tardinessItems = $tardinessModel
                           ->where('late_hrs', '>', 0)
