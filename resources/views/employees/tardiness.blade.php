@@ -18,8 +18,11 @@
           <div class="col-md-3 form-group">
             <input type="date" name="to_date" class="form-control" value="{{ request()->to_date }}">
           </div>
-          <div class="col-md-1 form-group">
+          <div class="col-md-2 form-group">
             <button class="btn btn-primary" type="submit">Show</button>
+            <button class="btn btn-md btn-info" type="button" onclick="window.print()">
+              Print
+            </button>
           </div>
         </div>
       </form>

@@ -2,6 +2,24 @@
 
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
+  <style>
+    @media print {
+      * {
+        font-size: 13px !important;
+      }
+      form, ul, .panel-heading, .panel-footer, .dataTables_info {
+        display: none;
+      }
+      .panel, .panel-body, .table-bordered {
+        border: none;
+        padding: 0px;
+        margin: 0px;
+      }
+      .table {
+        display: block !important;
+      }
+    }
+  </style>
 @endsection
 
 @section('content')
@@ -59,8 +77,14 @@
           </div>
         </div>
         <div class="panel-footer">
-          <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
-          <a class="btn btn-primary pull-right" id="save_employee" style="display: none;">Save</a>
+          <div class="rown">
+            <div class="col-xs-6">
+              <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
+            </div>
+            <div class="col-xs-6 text-right">
+              <a class="btn btn-primary" id="save_employee" style="display: none;">Save</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
