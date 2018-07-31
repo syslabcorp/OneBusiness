@@ -20,6 +20,7 @@ class EmpTransformer extends Fractal\TransformerAbstract
     public function transform(User $item) {
       $empHist = $item->empHistories($this->database_name);
 
+        $activeColumn =  $item->Active ? 'Active' : 'Inactive';
       $branch = "";
       $datehired = "";
       $base_rate = 0;
@@ -29,11 +30,17 @@ class EmpTransformer extends Fractal\TransformerAbstract
       $expItems = [];
       $deductItems = [];
 
+        if ($item->SQ_Branch) {
+            $activeColumn = $item->SQ_Active ? 'All' : 'Inactive';
+        }
+
       $branchs_list = Branch::where('Branch', $item->Branch)->orWhere('Branch', $item->SQ_Branch)->get();
       if ($branchs_list->first())
       {
         $branch = $branchs_list->first()->ShortName;
       }
+
+      $branch = $item->level_id > 9 ? 'NON-BRANCH' : $branch;
 
       // dd(Branch::where('Branch', $item->Branch)->orWhere('Branch', $item->SQ_Branch)->get());
       if ($empHist->first())
@@ -85,14 +92,14 @@ class EmpTransformer extends Fractal\TransformerAbstract
       return [
           'UserID' => (int) $item->UserID,
           'UserName' => $item->UserName,
-          'Address' => (int) $item->Address,
+          'Address' => $item->Address,
           'BDay' => $item->Bday ? $item->Bday->format('d/m/Y') : "",
           'Age' => $item->Bday ? date_diff($item->Bday, date_create(date("Y-m-d")))->format('%y') : "",
           'Sex' => $item->Sex == "Male" ? 'M' : 'F',
           'Branch' => $branch,
           'Department' => $department,
           'Position' => $item->Position,
-          'DateHired' => $datehired,
+          'DateHired' => $item->Hired ? (new \DateTime($item->Hired))->format('d/m/Y') : '',
           'BaseSalary' => $base_rate,
           'PayCode' => $code,
           'SSS' => $item->SSS,
@@ -100,7 +107,7 @@ class EmpTransformer extends Fractal\TransformerAbstract
           'HDMF' => $item->Pagibig,
           'Account' => $item->acct_no,
           'Type' =>$item->split_type,
-          'Active' =>$item->Active,
+          'active' => $activeColumn,
           'Benf' => $benfItems,
           'Exp' => $expItems,
           'Deduct' => $deductItems,

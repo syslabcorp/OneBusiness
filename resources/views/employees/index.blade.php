@@ -41,6 +41,7 @@
                         <th style="min-width: 70px">Date of Birth</th>
                         <th style="min-width: 40px">Age</th>
                         <th style="min-width: 30px">Sex</th>
+                        <th style="min-width: 30px">Active</th>
                         <th style="min-width: 70px">Branch</th>
                         <th style="min-width: 70px">Department</th>
                         <th style="min-width: 70px">Position</th>
@@ -183,26 +184,30 @@ $(document).ready(function() {
         },
         {
           targets: 6,
-          data: "Branch"
+          data: "active"
         },
         {
           targets: 7,
-          data: "Department"
+          data: "Branch"
         },
         {
           targets: 8,
-          data: "Position"
+          data: "Department"
         },
         {
           targets: 9,
-          data: "DateHired"
+          data: "Position"
         },
         {
           targets: 10,
-          data: "BaseSalary"
+          data: "DateHired"
         },
         {
           targets: 11,
+          data: "BaseSalary"
+        },
+        {
+          targets: 12,
           data: "PayCode",
           render: (data, type, row, meta) => {
             return "<div class='tooltipp'>" + data + "<div class='tooltiptext panel'> <div class='panel-heading'>Includes:</div><div class='panel-body'> \
