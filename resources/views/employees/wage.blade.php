@@ -8,7 +8,7 @@
           <th>Effective Date</th>
           <th>Base Rate</th>
           <th>Pay Code</th>
-          <th>Pay Basic</th>
+          <th>Pay Basis</th>
         </tr>
       </thead>
       <tbody >

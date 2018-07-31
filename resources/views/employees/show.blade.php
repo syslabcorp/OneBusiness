@@ -2,6 +2,24 @@
 
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
+  <style>
+    @media print {
+      * {
+        font-size: 13px !important;
+      }
+      form, ul, .panel-heading, .panel-footer, .dataTables_info {
+        display: none;
+      }
+      .panel, .panel-body, .table-bordered {
+        border: none;
+        padding: 0px;
+        margin: 0px;
+      }
+      .table {
+        display: block !important;
+      }
+    }
+  </style>
 @endsection
 
 @section('content')
@@ -18,7 +36,7 @@
         <div class="panel-heading">
           <div class="row">
             <div class="col-xs-9">
-              <h4>Employee Profile</h4>
+              <h4>{{ $user->UserName }}</h4>
             </div>
           </div>
         </div>
@@ -33,10 +51,10 @@
                   <li class="{{ $tab == 'stock' ? 'active' : '' }}">
                     <a href="#document" data-toggle="tab">Document</a>
                   </li>
-                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                  <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
                     <a href="#shortages" data-toggle="tab">Shortages</a>
                   </li>
-                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                  <li class="{{ $tab == 'tardiness' ? 'active' : '' }}">
                     <a href="#tardiness" data-toggle="tab">Tardiness</a>
                   </li>
                   <li class="{{ $tab == 'stock' ? 'active' : '' }}">
@@ -59,8 +77,14 @@
           </div>
         </div>
         <div class="panel-footer">
-          <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
-          <a class="btn btn-primary pull-right" id="save_employee" style="display: none;">Save</a>
+          <div class="rown">
+            <div class="col-xs-6">
+              <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
+            </div>
+            <div class="col-xs-6 text-right">
+              <a class="btn btn-primary" id="save_employee" style="display: none;">Save</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -69,11 +93,50 @@
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
-
 <script>
 
 $(document).ready(function() {
-  var tableDocument = $('#table-document-deliveries').DataTable({
+  $('.shortages-datatable').DataTable({
+    bPaginate: false,
+    searching: false,
+    columns: [
+      {
+        name: 'period',
+        title: 'Payroll Period'
+      },
+      {
+        title: 'Branch/Shift Date'
+      },
+      {
+        title: 'Amount'
+      },
+    ],
+    rowsGroup: [
+      'period:name'
+    ]
+  });
+
+  $('.tardiness-datatable').DataTable({
+    bPaginate: false,
+    searching: false,
+    columns: [
+      {
+        name: 'period',
+        title: 'Payroll Period'
+      },
+      {
+        title: 'Branch/Shift Date'
+      },
+      {
+        title: 'Late (in mins)'
+      },
+    ],
+    rowsGroup: [
+      'period:name'
+    ]
+  });
+
+  $('#table-document-deliveries').DataTable({
 
       initComplete: function() {
 
@@ -136,7 +199,7 @@ $(document).ready(function() {
       ]
   });
 
-  var tablePosition = $('#table-position-deliveries').DataTable({
+  $('#table-position-deliveries').DataTable({
 
       initComplete: function() {
 
@@ -170,7 +233,7 @@ $(document).ready(function() {
       ]
   });
 
-  var tableWage = $('#table-wage-deliveries').DataTable({
+  $('#table-wage-deliveries').DataTable({
 
     initComplete: function() {
 

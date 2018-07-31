@@ -27,24 +27,11 @@ class EmployeesController extends Controller {
     $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : 'non-branch';
 
-    // $items = User::all();
+    $branches = $company->branches()
+                        ->where('Active', '=', '1')
+                        ->orderBy('ShortName', 'ASC')
+                        ->get();
 
-    // $empHist = EmpHistories($this->database_name);
-
-    // $branches =  DB::connection($company->database_name)->table('py_emp_hist')
-    //     ->join(Config::get('database.connections.mysql.database').".t_users", 'py_emp_hist.EmpID', '=', 't_users.UserID')
-    //     ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
-    //     ->select('t_sysdata.Branch', 'ShortName')
-    //     ->distinct()->get();
-    $branchList = User::all()->pluck('Branch');
-    $sqBranchList = User::all()->pluck('Branch');
-    
-
-    $branches = Branch::whereIn('Branch', $branchList)->orWhereIn('Branch', $sqBranchList)->distinct()->get();
-    // dd($branches);
-    // DB::connection($company->database_name)->table('py_emp_hist')
-    //   ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch')
-    //   ->get();
     return view('employees/index', [
       'corpID' => $request->corpID,
       'branchSelect' => $branchSelect,
@@ -59,53 +46,54 @@ class EmployeesController extends Controller {
   {
     $company = Corporation::findOrFail($request->corpID);
 
-    $branchSelect = $request->branchSelect ? $request->branchSelect : false;
+    $branchSelect = $request->branchSelect ? $request->branchSelect : null;
     $branch = $request->branch ? $request->branch : 1;
     $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : "non-branch";
     $order = $request->order ? $request_order : "";
 
-    // $items = DB::connection($company->database_name)->table('py_emp_hist')
-    //     ->join(Config::get('database.connections.mysql.database').".t_users", 'py_emp_hist.EmpID', '=', 't_users.UserID')
-    //     ->join(Config::get('database.connections.mysql.database').".t_sysdata", 'py_emp_hist.Branch', '=', 't_sysdata.Branch');
-    // dd($items->get());
-
     $items = User::all();
 
     switch($status) {
-      case "1":
-          $items = $items->filter(function($item){
-            return ($item->Active == 1) || ($item->SQ_Active == 1) || ($item->TechActive == 1);
-          });
-          break;
-      case "2":
-          $items = $items->where('SQ_Active', 0)->where('Active', 0)->where('TechActive', 0);
-          break;
-      default:
-          break;
+        case "1":
+            $items = $items->filter(function($item){
+                return ($item->Active == 1) || ($item->SQ_Active == 1) || ($item->TechActive == 1);
+            });
+            break;
+        case "2":
+            $items = $items->where('SQ_Active', 0)->where('Active', 0)->where('TechActive', 0);
+            break;
+        default:
+            break;
     }
 
     $empHistoryModel = new \App\Models\Py\EmpHistory;
     $empHistoryModel->setConnection($company->database_name);
 
-    if($branchSelect && $branchSelect == "hasBranch")
+    if($branch && $branchSelect == "hasBranch")
     {
-      if($branch)
-      {
-
-        // $empHistory = $empHistoryModel->where('Branch', $branch)->get()->pluck('EmpID')->toArray();
-        // $items = $items->whereIn('UserID', $empHistory);
-
-        $items = $items->filter(function($item) use ($branch){
-          return ($item->Branch == $branch) || ($item->SQ_Branch == $branch);
+        $items = $items->filter(function($item) use ($branch, $status) {
+            switch ($status) {
+                case "1":
+                    return $item->Active == 1 && $item->Branch == $branch;
+                    break;
+                case "2":
+                    return $item->Active == 0 && $item->Branch == $branch;
+                    break;
+                case "all":
+                    return $item->SQ_Active == 1 && $item->SQ_Branch == $branch;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
         });
-      }
     }
 
     $user_by_branches = $empHistoryModel->join(Config::get('database.connections.mysql.database').'.t_sysdata', 't_sysdata.Branch', '=', 'py_emp_hist.Branch')->get()->pluck('EmpID')->toArray();
 
 
-    switch($level) {
+    switch($level && $branchSelect != "hasBranch") {
       case "non-branch":
         $items = $items->where('level_id', '>', 9);
         break;
@@ -115,12 +103,6 @@ class EmployeesController extends Controller {
       default:
         break;
     }
-
-    // if($request->selectBranch)
-    // {
-    //   $items = $items->where('Branch', $branch);
-    // }
-    // return response()->json($branchSelect);
 
     return fractal($items, new EmpTransformer($company->database_name))->toJson();
   }
@@ -140,13 +122,74 @@ class EmployeesController extends Controller {
 
   public function show(Request $request, $id)
   {
-    $tab = "auto";
+    $tab = request()->tab ? request()->tab : "auto";
     $user = User::find($id);
     $company = Corporation::findOrFail($request->corpID);
+
+    $shortageItems = collect([]);
+    $tardinessItems = collect([]);
+    $shiftModel = new \App\Shift;
+    $shiftRelationshipKey = 'ShiftOwner';
+    $shiftDateField = 'ShiftDate';
+
+    $tardinessModel = new \App\Models\T\Dtr;
+    $tardinessModel->setConnection($company->database_name);
+
+    if ($company->database_name == 'k_master') {
+      $shiftModel = new \App\KShift;
+      $shiftRelationshipKey = 'user_id';
+      $shiftDateField = 'shift_start';
+    }
+
+    if (request()->from_date && request()->to_date) {
+      $shiftModel->setConnection($company->database_name);
+      $shortageItems = $shiftModel->where($shiftRelationshipKey, '=', $id)
+                          ->selectRaw("*, CAST($shiftDateField AS DATE) AS ShiftDate")
+                          ->leftJoin('t_remitance', 't_remitance.Shift_ID', '=', $shiftModel->getTable() . '.Shift_ID')
+                          ->where('Adj_Amt', '!=', '0')
+                          ->whereDate($shiftDateField, '>=', request()->from_date)
+                          ->whereDate($shiftDateField, '<=', request()->to_date)
+                          ->get();
+
+        $shortageItems = $shortageItems->map(function($shift) {
+            $shiftDate = new DateTime($shift->ShiftDate);
+            if ($shiftDate->format('d') <= 15 ) {
+              $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+            } else {
+              $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+            }
+
+            return $shift;
+        });
+
+        $shortageItems = $shortageItems->groupBy('period');
+
+        $tardinessItems = $tardinessModel
+                          ->where('late_hrs', '>', 0)
+                          ->whereDate('TimeIn', '>=', request()->from_date)
+                          ->whereDate('TimeIn', '<=', request()->to_date)
+                          ->where('UserId', '=', $id)
+                          ->get();
+
+        $tardinessItems = $tardinessItems->map(function($shift) {
+            $shiftDate = new DateTime($shift->TimeIn);
+            if ($shiftDate->format('d') <= 15 ) {
+            $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+            } else {
+            $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+            }
+
+            return $shift;
+        });
+    }
+
+
     return view('employees/show', [
       'corpID' => $request->corpID,
       'tab' => $tab,
       'user' => $user,
+      'shortageItems' => $shortageItems,
+      'tardinessItems' => $tardinessItems
     ]);
   }
 
@@ -159,7 +202,6 @@ class EmployeesController extends Controller {
 
   private function empParams()
   {
-      
       $params = request()->only(['FIrstName', 'MiddleName', 'LastName', 'SuffixName', 'Address', 'Position', 'TIN']);
       $params['main'] = $params['main'] ?: 0;
 
