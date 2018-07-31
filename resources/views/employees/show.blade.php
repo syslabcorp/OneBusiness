@@ -18,7 +18,7 @@
         <div class="panel-heading">
           <div class="row">
             <div class="col-xs-9">
-              <h4>Employee Profile</h4>
+              <h4>{{ $user->UserName }}</h4>
             </div>
           </div>
         </div>
