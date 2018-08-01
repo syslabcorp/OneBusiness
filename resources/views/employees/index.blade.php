@@ -7,6 +7,9 @@
       margin-top: 0px !important;
       margin-bottom: 0px !important;
     }
+    .branch-filter {
+      margin-bottom: 15px;
+    }
   </style>
 @endsection
 
@@ -24,7 +27,6 @@
             <div class="row">
               <div class="col-xs-9">
                 <h4>Employee Profile</h4>
-
               </div>
             </div>
           </div>
