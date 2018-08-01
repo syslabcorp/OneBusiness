@@ -78,7 +78,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="Position" id="" class="form-control disabled" value="{{$user->Position}}" disabled>
+              <input type="text" name="Position" class="form-control disabled" value="{{$user->Position}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -86,7 +86,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="TIN" id="" class="form-control disabled" value="{{$user->TIN}}" disabled>
+              <input type="text" name="TIN" class="form-control disabled" value="{{$user->TIN}}" disabled>
             </div>
           </div>
 
@@ -97,9 +97,9 @@
               </label>
             </div>
             <div class="col-md-4">
-              <select name="sex" id="" class="form-control disabled" disabled>
-                <option value="male" {{$user->sex == 'Male' ? checked: ""}} >Male</option>
-                <option value="female" {{$user->sex == 'Female' ? checked: ""}}>Female</option>
+              <select name="Sex" class="form-control disabled" disabled>
+                <option value="Male" {{$user->sex == 'Male' ? checked: ""}} >Male</option>
+                <option value="Female" {{$user->sex == 'Female' ? checked: ""}}>Female</option>
               </select>
             </div>
             <div class="col-md-2">

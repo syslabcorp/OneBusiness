@@ -244,7 +244,7 @@ $(document).ready(function() {
         }
       ],
       order: [
-        [0, 'asc']
+        [1, 'asc']
       ],
       scrollX:        true,
       scrollCollapse: true,

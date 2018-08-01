@@ -13,7 +13,7 @@ class DocTransformer extends Fractal\TransformerAbstract
     public function transform(HDocs $item)
     {
       return [
-        'txn_id' => (int) $item->txn_id,
+        'txn_id' => $item->txn_no,
         'Series' => $item->series_no,
         'Approval' => (int) $item->approval_no,
         'Branch' => "",
@@ -22,7 +22,7 @@ class DocTransformer extends Fractal\TransformerAbstract
         'Notes' => $item->notes,
         'Expiry' => $item->doc_exp,
         'Image' => $item->img_file,
-        'DateArchived' => "",
+        'DateArchived' => $item->doc_date ? (new \DateTime($item->doc_date))->format('m/d/Y') : '',
       ];
     }
 }
