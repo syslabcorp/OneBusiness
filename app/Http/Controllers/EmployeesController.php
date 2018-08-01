@@ -131,6 +131,7 @@ class EmployeesController extends Controller {
     $shiftModel = new \App\Shift;
     $shiftRelationshipKey = 'ShiftOwner';
     $shiftDateField = 'ShiftDate';
+    $remittanceTable = 't_remitance';
 
     $tardinessModel = new \App\Models\T\Dtr;
     $tardinessModel->setConnection($company->database_name);
@@ -139,13 +140,14 @@ class EmployeesController extends Controller {
       $shiftModel = new \App\KShift;
       $shiftRelationshipKey = 'user_id';
       $shiftDateField = 'shift_start';
+      $remittanceTable = 'remittance';
     }
 
     if (request()->from_date && request()->to_date) {
       $shiftModel->setConnection($company->database_name);
       $shortageItems = $shiftModel->where($shiftRelationshipKey, '=', $id)
                           ->selectRaw("*, CAST($shiftDateField AS DATE) AS ShiftDate")
-                          ->leftJoin('t_remitance', 't_remitance.Shift_ID', '=', $shiftModel->getTable() . '.Shift_ID')
+                          ->leftJoin($remittanceTable, $remittanceTable . '.Shift_ID', '=', $shiftModel->getTable() . '.Shift_ID')
                           ->where('Adj_Amt', '!=', '0')
                           ->whereDate($shiftDateField, '>=', request()->from_date)
                           ->whereDate($shiftDateField, '<=', request()->to_date)
