@@ -814,7 +814,10 @@ class PurchaseOrderController extends Controller
 
           if(!in_array($branch, $branchs_ID))
           {
-            array_push($errors, Branch::where('Branch', $branch)->get()->first()->ShortName ) ;
+            if (Branch::where('Branch', $branch)->get()->first())
+            {
+              array_push($errors, Branch::where('Branch', $branch)->get()->first()->ShortName ) ;
+            }
             continue;
           } 
   
