@@ -31,18 +31,31 @@
         @if(request()->from_date && request()->to_date && $tab == 'tardiness')
         <table class="table table-striped table-bordered tardiness-datatable" cellspacing="0" width="100%">
           <tbody>
-            @foreach($tardinessItems as $shift)
-            <tr>
-              <td class="text-center">
-                {{ $shift->period }}
-              </td>
-              <td class="text-center">
-                {{ (new DateTime($shift->TimeIn))->format('m/d/Y') }}
-              </td>
-              <td class="text-right">
-                {{ $shift->late_hrs*60 }}
-              </td>
-            </tr>
+            @foreach($tardinessItems as $periodItems)
+              <tr>
+                <td class="text-center">
+                  {{ $periodItems->first()->period }}
+                </td>
+                <td class="text-center">
+                  {{ $periodItems->first()->branch ? $periodItems->first()->branch->ShortName : '' }}
+                </td>
+                <td class="text-right">
+                  {{ $periodItems->sum('late_hrs')*60 }}
+                </td>
+              </tr>
+              @foreach($periodItems as $shift)
+              <tr>
+                <td class="text-center">
+                  {{ $shift->period }}
+                </td>
+                <td class="text-center">
+                  {{ (new DateTime($shift->TimeIn))->format('m/d/Y') }}
+                </td>
+                <td class="text-right">
+                  {{ $shift->late_hrs*60 }}
+                </td>
+              </tr>
+              @endforeach
             @endforeach
           </tbody>
         </table>

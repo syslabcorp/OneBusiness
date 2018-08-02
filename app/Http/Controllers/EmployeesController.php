@@ -52,7 +52,7 @@ class EmployeesController extends Controller {
     $level = $request->level ? $request->level : "non-branch";
     $order = $request->order ? $request_order : "";
 
-    $items = User::all();
+    $items = User::orderBy('UserName', 'ASC')->get();
 
     switch($status) {
         case "1":
@@ -61,27 +61,26 @@ class EmployeesController extends Controller {
             });
             break;
         case "2":
-            $items = $items->where('SQ_Active', 0)->where('Active', 0)->where('TechActive', 0);
+            $items = $items->filter(function($item){
+                return ($item->Active == 0) && ($item->SQ_Active == 0) && ($item->TechActive == 0);
+            });
             break;
         default:
             break;
     }
-
-    $empHistoryModel = new \App\Models\Py\EmpHistory;
-    $empHistoryModel->setConnection($company->database_name);
 
     if($branch && $branchSelect == "hasBranch")
     {
         $items = $items->filter(function($item) use ($branch, $status) {
             switch ($status) {
                 case "1":
-                    return $item->Active == 1 && $item->Branch == $branch;
+                    return $item->Active == 1 && $item->Branch == $branch || $item->SQ_Active == 1 && $item->SQ_Branch == $branch;
                     break;
                 case "2":
-                    return $item->Active == 0 && $item->Branch == $branch;
+                    return $item->Active == 0 && $item->Branch == $branch || $item->SQ_Active == 0 && $item->Branch == $branch;
                     break;
                 case "all":
-                    return $item->SQ_Active == 1 && $item->SQ_Branch == $branch;
+                    return $item->Branch == $branch || $item->SQ_Branch == $branch;
                     break;
                 default:
                     return false;
@@ -90,18 +89,22 @@ class EmployeesController extends Controller {
         });
     }
 
-    $user_by_branches = $empHistoryModel->join(Config::get('database.connections.mysql.database').'.t_sysdata', 't_sysdata.Branch', '=', 'py_emp_hist.Branch')->get()->pluck('EmpID')->toArray();
-
-
-    switch($level && $branchSelect != "hasBranch") {
-      case "non-branch":
-        $items = $items->where('level_id', '>', 9);
-        break;
-      case "branch":
-        $items = $items->where('level_id', '<=', 9);
-        break;
-      default:
-        break;
+    // Disable level filter if enable select branch
+    if ($branchSelect != "hasBranch") {
+        switch($level) {
+            case "non-branch":
+                $items = $items->filter(function($item){
+                    return $item->level_id > 9;
+                });
+                break;
+            case "branch":
+                $items = $items->filter(function($item){
+                    return $item->level_id <= 9;
+                });
+                break;
+            default:
+                break;
+        }
     }
 
     return fractal($items, new EmpTransformer($company->database_name))->toJson();
@@ -183,6 +186,8 @@ class EmployeesController extends Controller {
 
             return $shift;
         });
+
+        $tardinessItems = $tardinessItems->groupBy('period');
     }
 
 
@@ -195,12 +200,17 @@ class EmployeesController extends Controller {
     ]);
   }
 
-  public function update(Request $request, $id)
-  {
-    dd($request->all());
-    $company = Corporation::findOrFail($request->corpID);
-    $user = User::find($id);
-  }
+    public function update(Request $request, $id)
+    {
+        $company = Corporation::findOrFail($request->corpID);
+        $user = User::find($id);
+
+        $user->update($request->only([
+            'Address', 'TIN', 'Sex', 'Bday', 'SSS'
+        ]));
+
+        return redirect(route('employee.show', [$user, 'corpID' => $request->corpID]));
+    }
 
   private function empParams()
   {
