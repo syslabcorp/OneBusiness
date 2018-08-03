@@ -21,22 +21,43 @@ class WageTransformer extends Fractal\TransformerAbstract
 
     public function transform(EmpRate $item)
     {
-      switch ($this->user->PayBasis) {
-        case 3:
-          $basic = "Hourly";
-          break;
-        case 4:
-          $basic = "Monthly";
-          break;
-        default:
-          $basic = "";
-          break;
-      }
-      return [
-          'EffectiveDate' => $item->effect_date,
-          'BaseRate' => $item->mstrs ? $item->mstrs()->first()->base_rate : "",
-          'PayCode' => $item->mstrs ? $item->mstrs()->first()->code : "",
-          'PayBasic' => $basic,
-      ];
+        $benfItems = [];
+        $expItems = [];
+        $deductItems = [];
+
+        if($item->mstr) {
+            $exp_ID =  $item->mstr->details()->where('pay_db', 'exp_mstr')->pluck('ID');
+            $benf_ID =  $item->mstr->details()->where('pay_db', 'benf_mstr')->pluck('ID');
+            $deduct_ID = $item->mstr->details()->where('pay_db', 'deduct_mstr')->pluck('ID');
+
+            $expItems = DB::connection($this->database_name)->table('py_exp_mstr')
+                            ->whereIn('ID_exp', $exp_ID)->pluck('description');
+
+            $benfItems = DB::connection($this->database_name)->table('py_benf_mstr')
+                            ->whereIn('ID_benf', $exp_ID)->pluck('description');
+            $deductItems = DB::connection($this->database_name)->table('py_deduct_mstr')
+                            ->whereIn('ID_deduct', $deduct_ID)->pluck('description');
+        }
+
+        switch ($this->user->PayBasis) {
+            case 3:
+            $basic = "Hourly";
+            break;
+            case 4:
+            $basic = "Monthly";
+            break;
+            default:
+            $basic = "";
+            break;
+        }
+        return [
+            'EffectiveDate' => $item->effect_date,
+            'BaseRate' => $item->mstr ? $item->mstr->base_rate : "",
+            'PayCode' => $item->mstr ? $item->mstr->code : "",
+            'PayBasic' => $basic,
+            'exps' => $expItems,
+            'benfs' => $benfItems,
+            'deducts' => $deductItems
+        ];
     }
 }

@@ -190,13 +190,36 @@ class EmployeesController extends Controller {
         $tardinessItems = $tardinessItems->groupBy('period');
     }
 
+    $empRateModel = new \App\Models\Py\EmpRate;
+    $empRateModel->setConnection($company->database_name);
+
+    $empRateItem =  $empRateModel->join('py_emp_hist', 'py_emp_hist.txn_id', '=', 'py_emp_rate.txn_id')
+                            ->where('py_emp_hist.EmpID', '=', $id)
+                            ->first();
+    $template = $empRateItem ? $empRateItem->mstr : null;
+
+    $templateModel = new \App\Models\WageTmpl8\Mstr;
+    $templateModel->setConnection($company->database_name);
+
+    $templates = $templateModel->orderBy('code')->get();
+
+    $recommendModel = new \App\Models\T\RecommendationRqst;
+    $recommendModel->setConnection($company->database_name);
+
+    $recommendItem = $recommendModel->where('userID', '=', $id)
+                                    ->where('isApproved', 0)
+                                    ->where('isDeleted', 0)
+                                    ->first();
 
     return view('employees/show', [
-      'corpID' => $request->corpID,
-      'tab' => $tab,
-      'user' => $user,
-      'shortageItems' => $shortageItems,
-      'tardinessItems' => $tardinessItems
+        'corpID' => $request->corpID,
+        'tab' => $tab,
+        'user' => $user,
+        'shortageItems' => $shortageItems,
+        'tardinessItems' => $tardinessItems,
+        'template' => $template,
+        'templates' => $templates,
+        'recommendItem' => $recommendItem
     ]);
   }
 
@@ -245,8 +268,44 @@ class EmployeesController extends Controller {
     $empRateModel->setConnection($company->database_name);
 
     $items = $empRateModel->whereIn('txn_id', $empHist->pluck('txn_id') )->get();
-    // dd($items);
 
     return fractal($items, new WageTransformer($company->database_name, $user))->toJson();
   }
+    /**
+     * Create new recommendation
+     */
+    public function recommendation($id)
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $recommendModel = new \App\Models\T\RecommendationRqst;
+        $recommendModel->setConnection($company->database_name);
+
+        $recommendParams = request()->only(['from_wage', 'to_wage', 'effective_date']);
+        $recommendParams['userID'] = $id;
+        $recommendParams['recommended_by'] = \Auth::user()->UserID;
+        $recommendParams['date_recommended'] = date('Y-m-d H:i:s');
+        $recommendParams['isApproved'] = 0;
+        $recommendParams['isDeleted'] = 0;
+
+        $recommendModel->create($recommendParams);
+
+        return redirect(route('employee.show', [$id, 'corpID' => request()->corpID, 'tab' => 'wage']));
+    }
+
+    /**
+     * Delete recommendation
+     */
+    public function deleteRecommendation($id)
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $recommendModel = new \App\Models\T\RecommendationRqst;
+        $recommendModel->setConnection($company->database_name);
+
+        $recommendItem = $recommendModel->findOrFail(request()->txn_no);
+        $recommendItem->update(['isDeleted' => 1]);
+
+        return redirect(route('employee.show', [$id, 'corpID' => request()->corpID, 'tab' => 'wage']));
+    }
 }

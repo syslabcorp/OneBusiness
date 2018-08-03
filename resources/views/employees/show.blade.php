@@ -60,7 +60,7 @@
                   <li class="{{ $tab == 'stock' ? 'active' : '' }}">
                     <a href="#position" data-toggle="tab">Position-Branch Movement</a>
                   </li>
-                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                  <li class="{{ $tab == 'wage' ? 'active' : '' }}">
                     <a href="#wage" data-toggle="tab">Wage Movement</a>
                   </li>
                 </ul>
@@ -89,7 +89,7 @@
       </div>
     </div>
   </div>
-
+  @include('employees.new-recommendation-modal')
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
@@ -234,34 +234,56 @@ $(document).ready(function() {
   });
 
   $('#table-wage-deliveries').DataTable({
-
-    initComplete: function() {
-
-    },
-
+    searching: false,
     ajax: '{{ route('employee.deliveryWages', ['id' => $user->UserID,'corpID' => $corpID]) }}',
     columns: [
       {
         targets: 0,
-        data: "EffectiveDate"
+        data: "EffectiveDate",
+        class: 'text-center'
       },
       {
         targets: 1,
         data: "BaseRate",
+        class: 'text-center'
       },
       {
         targets: 2,
-        data: "PayCode"
+        data: "PayCode",
+        class: 'text-center',
+        render: (data, type, row, meta) => {
+          return "<div class='tooltipp'>" + data + "<div class='tooltiptext panel'> <div class='panel-heading'>\
+                <strong>Base rate: "  + row.BaseRate + "</strong></div><div class='panel-body'> \
+                <strong>Benefits</strong>: <br>"
+                + row.benfs.map(item => '- ' + item).join('<br>') + 
+                "<br> <strong>Deductions:</strong> <br>"
+                + row.deducts.map(item => '- ' + item).join('<br>') + 
+                "<br> <strong>Expense:</strong> <br>"
+                + row.exps.map(item => '- ' + item).join('<br>') + 
+              "</div></div></div>";
+        },
       },
       {
         targets: 3,
-        data: "PayBasic"
+        data: "PayBasic",
+        class: 'text-center'
       }
     ],
     order: [
       [0, 'desc']
     ]
   });
+
+  $('body').on('mouseenter', '.tooltipp', function(event) {
+    $(this).find('.tooltiptext').css({
+      'display': 'block',
+      'top': $(this).offset().top - $(window).scrollTop() - $(this).find('.tooltiptext').height() - 30,
+      'left': $(this).offset().left - $(this).find('.tooltiptext').width() / 2,
+    })
+
+  }).on('mouseleave', '.tooltipp', function(event) {
+    $(this).find('.tooltiptext').css('display', 'none')
+  })
 
   $("#edit_employee").click(function(){
     $(this).attr("disabled", true);

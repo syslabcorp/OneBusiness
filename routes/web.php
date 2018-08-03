@@ -21,6 +21,8 @@ Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);
 Route::get('employee/{id}/delivery-documents', 'EmployeesController@deliveryDocuments', ['middleware' => 'auth'])->name('employee.deliveryDocuments');
 Route::get('employee/{id}/delivery-positions', 'EmployeesController@deliveryPositions', ['middleware' => 'auth'])->name('employee.deliveryPositions');
 Route::get('employee/{id}/delivery-wages', 'EmployeesController@deliveryWages', ['middleware' => 'auth'])->name('employee.deliveryWages');
+Route::post('employee/{id}/recommendation', 'EmployeesController@recommendation', ['middleware' => 'auth'])->name('employee.recommendation');
+Route::delete('employee/{id}/recommendation', 'EmployeesController@deleteRecommendation', ['middleware' => 'auth'])->name('employee.deleteRecommendation');
 
 // Stocktransfer
 Route::get('stocktransfer/auto-items', 'StocktransferController@autoItems', ['middleware' => 'auth'])->name('stocktransfer.autoItems');
