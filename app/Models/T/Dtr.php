@@ -12,4 +12,9 @@ class Dtr extends Model
 
     protected $fillable = [
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(\App\Branch::class, 'Branch' , 'Branch');
+    }
 }

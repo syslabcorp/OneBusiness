@@ -15,12 +15,14 @@ class PositionTransformer extends Fractal\TransformerAbstract
     public function transform(EmpHistory $item)
     {
       $position = "";
+      
       if($item->rates()->first())
       {
-         if ($item->rates()->first()->mstr)
-         {
-           $position = $item->rates()->first()->mstr()->first()->position;
-         }
+        
+        if ($item->rates()->first()->mstr)
+        {
+            $position = $item->rates()->first()->mstr()->first()->position;
+        }
       }
       $branch = $item->branch ? $item->branch()->first()->ShortName : "";
 

@@ -25,4 +25,9 @@ class HDocs extends Model
   public function subcategory() {
     return $this->belongsTo(\App\HSubcategory::class, 'subcat_id', 'subcat_id');
   }
+
+    public function branch()
+    {
+        return $this->belongsTo(\App\Branch::class, 'branch' , 'Branch');
+    }
 }

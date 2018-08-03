@@ -16,7 +16,7 @@ class DocTransformer extends Fractal\TransformerAbstract
         'txn_id' => $item->txn_no,
         'Series' => $item->series_no,
         'Approval' => (int) $item->approval_no,
-        'Branch' => "",
+        'Branch' => $item->branch()->first() ? $item->branch()->first()->ShortName : '',
         'Category' => $item->category ? $item->category()->first()->description : "",
         'Document' => $item->subcategory ? $item->subcategory()->first()->description : "",
         'Notes' => $item->notes,

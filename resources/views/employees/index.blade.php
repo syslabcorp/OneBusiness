@@ -267,7 +267,9 @@ $(document).ready(function() {
       let level = $('input[type=radio][name=level]:checked').val();
       url = url.replace('targetStatus', status).replace('targetBranchSelect', branchSelect)
                 .replace('targetBranch', branch).replace('targetLevel', level)
-      table.ajax.url( url ).load()
+      table.ajax.url( url ).load(() => {
+        change_current_sort()
+      })
     }
 
     $('body').on( "change", ".check-branch",

@@ -18,7 +18,7 @@ class EmpRate extends Model
       return $this->belongsTo(EmpHistory::class, 'txn_id', 'txn_id');
     }
 
-    public function mstrs()
+    public function mstr()
     {
       return $this->belongsTo(\App\Models\WageTmpl8\Mstr::class, 'wage_tmpl8_id', 'wage_tmpl8_id');
     }
