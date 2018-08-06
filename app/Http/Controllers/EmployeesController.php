@@ -118,9 +118,17 @@ class EmployeesController extends Controller {
 
     $docModel = new \App\HDocs;
     $docModel->setConnection($company->database_name);
-    $items = $docModel->where('emp_id', $user->UserID)->get();
+    $items = $docModel->where('emp_id', $user->UserID);
 
-    return fractal($items, new DocTransformer)->toJson();
+    if (request()->document) {
+        $items = $items->where('subcat_id', request()->document);
+    }
+
+    if (request()->category) {
+        $items = $items->where('doc_no', request()->category);
+    }
+
+    return fractal($items->get(), new DocTransformer)->toJson();
   }
 
   public function show(Request $request, $id)

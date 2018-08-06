@@ -140,7 +140,7 @@ $(document).ready(function() {
     "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-12 branch-filter"><"m-t-10 pull-right"p>',
     initComplete: function() {
       $(".branch-filter").append('<div>Filter: \
-        <label style="font-weight: normal;"><input name="document-filter" value="all" type="radio" /> Show All </label> \
+        <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
         <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="document" type="radio" /> Document </label> \
         <select disabled class="form-control document-select" style="width: 150px;"> </select> \
         <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="category" type="radio" /> Category </label> \
@@ -214,8 +214,24 @@ $(document).ready(function() {
     ]
   });
 
-  $('body').on('change', '.document-filter', (event) => {
+  $('body').on('change', 'input[name="document-filter"], .document-select, .category-select', (event) => {
+    let baseURL = "{{ route('employee.deliveryDocuments', ['id' => $user->UserID,'corpID' => $corpID]) }}"
+    $('.document-select, .category-select').prop('disabled', true)
 
+    switch($('input[name="document-filter"]:checked').val()) {
+      case 'all':
+      break;
+      case 'document':
+        $('.document-select').prop('disabled', false)
+        baseURL += "&document=" + $('.table-responsive .document-select').val()
+      break;
+      case 'category':
+        $('.category-select').prop('disabled', false)
+        baseURL += "&category=" + $('.table-responsive .category-select').val()
+      break;
+    }
+
+    documentTable.ajax.url(baseURL).load()
   });
 
 
