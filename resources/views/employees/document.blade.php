@@ -1,8 +1,8 @@
 <div class="tab-pane fade {{ $tab == 'stock' ? 'active in' : '' }}" id="document" >
   @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V'))
-  <div class="row">
+  <div class="rown">
     <div class="table-responsive">
-    <table id="table-document-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">
+    <table id="table-document-deliveries" class="col-sm-12 table table-striped table-bordered">
       <thead>
         <tr>
           <th>DOC #</th>

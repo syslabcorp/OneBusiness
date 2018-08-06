@@ -186,7 +186,11 @@ $(document).ready(function() {
         },
         {
           targets: 6,
-          data: "active"
+          data: "active",
+          className: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" onclick="return false;" ' + (data == 1 ? 'checked' : '') + '/>'
+          }
         },
         {
           targets: 7,

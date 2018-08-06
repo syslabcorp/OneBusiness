@@ -136,68 +136,88 @@ $(document).ready(function() {
     ]
   });
 
-  $('#table-document-deliveries').DataTable({
+  let documentTable = $('#table-document-deliveries').DataTable({
+    "dom": '<"row"<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f>><"col-md-12 branch-filter"><"m-t-10 pull-right"p>',
+    initComplete: function() {
+      $(".branch-filter").append('<div>Filter: \
+        <label style="font-weight: normal;"><input name="document-filter" value="all" type="radio" /> Show All </label> \
+        <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="document" type="radio" /> Document </label> \
+        <select disabled class="form-control document-select" style="width: 150px;"> </select> \
+        <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="category" type="radio" /> Category </label> \
+        <select disabled class="form-control category-select" style="width: 150px;"> </select> \
+      </div>')
 
-      initComplete: function() {
+      @foreach($categories as $cat)
+        $(".category-select").append('<option value="{{ $cat->doc_no }}">{{$cat->description}}</option>')
+      @endforeach
 
+      @foreach($subCategories as $subcat)
+        $(".document-select").append('<option value="{{ $subcat->subcat_id }}">{{$subcat->description}}</option>')
+      @endforeach
+    },
+    bPaginate: false,
+    searching: false,
+    ajax: '{{ route('employee.deliveryDocuments', ['id' => $user->UserID,'corpID' => $corpID]) }}',
+    columns: [
+      {
+        targets: 0,
+        data: "txn_id"
       },
-
-      ajax: '{{ route('employee.deliveryDocuments', ['id' => $user->UserID,'corpID' => $corpID]) }}',
-      columns: [
-        {
-          targets: 0,
-          data: "txn_id"
-        },
-        {
-          targets: 1,
-          data: "Series",
-        },
-        {
-          targets: 2,
-          data: "Approval"
-        },
-        {
-          targets: 3,
-          data: "Branch"
-        },
-        {
-          targets: 4,
-          data: "Category"
-        },
-        {
-          targets: 5,
-          data: "Document"
-        },
-        {
-          targets: 6,
-          data: "Notes"
-        },
-        {
-          targets: 7,
-          data: "Expiry"
-        },
-        {
-          targets: 8,
-          data: "Image",
-          render: (data, type, row, meta) => {
-            return `<a href='{{ route('employee.index') }}/`+ {{$user->UserID}} +`?corpID={{ $corpID }}'>${data}</a>`;
-          }
-        },
-        {
-          targets: 9,
-          data: "DateArchived"
-        },
-        {
-          targets: 10,
-          render: (data, type, row, meta) => {
-            return `<button class="btn btn-primary fa fa-pencil-alt"> </button>`
-          }
+      {
+        targets: 1,
+        data: "Series",
+      },
+      {
+        targets: 2,
+        data: "Approval"
+      },
+      {
+        targets: 3,
+        data: "Branch"
+      },
+      {
+        targets: 4,
+        data: "Category"
+      },
+      {
+        targets: 5,
+        data: "Document"
+      },
+      {
+        targets: 6,
+        data: "Notes"
+      },
+      {
+        targets: 7,
+        data: "Expiry"
+      },
+      {
+        targets: 8,
+        data: "Image",
+        render: (data, type, row, meta) => {
+          return `<a href='{{ route('employee.index') }}/`+ {{$user->UserID}} +`?corpID={{ $corpID }}'>${data}</a>`;
         }
-      ],
-      order: [
-        [0, 'desc']
-      ]
+      },
+      {
+        targets: 9,
+        data: "DateArchived"
+      },
+      {
+        targets: 10,
+        render: (data, type, row, meta) => {
+          return `<button class="btn btn-primary fa fa-pencil-alt"> </button>`
+        }
+      }
+    ],
+    order: [
+      [0, 'desc']
+    ]
   });
+
+  $('body').on('change', '.document-filter', (event) => {
+
+  });
+
 
   $('#table-position-deliveries').DataTable({
 

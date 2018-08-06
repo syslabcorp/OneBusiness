@@ -210,6 +210,13 @@ class EmployeesController extends Controller {
                                     ->where('isApproved', 0)
                                     ->where('isDeleted', 0)
                                     ->first();
+    $hcategoryModel = new \App\HCategory;
+    $hcategoryModel->setConnection($company->database_name);
+    $categories = $hcategoryModel->orderBy('description')->get();
+
+    $hSubcategoryModel = new \App\HSubcategory;
+    $hSubcategoryModel->setConnection($company->database_name);
+    $subCategories = $hSubcategoryModel->orderBy('description')->get();
 
     return view('employees/show', [
         'corpID' => $request->corpID,
@@ -219,7 +226,9 @@ class EmployeesController extends Controller {
         'tardinessItems' => $tardinessItems,
         'template' => $template,
         'templates' => $templates,
-        'recommendItem' => $recommendItem
+        'recommendItem' => $recommendItem,
+        'categories' => $categories,
+        'subCategories' => $subCategories
     ]);
   }
 
@@ -228,20 +237,15 @@ class EmployeesController extends Controller {
         $company = Corporation::findOrFail($request->corpID);
         $user = User::find($id);
 
-        $user->update($request->only([
-            'Address', 'TIN', 'Sex', 'Bday', 'SSS'
-        ]));
+        $userParams = $request->only([
+            'Address', 'TIN', 'Sex', 'Bday', 'SSS', 'PHIC', 'Pagibig', 'acct_no',
+            'SuffixName', 'FirstName', 'MidName', 'LastName'
+        ]);
+
+        $user->update($userParams);
 
         return redirect(route('employee.show', [$user, 'corpID' => $request->corpID]));
     }
-
-  private function empParams()
-  {
-      $params = request()->only(['FIrstName', 'MiddleName', 'LastName', 'SuffixName', 'Address', 'Position', 'TIN']);
-      $params['main'] = $params['main'] ?: 0;
-
-      return $params;
-  }
 
   public function deliveryPositions(Request $request, $id)
   {

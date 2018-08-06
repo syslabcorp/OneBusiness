@@ -20,8 +20,8 @@ class EmpTransformer extends Fractal\TransformerAbstract
     public function transform(User $item) {
       $empHist = $item->empHistories($this->database_name);
 
-        $activeColumn =  $item->Active ? 'Active' : 'Inactive';
-      $branch = "";
+        $activeColumn =  0;
+      $branchName = "";
       $datehired = "";
       $base_rate = 0;
       $code = "";
@@ -30,33 +30,20 @@ class EmpTransformer extends Fractal\TransformerAbstract
       $expItems = [];
       $deductItems = [];
 
-        if ($item->SQ_Branch) {
-            $activeColumn = $item->SQ_Active ? 'All' : 'Inactive';
+        $branches = Branch::whereIn('Branch', [$item->Branch, $item->SQ_Branch])->get();
+
+        foreach ($branches as $branch) {
+            if ($item->Active == 1 && $item->Branch == $branch->Branch || $item->SQ_Active == 1 && $item->SQ_Branch == $branch->Branch) {
+                $activeColumn = 1;
+                $branchName = $branch->ShortName;
+                break;
+            }
         }
 
-      $branchs_list = Branch::where('Branch', $item->Branch)->orWhere('Branch', $item->SQ_Branch)->get();
-      if ($branchs_list->first())
-      {
-        $branch = $branchs_list->first()->ShortName;
-      }
+      $branchName = $item->level_id > 9 ? 'NON-BRANCH' : $branchName;
 
-      $branch = $item->level_id > 9 ? 'NON-BRANCH' : $branch;
-
-      // dd(Branch::where('Branch', $item->Branch)->orWhere('Branch', $item->SQ_Branch)->get());
       if ($empHist->first())
       {
-        // $datehired = $empHist->first()->StartDate ? $empHist->first()->StartDate->format('d/m/Y') : "";
-        // if ($empHist->pluck('Branch')->first())
-        // {
-        //   // $branch = Branch::whereIn('Branch', $empHist->pluck('Branch'))->toSql();
-
-        //   $branchs = Branch::whereIn('Branch', $empHist->pluck('Branch'))->pluck('ShortName')->toArray();
-        //   if(sizeof($branchs) > 0)
-        //   {
-        //     $branch = implode( ' ', $branchs);
-        //   }
-        // }
-
         $template = DB::connection($this->database_name)
             ->table('py_emp_rate')->join('py_emp_hist', 'py_emp_hist.txn_id', '=', 'py_emp_rate.txn_id')
             ->join('wage_tmpl8_mstr', 'py_emp_rate.wage_tmpl8_id', '=', 'wage_tmpl8_mstr.wage_tmpl8_id')
@@ -96,7 +83,7 @@ class EmpTransformer extends Fractal\TransformerAbstract
           'BDay' => $item->Bday ? $item->Bday->format('d/m/Y') : "",
           'Age' => $item->Bday ? date_diff($item->Bday, date_create(date("Y-m-d")))->format('%y') : "",
           'Sex' => $item->Sex == "Male" ? 'M' : 'F',
-          'Branch' => $branch,
+          'Branch' => $branchName,
           'Department' => $department,
           'Position' => $item->Position,
           'DateHired' => $item->Hired ? (new \DateTime($item->Hired))->format('d/m/Y') : '',

@@ -12,7 +12,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="FirstName" id="" class="form-control disabled" value="{{$user->FirstName}}" disabled>
+              <input type="text" name="FirstName" class="form-control disabled" value="{{$user->FirstName}}" disabled>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -24,7 +24,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="MiddleName" id="" class="form-control disabled" value="{{$user->MiddleName}}" disabled>
+              <input type="text" name="MidName" class="form-control disabled" value="{{$user->MidName}}" disabled>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -36,7 +36,7 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="LastName" id="" class="form-control disabled" value="{{$user->LastName}}" disabled>
+              <input type="text" name="LastName" class="form-control disabled" value="{{$user->LastName}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
@@ -44,20 +44,11 @@
               </label>
             </div>
             <div class="col-md-2">
-              <select type="text" name="SuffixName" id="" class="form-control disabled" disabled>
+              <select type="text" name="SuffixName" class="form-control disabled" disabled>
                 <option value=""></option>
-                <option value="JR">JR</option>
-                <option value="SR">SR</option>
-                <option value="I">I</option>
-                <option value="II">II</option>
-                <option value="III">III</option>
-                <option value="IV">IV</option>
-                <option value="V">V</option>
-                <option value="VI">VI</option>
-                <option value="VII">VII</option>
-                <option value="VIII">VIII</option>
-                <option value="IX">IX</option>
-                <option value="X">X</option>
+                @foreach (['JR', 'SR', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'] as $value)
+                  <option value="{{ $value }}" {{ $user->SuffixName == $value ? 'selected' : '' }}>{{ $value }}</option>
+                @endforeach
               </select>
             </div>
           </div>
@@ -98,8 +89,8 @@
             </div>
             <div class="col-md-4">
               <select name="Sex" class="form-control disabled" disabled>
-                <option value="Male" {{$user->sex == 'Male' ? checked: ""}} >Male</option>
-                <option value="Female" {{$user->sex == 'Female' ? checked: ""}}>Female</option>
+                <option value="Male" {{ $user->Sex == 'Male' ? 'selected' : "" }} >Male</option>
+                <option value="Female" {{ $user->Sex == 'Female' ? 'selected' : ""}}>Female</option>
               </select>
             </div>
             <div class="col-md-2">
@@ -119,7 +110,7 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="Bday" id="" class="form-control disabled" value="{{$user->Bday ? $user->Bday->format('d/m/Y') : ""}}" disabled>
+              <input type="date" name="Bday" class="form-control disabled" value="{{ $user->Bday ? $user->Bday->format('Y-m-d') : ""}}" disabled>
             </div>
             <div class="col-md-2">
               <label for="" class="label-control">
