@@ -27,7 +27,7 @@ class User extends Authenticatable
         'UserName', 'uname','email', 'passwrd', 'mobile_no', 'pswd_auth', 'otp_auth', 'bio_auth',
         'otp_generate_time', 'otp', 'Bday', 'Address', 'Position', 'TIN', 'Sex',
         'Bday', 'SSS', 'PHIC', 'Pagibig', 'acct_no', 'SuffixName', 'FirstName',
-        'MidName', 'LastName'
+        'MidName', 'LastName', 'updated_at'
     ];
 
     /**

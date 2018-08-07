@@ -29,6 +29,7 @@
 
       <div class="table-responsive">
         @if(request()->from_date && request()->to_date && $tab == 'tardiness')
+        <h3 class="print">Name: <strong>{{ $user->UserName }}</strong></h3>
         <table class="table table-striped table-bordered tardiness-datatable" cellspacing="0" width="100%">
           <tbody>
             @foreach($tardinessItems as $periodItems)

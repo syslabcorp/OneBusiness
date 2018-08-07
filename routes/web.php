@@ -17,10 +17,12 @@ return view('welcome');
 //Employee
 
 Route::get('employee/delivery-items', 'EmployeesController@deliveryItems', ['middleware' => 'auth'])->name('employee.deliveryItems');
+Route::get('employee/io-pdf', 'EmployeesController@ioPDF', ['middleware' => 'auth'])->name('employee.ioPDF');
 Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);
 Route::get('employee/{id}/delivery-documents', 'EmployeesController@deliveryDocuments', ['middleware' => 'auth'])->name('employee.deliveryDocuments');
 Route::get('employee/{id}/delivery-positions', 'EmployeesController@deliveryPositions', ['middleware' => 'auth'])->name('employee.deliveryPositions');
 Route::get('employee/{id}/delivery-wages', 'EmployeesController@deliveryWages', ['middleware' => 'auth'])->name('employee.deliveryWages');
+Route::get('employee/{id}/document-modal', 'EmployeesController@documentModal', ['middleware' => 'auth'])->name('employee.documentModal');
 Route::post('employee/{id}/recommendation', 'EmployeesController@recommendation', ['middleware' => 'auth'])->name('employee.recommendation');
 Route::delete('employee/{id}/recommendation', 'EmployeesController@deleteRecommendation', ['middleware' => 'auth'])->name('employee.deleteRecommendation');
 

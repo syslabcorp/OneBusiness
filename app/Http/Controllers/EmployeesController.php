@@ -52,7 +52,12 @@ class EmployeesController extends Controller {
     $level = $request->level ? $request->level : "non-branch";
     $order = $request->order ? $request_order : "";
 
-    $items = User::orderBy('UserName', 'ASC')->get();
+    $branchIDs = Branch::where('corp_id', request()->corpID)->pluck('Branch');
+
+    $items = User::orderBy('UserName', 'ASC')
+                ->whereIn('Branch', $branchIDs)
+                ->whereIn('SQ_Branch', $branchIDs, 'OR')
+                ->get();
 
     switch($status) {
         case "1":
@@ -250,7 +255,11 @@ class EmployeesController extends Controller {
             'SuffixName', 'FirstName', 'MidName', 'LastName'
         ]);
 
+        $userParams['updated_at'] = date('Y-m-d H:i:s');
+
         $user->update($userParams);
+
+        \Session::flash('success', "Account information has been updated");
 
         return redirect(route('employee.show', [$user, 'corpID' => $request->corpID]));
     }
@@ -319,5 +328,59 @@ class EmployeesController extends Controller {
         $recommendItem->update(['isDeleted' => 1]);
 
         return redirect(route('employee.show', [$id, 'corpID' => request()->corpID, 'tab' => 'wage']));
+    }
+
+    /**
+     * get modal template of document for Edit or Add
+     * @return Template
+     */
+    public function documentModal($id)
+    {
+        $user = User::find($id);
+
+        return view('employees.document-modal', [
+            'user' => $user,
+            'corpID' => request()->corpID
+        ]);
+    }
+
+    /**
+     * Render PDF for I/O
+     */
+    public function ioPDF()
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $branchIDs = Branch::where('corp_id', request()->corpID)->pluck('Branch');
+
+        $users = User::orderBy('UserName', 'ASC')
+                ->whereIn('Branch', $branchIDs)
+                ->whereIn('SQ_Branch', $branchIDs, 'OR')
+                ->get();
+    
+        $empHisModel = new \App\Models\Py\EmpHistory;
+        $empHisModel->setConnection($company->database_name);
+
+        foreach ($users as &$user) {
+            $empHisItem = $empHisModel->where('EmpID', $user->UserID)
+                                       ->orderBy('StartDate', 'DESC')
+                                       ->first();
+
+            $user->StartDate = $empHisItem ? ($empHisItem->StartDate ? $empHisItem->StartDate->format('d-M-Y') : '') : '';
+
+            $template = $empHisModel->where('EmpID', $user->UserID)
+                            ->join('py_emp_rate', 'py_emp_hist.txn_id', '=', 'py_emp_rate.txn_id')
+                            ->join('wage_tmpl8_mstr', 'wage_tmpl8_mstr.wage_tmpl8_id', '=', 'py_emp_rate.wage_tmpl8_id')
+                            ->first();
+            $user->template = $template ? $template['position'] : '';
+        }
+
+        $users = $users->groupBy(function($user, $key) {
+                    return $user->Branch ?: $user->SQ_Branch;
+                });
+        
+
+        $pdf = \PDF::loadView('employees.io-pdf', ['users' => $users]);
+        return $pdf->stream();
     }
 }

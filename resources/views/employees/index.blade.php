@@ -142,15 +142,12 @@ $(document).ready(function() {
       $('.lvl').append('<div class="row"><label class="filterLabel1"> Level</label></div><div class="row"><label class="filterLabel1"><input value="non-branch" type="radio" name="level">Non-branch</label><label class="filterLabel1"><input type="radio" value="branch" name="level">Branch</label><label class="filterLabel1"><input type="radio" value="all" name="level">All</label></div>')
       $(".lvl input[name=level][value='{{ $level }}']").prop("checked",true);
       $('.sort').append('<div class="row"><a data-toggle="modal" data-target="#myModal"> Sort Order</a></div><div class="row current_sort">Branch > Position > Department</div>')
-      $('.o-i').append('<button class="btn btn-primary pull-right">I/O</button>')
+      $('.o-i').append('<a href="{{ route('employee.ioPDF', ['corpID' => $corpID]) }}" target="_blank" class="btn btn-primary pull-right">I/O</a>')
       $(".branch-filter select").append("<option class='first-option' value=''></option>")
       @foreach($branches as $branch)
         $(".branch-filter select").append("<option class='value-option' value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
-
-
       },
-
       ajax: '{{ route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => $branchSelect, 'branch' => $branch, 'status' => $status, 'level'=>$level]) }}',
       "fnDrawCallback": () => {
         $('.clone').remove();
@@ -272,7 +269,6 @@ $(document).ready(function() {
       url = url.replace('targetStatus', status).replace('targetBranchSelect', branchSelect)
                 .replace('targetBranch', branch).replace('targetLevel', level)
       table.ajax.url( url ).load(() => {
-        change_current_sort()
       })
     }
 

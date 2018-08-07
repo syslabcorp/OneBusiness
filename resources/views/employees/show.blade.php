@@ -3,9 +3,15 @@
 @section('header_styles')
   <link href="{{ asset('css/my.css') }}" rel="stylesheet" type="text/css"/>
   <style>
+    .print {
+      display: none;
+    }
     @media print {
       * {
         font-size: 13px !important;
+      }
+      .print {
+        display: block !important;
       }
       form, ul, .panel-heading, .panel-footer, .dataTables_info {
         display: none;
@@ -25,11 +31,6 @@
 @section('content')
 
     <div id="page-content-togle-sidebar-sec">
-  @if(Session::has('success'))
-    <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('success') !!}</em></div>
-  @elseif(Session::has('error'))
-    <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
-  @endif
   <div class="col-md-12">
     <div class="row">
       <div class="panel panel-default">
@@ -79,7 +80,7 @@
         <div class="panel-footer">
           <div class="rown">
             <div class="col-xs-6">
-              <a href="{{ URL::previous() }}" class="btn btn-default">Back</a>
+              <a href="{{ route('employee.index', ['corpID' => $corpID]) }}" class="btn btn-default">Back</a>
             </div>
             <div class="col-xs-6 text-right">
               <a class="btn btn-primary" id="save_employee" style="display: none;">Save</a>
@@ -205,7 +206,7 @@ $(document).ready(function() {
       {
         targets: 10,
         render: (data, type, row, meta) => {
-          return `<button class="btn btn-primary fa fa-pencil-alt"> </button>`
+          return '<button onclick="getDocumentModal(' + row.txn_id +')" class="btn btn-primary fa fa-pencil-alt"> </button>'
         }
       }
     ],
@@ -431,6 +432,18 @@ function onEditRow(param){
           self.parents('tr').remove()
         }
       })
+    })
+  }
+
+  getDocumentModal = (id) => {
+    $.ajax({
+      url : '{{ route('employee.documentModal', ['corpID' => $corpID]) }}',
+      type : 'GET',
+      success: (res) => {
+        $('#modal-document').remove()
+        $('body').append(res)
+        $('#modal-document').modal('show')
+      }
     })
   }
 
