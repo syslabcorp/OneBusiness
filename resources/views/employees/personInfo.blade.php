@@ -162,7 +162,7 @@
             </div>
           </div>
 
-          <div class="row" style="border: 1px solid #ddd; margin: 1px;  min-height: 250px; border-radius: 5px;">
+          <div class="row" style="justify-content: center;align-items: center; border: 1px solid #ddd; margin: 1px;  min-height: 250px; border-radius: 5px; overflow: hidden; display: flex;">
             <div class="image">
               <div id="loader">
 

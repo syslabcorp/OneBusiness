@@ -16,6 +16,7 @@ return view('welcome');
 })->name('root');
 //Employee
 
+Route::get('/image', 'ImageController@getImage', ['middleware' => 'auth'])->name('image');
 Route::get('employee/delivery-items', 'EmployeesController@deliveryItems', ['middleware' => 'auth'])->name('employee.deliveryItems');
 Route::get('employee/io-pdf', 'EmployeesController@ioPDF', ['middleware' => 'auth'])->name('employee.ioPDF');
 Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);

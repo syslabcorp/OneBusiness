@@ -233,6 +233,13 @@ class EmployeesController extends Controller {
     $hSubcategoryModel->setConnection($company->database_name);
     $subCategories = $hSubcategoryModel->orderBy('description')->get();
 
+    $docModel = new \App\HDocs;
+    $docModel->setConnection($company->database_name);
+    $docItem = $docModel->where('emp_id', $user->UserID)
+                        ->where('doc_no', 1)->where('subcat_id', 1)->first();
+
+    $filename = $docItem ? $docItem->img_file : '';
+
     return view('employees/show', [
         'corpID' => $request->corpID,
         'tab' => $tab,
@@ -243,7 +250,8 @@ class EmployeesController extends Controller {
         'templates' => $templates,
         'recommendItem' => $recommendItem,
         'categories' => $categories,
-        'subCategories' => $subCategories
+        'subCategories' => $subCategories,
+        'filename' => $filename
     ]);
   }
 

@@ -456,6 +456,22 @@ function onEditRow(param){
     })
   }
 
+  $.ajax({
+    url: "{!! route('image', ['corpID' => $corpID, 'filename' => $filename]) !!}",
+    type: 'GET',
+    contentType: "image/jpeg",
+    dataType: "text",
+    success: (res) => {
+      $('.image #loader').remove()
+      $('.image').append('<img style="width: 100%; height: 100%;" />')
+      $('.image img').attr('src', '{!! route('image', ['corpID' => $corpID, 'filename' => $filename]) !!}')
+    },
+    error: () => {
+      $('.image').append('<h3 class="text-center">No image stored</h3>')
+      $('.image #loader').remove()
+    }
+  })
+
 </script>
 
 <script>
