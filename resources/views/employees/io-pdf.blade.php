@@ -44,8 +44,8 @@
                     {{ $user->UserName }}
                   </div>
                 </td>
-                <td>{{ $user->StartDate }}</td>
                 <td>{{ $user->template }}</td>
+                <td>{{ $user->StartDate }}</td>
               </tr>
             @endforeach
           @endforeach

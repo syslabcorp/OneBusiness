@@ -16,6 +16,9 @@
       form, ul, .panel-heading, .panel-footer, .dataTables_info {
         display: none;
       }
+      #togle-sidebar-sec {
+        margin-top: 0px;
+      }
       .panel, .panel-body, .table-bordered {
         border: none;
         padding: 0px;
@@ -114,6 +117,9 @@ $(document).ready(function() {
     ],
     rowsGroup: [
       'period:name'
+    ],
+    order: [
+      [0, 'desc']
     ]
   });
 
@@ -134,6 +140,9 @@ $(document).ready(function() {
     ],
     rowsGroup: [
       'period:name'
+    ],
+    order: [
+      [0, 'desc']
     ]
   });
 

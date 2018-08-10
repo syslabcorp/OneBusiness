@@ -167,6 +167,7 @@ class EmployeesController extends Controller {
                           ->where('Adj_Amt', '!=', '0')
                           ->whereDate($shiftDateField, '>=', request()->from_date)
                           ->whereDate($shiftDateField, '<=', request()->to_date)
+                          ->orderBy('ShiftDate', 'DESC')
                           ->get();
 
         $shortageItems = $shortageItems->map(function($shift) {
@@ -187,6 +188,7 @@ class EmployeesController extends Controller {
                           ->whereDate('TimeIn', '>=', request()->from_date)
                           ->whereDate('TimeIn', '<=', request()->to_date)
                           ->where('UserId', '=', $id)
+                          ->orderBy('TimeIn', 'DESC')
                           ->get();
 
         $tardinessItems = $tardinessItems->map(function($shift) {
