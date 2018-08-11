@@ -1,4 +1,4 @@
-<div class="tab-pane fade {{ $tab == 'stock' ? 'active in' : '' }}" id="document" >
+<div class="tab-pane fade {{ $tab == 'doc' ? 'active in' : '' }}" id="document" >
   @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V'))
   <div class="rown">
     <div class="table-responsive">

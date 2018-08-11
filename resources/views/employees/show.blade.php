@@ -42,6 +42,9 @@
             <div class="col-xs-9">
               <h4>{{ $user->UserName }}</h4>
             </div>
+            <div class="col-xs-3 text-right" style="padding-top: 10px;">
+              <a href="#" onclick="getDocumentModal('')" class="addDocument" style="{{ $tab != 'doc' ? 'display: none;' : '' }}">Add Document</a>
+            </div>
           </div>
         </div>
         <div class="panel-body">
@@ -52,7 +55,7 @@
                   <li class="{{ $tab == 'auto' ? 'active' : '' }}">
                     <a href="#personInfo" data-toggle="tab">Personal Information</a>
                   </li>
-                  <li class="{{ $tab == 'stock' ? 'active' : '' }}">
+                  <li class="{{ $tab == 'doc' ? 'active' : '' }}">
                     <a href="#document" data-toggle="tab">Document</a>
                   </li>
                   <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
@@ -446,7 +449,7 @@ function onEditRow(param){
 
   getDocumentModal = (id) => {
     $.ajax({
-      url : '{{ route('employee.documentModal', ['corpID' => $corpID]) }}',
+      url : '{{ route('employee.documentModal', [$user->UserID, 'corpID' => $corpID]) }}',
       type : 'GET',
       success: (res) => {
         $('#modal-document').remove()
@@ -455,6 +458,14 @@ function onEditRow(param){
       }
     })
   }
+
+  $('.nav li a').click((event) => {
+    if ($(event.target).attr('href') != '#document') {
+      $('.addDocument').css('display', 'none');
+    } else {
+      $('.addDocument').css('display', 'block');
+    }
+  })
 
   $.ajax({
     url: "{!! route('image', ['corpID' => $corpID, 'filename' => $filename]) !!}",

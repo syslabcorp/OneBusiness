@@ -346,11 +346,32 @@ class EmployeesController extends Controller {
      */
     public function documentModal($id)
     {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $branches = $company->branches()
+                        ->where('Active', '=', '1')
+                        ->orderBy('ShortName', 'ASC')
+                        ->get();
+
+        $hcategoryModel = new \App\HCategory;
+        $hcategoryModel->setConnection($company->database_name);
+        $categories = $hcategoryModel->orderBy('description')->get();
+    
+        $hSubcategoryModel = new \App\HSubcategory;
+        $hSubcategoryModel->setConnection($company->database_name);
+        $subCategories = $hSubcategoryModel->orderBy('description')->get();
+
         $user = User::find($id);
+
+        $docModel = new \App\HDocs;
+        $docModel->setConnection($company->database_name);
 
         return view('employees.document-modal', [
             'user' => $user,
-            'corpID' => request()->corpID
+            'corpID' => request()->corpID,
+            'branches' => $branches,
+            'categories' => $categories,
+            'subCategories' => $subCategories
         ]);
     }
 
@@ -392,5 +413,26 @@ class EmployeesController extends Controller {
 
         $pdf = \PDF::loadView('employees.io-pdf', ['users' => $users]);
         return $pdf->stream();
+    }
+
+
+    public function storeDocument($id)
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $docModel = new \App\HDocs;
+        $docModel->setConnection($company->database_name);
+
+        $latestDoc = $docModel->where('emp_id', $id)->orderBy('series_no', 'DESC')->first();
+
+        $docParams = request()->only(['branch', 'img_file', 'notes', 'doc_exp', 'subcat_id', 'doc_no']);
+        $docParams['emp_id'] = $id;
+        $docParams['series_no'] = $latestDoc ? $latestDoc->series_no + 1 : 1;
+        $docParams['doc_exp'] = $docParams['doc_exp'] ?: '0000-00-00';
+        $docParams['doc_date'] = date('Y-m-d');
+
+        $docModel->create($docParams);
+        
+        return redirect(route('employee.show', [$id, 'corpID' => request()->corpID, 'tab' => 'doc']));
     }
 }

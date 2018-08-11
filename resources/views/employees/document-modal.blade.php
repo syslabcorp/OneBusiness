@@ -1,7 +1,7 @@
 <div class="modal fade" id="modal-document">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form action="{{ route('employee.recommendation', $user) }}" method="POST">
+      <form action="{{ route('employee.storeDocument', $user) }}" method="POST">
         {{ csrf_field() }}
         <input type="hidden" name="corpID" value="{{ $corpID }}">
         <div class="modal-header">
@@ -17,7 +17,12 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <input type="text" class="form-control" >
+                <select name="doc_no" required>
+                  <option value="">--Select--</option>
+                  @foreach($categories as $cat)
+                    <option value="{{ $cat->doc_no }}">{{ $cat->description }}</option>
+                  @endforeach
+                </select>
               </div>
             </div>
           </div>
@@ -29,7 +34,12 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <input type="text" class="form-control" >
+                <select name="subcat_id" required>
+                  <option value="">--Select--</option>
+                  @foreach($subCategories as $subcat)
+                    <option value="{{ $subcat->subcat_id }}">{{ $subcat->description }}</option>
+                  @endforeach
+                </select>
               </div>
             </div>
           </div>
@@ -41,8 +51,7 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <select name="to_wage" class="form-control">
-                </select>
+                <input type="date" class="form-control" name="doc_exp">
               </div>
             </div>
           </div>
@@ -54,7 +63,7 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <textarea name="" rows="3" class="form-control"></textarea>
+                <textarea name="notes" rows="3" class="form-control"></textarea>
               </div>
             </div>
           </div>
@@ -63,8 +72,15 @@
               <label>Image Filename:</label>
             </div>
             <div class="col-sm-8">
-              <div class="form-group">
-                <input type="date" class="form-control" name="effective_date" required>
+              <div class="rown">
+                <div class="col-xs-9">
+                <div class="form-group">
+                  <input readonly="true" class="form-control" name="img_file" required>
+                </div>
+                </div>
+                <div class="col-xs-3">
+                  <i class="fas fa-upload"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -76,7 +92,11 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <select name="to_wage" class="form-control">
+                <select name="branch" class="form-control" required>
+                  <option value="">--Select--</option>
+                  @foreach($branches as $branch)
+                  <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                  @endforeach
                 </select>
               </div>
             </div>

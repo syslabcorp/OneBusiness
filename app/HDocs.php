@@ -11,7 +11,8 @@ class HDocs extends Model
   protected $primaryKey = "txt_no";
 
   protected $fillable = [
-    'description', 'series'
+    'description', 'series_no', 'branch', 'img_file', 'notes', 'doc_exp',
+    'subcat_id', 'doc_no', 'emp_id', 'doc_date'
   ];
 
   public function user() {
