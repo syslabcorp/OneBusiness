@@ -449,15 +449,28 @@ function onEditRow(param){
 
   getDocumentModal = (id) => {
     $.ajax({
-      url : '{{ route('employee.documentModal', [$user->UserID, 'corpID' => $corpID]) }}',
+      url : '{{ route('employee.documentModal', [$user->UserID, 'corpID' => $corpID]) }}&txn_no=' + id,
       type : 'GET',
       success: (res) => {
         $('#modal-document').remove()
         $('body').append(res)
         $('#modal-document').modal('show')
+        updateDocumentModalSubcategory()
       }
     })
   }
+
+  $('body').on('change', '#modal-document select[name="doc_no"]', (event) => {
+    $('#modal-document select[name="subcat_id"]').val('')
+    updateDocumentModalSubcategory()
+  })
+
+  updateDocumentModalSubcategory = () => {
+    $('#modal-document select[name="subcat_id"] option[value!=""]').css('display', 'none')
+    $('#modal-document select[name="subcat_id"] option[doc-no="' + $('#modal-document select[name="doc_no"]').val() + '"]').css('display', 'block')
+  }
+
+  
 
   $('.nav li a').click((event) => {
     if ($(event.target).attr('href') != '#document') {

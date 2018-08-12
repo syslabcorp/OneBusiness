@@ -1,9 +1,13 @@
 <div class="modal fade" id="modal-document">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form action="{{ route('employee.storeDocument', $user) }}" method="POST">
+      <form action="{{ route('employee.storeDocument', $user) }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         <input type="hidden" name="corpID" value="{{ $corpID }}">
+        @if ($docItem->txn_no)
+          <input type="hidden" name="txn_no" value="{{ $docItem->txn_no }}">
+          <input type="hidden" name="_method" value="PUT">
+        @endif
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title"></h4>
@@ -20,7 +24,8 @@
                 <select name="doc_no" required>
                   <option value="">--Select--</option>
                   @foreach($categories as $cat)
-                    <option value="{{ $cat->doc_no }}">{{ $cat->description }}</option>
+                    <option {{ $docItem->doc_no == $cat->doc_no ? 'selected' : '' }} 
+                      value="{{ $cat->doc_no }}">{{ $cat->description }}</option>
                   @endforeach
                 </select>
               </div>
@@ -37,7 +42,8 @@
                 <select name="subcat_id" required>
                   <option value="">--Select--</option>
                   @foreach($subCategories as $subcat)
-                    <option value="{{ $subcat->subcat_id }}">{{ $subcat->description }}</option>
+                    <option doc-no="{{ $subcat->doc_no }}" {{ $docItem->subcat_id == $subcat->subcat_id ? 'selected' : '' }} 
+                      value="{{ $subcat->subcat_id }}">{{ $subcat->description }}</option>
                   @endforeach
                 </select>
               </div>
@@ -51,7 +57,7 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <input type="date" class="form-control" name="doc_exp">
+                <input type="date" class="form-control" name="doc_exp" value="{{ $docItem->doc_exp }}">
               </div>
             </div>
           </div>
@@ -63,7 +69,7 @@
             </div>
             <div class="col-sm-8">
               <div class="form-group">
-                <textarea name="notes" rows="3" class="form-control"></textarea>
+                <textarea name="notes" rows="3" class="form-control">{{ $docItem->notes }}</textarea>
               </div>
             </div>
           </div>
@@ -72,15 +78,8 @@
               <label>Image Filename:</label>
             </div>
             <div class="col-sm-8">
-              <div class="rown">
-                <div class="col-xs-9">
-                <div class="form-group">
-                  <input readonly="true" class="form-control" name="img_file" required>
-                </div>
-                </div>
-                <div class="col-xs-3">
-                  <i class="fas fa-upload"></i>
-                </div>
+              <div class="form-group">
+                <input type="file" class="form-control" name="photo" {{ !$docItem->img_file ? 'required' : '' }}>
               </div>
             </div>
           </div>
@@ -95,7 +94,8 @@
                 <select name="branch" class="form-control" required>
                   <option value="">--Select--</option>
                   @foreach($branches as $branch)
-                  <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                  <option {{ $docItem->txn_no && $docItem->branch == $branch->Branch ? 'selected' : '' }} 
+                    value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                   @endforeach
                 </select>
               </div>
@@ -105,10 +105,10 @@
         <div class="modal-footer">
           <div class="row">
             <div class="pull-left">
-              <button type="button" class="btn btn-default" data-dismiss="modal"> Back</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
             </div>
             <div class="pull-right">
-              <button type="submit" class="btn btn-primary btn-create">Create</button>
+              <button type="submit" class="btn btn-primary btn-create">{{ $docItem->txn_no ? 'Save' : 'Create' }}</button>
             </div>
           </div>
         </div>

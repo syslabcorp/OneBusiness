@@ -8,7 +8,7 @@ class HDocs extends Model
 {
   public $timestamps = false;
   protected $table = "h_docs";
-  protected $primaryKey = "txt_no";
+  protected $primaryKey = "txn_no";
 
   protected $fillable = [
     'description', 'series_no', 'branch', 'img_file', 'notes', 'doc_exp',
@@ -27,8 +27,14 @@ class HDocs extends Model
     return $this->belongsTo(\App\HSubcategory::class, 'subcat_id', 'subcat_id');
   }
 
-    public function branch()
-    {
-        return $this->belongsTo(\App\Branch::class, 'branch' , 'Branch');
-    }
+  public function branch()
+  {
+      return $this->belongsTo(\App\Branch::class, 'branch' , 'Branch');
+  }
+
+  public function getBranchIdAttribute($value)
+  {
+    dd($value);
+      return ucfirst($value);
+  }
 }

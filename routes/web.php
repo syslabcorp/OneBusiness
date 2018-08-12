@@ -20,6 +20,7 @@ Route::get('/image', 'ImageController@getImage', ['middleware' => 'auth'])->name
 Route::get('employee/delivery-items', 'EmployeesController@deliveryItems', ['middleware' => 'auth'])->name('employee.deliveryItems');
 Route::get('employee/io-pdf', 'EmployeesController@ioPDF', ['middleware' => 'auth'])->name('employee.ioPDF');
 Route::resource('employee', 'EmployeesController', ['middleware' => 'auth']);
+Route::put('employee/{id}/documents', 'EmployeesController@updateDocument', ['middleware' => 'auth'])->name('employee.updateDocument');
 Route::post('employee/{id}/documents', 'EmployeesController@storeDocument', ['middleware' => 'auth'])->name('employee.storeDocument');
 Route::get('employee/{id}/delivery-documents', 'EmployeesController@deliveryDocuments', ['middleware' => 'auth'])->name('employee.deliveryDocuments');
 Route::get('employee/{id}/delivery-positions', 'EmployeesController@deliveryPositions', ['middleware' => 'auth'])->name('employee.deliveryPositions');

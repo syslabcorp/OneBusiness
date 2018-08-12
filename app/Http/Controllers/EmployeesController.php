@@ -348,6 +348,14 @@ class EmployeesController extends Controller {
     {
         $company = Corporation::findOrFail(request()->corpID);
 
+        $docModel = new \App\HDocs;
+        $docItem = new \App\HDocs;
+        $docModel->setConnection($company->database_name);
+
+        if (request()->txn_no) {
+            $docItem = $docModel->find(request()->txn_no);
+        }
+
         $branches = $company->branches()
                         ->where('Active', '=', '1')
                         ->orderBy('ShortName', 'ASC')
@@ -371,7 +379,8 @@ class EmployeesController extends Controller {
             'corpID' => request()->corpID,
             'branches' => $branches,
             'categories' => $categories,
-            'subCategories' => $subCategories
+            'subCategories' => $subCategories,
+            'docItem' => $docItem
         ]);
     }
 
@@ -425,13 +434,46 @@ class EmployeesController extends Controller {
 
         $latestDoc = $docModel->where('emp_id', $id)->orderBy('series_no', 'DESC')->first();
 
-        $docParams = request()->only(['branch', 'img_file', 'notes', 'doc_exp', 'subcat_id', 'doc_no']);
+        $docParams = request()->only(['branch', 'notes', 'doc_exp', 'subcat_id', 'doc_no']);
         $docParams['emp_id'] = $id;
         $docParams['series_no'] = $latestDoc ? $latestDoc->series_no + 1 : 1;
         $docParams['doc_exp'] = $docParams['doc_exp'] ?: '0000-00-00';
         $docParams['doc_date'] = date('Y-m-d');
 
+        if (request()->hasFile('photo')) {
+            $fileName = $docParams['doc_no'] .'-' . $docParams['subcat_id'] . '-' . $docParams['series_no'] . '.jpg';
+            $docParams['img_file'] = $fileName;
+
+            move_uploaded_file($_FILES['photo']['tmp_name'], $company->imgfile_path . '/' . $fileName);
+        }
+
         $docModel->create($docParams);
+        
+        return redirect(route('employee.show', [$id, 'corpID' => request()->corpID, 'tab' => 'doc']));
+    }
+
+    public function updateDocument($id)
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $docModel = new \App\HDocs;
+        $docModel->setConnection($company->database_name);
+
+        $docItem = $docModel->find(request()->txn_no);
+
+
+        $docParams = request()->only(['branch', 'notes', 'doc_exp', 'subcat_id', 'doc_no']);
+        $docParams['doc_exp'] = $docParams['doc_exp'] ?: '0000-00-00';
+        $docParams['doc_date'] = date('Y-m-d');
+
+        if (request()->hasFile('photo')) {
+            $fileName = $docParams['doc_no'] .'-' . $docParams['subcat_id'] . '-' . $docItem->series_no . '.jpg';
+            $docParams['img_file'] = $fileName;
+
+            move_uploaded_file($_FILES['photo']['tmp_name'], $company->imgfile_path . '/' . $fileName);
+        }
+
+        $docItem->update($docParams);
         
         return redirect(route('employee.show', [$id, 'corpID' => request()->corpID, 'tab' => 'doc']));
     }
