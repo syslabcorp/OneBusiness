@@ -22,7 +22,6 @@
             <div class="col-sm-8">
               <div class="form-group">
                 <select name="doc_no" required>
-                  <option value="">--Select--</option>
                   @foreach($categories as $cat)
                     <option {{ $docItem->doc_no == $cat->doc_no ? 'selected' : '' }} 
                       value="{{ $cat->doc_no }}">{{ $cat->description }}</option>
@@ -56,8 +55,20 @@
               </div>
             </div>
             <div class="col-sm-8">
-              <div class="form-group">
-                <input type="date" class="form-control" name="doc_exp" value="{{ $docItem->doc_exp }}">
+              <div class="rown">
+                <div class="col-xs-1">
+                  <div class="form-group" style="margin-top: 5px;">
+                    <label>
+                      <input type="checkbox" {{ $docItem->doc_exp && $docItem->doc_exp != '0000-00-00' ? 'checked' : ''}} onchange="toggleExpiry(event)">
+                    </label>
+                  </div>
+                </div>
+                <div class="col-xs-11">
+                  <div class="form-group">
+                    <input {{ $docItem->doc_exp && $docItem->doc_exp != '0000-00-00' ? '' : 'disabled' }} type="date" 
+                      class="form-control" name="doc_exp" value="{{ $docItem->doc_exp }}">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -94,7 +105,7 @@
                 <select name="branch" class="form-control" required>
                   <option value="">--Select--</option>
                   @foreach($branches as $branch)
-                  <option {{ $docItem->txn_no && $docItem->branch == $branch->Branch ? 'selected' : '' }} 
+                  <option {{ $docItem->txn_no && $docItem->branch == $branch->Branch || $branch->isChecked ? 'selected' : '' }} 
                     value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                   @endforeach
                 </select>

@@ -468,6 +468,19 @@ function onEditRow(param){
   updateDocumentModalSubcategory = () => {
     $('#modal-document select[name="subcat_id"] option[value!=""]').css('display', 'none')
     $('#modal-document select[name="subcat_id"] option[doc-no="' + $('#modal-document select[name="doc_no"]').val() + '"]').css('display', 'block')
+
+    if ($('#modal-document select[name="subcat_id"]').val() == '') {
+      $('#modal-document select[name="subcat_id"]').val($('#modal-document select[name="subcat_id"] option[style="display: block;"]:first').val());
+    }
+    
+  }
+
+  toggleExpiry = (event) => {
+    $('#modal-document input[name="doc_exp"]').prop('disabled', true)
+
+    if(event.target.checked) {
+      $('#modal-document input[name="doc_exp"]').prop('disabled', false)
+    }
   }
 
   

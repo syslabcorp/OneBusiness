@@ -31,10 +31,4 @@ class HDocs extends Model
   {
       return $this->belongsTo(\App\Branch::class, 'branch' , 'Branch');
   }
-
-  public function getBranchIdAttribute($value)
-  {
-    dd($value);
-      return ucfirst($value);
-  }
 }

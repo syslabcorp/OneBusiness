@@ -347,6 +347,7 @@ class EmployeesController extends Controller {
     public function documentModal($id)
     {
         $company = Corporation::findOrFail(request()->corpID);
+        $user = User::findOrFail($id);
 
         $docModel = new \App\HDocs;
         $docItem = new \App\HDocs;
@@ -358,8 +359,26 @@ class EmployeesController extends Controller {
 
         $branches = $company->branches()
                         ->where('Active', '=', '1')
+                        ->where('isMain', 1)
                         ->orderBy('ShortName', 'ASC')
                         ->get();
+
+        if ($user->area && $user->area->branch) {
+            $branches = $company->branches()
+                            ->where('Active', '=', '1')
+                            ->whereIn('Branch', explode(',', $user->area->branch))
+                            ->orderBy('ShortName', 'ASC')
+                            ->get();
+        }
+
+        $branches = $branches->map(function($branch) use ($docItem, $user) {
+            if (!$docItem->txn_no) {
+                $branch->isChecked = $branch->Branch == $user->Branch && $user->Active || $branch->Branch == $user->SQ_Branch && $user->SQ_Active;
+            }
+
+            return $branch;
+        });
+
 
         $hcategoryModel = new \App\HCategory;
         $hcategoryModel->setConnection($company->database_name);
@@ -368,8 +387,6 @@ class EmployeesController extends Controller {
         $hSubcategoryModel = new \App\HSubcategory;
         $hSubcategoryModel->setConnection($company->database_name);
         $subCategories = $hSubcategoryModel->orderBy('description')->get();
-
-        $user = User::find($id);
 
         $docModel = new \App\HDocs;
         $docModel->setConnection($company->database_name);
@@ -441,7 +458,7 @@ class EmployeesController extends Controller {
         $docParams['doc_date'] = date('Y-m-d');
 
         if (request()->hasFile('photo')) {
-            $fileName = $docParams['doc_no'] .'-' . $docParams['subcat_id'] . '-' . $docParams['series_no'] . '.jpg';
+            $fileName = str_pad($docParams['doc_no'], 3, '0', STR_PAD_LEFT) .'-' . str_pad($docParams['subcat_id'], 3, '0', STR_PAD_LEFT) . '-' . $docParams['series_no'] . '.jpg';
             $docParams['img_file'] = $fileName;
 
             move_uploaded_file($_FILES['photo']['tmp_name'], $company->imgfile_path . '/' . $fileName);
@@ -467,7 +484,7 @@ class EmployeesController extends Controller {
         $docParams['doc_date'] = date('Y-m-d');
 
         if (request()->hasFile('photo')) {
-            $fileName = $docParams['doc_no'] .'-' . $docParams['subcat_id'] . '-' . $docItem->series_no . '.jpg';
+            $fileName = str_pad($docParams['doc_no'], 3, '0', STR_PAD_LEFT) .'-' . str_pad($docParams['subcat_id'], 3, '0', STR_PAD_LEFT) . '-' . $docItem->series_no . '.jpg';
             $docParams['img_file'] = $fileName;
 
             move_uploaded_file($_FILES['photo']['tmp_name'], $company->imgfile_path . '/' . $fileName);
