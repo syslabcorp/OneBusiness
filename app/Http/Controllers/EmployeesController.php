@@ -27,10 +27,15 @@ class EmployeesController extends Controller {
     $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : 'non-branch';
 
-    $branches = $company->branches()
-                        ->where('Active', '=', '1')
-                        ->orderBy('ShortName', 'ASC')
-                        ->get();
+    $branches = collect([]);
+
+    if (\Auth::user()->area) {
+        $branches = $company->branches()
+                            ->where('Active', '1')
+                            ->whereIn('Branch', explode(',', \Auth::user()->area->branch))
+                            ->orderBy('ShortName', 'ASC')
+                            ->get();
+    }
 
     return view('employees/index', [
       'corpID' => $request->corpID,
@@ -52,7 +57,14 @@ class EmployeesController extends Controller {
     $level = $request->level ? $request->level : "non-branch";
     $order = $request->order ? $request_order : "";
 
-    $branchIDs = Branch::where('corp_id', request()->corpID)->pluck('Branch');
+    $branchIDs = [];
+
+    if (\Auth::user()->area) {
+        $branchIDs = $company->branches()
+                            ->where('Active', '1')
+                            ->whereIn('Branch', explode(',', \Auth::user()->area->branch))
+                            ->pluck('Branch');
+    }
 
     $items = User::orderBy('UserName', 'ASC')
                 ->whereIn('Branch', $branchIDs)
@@ -62,12 +74,12 @@ class EmployeesController extends Controller {
     switch($status) {
         case "1":
             $items = $items->filter(function($item){
-                return ($item->Active == 1) || ($item->SQ_Active == 1) || ($item->TechActive == 1);
+                return ($item->Active == 1) || ($item->SQ_Active == 1);
             });
             break;
         case "2":
             $items = $items->filter(function($item){
-                return ($item->Active == 0) && ($item->SQ_Active == 0) && ($item->TechActive == 0);
+                return ($item->Active == 0) && ($item->SQ_Active == 0);
             });
             break;
         default:
