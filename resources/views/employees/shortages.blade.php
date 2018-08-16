@@ -35,7 +35,7 @@
           <tbody>
             @foreach($shortageItems as $periodItems)
               <tr>
-                <td class="text-center">
+                <td class="text-center" data-order="{{ $periodItems->first()->order }}">
                   {{ $periodItems->first()->period }}
                 </td>
                 <td class="text-center">
@@ -51,7 +51,7 @@
               </tr>
               @foreach($periodItems as $shift)
               <tr>
-                <td class="text-center">
+                <td class="text-center" data-order="{{ $shift->order }}">
                   {{ $shift->period }}
                 </td>
                 <td class="text-center">

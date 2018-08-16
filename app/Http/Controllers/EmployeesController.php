@@ -173,9 +173,11 @@ class EmployeesController extends Controller {
         $shortageItems = $shortageItems->map(function($shift) {
             $shiftDate = new DateTime($shift->ShiftDate);
             if ($shiftDate->format('d') <= 15 ) {
-              $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+                $shift->order = $shiftDate->format('Y-m-1');
+                $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
             } else {
-              $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+                $shift->order = $shiftDate->format('Y-m-16');
+                $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
             }
 
             return $shift;
@@ -194,9 +196,11 @@ class EmployeesController extends Controller {
         $tardinessItems = $tardinessItems->map(function($shift) {
             $shiftDate = new DateTime($shift->TimeIn);
             if ($shiftDate->format('d') <= 15 ) {
-            $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
+                $shift->order = $shiftDate->format('Y-m-1');
+                $shift->period = $shiftDate->format('m/1/Y') . ' - ' . $shiftDate->format('m/15/Y');
             } else {
-            $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
+                $shift->order = $shiftDate->format('Y-m-16');
+                $shift->period = $shiftDate->format('m/16/Y') . ' - ' . $shiftDate->format('m/t/Y');
             }
 
             return $shift;
@@ -363,7 +367,7 @@ class EmployeesController extends Controller {
                         ->orderBy('ShortName', 'ASC')
                         ->get();
 
-        if ($user->area && $user->area->branch) {
+        if ($user->level_id <= 9 && $user->area) {
             $branches = $company->branches()
                             ->where('Active', '=', '1')
                             ->whereIn('Branch', explode(',', $user->area->branch))
@@ -449,7 +453,10 @@ class EmployeesController extends Controller {
         $docModel = new \App\HDocs;
         $docModel->setConnection($company->database_name);
 
-        $latestDoc = $docModel->where('emp_id', $id)->orderBy('series_no', 'DESC')->first();
+        $latestDoc = $docModel->where('emp_id', $id)
+                              ->where('doc_no', request()->doc_no)
+                              ->orderBy('series_no', 'DESC')
+                              ->first();
 
         $docParams = request()->only(['branch', 'notes', 'doc_exp', 'subcat_id', 'doc_no']);
         $docParams['emp_id'] = $id;

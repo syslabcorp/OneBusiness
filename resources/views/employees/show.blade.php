@@ -208,7 +208,7 @@ $(document).ready(function() {
         targets: 8,
         data: "Image",
         render: (data, type, row, meta) => {
-          return `<a href='{{ route('employee.index') }}/`+ {{$user->UserID}} +`?corpID={{ $corpID }}'>${data}</a>`;
+          return '<a href="{!! route('image', ['corpID' => $corpID]) !!}&filename=' + data + '" target="_blank">' + data + '</a>'
         }
       },
       {
