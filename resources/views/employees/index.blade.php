@@ -142,7 +142,7 @@ $(document).ready(function() {
       $('.lvl').append('<div class="row"><label class="filterLabel1"> Level</label></div><div class="row"><label class="filterLabel1"><input value="non-branch" type="radio" name="level">Non-branch</label><label class="filterLabel1"><input type="radio" value="branch" name="level">Branch</label><label class="filterLabel1"><input type="radio" value="all" name="level">All</label></div>')
       $(".lvl input[name=level][value='{{ $level }}']").prop("checked",true);
       $('.sort').append('<div class="row"><a data-toggle="modal" data-target="#myModal"> Sort Order</a></div><div class="row current_sort">Branch > Position > Department</div>')
-      $('.o-i').append('<a href="{{ route('employee.ioPDF', ['corpID' => $corpID]) }}" target="_blank" class="btn btn-primary pull-right">I/O</a>')
+      $('.o-i').append('<a href="{{ route('employee.ioPDF', ['corpID' => $corpID, 'status' => 1]) }}" target="_blank" class="btn-io btn btn-primary pull-right">I/O</a>')
       $(".branch-filter select").append("<option class='first-option' value=''></option>")
       @foreach($branches as $branch)
         $(".branch-filter select").append("<option class='value-option' value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
@@ -259,6 +259,13 @@ $(document).ready(function() {
         reloadTable();
       }
     )
+    
+    $('body').on('change', '.empStatus input', (event) => {
+      let href = $('.btn-io').attr('href')
+      href = href.replace(/&status=.*/, '') + '&status=' + event.target.value
+
+      $('.btn-io').attr('href', href)
+    })
 
     function reloadTable(){
       let url = "<?php echo route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => 'targetBranchSelect', 'branch' => 'targetBranch', 'status' => "targetStatus", 'level'=>"targetLevel"]) ?>"

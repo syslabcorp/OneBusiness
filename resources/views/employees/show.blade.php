@@ -337,6 +337,7 @@ $(document).ready(function() {
   $("#edit_employee").click(function(){
     $(this).attr("disabled", true);
     $('.disabled').removeAttr('disabled');
+    $('#employee_form input').prop('disabled', false)
     $('#save_employee').show();
   })
 

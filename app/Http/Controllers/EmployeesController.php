@@ -278,7 +278,7 @@ class EmployeesController extends Controller {
 
         $userParams = $request->only([
             'Address', 'TIN', 'Sex', 'Bday', 'SSS', 'PHIC', 'Pagibig', 'acct_no',
-            'SuffixName', 'FirstName', 'MidName', 'LastName'
+            'SuffixName', 'FirstName', 'MidName', 'LastName', 'split_type'
         ]);
 
         $userParams['updated_at'] = date('Y-m-d H:i:s');
@@ -448,6 +448,21 @@ class EmployeesController extends Controller {
             $user->template = $template ? $template['position'] : '';
         }
 
+        switch(request()->status) {
+            case '1':
+                $users = $users->filter(function($item){
+                    return ($item->Active == 1) || ($item->SQ_Active == 1);
+                });
+                break;
+            case '2':
+                $users = $users->filter(function($item){
+                    return ($item->Active == 0) && ($item->SQ_Active == 0);
+                });
+                break;
+            default:
+                break;
+        }
+
         $users = $users->groupBy(function($user, $key) {
                     return $user->Branch ?: $user->SQ_Branch;
                 });
@@ -465,8 +480,7 @@ class EmployeesController extends Controller {
         $docModel = new \App\HDocs;
         $docModel->setConnection($company->database_name);
 
-        $latestDoc = $docModel->where('emp_id', $id)
-                              ->where('doc_no', request()->doc_no)
+        $latestDoc = $docModel->where('doc_no', request()->doc_no)
                               ->orderBy('series_no', 'DESC')
                               ->first();
 

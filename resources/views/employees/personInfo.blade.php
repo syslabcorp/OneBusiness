@@ -149,14 +149,14 @@
 
           <div class="row form-group" style="border: 1px solid #ddd; margin: 1px; padding: 10px; border-radius: 5px;">
             <div class="col-md-6">
-              <label for="" class="control-label">
-                <input type="radio" name="split_type" id="" {{$user->split_type == "O" ? "checked" : ""}}>
+              <label class="control-label">
+                <input type="radio" name="split_type" value="I" {{$user->split_type == "I" ? "checked" : ""}} disabled>
                 I
               </label>
             </div>
             <div class="col-md-6">
-              <label for="" class="control-label">
-                <input type="radio" name="split_type" {{$user->split_type == "O" ? "checked" : ""}} id="">
+              <label class="control-label">
+                <input type="radio" name="split_type" value="0" {{$user->split_type == "O" ? "checked" : ""}} disabled>
                 O
               </label>
             </div>
