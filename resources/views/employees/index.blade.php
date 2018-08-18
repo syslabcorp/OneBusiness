@@ -341,6 +341,8 @@ $(document).ready(function() {
       
       $('.current_sort').text(new_sort)
 
+      new_sort += ' > Name'
+
       new_sort_array = new_sort.split(" > ").reverse();
       $.each(new_sort_array, function( index, value ) {
         $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")

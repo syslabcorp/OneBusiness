@@ -379,10 +379,10 @@ class EmployeesController extends Controller {
                         ->orderBy('ShortName', 'ASC')
                         ->get();
 
-        if ($user->level_id <= 9 && $user->area) {
+        if (\Auth::user()->level_id <= 9 && \Auth::user()->area) {
             $branches = $company->branches()
                             ->where('Active', '=', '1')
-                            ->whereIn('Branch', explode(',', $user->area->branch))
+                            ->whereIn('Branch', explode(',', \Auth::user()->area->branch))
                             ->orderBy('ShortName', 'ASC')
                             ->get();
         }
