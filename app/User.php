@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Branch;
 
 class User extends Authenticatable
 {
@@ -188,5 +189,31 @@ class User extends Authenticatable
         //     }
         // }
         return true;
+    }
+
+    public function getBranchesByArea($corpID)
+    {
+        $branchIds = [];
+        $cityIds = [];
+        $provinceIds = [];
+
+        if($this->area) {
+          $branchIds = explode(",", \Auth::user()->area->branch);
+          $cityIds = explode(",", \Auth::user()->area->city);
+          $provinceIds = explode(",", \Auth::user()->area->province);
+        }
+
+        $branches = Branch::leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
+                          ->orderBy('ShortName', 'ASC')
+                          ->where('Active', 1)
+                          ->where(function($q) use($branchIds, $cityIds, $provinceIds) {
+                            $q->orWhereIn('Branch', $branchIds)
+                              ->orWhereIn('t_sysdata.City_ID', $cityIds)
+                              ->orWhereIn('t_cities.Prov_ID', $provinceIds);
+                          })
+                          ->where('corp_id', $corpID)
+                          ->get();
+        
+        return $branches;
     }
 }

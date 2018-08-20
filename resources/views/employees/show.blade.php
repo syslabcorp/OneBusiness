@@ -478,8 +478,10 @@ function onEditRow(param){
 
   toggleExpiry = (event) => {
     $('#modal-document input[name="doc_exp"]').prop('disabled', true)
+    $('#modal-document input[name="doc_exp"]').prop('required', false)
 
     if(event.target.checked) {
+      $('#modal-document input[name="doc_exp"]').prop('required', true)
       $('#modal-document input[name="doc_exp"]').prop('disabled', false)
     }
   }

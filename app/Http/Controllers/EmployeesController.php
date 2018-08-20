@@ -380,19 +380,15 @@ class EmployeesController extends Controller {
                         ->get();
 
         if (\Auth::user()->level_id <= 9 && \Auth::user()->area) {
-            $branches = $company->branches()
-                            ->where('Active', '=', '1')
-                            ->whereIn('Branch', explode(',', \Auth::user()->area->branch))
-                            ->orderBy('ShortName', 'ASC')
-                            ->get();
+            $branches = \Auth::user()->getBranchesByArea(request()->corpID);
         }
 
         $branches = $branches->map(function($branch) use ($docItem, $user) {
+            $branch->isChecked = \Auth::user()->level_id > 9;
+
             if (!$docItem->txn_no) {
                 $branch->isChecked = $branch->Branch == $user->Branch && $user->Active || $branch->Branch == $user->SQ_Branch && $user->SQ_Active;
             }
-
-            $branch->isChecked = \Auth::user()->level_id > 9;
 
             return $branch;
         });

@@ -359,7 +359,9 @@ $(document).ready(function() {
 
       let sortItems = localStorage.getItem('sortEmployee').split(" > ").reverse()
 
-      
+      $('.ui-state-default type="checkbox"').each((ele, index) => {
+
+      })
     }
   });
 
