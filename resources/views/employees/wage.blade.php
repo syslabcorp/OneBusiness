@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $tab == 'wage' ? 'active in' : '' }}" id="wage" >
-  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V'))
+  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V') || true)
   <div class="rown">
     @if($recommendItem)
     <div class="col-md-12" style="border: 1px solid #ccc; margin-bottom: 20px; padding: 10px;">

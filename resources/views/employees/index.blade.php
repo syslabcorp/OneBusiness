@@ -358,6 +358,8 @@ $(document).ready(function() {
       $('.ui-state-default type="checkbox"').prop('checked', false)
 
       let sortItems = localStorage.getItem('sortEmployee').split(" > ").reverse()
+
+      
     }
   });
 
