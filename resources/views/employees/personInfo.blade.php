@@ -156,7 +156,7 @@
             </div>
             <div class="col-md-6">
               <label class="control-label">
-                <input type="radio" name="split_type" value="0" {{$user->split_type == "O" ? "checked" : ""}} disabled>
+                <input type="radio" name="split_type" value="O" {{$user->split_type == "O" ? "checked" : ""}} disabled>
                 O
               </label>
             </div>

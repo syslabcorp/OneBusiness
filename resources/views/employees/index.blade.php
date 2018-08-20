@@ -341,6 +341,8 @@ $(document).ready(function() {
       
       $('.current_sort').text(new_sort)
 
+      localStorage.setItem('sortEmployee', new_sort)
+
       new_sort += ' > Name'
 
       new_sort_array = new_sort.split(" > ").reverse();
@@ -350,6 +352,12 @@ $(document).ready(function() {
           $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
         }
       });
+    }
+
+    if (localStorage.getItem('sortEmployee')) {
+      $('.ui-state-default type="checkbox"').prop('checked', false)
+
+      let sortItems = localStorage.getItem('sortEmployee').split(" > ").reverse()
     }
   });
 

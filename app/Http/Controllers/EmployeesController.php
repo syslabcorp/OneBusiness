@@ -392,6 +392,8 @@ class EmployeesController extends Controller {
                 $branch->isChecked = $branch->Branch == $user->Branch && $user->Active || $branch->Branch == $user->SQ_Branch && $user->SQ_Active;
             }
 
+            $branch->isChecked = \Auth::user()->level_id > 9;
+
             return $branch;
         });
 
@@ -516,8 +518,15 @@ class EmployeesController extends Controller {
         $docParams['doc_exp'] = $docParams['doc_exp'] ?: '0000-00-00';
         $docParams['doc_date'] = date('Y-m-d');
 
+        $latestDoc = $docModel->where('doc_no', request()->doc_no)
+                              ->orderBy('series_no', 'DESC')
+                              ->first();
+
+        $docParams['series_no'] = $latestDoc->series_no + 1;
+
+
         if (request()->hasFile('photo')) {
-            $fileName = str_pad($docParams['doc_no'], 3, '0', STR_PAD_LEFT) .'-' . str_pad($docParams['subcat_id'], 3, '0', STR_PAD_LEFT) . '-' . $docItem->series_no . '.jpg';
+            $fileName = str_pad($docParams['doc_no'], 3, '0', STR_PAD_LEFT) .'-' . str_pad($docParams['subcat_id'], 3, '0', STR_PAD_LEFT) . '-' . $docParams['series_no'] . '.jpg';
             $docParams['img_file'] = $fileName;
 
             move_uploaded_file($_FILES['photo']['tmp_name'], $company->imgfile_path . '/' . $fileName);

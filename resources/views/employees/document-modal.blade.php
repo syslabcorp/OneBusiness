@@ -105,7 +105,7 @@
                 <select name="branch" class="form-control" required>
                   <option value="">--Select--</option>
                   @foreach($branches as $branch)
-                  <option {{ $docItem->txn_no && $docItem->branch == $branch->Branch || $branch->isChecked ? 'selected' : '' }} 
+                  <option {{ $docItem->txn_no && $docItem->branch_id == $branch->Branch || $branch->isChecked ? 'selected' : '' }} 
                     value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                   @endforeach
                 </select>
