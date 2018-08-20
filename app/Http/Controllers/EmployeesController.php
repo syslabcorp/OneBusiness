@@ -30,11 +30,7 @@ class EmployeesController extends Controller {
     $branches = collect([]);
 
     if (\Auth::user()->area) {
-        $branches = $company->branches()
-                            ->where('Active', '1')
-                            ->whereIn('Branch', explode(',', \Auth::user()->area->branch))
-                            ->orderBy('ShortName', 'ASC')
-                            ->get();
+        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
     }
 
     return view('employees/index', [

@@ -84,27 +84,27 @@
               <ul id="sortable">
 
                 <li class="ui-state-default">
-                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Branch" checked/></div>
                   <div class="col-md-10 sort-item">Branch</div>
                 </li>
 
                 <li class="ui-state-default">
-                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Position" checked/></div>
                   <div class="col-md-10 sort-item">Position</div>
                 </li>
 
                 <li class="ui-state-default">
-                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author" checked/></div>
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Department" checked/></div>
                   <div class="col-md-10 sort-item">Department</div>
                 </li>
 
                 <li class="ui-state-default">
-                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author"/></div>
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Date Hired"/></div>
                   <div class="col-md-10 sort-item">Date Hired</div>
                 </li>
 
                 <li class="ui-state-default">
-                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Profile Author"/></div>
+                  <div class="col-md-2 text-center"><input type="checkbox" name="ReportPriority" value="Name"/></div>
                   <div class="col-md-10 sort-item">Name</div>
                 </li>
 
@@ -147,6 +147,24 @@ $(document).ready(function() {
       @foreach($branches as $branch)
         $(".branch-filter select").append("<option class='value-option' value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
+
+        if (localStorage.getItem('sortEmployee')) {
+          $('.ui-state-default input[type="checkbox"]').prop('checked', false)
+          $('.ui-state-default input[type="checkbox"]').attr('checked', null)
+          $('.current_sort').text(localStorage.getItem('sortEmployee'))
+
+          let sortItems = localStorage.getItem('sortEmployee').split(" > ").reverse()
+
+          for (let index = 0; index < sortItems.length; index++) {
+              $('#sortable').prepend($('.ui-state-default input[value="' + sortItems[index] + '"]').parents('.ui-state-default'))
+          }
+
+          for (let index = 0; index < sortItems.length; index++) {
+            $('.ui-state-default input[value="' + sortItems[index] + '"]').prop('checked', true)
+          }
+
+          change_current_sort();
+        }
       },
       ajax: '{{ route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => $branchSelect, 'branch' => $branch, 'status' => $status, 'level'=>$level]) }}',
       "fnDrawCallback": () => {
@@ -338,7 +356,7 @@ $(document).ready(function() {
           }
           position_sort = LISTSORT[self.parents('.ui-state-default').find('.sort-item').text()]
       })
-      
+
       $('.current_sort').text(new_sort)
 
       localStorage.setItem('sortEmployee', new_sort)
@@ -352,16 +370,6 @@ $(document).ready(function() {
           $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
         }
       });
-    }
-
-    if (localStorage.getItem('sortEmployee')) {
-      $('.ui-state-default type="checkbox"').prop('checked', false)
-
-      let sortItems = localStorage.getItem('sortEmployee').split(" > ").reverse()
-
-      $('.ui-state-default type="checkbox"').each((ele, index) => {
-
-      })
     }
   });
 
