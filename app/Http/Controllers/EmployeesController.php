@@ -27,11 +27,8 @@ class EmployeesController extends Controller {
     $status= $request->status ? $request->status : 1;
     $level = $request->level ? $request->level : 'non-branch';
 
-    $branches = collect([]);
 
-    if (\Auth::user()->area) {
-        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
-    }
+    $branches = \Auth::user()->getBranchesByArea(request()->corpID);
 
     return view('employees/index', [
       'corpID' => $request->corpID,
@@ -53,14 +50,7 @@ class EmployeesController extends Controller {
     $level = $request->level ? $request->level : "non-branch";
     $order = $request->order ? $request_order : "";
 
-    $branchIDs = [];
-
-    if (\Auth::user()->area) {
-        $branchIDs = $company->branches()
-                            ->where('Active', '1')
-                            ->whereIn('Branch', explode(',', \Auth::user()->area->branch))
-                            ->pluck('Branch');
-    }
+    $branchIDs = $branches = \Auth::user()->getBranchesByArea(request()->corpID)->pluck('Branch');
 
     $items = User::orderBy('UserName', 'ASC')
                 ->whereIn('Branch', $branchIDs)
