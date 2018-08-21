@@ -466,6 +466,18 @@ function onEditRow(param){
     updateDocumentModalSubcategory()
   })
 
+  $('body').on('click', '#modal-document .btn-create', (event) => {
+    $('#modal-document .error').remove()
+
+    let isRequiredExpires = $('#modal-document select[name="subcat_id"] option:selected').attr('data-expires')
+    if (isRequiredExpires == 1 && !$('#modal-document .checkExpires').is(':checked')) {
+      $('#modal-document .checkExpires').parents('.col-sm-8').append(
+        '<span class="error">Please select an expiration date for this document</span>'
+      )
+      event.preventDefault()
+    }
+  })
+
   updateDocumentModalSubcategory = () => {
     $('#modal-document select[name="subcat_id"] option[value!=""]').css('display', 'none')
     $('#modal-document select[name="subcat_id"] option[doc-no="' + $('#modal-document select[name="doc_no"]').val() + '"]').css('display', 'block')
@@ -481,6 +493,7 @@ function onEditRow(param){
     $('#modal-document input[name="doc_exp"]').prop('required', false)
 
     if(event.target.checked) {
+      $('#modal-document .error').remove()
       $('#modal-document input[name="doc_exp"]').prop('required', true)
       $('#modal-document input[name="doc_exp"]').prop('disabled', false)
     }
@@ -511,6 +524,8 @@ function onEditRow(param){
       $('.image #loader').remove()
     }
   })
+
+
 
 </script>
 

@@ -42,7 +42,8 @@
                   <option value="">--Select--</option>
                   @foreach($subCategories as $subcat)
                     <option doc-no="{{ $subcat->doc_no }}" {{ $docItem->subcat_id == $subcat->subcat_id ? 'selected' : '' }} 
-                      value="{{ $subcat->subcat_id }}">{{ $subcat->description }}</option>
+                      value="{{ $subcat->subcat_id }}" data-expires="{{ $subcat->expires }}"
+                      >{{ $subcat->description }}</option>
                   @endforeach
                 </select>
               </div>
@@ -59,7 +60,7 @@
                 <div class="col-xs-1">
                   <div class="form-group" style="margin-top: 5px;">
                     <label>
-                      <input type="checkbox" {{ $docItem->doc_exp && $docItem->doc_exp != '0000-00-00' ? 'checked' : ''}} onchange="toggleExpiry(event)">
+                      <input class="checkExpires" type="checkbox" {{ $docItem->doc_exp && $docItem->doc_exp != '0000-00-00' ? 'checked' : ''}} onchange="toggleExpiry(event)">
                     </label>
                   </div>
                 </div>
