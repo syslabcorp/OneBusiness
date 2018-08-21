@@ -206,6 +206,7 @@ class User extends Authenticatable
         $branches = Branch::leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
                           ->orderBy('ShortName', 'ASC')
                           ->where('Active', 1)
+                          ->where('isMain', 0)
                           ->where(function($q) use($branchIds, $cityIds, $provinceIds) {
                             $q->orWhereIn('Branch', $branchIds)
                               ->orWhereIn('t_sysdata.City_ID', $cityIds)
@@ -213,6 +214,16 @@ class User extends Authenticatable
                           })
                           ->where('corp_id', $corpID)
                           ->get();
+
+        if ($this->level_id > 9) {
+            $branch = Branch::where('isMain', 1)
+                                ->where('Active', 1)
+                                ->where('corp_id', $corpID)
+                                ->first();
+            if ($branch) {
+                $branches->push($branch);
+            }
+        }
         
         return $branches;
     }
