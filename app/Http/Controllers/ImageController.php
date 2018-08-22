@@ -16,7 +16,7 @@ class ImageController extends Controller
 
         $file = $company->imgfile_path . '/' . request()->filename;
 
-        if (file_exists($file)) {
+        if (request()->filename && file_exists($file)) {
             return response(file_get_contents($file))->header('Content-type','image/jpeg');
         }
 

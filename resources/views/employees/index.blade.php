@@ -148,6 +148,25 @@ $(document).ready(function() {
         $(".branch-filter select").append("<option class='value-option' value='{{$branch->Branch}}'>{{$branch->ShortName}}</option>")
       @endforeach
 
+      // Set Default status
+      if (localStorage.getItem('employeeStatus')) {
+        $('input[type=radio][name=status][value="' + localStorage.getItem('employeeStatus') + '"]').prop('checked', true)
+      }
+      // Set Default Level
+      if (localStorage.getItem('employeeLevel')) {
+        $('input[type=radio][name=level][value="' + localStorage.getItem('employeeLevel') + '"]').prop('checked', true)
+      }
+
+      // Set Default Branch
+      if (localStorage.getItem('employeeCheckBranch') == 'true') {
+        $('input[type=radio][name=level]').prop('disabled', true)
+        $('.select-branch ').prop('disabled', false)
+        $('.check-branch').prop('checked', true)
+        $('.select-branch').val(localStorage.getItem('employeeSelectBranch'))
+      }
+
+      reloadTable()
+
         if (localStorage.getItem('sortEmployee')) {
           $('.ui-state-default input[type="checkbox"]').prop('checked', false)
           $('.ui-state-default input[type="checkbox"]').attr('checked', null)
@@ -274,6 +293,11 @@ $(document).ready(function() {
 
     $('body').on('change', 'input[type=radio][name=status], input[type=radio][name=level], .select-branch, .check-branch',
       () => {
+        localStorage.setItem('employeeSelectBranch', $('.select-branch').val())
+        localStorage.setItem('employeeCheckBranch', $('.check-branch').is(':checked'))
+        localStorage.setItem('employeeStatus', $('input[type=radio][name=status]:checked').val())
+        localStorage.setItem('employeeLevel', $('input[type=radio][name=level]:checked').val())
+
         reloadTable();
       }
     )
