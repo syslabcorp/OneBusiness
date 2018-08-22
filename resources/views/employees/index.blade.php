@@ -188,6 +188,13 @@ $(document).ready(function() {
       ajax: '{{ route('employee.deliveryItems', ['corpID' => $corpID, 'branchSelect' => $branchSelect, 'branch' => $branch, 'status' => $status, 'level'=>$level]) }}',
       "fnDrawCallback": () => {
         $('.clone').remove();
+        if (table) {
+          let tableOrder = table.order()
+          if (tableOrder.length == 1) {
+            tableOrder.push([1, 'asc'])
+            table.order(tableOrder).draw()
+          }
+        }
       },
       columns: [
         {
@@ -288,7 +295,7 @@ $(document).ready(function() {
       scrollCollapse: true,
       fixedColumns:   {
         leftColumns: 2
-      }
+      },
     });
 
     $('body').on('change', 'input[type=radio][name=status], input[type=radio][name=level], .select-branch, .check-branch',
@@ -362,15 +369,16 @@ $(document).ready(function() {
     )
 
     const LISTSORT = {
-      'Branch': 6,
-      'Position': 8,
-      'Department': 7,
-      'Date Hired': 9,
+      'Branch': 7,
+      'Position': 9,
+      'Department': 8,
+      'Date Hired': 10,
       'Name': 1
     }
   
     function change_current_sort(){
       var new_sort = ""
+      table.order([])
       $('#sortable').find('input:checked').each(function(index){
           var self = $(this)
           if(index == 0){
@@ -379,21 +387,16 @@ $(document).ready(function() {
             new_sort += (" > " + self.parents('.ui-state-default').find('.sort-item').text())
           }
           position_sort = LISTSORT[self.parents('.ui-state-default').find('.sort-item').text()]
+
+          let tableOrder = table.order()
+          tableOrder.push([position_sort, 'asc'])
+
+          table.order(tableOrder).draw()
       })
 
       $('.current_sort').text(new_sort)
 
       localStorage.setItem('sortEmployee', new_sort)
-
-      new_sort += ' > Name'
-
-      new_sort_array = new_sort.split(" > ").reverse();
-      $.each(new_sort_array, function( index, value ) {
-        $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
-        if($('.dataTables_scrollHeadInner').find("th:contains("+value+")").hasClass('sorting_desc')){
-          $('.dataTables_scrollHeadInner').find("th:contains("+value+")").trigger("click")
-        }
-      });
     }
   });
 
