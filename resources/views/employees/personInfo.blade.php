@@ -12,7 +12,16 @@
               </label>
             </div>
             <div class="col-md-6">
-              <input type="text" name="FirstName" class="form-control disabled" value="{{$user->FirstName}}" disabled>
+              <div class="rown">
+                <div class="col-xs-10">
+                  <input type="text" name="FirstName" class="form-control disabled" value="{{$user->FirstName}}" disabled>
+                </div>
+                <div class="col-xs-2">
+                  <button class="btn btn-default btn-md btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 7) }}">
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-md-4"></div>
           </div>
@@ -58,7 +67,16 @@
               <label for="" class="control-label">Address</label>
             </div>
             <div class="col-md-10">
-              <input type="text" name="Address" value="{{$user->Address}}" id="" class="form-control disabled" disabled="">
+              <div class="rown">
+                <div class="col-xs-10">
+                  <input type="text" name="Address" value="{{$user->Address}}" id="" class="form-control disabled" disabled="">
+                </div>
+                <div class="col-xs-2">
+                  <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 2) }}">
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -77,7 +95,16 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="TIN" class="form-control disabled" value="{{$user->TIN}}" disabled>
+            <div class="rown">
+                <div class="col-xs-10">
+                  <input type="text" name="TIN" class="form-control disabled" value="{{$user->TIN}}" disabled>
+                </div>
+                <div class="col-xs-2">
+                  <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 3) }}">
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -99,7 +126,16 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="SSS" id="" class="form-control disabled" value="{{$user->SSS}}" disabled>
+            <div class="rown">
+                <div class="col-xs-10">
+                  <input type="text" name="SSS" id="" class="form-control disabled" value="{{$user->SSS}}" disabled>
+                </div>
+                <div class="col-xs-2">
+                  <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 4) }}">
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -118,7 +154,16 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="PHIC" id="" class="form-control disabled" value="{{$user->PHIC}}" disabled>
+            <div class="rown">
+                <div class="col-xs-10">
+                  <input type="text" name="PHIC" id="" class="form-control disabled" value="{{$user->PHIC}}" disabled>
+                </div>
+                <div class="col-xs-2">
+                  <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 5) }}">
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -137,7 +182,16 @@
               </label>
             </div>
             <div class="col-md-4">
-              <input type="text" name="Pagibig" id="" class="form-control disabled" value="{{$user->Pagibig}}" disabled>
+            <div class="rown">
+                <div class="col-xs-10">
+                  <input type="text" name="Pagibig" id="" class="form-control disabled" value="{{$user->Pagibig}}" disabled>
+                </div>
+                <div class="col-xs-2">
+                  <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 6) }}">
+                    <i class="fas fa-image"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

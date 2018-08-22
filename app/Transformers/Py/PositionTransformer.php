@@ -33,6 +33,7 @@ class PositionTransformer extends Fractal\TransformerAbstract
 
       return [
           'Branch' => $branch,
+          'start_date_order' => $item->StartDate ? $item->StartDate->format('Y-m-d') : "",
           'StartDate' => $item->StartDate ? $item->StartDate->format('d/m/Y') : "",
           'SeparationDate' => $item->EndDate ? $item->EndDate->format('d/m/Y') : "",
           'Position' => $position,

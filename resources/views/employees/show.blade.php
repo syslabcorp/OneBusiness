@@ -97,6 +97,7 @@
     </div>
   </div>
   @include('employees.new-recommendation-modal')
+  @include('employees.image-modal')
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
 <script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
@@ -251,7 +252,6 @@ $(document).ready(function() {
   $('#table-position-deliveries').DataTable({
 
       initComplete: function() {
-
       },
 
       ajax: '{{ route('employee.deliveryPositions', ['id' => $user->UserID,'corpID' => $corpID]) }}',
@@ -262,7 +262,7 @@ $(document).ready(function() {
         },
         {
           targets: 1,
-          data: "StartDate",
+          data: 'start_date_order',
         },
         {
           targets: 2,
@@ -277,9 +277,14 @@ $(document).ready(function() {
           data: "Status"
         }
       ],
+      createdRow: (row, data, dataIndex) => {
+        var $dateCell = $(row).find('td:eq(1)')
+        $dateCell.attr('data-order', data.start_date_order)
+                 .text(data.StartDate)
+      },
       order: [
-        [0, 'desc']
-      ]
+        [1, 'desc']
+      ],
   });
 
   $('#table-wage-deliveries').DataTable({
@@ -523,6 +528,28 @@ function onEditRow(param){
       $('.image').append('<h3 class="text-center">No image stored</h3>')
       $('.image #loader').remove()
     }
+  })
+
+  $('.btnModalImage').click(function() {
+    $('#image-modal .modal-content').html('<div id="loader" style="margin-bottom: 55px;"></div>')
+    $('#image-modal').modal('show')
+    let fileName = $(this).attr('data-image')
+
+    $.ajax({
+      url: "{!! route('image', ['corpID' => $corpID]) !!}&filename=" + fileName,
+      type: 'GET',
+      contentType: "image/jpeg",
+      dataType: "text",
+      success: (res) => {
+        $('#image-modal #loader').remove()
+        $('#image-modal .modal-content').append('<img style="width: 100%; height: 100%;" />')
+        $('#image-modal img').attr('src', '{!! route('image', ['corpID' => $corpID]) !!}&filename=' + fileName)
+      },
+      error: () => {
+        $('#image-modal .modal-content').append('<h3 class="text-center">No image stored</h3>')
+        $('#image-modal #loader').remove()
+      }
+    })
   })
 
 

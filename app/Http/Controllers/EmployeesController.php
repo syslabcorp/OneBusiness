@@ -493,13 +493,15 @@ class EmployeesController extends Controller {
         $docParams = request()->only(['branch', 'notes', 'doc_exp', 'subcat_id', 'doc_no']);
         $docParams['doc_exp'] = $docParams['doc_exp'] ?: '0000-00-00';
         $docParams['doc_date'] = date('Y-m-d');
+        $docParams['series_no'] = $docItem->series_no;
 
-        $latestDoc = $docModel->where('doc_no', request()->doc_no)
+        if ($docItem->doc_no != $docParams['doc_no']) {
+            $latestDoc = $docModel->where('doc_no', request()->doc_no)
                               ->orderBy('series_no', 'DESC')
                               ->first();
 
-        $docParams['series_no'] = $latestDoc->series_no + 1;
-
+            $docParams['series_no'] = $latestDoc->series_no + 1;
+        }
 
         if (request()->hasFile('photo')) {
             $fileName = str_pad($docParams['doc_no'], 3, '0', STR_PAD_LEFT) .'-' . str_pad($docParams['subcat_id'], 3, '0', STR_PAD_LEFT) . '-' . $docParams['series_no'] . '.jpg';

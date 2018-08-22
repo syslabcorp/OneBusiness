@@ -206,16 +206,15 @@ class User extends Authenticatable
         $branches = Branch::leftJoin("t_cities", "t_cities.City_ID", "=", "t_sysdata.City_ID")
                           ->orderBy('ShortName', 'ASC')
                           ->where('Active', 1)
-                          ->where('isMain', 0)
+                          ->where('corp_id', $corpID)
                           ->where(function($q) use($branchIds, $cityIds, $provinceIds) {
                             $q->orWhereIn('Branch', $branchIds)
                               ->orWhereIn('t_sysdata.City_ID', $cityIds)
                               ->orWhereIn('t_cities.Prov_ID', $provinceIds);
                           })
-                          ->where('corp_id', $corpID)
                           ->get();
 
-        if ($this->level_id > 9) {
+        if ($this->level_id > 9 && !$branches->where('isMain', 1)->first()) {
             $branch = Branch::where('isMain', 1)
                                 ->where('Active', 1)
                                 ->where('corp_id', $corpID)
@@ -225,6 +224,25 @@ class User extends Authenticatable
             }
         }
         
-        return $branches;
+        return $branches->sortBy('ShortName');
+    }
+
+    /**
+     * Get Image File Name From h_docs
+     * @var Integer $corpID
+     * @var Integer $docNo
+     * @var Integer $subcatId
+     */
+    public function getImageFile($corpID, $docNo, $subcatId)
+    {
+        $company = Corporation::find($corpID);
+
+        $docModel = new \App\HDocs;
+        $docModel->setConnection($company->database_name);
+
+        $docItem = $docModel->where('emp_id', $this->UserID)
+                            ->where('doc_no', $docNo)->where('subcat_id', $subcatId)->first();
+
+        return $docItem ? $docItem->img_file : '';
     }
 }
