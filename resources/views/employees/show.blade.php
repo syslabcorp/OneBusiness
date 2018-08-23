@@ -43,7 +43,9 @@
               <h4>{{ $user->UserName }}</h4>
             </div>
             <div class="col-xs-3 text-right" style="padding-top: 10px;">
-              <a href="#" onclick="getDocumentModal('')" class="addDocument" style="{{ $tab != 'doc' ? 'display: none;' : '' }}">Add Document</a>
+              @if(\Auth::user()->checkAccessByIdForCorp($corpID, 48, 'A' ))
+                <a href="#" onclick="getDocumentModal('')" class="addDocument" style="{{ $tab != 'doc' ? 'display: none;' : '' }}">Add Document</a>
+              @endif
             </div>
           </div>
         </div>
@@ -219,7 +221,7 @@ $(document).ready(function() {
       {
         targets: 10,
         render: (data, type, row, meta) => {
-          return '<button onclick="getDocumentModal(' + row.txn_id +')" class="btn btn-primary fa fa-pencil-alt"> </button>'
+          return '<button {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 48, 'E' ) ? 'disabled' : '' }} onclick="getDocumentModal(' + row.txn_id +')" class="btn btn-primary fa fa-pencil-alt"> </button>'
         }
       }
     ],
