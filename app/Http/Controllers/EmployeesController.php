@@ -21,7 +21,7 @@ use App\Http\Controllers\Controller;
 class EmployeesController extends Controller {
   public function index(Request $request)
   {
-    if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 49, 'V')) {
+    if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 46, 'V')) {
         \Session::flash('error', "You don't have permission"); 
         return redirect("/home"); 
     }
