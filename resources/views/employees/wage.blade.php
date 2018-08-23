@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $tab == 'wage' ? 'active in' : '' }}" id="wage" >
-  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V') || true)
+  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 52, 'V'))
   <div class="rown">
     @if($recommendItem)
     <div class="col-md-12" style="border: 1px solid #ccc; margin-bottom: 20px; padding: 10px;">
@@ -15,7 +15,7 @@
             <input type="hidden" name="_method" value="DELETE">
             <input type="hidden" name="corpID" value="{{ $corpID }}">
             <input type="hidden" name="txn_no" value="{{ $recommendItem->txn_no }}">
-            <button class="btn btn-default btn-md" type="submit">
+            <button class="btn btn-default btn-md" type="submit" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 52, 'E') ? 'disabled' : '' }}>
               Cancel Recommendation
             </button>
           </form>
@@ -24,7 +24,8 @@
     </div>
     @else
     <div class="col-md-12 text-right">
-      <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#modal-new-recommendation">
+      <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#modal-new-recommendation"
+        {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 52, 'A') ? 'disabled' : '' }}>
         New Recommendation
       </button>
     </div>

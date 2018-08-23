@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="personInfo" >
-  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') || true)
+  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 47, 'V'))
     <div class="row">
       <form class="form form-horizontal" action="{{ route('employee.update', [$user, 'corpID' => $corpID]) }}" id="employee_form" method="POST">
         {{ method_field('patch') }}
@@ -198,7 +198,8 @@
         </div>
         <div class="col-md-4">
           <div class="row">
-            <button type="button" class="btn btn-primary" id="edit_employee">Edit</button>
+            <button type="button" class="btn btn-primary" id="edit_employee"
+              {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 47, 'E') ? 'disabled' : '' }}>Edit</button>
           </div>
 
           <div class="row form-group" style="border: 1px solid #ddd; margin: 1px; padding: 10px; border-radius: 5px;">

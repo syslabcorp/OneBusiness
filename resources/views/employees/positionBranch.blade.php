@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $tab == 'stock' ? 'active in' : '' }}" id="position" >
-  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V') || true)
+  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 51, 'V'))
   <div class="row">
     <div class="table-responsive">
     <table id="table-position-deliveries" class="col-sm-12 table table-striped table-bordered" cellspacing="0" width="100%">

@@ -19,7 +19,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class EmployeesController extends Controller {
-  public function index(Request $request) {
+  public function index(Request $request)
+  {
+    if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 49, 'V')) {
+        \Session::flash('error', "You don't have permission"); 
+        return redirect("/home"); 
+    }
+
     $company = Corporation::findOrFail($request->corpID);
 
     $branchSelect = $request->selectBranch ? $request->selectBranch : false;
@@ -57,23 +63,23 @@ class EmployeesController extends Controller {
                 ->whereIn('SQ_Branch', $branchIDs, 'OR')
                 ->get();
 
-    switch($status) {
-        case "1":
-            $items = $items->filter(function($item){
-                return ($item->Active == 1) || ($item->SQ_Active == 1);
-            });
-            break;
-        case "2":
-            $items = $items->filter(function($item){
-                return ($item->Active == 0) && ($item->SQ_Active == 0);
-            });
-            break;
-        default:
-            break;
-    }
-
     if($branch && $branchSelect == "hasBranch")
     {
+        switch($status) {
+            case "1":
+                $items = $items->filter(function($item){
+                    return ($item->Active == 1) || ($item->SQ_Active == 1);
+                });
+                break;
+            case "2":
+                $items = $items->filter(function($item){
+                    return ($item->Active == 0) && ($item->SQ_Active == 0);
+                });
+                break;
+            default:
+                break;
+        }
+
         $items = $items->filter(function($item) use ($branch, $status) {
             switch ($status) {
                 case "1":
@@ -94,6 +100,21 @@ class EmployeesController extends Controller {
 
     // Disable level filter if enable select branch
     if ($branchSelect != "hasBranch") {
+        switch($status) {
+            case "1":
+                $items = $items->filter(function($item) use ($level){
+                    return $level == 'branch' ? ($item->Active == 1) || ($item->SQ_Active == 1) : $item->TechActive == 1;
+                });
+                break;
+            case "2":
+                $items = $items->filter(function($item) use ($level){
+                    return $level == 'branch' ? ($item->Active == 0) && ($item->SQ_Active == 0) : $item->TechActive == 0;
+                });
+                break;
+            default:
+                break;
+        }
+
         switch($level) {
             case "non-branch":
                 $items = $items->filter(function($item){

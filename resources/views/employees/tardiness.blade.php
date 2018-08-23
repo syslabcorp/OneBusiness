@@ -1,5 +1,5 @@
 <div class="tab-pane fade {{ $tab == 'tardiness' ? 'active in' : '' }}" id="tardiness" >
-  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V') || true)
+  @if(\Auth::user()->checkAccessByIdForCorp($corpID, 50, 'V'))
   <div class="row">
     <div class="col-md-9">
       <form action="{{ route('employee.show', [$user]) }}">
