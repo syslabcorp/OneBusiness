@@ -41,7 +41,10 @@ class EmpTransformer extends Fractal\TransformerAbstract
         }
 
       $branchName = $item->level_id > 9 ? 'NON-BRANCH' : $branchName;
-      $activeColumn = $item->level_id > 9 && $item->TechActive == 1 ? 1 : 0;
+
+      if ($item->level_id > 9) {
+        $activeColumn = $item->TechActive == 1 ? 1 : 0;
+      }
 
       if ($empHist->first())
       {
