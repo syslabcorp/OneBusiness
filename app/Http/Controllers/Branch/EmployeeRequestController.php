@@ -389,6 +389,7 @@ class EmployeeRequestController extends Controller
 		if(!\Auth::user()->checkAccessByIdForCorp($request->corpId, 38, "E")) {
 			return ["success" => false, "msg" => "You don't have a permission to reactivate employee"];
 		}
+		$request->branch_id = $this->defineBranchId($request->branch_id, $request->corpId);
 		$employeeRequestHelper->setCorpId($request->corpId);
 		$employeeRequestModel = $employeeRequestHelper->getEmployeeRequestModel();
 		$user = User::where("UserID", $request->employeeRequestId)->first();
@@ -464,6 +465,14 @@ class EmployeeRequestController extends Controller
 			return ["success" => true, "msg" => "The employee reactivated successfully"];
 		}
 		return ["success" => false, "msg" => "Something went wrong. Please contact administration"];
+	}
+
+	public function defineBranchId($branch_id, $corp_id){
+		if($branch_id == 0) {
+			$branch = Branch::where("corp_id", $corp_id)->where("isMain", "1")->first();
+			if(!is_null($branch)) { $branch_id = $branch->Branch; }
+		}
+		return $branch_id;
 	}
 
 	public function CalculateLast13_Date($date){
