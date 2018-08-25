@@ -398,7 +398,6 @@ class EmployeeRequestController extends Controller
 			$branch->Modified = 1;
 			$branch->save();
 		}
-		dd($request->branch_id);
 		if(!is_null($user)) {
 			// $user->Branch = $request->branch_id;
 			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
