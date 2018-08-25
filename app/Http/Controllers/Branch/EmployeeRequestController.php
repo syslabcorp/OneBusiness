@@ -398,6 +398,7 @@ class EmployeeRequestController extends Controller
 			$branch->Modified = 1;
 			$branch->save();
 		}
+		dd($request->branch_id);
 		if(!is_null($user)) {
 			// $user->Branch = $request->branch_id;
 			$employeeRequest = $employeeRequestModel::where("userid", $user->UserID)->first();
@@ -453,7 +454,7 @@ class EmployeeRequestController extends Controller
 			$h_docs->emp_id  = $user->UserID;
 			$h_docs->branch  = $request->branch_id;
 			$h_docs->doc_exp  = "0000-00-00";
-			$h_docs->approval_no  = isset($employeeRequest->txn_no) ? $employeeRequest->txn_no : null;
+			$h_docs->approval_no  = isset($employeeRequest->txn_no) ? $employeeRequest->txn_no : 0;
 			$h_docs->notes  = "Reactivated By: " . \Auth::user()->uname;
 			$h_docs->save();
 
