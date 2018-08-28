@@ -197,7 +197,7 @@ class User extends Authenticatable
         $cityIds = [];
         $provinceIds = [];
 
-        if($this->area) {
+        if(\Auth::user()->area) {
           $branchIds = explode(",", \Auth::user()->area->branch);
           $cityIds = explode(",", \Auth::user()->area->city);
           $provinceIds = explode(",", \Auth::user()->area->province);

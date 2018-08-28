@@ -103,12 +103,24 @@ class EmployeesController extends Controller {
         switch($status) {
             case "1":
                 $items = $items->filter(function($item) use ($level){
-                    return $level == 'branch' ? ($item->Active == 1) || ($item->SQ_Active == 1) : $item->TechActive == 1;
+                    if ($level == 'all') {
+                        return $item->level_id <= 9 ? ($item->Active == 1) || ($item->SQ_Active == 1) : $item->TechActive == 1;
+                    } else if($level == 'branch') {
+                        return ($item->Active == 1) || ($item->SQ_Active == 1);
+                    } else {
+                        return $item->TechActive == 1;
+                    }
                 });
                 break;
             case "2":
                 $items = $items->filter(function($item) use ($level){
-                    return $level == 'branch' ? ($item->Active == 0) && ($item->SQ_Active == 0) : $item->TechActive == 0;
+                    if ($level == 'all') {
+                        return $item->level_id <= 9 ? ($item->Active == 0) && ($item->SQ_Active == 0) : $item->TechActive == 0;
+                    } else if($level == 'branch') {
+                        return ($item->Active == 0) && ($item->SQ_Active == 0);
+                    } else {
+                        return $item->TechActive == 0;
+                    }
                 });
                 break;
             default:
