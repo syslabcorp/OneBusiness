@@ -937,7 +937,10 @@ class PurchaseOrderController extends Controller
           {
             $PurchaseOrderModel->delete();
             return response()->json([
-              'num_details' => 0 ]
+              'num_details' => 0,
+              'to_date' => $array_today,
+              'from_date' => $array_fromday
+              ]
             );
           }
           $item_packaging = StockItem::find($item_id)->Packaging;
@@ -989,7 +992,10 @@ class PurchaseOrderController extends Controller
         {
           $PurchaseOrderModel->delete();
           return response()->json([
-            'num_details' => 0 ]
+            'num_details' => 0,
+            'to_date' => $array_today,
+            'from_date' => $array_fromday
+            ]
           );
         }
   
