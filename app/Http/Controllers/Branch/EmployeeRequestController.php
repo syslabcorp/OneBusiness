@@ -133,7 +133,7 @@ class EmployeeRequestController extends Controller
 	public function getEmployeeRequests2(EmployeeRequestHelper $employeeRequest, Request $request){
 		$employeeRequest->setCorpId($request->corpId);
 		$databaseName = $employeeRequest->getDatabaseName();
-		$query1 = DB::select('SELECT users.UserName as "username", sysdata.City_ID, cities.Prov_ID, users.UserID, users.Branch, users.SQ_Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID where sysdata.corp_id = ?', [$request->corpId]);
+		$query1 = DB::select('SELECT users.UserName as "username", sysdata.City_ID, cities.Prov_ID, users.UserID, users.Branch, users.SQ_Branch, users.LastUnfrmPaid, users.Active, users.AllowedMins, users.LoginsLeft, users.SQ_Active, sysdata.ShortName from global.t_users as users JOIN global.t_sysdata as sysdata ON users.SQ_Branch = sysdata.Branch or users.Branch = sysdata.Branch LEFT JOIN global.t_cities as cities ON sysdata.City_ID = cities.City_ID where sysdata.corp_id = ? and users.level_id <= 9', [$request->corpId]);
 
 		$query1 = $this->filter_results_according_access_rights2($query1, $request);
 
