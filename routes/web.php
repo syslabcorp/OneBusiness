@@ -245,3 +245,7 @@ Route::post('approveRecommendation','Branch\Recommendation\RecommendationControl
 Route::post('deleteRecommendation','Branch\Recommendation\RecommendationController@deleteRecommendation')->middleware('auth')->name('deleteRecommendation');
 
 Route::get("printContract/{corpId}/{employeeRequestId}", "Branch\EmployeeRequestController@printContract")->middleware('auth');
+
+Route::group(['middleware' => 'auth'], function() {
+  Route::resource('equipments', 'Equip\EquipmentsController');
+});
