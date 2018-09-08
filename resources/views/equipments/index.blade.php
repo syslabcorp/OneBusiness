@@ -11,7 +11,7 @@
                 <h5>Equipment Inventory</h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                <a href="{{ route('equipments.create') }}">Add Item</a>
+                <a href="{{ route('equipments.create', ['corpID' => request()->corpID]) }}">Add Item</a>
               </div>
             </div>
           </div>

@@ -8,34 +8,28 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5>Equipment Inventory</h5>
-              </div>
-              <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                <a href="{{ route('equipments.create') }}">Add Item</a>
+                <h5>Add Equipment</h5>
               </div>
             </div>
           </div>
           <div class="panel-body">
             <div class="bs-example">
-              <div  id="tablescroll" class="tablescroll">
-                <div class="table-wrap">
-                  <table class="stripe table table-bordered nowrap table-equipments" width="100%">
-                    <thead>
-                      <tr>
-                        <th>Asset No.</th>
-                        <th>Equipment</th>
-                        <th>Type</th>
-                        <th>Branch</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Qty</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody >
-                    </tbody>
-                  </table>
-                </div>
+              <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+                <li class="{{ $tab == 'auto' ? 'active' : '' }}">
+                  <a href="#personInfo" data-toggle="tab">Equipment Detail</a>
+                </li>
+                <li class="{{ $tab == 'doc' ? 'active' : '' }}">
+                  <a href="#document" data-toggle="tab">Request</a>
+                </li>
+                <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
+                  <a href="#shortages" data-toggle="tab">History</a>
+                </li>
+                <li class="{{ $tab == 'tardiness' ? 'active' : '' }}">
+                  <a href="#tardiness" data-toggle="tab">Financials</a>
+                </li>
+              </ul>
+              <div class="tab-content" style="padding: 1em;">
+                @include('equipments.detail-tab')
               </div>
             </div>
           </div>

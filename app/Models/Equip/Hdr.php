@@ -10,6 +10,7 @@ class Hdr extends Model {
     protected $primaryKey = "asset_id";
 
     protected $fillable = [
+        'description', 'branch', 'dept_id', 'type', 'jo_dept'
     ];
 
     public function Branch()

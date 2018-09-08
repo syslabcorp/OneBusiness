@@ -29,6 +29,41 @@ class EquipmentsController extends Controller
 
     public function create()
     {
-        return view('equipments.create');
+        $company = Corporation::findOrFail(request()->corpID);
+        $tab = 'auto';
+        
+        $deptModel = new \App\Models\T\Depts;
+        $deptModel->setConnection($company->database_name);
+
+        $deptItems = $deptModel->orderBy('department', 'ASC')
+                                ->get();
+        
+        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
+        
+
+        $equipment = new \App\Models\Equip\Hdr;
+
+        $vendors = \App\Models\Vendor::orderBy('VendorName', 'ASC')->get();
+
+        return view('equipments.create', [
+            'tab' => $tab,
+            'equipment' => $equipment,
+            'deptItems' => $deptItems,
+            'branches' => $branches,
+            'vendors' => $vendors
+        ]);
+    }
+
+    public function store()
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        \App\Models\Equip\Hdr::create(
+            request()->only([
+                'description', 'branch', 'dept_id', 'type', 'jo_dept'
+            ])
+        );
+
+        return redirect(route('equipments.index', ['corpID' => request()->corpID]));
     }
 }

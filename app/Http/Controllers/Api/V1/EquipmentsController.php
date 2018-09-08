@@ -32,6 +32,8 @@ class EquipmentsController extends Controller
     {
         $item = \App\Models\Equip\Hdr::find($id);
 
+        $item->delete();
+
         return response()->json([
             'success' => true
         ]);
