@@ -1,4 +1,4 @@
-<div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="personInfo" >
+<div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="equipmentDetail" >
   <div class="row">
     <form class="form form-horizontal" action="{{ route('equipments.store', ['corpID' => request()->corpID]) }}" method="POST">
       {{ csrf_field() }}
@@ -9,37 +9,19 @@
               <label style="padding: 5px;"><strong>Asset #:</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <input type="text" class="form-control" readonly>
+             <input type="text" class="form-control" readonly value="{{ $equipment->asset_id }}">
             </div>
           </div>
           <div class="rown">
             <div class="col-sm-3 form-group text-right">
               <label style="padding: 5px;"><strong>Equipment:</strong></label>
             </div>
-            <div class="col-sm-9 form-group">
+            <div class="col-sm-9 form-group {{ $errors->has('description') ? 'has-error' : ''}}">
               <input type="text" class="form-control" name="description" 
                 value="{{ old('description') ?: $equipment->description }}">
-            </div>
-          </div>
-          <div class="rown">
-            <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Vendor:</strong></label>
-            </div>
-            <div class="col-sm-9 form-group">
-              <select name="supplier_id">
-                <option value="">-- Select --</option>
-                @foreach($vendors as $item)
-                <option value="{{ $item->Supp_ID }}">{{ $item->VendorName }}</option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="rown">
-            <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Quantity:</strong></label>
-            </div>
-            <div class="col-sm-9 form-group">
-              <input type="number" class="form-control">
+              @if($errors->has('description'))
+                <span class="help-block">{{ $errors->first('description') }}</span>
+              @endif
             </div>
           </div>
           <div class="rown">
@@ -58,9 +40,8 @@
             </div>
             <div class="col-sm-7 form-group">
               <select name="type" class="form-control">
-                <option value="">-- Select --</option>
-                <option value="Company Property">Company Property</option>
-                <option value="Rental">Rental</option>
+                <option {{ $equipment->type == 'Com Proper' ? 'selected' : '' }} value="Com Proper">Com Proper</option>
+                <option {{ $equipment->type == 'Rental' ? 'selected' : '' }} value="Rental">Rental</option>
               </select>
             </div>
           </div>
@@ -69,10 +50,9 @@
               <label style="padding: 5px;"><strong>Branch:</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <select name="branch" id="" class="form-control">
-                <option value="">-- Select --</option>
+              <select name="branch" class="form-control">
                 @foreach($branches as $branch)
-                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+                <option {{ $equipment->branch == $branch->Branch ? 'selected' : '' }} value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                 @endforeach
               </select>
             </div>
@@ -83,9 +63,9 @@
             </div>
             <div class="col-sm-7 form-group">
               <select name="dept_id" id="" class="form-control">
-                <option value="">-- Select --</option>
+                <option value="">-- select --</option>
                 @foreach($deptItems as $item)
-                <option value="{{ $item->dept_ID }}">{{ $item->department }}</option>
+                <option {{ $equipment->dept_id == $item->dept_ID ? 'selected' : '' }} value="{{ $item->dept_ID }}">{{ $item->department }}</option>
                 @endforeach
               </select>
             </div>
@@ -96,9 +76,9 @@
             </div>
             <div class="col-sm-7 form-group">
               <select name="jo_dept" class="form-control">
-                <option value="">-- Select --</option>
+                <option value="">-- select --</option>
                 @foreach($deptItems as $item)
-                <option value="{{ $item->dept_ID }}">{{ $item->department }}</option>
+                <option {{ $equipment->jo_dept == $item->dept_ID ? 'selected' : '' }} value="{{ $item->dept_ID }}">{{ $item->department }}</option>
                 @endforeach
               </select>
             </div>
@@ -107,13 +87,18 @@
       </div>
       <hr>
       <h5>Hardware Information</h5>
-
+      <p>No parts yet. <a href="javascript:void(0)" onclick="openTablePart(event)">Add here</a></p>
+      @include('equipments.parts')
       <div class="rown">
         <div class="col-xs-6">
           <a class="btn btn-default" href="{{ route('equipments.index', ['corpID' => request()->corpID]) }}">Back</a>
         </div>
         <div class="col-xs-6 text-right">
-          <button class="btn btn-success"><i class="far fa-save"></i> Save</button>
+          @if($equipment->asset_id)
+            <button class="btn btn-info"><i class="fas fa-pencil-alt"></i> Edit</button>
+          @else
+            <button class="btn btn-success"><i class="far fa-save"></i> Save</button>
+          @endif
         </div>
       </div>
     </form>

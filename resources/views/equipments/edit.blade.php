@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5>Add Equipment</h5>
+                <h5>Equipment Inventory</h5>
               </div>
             </div>
           </div>
@@ -22,7 +22,7 @@
                   <a href="#shortages" data-toggle="tab">History</a>
                 </li>
               </ul>
-              <div class="tab-content" style="padding: 1em;">
+              <div class="tab-content editEquipment" style="padding: 1em;">
                 @include('equipments.detail-tab')
               </div>
             </div>

@@ -80,7 +80,7 @@
           targets: 1,
           data: 'description',
           render: (data, type, row, meta) => {
-            return '<a href="{{ route('equipments.index') }}/' + row.asset_id + '">' + row.description + '</a>'
+            return '<a href="{{ route('equipments.index') }}/' + row.asset_id + '?corpID={{ request()->corpID }}">' + row.description + '</a>'
           }
         },
         {

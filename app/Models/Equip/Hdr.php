@@ -13,7 +13,7 @@ class Hdr extends Model {
         'description', 'branch', 'dept_id', 'type', 'jo_dept'
     ];
 
-    public function Branch()
+    public function branchObj()
     {
         return $this->belongsTo(\App\Branch::class, 'branch', 'Branch');
     }

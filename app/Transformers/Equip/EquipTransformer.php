@@ -25,7 +25,7 @@ class EquipTransformer extends Fractal\TransformerAbstract
             'asset_id' => $item->asset_id,
             'description' => $item->description,
             'type' => $item->type,
-            'branch' => $item->Branch ? $item->Branch->ShortName : '',
+            'branch' => $item->branchObj ? $item->branchObj->ShortName : '',
             'department' => $dept ? $dept->department : '',
             'status' => '',
             'qty' => 0

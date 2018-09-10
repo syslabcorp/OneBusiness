@@ -31,4 +31,5 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
     Route::resource('departments', 'DepartmentsController');
     Route::resource('wage-templates', 'WageTemplatesController');
     Route::resource('equipments', 'EquipmentsController');
+    Route::get('/branches/{branch}/depts', 'BranchesController@getDepts');
 });
