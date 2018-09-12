@@ -1,6 +1,12 @@
+@php $partItems = is_array(old('parts')) ? old('parts') : $equipment->details; @endphp
 <div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="equipmentDetail" >
   <div class="row">
+    @if($equipment->asset_id)
+    <form class="form form-horizontal" action="{{ route('equipments.update', [$equipment, 'corpID' => request()->corpID]) }}" method="POST">
+      <input type="hidden" name="_method" value="PUT">
+    @else
     <form class="form form-horizontal" action="{{ route('equipments.store', ['corpID' => request()->corpID]) }}" method="POST">
+    @endif
       {{ csrf_field() }}
       <div class="rown">
         <div class="col-sm-6">
@@ -86,8 +92,11 @@
         </div>
       </div>
       <hr>
-      <h5>Hardware Information</h5>
+      <h4>Hardware Information</h4>
+      @if(!count($partItems))
       <p>No parts yet. <a href="javascript:void(0)" onclick="openTablePart(event)">Add here</a></p>
+      @endif
+
       @include('equipments.parts')
       <div class="rown">
         <div class="col-xs-6">
@@ -97,7 +106,7 @@
           @if($equipment->asset_id)
             <button class="btn btn-info"><i class="fas fa-pencil-alt"></i> Edit</button>
           @else
-            <button class="btn btn-success"><i class="far fa-save"></i> Save</button>
+            <button class="btn btn-success btn-save"><i class="far fa-save"></i> Save</button>
           @endif
         </div>
       </div>

@@ -2,6 +2,7 @@
   <script type="text/javascript">
     (() => {
       openTablePart = (event) => {
+        addNewPart()
         $(event.target).parent('p').slideUp()
         $('.table-parts').slideDown()
       }
@@ -36,7 +37,68 @@
 
       updateDepartmentsSelect()
 
-      $('.editEquipment .form-control').prop('disabled', true)
+      // $('.editEquipment .form-control').prop('disabled', true)
+      $('.partRow input, .partRow select').attr('readonly', true)
+
+      $(window).keydown((event) => {
+        if (event.which === 113) {
+          addNewPart()
+        }
+      })
+
+      addNewPart = () => {
+        $('.table-parts .newPart td:eq(0)').html($('.table-parts tbody tr').length)
+        $('.table-parts .newPart').css('display', 'table-row')
+        $('.table-parts .newPart .error').remove()
+      }
+
+      // Table Parts
+      $('.table-parts').on('click', '.btnEditRow', function(event) {
+        $(this).css('display', 'none')
+        $(this).parents('tr').find('.btnSaveRow').css('display', 'inline-block')
+
+        $(this).parents('tr').find('select, input').attr('readonly', false)
+      })
+      $('.table-parts').on('click', '.btnRemoveRow', (event) => {
+        let $trParent = $(event.target).parents('tr')
+
+        if ($trParent.hasClass('newPart')) {
+          $trParent.find('input.form-control').val('')
+          $trParent.css('display', 'none')
+        } else {
+          $trParent.remove()
+        }
+      })
+
+      $('.table-parts').on('click', '.btnSaveRow', (event) => {
+        let $trParent = $(event.target).parents('tr')
+        $trParent.find('.error').remove()
+        
+        if ($trParent.find('td:eq(1) input').val().trim() == '') {
+          $trParent.find('td:eq(1)').append('<span class="error">Name can\'t blank</span>')
+          return;
+        }
+
+
+        let $trClone = $trParent.clone()
+        $trClone.removeClass('newPart').addClass('partRow')
+        $trClone.find('.btnSaveRow').css('display', 'none')
+        $trClone.find('.btnEditRow').css('display', 'inline-block')
+        $trClone.find('select, input').attr('readonly', true)
+
+        if ($trParent.hasClass('newPart')) {
+          $trClone.find('.form-control').each((index, element) => {
+            $(element).attr('name', 'parts[' + $('.table-parts tbody tr').length + '][' + $(element).attr('name') + ']')
+          })
+          $trClone.insertBefore($trParent)
+          $trParent.css('display', 'none')
+        } else {
+          $trParent.find('input, select').attr('readonly', true)
+          $trParent.find('.btnSaveRow').css('display', 'none')
+          $trParent.find('.btnEditRow').css('display', 'inline-block')
+          // $trParent.remove()
+        }
+      })
     })()
   </script>
 @endsection

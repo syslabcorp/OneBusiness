@@ -15,6 +15,11 @@ class Hdr extends Model {
 
     public function branchObj()
     {
-        return $this->belongsTo(\App\Branch::class, 'branch', 'Branch');
+        return $this->belongsTo(\App\Models\Branch::class, 'branch', 'Branch');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(Detail::class, 'asset_id', 'asset_id');
     }
 }
