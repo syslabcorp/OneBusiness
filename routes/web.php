@@ -248,4 +248,6 @@ Route::get("printContract/{corpId}/{employeeRequestId}", "Branch\EmployeeRequest
 
 Route::group(['middleware' => 'auth'], function() {
   Route::resource('equipments', 'Equip\EquipmentsController');
+  Route::resource('asset-brands', 'Asset\BrandsController');
+  Route::resource('asset-categories', 'Asset\CategoriesController');
 });
