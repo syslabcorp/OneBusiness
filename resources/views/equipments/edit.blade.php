@@ -16,14 +16,15 @@
             <div class="bs-example">
               <ul class="nav nav-tabs" style="margin-bottom: 15px;">
                 <li class="{{ $tab == 'auto' ? 'active' : '' }}">
-                  <a href="#personInfo" data-toggle="tab">Equipment Detail</a>
+                  <a href="#equipDetail" data-toggle="tab">Equipment Detail</a>
                 </li>
                 <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
-                  <a href="#shortages" data-toggle="tab">History</a>
+                  <a href="#equipHistory" data-toggle="tab">History</a>
                 </li>
               </ul>
               <div class="tab-content editEquipment" style="padding: 1em;">
                 @include('equipments.detail-tab')
+                @include('equipments.history')
               </div>
             </div>
           </div>

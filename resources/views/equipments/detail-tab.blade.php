@@ -1,5 +1,5 @@
 @php $partItems = is_array(old('parts')) ? old('parts') : $equipment->details; @endphp
-<div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="equipmentDetail" >
+<div class="tab-pane fade {{ $tab == 'auto' ? 'active in' : '' }} in" id="equipDetail">
   <div class="row">
     @if($equipment->asset_id)
     <form class="form form-horizontal" action="{{ route('equipments.update', [$equipment, 'corpID' => request()->corpID]) }}" method="POST">
