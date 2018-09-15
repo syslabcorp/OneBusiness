@@ -3,15 +3,15 @@
 @section('content')
   <div class="box-content">
     <div class="col-md-12">
-      <div class="row">
+      <div class="rown">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <div class="row">
+            <div class="rown">
               <div class="col-xs-9">
                 <h5>Equipment Category</h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                <a href="{{ route('equipments.create', ['corpID' => request()->corpID]) }}">Add Category</a>
+                <a data-toggle="modal" data-target="#addCategoryModal" href="javascript:void(0)">Add Category</a>
               </div>
             </div>
           </div>
@@ -28,14 +28,14 @@
                   </thead>
                   <tbody>
                     @foreach($categories as $cat)
-                    <tr>
+                    <tr data-id="{{$cat->cat_id}}">
                       <td class="text-center">{{ $cat->cat_id }}</td>
                       <td>{{ $cat->description }}</td>
                       <td class="text-center">
-                        <button class="btn btn-primary btn-md">
+                        <button data-toggle="modal" data-target="#editCategoryModal" onclick="editCategory({{ $cat->cat_id }}, '{{ $cat->description }}')" class="btn btn-primary btn-md">
                           <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <button class="btn btn-danger btn-md">
+                        <button onclick="deleteCategory({{ $cat->cat_id }}, '{{ $cat->description }}')"  class="btn btn-danger btn-md">
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>
@@ -50,12 +50,111 @@
       </div>
     </div>
   </div>
+  <!-- Modal add category-->
+  <div class="modal fade" id="addCategoryModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title"><strong>New Equipment Category</strong></h5>
+        </div>
+        <div class="modal-body">
+          <form action="{{ route('asset-categories.store') }}" method="post" role="form">
+            {{ csrf_field() }}
+            <div class="form-group">
+              <div class="rown">
+                <div class="col-xs-9 col-xs-offset-1">
+                  <div class="rown">
+                    <div class="col-xs-3" style="padding-top: 9px;">
+                      <label for="">Category:</label>
+                    </div>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-control" name="description" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rown">
+              <div class="col-xs-6">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fas fa-reply"></i>&nbsp;&nbsp;Back</button>
+              </div>
+              <div class="col-xs-6 text-right">
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!--/ Modal add category-->
+
+  <!-- Modal edit category-->
+  <div class="modal fade" id="editCategoryModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title"><strong>Edit Equipment Category</strong></h5>
+        </div>
+        <div class="modal-body">
+          <form action="{{ route('asset-categories.index') }}" method="post" role="form">
+            {{ csrf_field() }}
+            <input type="hidden" name="_method" value="PUT">
+            <div class="form-group">
+              <div class="rown">
+                <div class="col-xs-9 col-xs-offset-1">
+                  <div class="rown">
+                    <div class="col-xs-3" style="padding-top: 9px;">
+                      <label for="">Category:</label>
+                    </div>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-control" name="description" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rown">
+              <div class="col-xs-6">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fas fa-reply"></i>&nbsp;&nbsp;Back</button>
+              </div>
+              <div class="col-xs-6 text-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!--/ Modal edit category-->
 @endsection
 
 @section('pageJS')
   <script type="text/javascript">
     (()=> { 
-      $('.table-categories').dataTable()
+      let categoriesTable = $('.table-categories').dataTable()
+      deleteCategory = (id, desc) => {
+        showConfirmMessage(
+          'Are you sure you want to delete <strong>' + id + ' - ' + desc + '</strong>'   , 'Confirm Delete', () => {
+            $.ajax({
+              type: 'DELETE',
+              url:  '{{ route('asset-categories.index') }}/' + id,
+              success: (res) => {
+                $('.table-categories tbody tr[data-id="' + id + '"]' ).remove()
+              }
+            })
+          })
+      }
+
+      editCategory = (id, desc) => {
+        $('#editCategoryModal input[name="description"]').val(desc)
+        $('#editCategoryModal form').attr("action",'{{ route('asset-categories.index') }}/' + id)
+      }
     })()
   </script>
 @endsection

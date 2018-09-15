@@ -44,6 +44,10 @@ class EquipmentsController extends Controller
 
         $equipment = new \App\Models\Equip\Hdr;
 
+        $lastEquipment = $equipment->orderBy('asset_id', 'DESC')->first();
+
+        $equipment->asset_id = $lastEquipment ? $lastEquipment->asset_id : null;
+
         $vendors = \App\Models\Vendor::orderBy('VendorName', 'ASC')->get();
         $brands = \App\Models\Equip\Brands::orderBy('description', 'ASC')->get();
         $categories = \App\Models\Equip\Category::orderBy('description', 'ASC')->get();

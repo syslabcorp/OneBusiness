@@ -27,9 +27,9 @@
         <td><input type="text" name="parts[{{ $loop->index }}][desc]" class="form-control" value="{{ $row->item->description }}"></td>
         <td>
           <select name="parts[{{ $loop->index }}][status]" class="form-control">
-            <option {{ $row->status == 0 ? 'selected' : '' }} value="0">Retire</option>
-            <option {{ $row->status == 1 ? 'selected' : '' }} value="1">In Use</option>
             <option {{ $row->status == 2 ? 'selected' : '' }} value="2">For Repair</option>
+            <option {{ $row->status == 1 ? 'selected' : '' }} value="1">In Use</option>
+            <option {{ $row->status == 0 ? 'selected' : '' }} value="0">Retire</option>
           </select>
         </td>
         <td><input type="text" class="form-control"></td>
@@ -77,9 +77,9 @@
         <td><input type="text" name="desc" class="form-control"></td>
         <td>
           <select name="status" class="form-control">
-            <option value="0">Retire</option>
-            <option value="1">In Use</option>
             <option value="2">For Repair</option>
+            <option selected value="1">In Use</option>
+            <option value="0">Retire</option>
           </select>
         </td>
         <td><input type="text" class="form-control"></td>
