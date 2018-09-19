@@ -15,7 +15,7 @@ class Master extends Model {
 
     public function detail()
     {
-        return $this->belongsTo(\App\Models\)
+        // return $this->belongsTo(\App\Models\)
     }
 
     protected static function boot()

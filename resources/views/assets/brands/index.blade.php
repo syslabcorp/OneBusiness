@@ -11,7 +11,9 @@
                   <h5>Equipment Brands</h5>
                 </div>
                 <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                  <a data-toggle="modal" data-target="#addBrandModal" href="javascript:void(0)">Add Brand</a>
+                  @if(\Auth::user()->checkAccessById(54, 'A'))
+                    <a data-toggle="modal" data-target="#addBrandModal" href="javascript:void(0)">Add Brand</a>
+                  @endif
                 </div>
             </div>
           </div>
@@ -32,10 +34,11 @@
                       <td class="text-center">{{ $brand->brand_id }}</td>
                       <td>{{ $brand->description }}</td>
                       <td class="text-center">
-                        <button data-toggle="modal" data-target="#editBrandModal" onclick="editBrand({{ $brand->brand_id }}, '{{ $brand->description }}')" class="btn btn-primary btn-md">
+                        <button data-toggle="modal" data-target="#editBrandModal" onclick="editBrand({{ $brand->brand_id }}, '{{ $brand->description }}')" class="btn btn-primary btn-md" {{ \Auth::user()->checkAccessById(54, 'E') ? '' : 'disabled' }}>
                           <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <button onclick="deleteBrand({{ $brand->brand_id }}, '{{ $brand->description }}')"  class="btn btn-danger btn-md">
+                        <button onclick="deleteBrand({{ $brand->brand_id }}, '{{ $brand->description }}')" class="btn btn-danger btn-md"
+                          {{ \Auth::user()->checkAccessById(54, 'D') ? '' : 'disabled' }}>
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>
@@ -52,7 +55,7 @@
   </div>
     <!-- Modal add brand-->
     <div class="modal fade" id="addBrandModal" role="dialog">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog ">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -93,7 +96,7 @@
 
   <!-- Modal edit brand-->
   <div class="modal fade" id="editBrandModal" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>

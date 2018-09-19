@@ -11,7 +11,9 @@
                 <h5>Equipment Category</h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                <a data-toggle="modal" data-target="#addCategoryModal" href="javascript:void(0)">Add Category</a>
+                @if(\Auth::user()->checkAccessById(55, 'A'))
+                  <a data-toggle="modal" data-target="#addCategoryModal" href="javascript:void(0)">Add Category</a>
+                @endif
               </div>
             </div>
           </div>
@@ -32,10 +34,11 @@
                       <td class="text-center">{{ $cat->cat_id }}</td>
                       <td>{{ $cat->description }}</td>
                       <td class="text-center">
-                        <button data-toggle="modal" data-target="#editCategoryModal" onclick="editCategory({{ $cat->cat_id }}, '{{ $cat->description }}')" class="btn btn-primary btn-md">
+                        <button data-toggle="modal" data-target="#editCategoryModal" onclick="editCategory({{ $cat->cat_id }}, '{{ $cat->description }}')" class="btn btn-primary btn-md" {{ \Auth::user()->checkAccessById(55, 'E') ? '' : 'checked' }}>
                           <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <button onclick="deleteCategory({{ $cat->cat_id }}, '{{ $cat->description }}')"  class="btn btn-danger btn-md">
+                        <button onclick="deleteCategory({{ $cat->cat_id }}, '{{ $cat->description }}')"  class="btn btn-danger btn-md"
+                          {{ \Auth::user()->checkAccessById(55, 'D') ? '' : 'checked' }}>
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>
@@ -52,7 +55,7 @@
   </div>
   <!-- Modal add category-->
   <div class="modal fade" id="addCategoryModal" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -93,7 +96,7 @@
 
   <!-- Modal edit category-->
   <div class="modal fade" id="editCategoryModal" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
