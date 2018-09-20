@@ -23,10 +23,13 @@
       @if(count($partItems))
       @foreach($partItems as $row)
       <tr class="partRow">
-        <td class="text-center">{{ $loop->index + 1 }}</td>
-        <td><input type="text" name="parts[{{ $loop->index }}][desc]" class="form-control" value="{{ $row->item->description }}"></td>
+        <td class="text-center">
+          {{ $row->item->item_id }}
+          <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}">
+        </td>
+        <td><input type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control" value="{{ $row->item->description }}"></td>
         <td>
-          <select name="parts[{{ $loop->index }}][status]" class="form-control">
+          <select name="parts[{{ $row->item_id }}][status]" class="form-control">
             <option {{ $row->status == 2 ? 'selected' : '' }} value="2">For Repair</option>
             <option {{ $row->status == 1 ? 'selected' : '' }} value="1">In Use</option>
             <option {{ $row->status == 0 ? 'selected' : '' }} value="0">Retire</option>
@@ -34,14 +37,14 @@
         </td>
         <td><input type="text" class="form-control"></td>
         <td>
-          <select name="parts[{{ $loop->index }}][brand_id]" class="form-control">
+          <select name="parts[{{ $row->item_id }}][brand_id]" class="form-control">
             @foreach($brands as $item)
               <option value="{{ $item->brand_id }}" {{ $item->brand_id == $row->item->brand_id ? 'selected' : '' }}>{{ $item->description }}</option>
             @endforeach
           </select>
         </td>
         <td>
-          <select name="parts[{{ $loop->index }}][cat_id]" class="form-control">
+          <select name="parts[{{ $row->item_id }}][cat_id]" class="form-control">
             @foreach($categories as $item)
               <option value="{{ $item->cat_id }}" {{ $item->cat_id == $row->item->cat_id ? 'selected' : '' }}>{{ $item->description }}</option>
             @endforeach
@@ -51,13 +54,13 @@
         <td><input type="text" class="form-control"></td>
         <td><input type="text" class="form-control"></td>
         <td>
-          <select name="parts[{{ $loop->index }}][supplier_id]" class="form-control">
+          <select name="parts[{{ $row->item_id }}][supplier_id]" class="form-control">
             @foreach($vendors as $item)
             <option value="{{ $item->Supp_ID }}" {{ $item->Supp_ID == $row->item->supplier_id ? 'selected' : '' }}>{{ $item->VendorName }}</option>
             @endforeach
           </select>
         </td>
-        <td class="text-center"><input {{ $row->item->consumable ? 'checked' : '' }} type="checkbox" value="1" name="parts[{{ $loop->index }}][consumable]"></td>
+        <td class="text-center"><input {{ $row->item->consumable ? 'checked' : '' }} type="checkbox" value="1" name="parts[{{ $row->item_id }}][consumable]"></td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-info btn-md btnEditRow">
             <i class="fas fa-pencil-alt"></i>

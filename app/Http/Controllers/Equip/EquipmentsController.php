@@ -12,7 +12,11 @@ class EquipmentsController extends Controller
 {
     public function index()
     {
-        $company = Corporation::findOrFail(request()->corpID);
+        $companies = Corporation::orderBy('corp_name')
+                                ->where('database_name', '!=', '')
+                                ->get();
+
+        $company = $companies->first();
         
         $deptModel = new \App\Models\T\Depts;
         $deptModel->setConnection($company->database_name);
@@ -20,11 +24,13 @@ class EquipmentsController extends Controller
         $deptItems = $deptModel->orderBy('department', 'ASC')
                                 ->get();
         
-        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
+        $branches = \Auth::user()->getBranchesByArea($company->corp_id);
 
         return view('equipments.index', [
             'deptItems' => $deptItems,
-            'branches' => $branches
+            'branches' => $branches,
+            'companies' => $companies,
+            'company' => $company
         ]);
     }
 
@@ -46,7 +52,7 @@ class EquipmentsController extends Controller
 
         $lastEquipment = $equipment->orderBy('asset_id', 'DESC')->first();
 
-        $equipment->asset_id = $lastEquipment ? $lastEquipment->asset_id : null;
+        $lastAssetId = $lastEquipment ? $lastEquipment->asset_id + 1 : 1;
 
         $vendors = \App\Models\Vendor::orderBy('VendorName', 'ASC')->get();
         $brands = \App\Models\Equip\Brands::orderBy('description', 'ASC')->get();
@@ -59,7 +65,8 @@ class EquipmentsController extends Controller
             'branches' => $branches,
             'vendors' => $vendors,
             'brands' => $brands,
-            'categories' => $categories
+            'categories' => $categories,
+            'lastAssetId' =>$lastAssetId
         ]);
     }
 
@@ -111,6 +118,12 @@ class EquipmentsController extends Controller
         $brands = \App\Models\Equip\Brands::orderBy('description', 'ASC')->get();
         $categories = \App\Models\Equip\Category::orderBy('description', 'ASC')->get();
 
+        $histories = $equipment->histories()
+                            ->selectRaw('*, DATE_FORMAT(created_at, "%d/%m/%Y") as log_at')
+                            ->orderBy('created_at', 'DESC')
+                            ->get()
+                            ->groupBy('log_at');
+
         return view('equipments.edit', [
             'tab' => $tab,
             'equipment' => $equipment,
@@ -118,7 +131,8 @@ class EquipmentsController extends Controller
             'branches' => $branches,
             'vendors' => $vendors,
             'brands' => $brands,
-            'categories' => $categories
+            'categories' => $categories,
+            'histories' => $histories
         ]);
     }
 
@@ -134,21 +148,45 @@ class EquipmentsController extends Controller
             ])
         );
 
-        $equipment->details->each->delete();
-
         if (is_array(request()->parts)) {
             foreach (request()->parts as $partParams) {
-                $item = \App\Models\Item\Master::create([
-                    'description' => $partParams['desc'],
-                    'brand_id' => $partParams['brand_id'],
-                    'cat_id' => $partParams['cat_id'],
-                    'supplier_id' => $partParams['supplier_id'],
-                    'consumable' => isset($partParams['consumable']) ? 1 : 0
+                if (isset($partParams['item_id'])) {
+                    $item = \App\Models\Item\Master::find($partParams['item_id']);
+                    if ($item->detail->status != $partParams['status']) {
+                        \App\Models\Equip\History::create([
+                            'changed_by' => \Auth::user()->UserID,
+                            'content' => 'set as "' . \App\Models\Equip\Detail::STATUSES[$partParams['status']] . '"',
+                            'item_id' => $item->item_id
+                        ]);
+                    }
+
+                    $item->update([
+                        'description' => $partParams['desc'],
+                        'brand_id' => $partParams['brand_id'],
+                        'cat_id' => $partParams['cat_id'],
+                        'supplier_id' => $partParams['supplier_id'],
+                        'consumable' => isset($partParams['consumable']) ? 1 : 0
+                    ]);
+                } else {
+                    $item = \App\Models\Item\Master::create([
+                        'description' => $partParams['desc'],
+                        'brand_id' => $partParams['brand_id'],
+                        'cat_id' => $partParams['cat_id'],
+                        'supplier_id' => $partParams['supplier_id'],
+                        'consumable' => isset($partParams['consumable']) ? 1 : 0
+                    ]);
+                }
+                \App\Models\Equip\Detail::updateOrCreate([
+                    'item_id' => $item->item_id,
+                    'asset_id' => $equipment->asset_id
+                ],[
+                    'status' => $partParams['status']
                 ]);
 
-                $equipment->details()->create([
-                    'item_id' => $item->item_id,
-                    'status' => $partParams['status']
+
+
+                $item->histories()->update([
+                    'equipment_id' => $equipment->asset_id
                 ]);
             }
         }

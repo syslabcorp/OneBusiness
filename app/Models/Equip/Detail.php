@@ -9,6 +9,12 @@ class Detail extends Model {
     protected $table = "equip_detail";
     protected $primaryKey = "asset_id";
 
+    const STATUSES = [
+        '2' => 'For Repair',
+        '1' => 'In Use',
+        '0' => 'Retire'
+    ];
+
     protected $fillable = [
         'item_id', 'asset_id', 'qty', 'status'
     ];
@@ -25,6 +31,13 @@ class Detail extends Model {
         static::deleting(function($detail) {
             $detail->item ? $detail->item()->delete() : null;
         });
+    }
 
+    protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        $query->where('item_id', '=', $this->item_id)
+            ->where('asset_id', '=', $this->asset_id);
+
+        return $query;
     }
 }

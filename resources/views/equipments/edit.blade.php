@@ -1,7 +1,7 @@
 @extends('layouts.custom')
 
 @section('content')
-  <div class="box-content">
+  <div class="box-content equipmentPage">
     <div class="col-md-12">
       <div class="row">
         <div class="panel panel-default">
@@ -18,7 +18,7 @@
                 <li class="{{ $tab == 'auto' ? 'active' : '' }}">
                   <a href="#equipDetail" data-toggle="tab">Equipment Detail</a>
                 </li>
-                <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
+                <li class="{{ $tab == 'history' ? 'active' : '' }}">
                   <a href="#equipHistory" data-toggle="tab">History</a>
                 </li>
               </ul>

@@ -15,7 +15,12 @@ class Master extends Model {
 
     public function detail()
     {
-        // return $this->belongsTo(\App\Models\)
+        return $this->belongsTo(\App\Models\Equip\Detail::class, 'item_id', 'item_id');
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(\App\Models\Equip\History::class, 'item_id', 'item_id');
     }
 
     protected static function boot()
@@ -23,7 +28,21 @@ class Master extends Model {
         parent::boot();
 
         self::created(function($item) {
+            \App\Models\Equip\History::create([
+                'changed_by' => \Auth::user()->UserID,
+                'content' => 'details has been created',
+                'item_id' => $item->item_id
+            ]);
+        });
 
+        self::saving(function($item) {
+            if ($item->isDirty()) {
+                \App\Models\Equip\History::create([
+                    'changed_by' => \Auth::user()->UserID,
+                    'content' => 'details has been updated',
+                    'item_id' => $item->item_id
+                ]);
+            }
         });
     }
 }

@@ -11,7 +11,7 @@
                 <h5>Equipment Inventory</h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                <a href="{{ route('equipments.create', ['corpID' => request()->corpID]) }}">Add Item</a>
+                <a href="{{ route('equipments.create', ['corpID' => $company->corp_id]) }}">Add Item</a>
               </div>
             </div>
           </div>
@@ -48,12 +48,15 @@
 @section('pageJS')
 <script>
   (() => {
-    let baseEquipmentAPI = '{{ route('api.equipments.index', ['corpID' => request()->corpID]) }}'
+    let baseEquipmentAPI = '{{ route('api.equipments.index', ['corpID' => $company->corp_id]) }}'
 
     let tableEquipment = $('.table-equipments').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: ()  => {
-        $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;">Filter: \
+        $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;"> \
+          Company: \
+          <select class="form-control company-select" style="width: 200px;margin-right: 20px;"></select> \
+          Filter: \
           <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
           <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="branch" type="radio" /> Branch </label> \
           <select disabled class="form-control branch-select" style="width: 150px;"> </select> \
@@ -68,6 +71,10 @@
         @foreach($branches as $item)
           $('.branch-select').append('<option value="{{ $item->Branch }}">{{ $item->ShortName }}</option>')
         @endforeach
+
+        @foreach($companies as $item)
+          $('.company-select').append('<option value="{{ $item->corp_id }}">{{ $item->corp_name }}</option>')
+        @endforeach
       },
       ajax: baseEquipmentAPI,
       columns: [
@@ -80,7 +87,7 @@
           targets: 1,
           data: 'description',
           render: (data, type, row, meta) => {
-            return '<a href="{{ route('equipments.index') }}/' + row.asset_id + '?corpID={{ request()->corpID }}">' + row.description + '</a>'
+            return '<a href="{{ route('equipments.index') }}/' + row.asset_id + '?corpID={{ $company->corp_id }}">' + row.description + '</a>'
           }
         },
         {

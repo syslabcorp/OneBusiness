@@ -47,7 +47,12 @@
       })
 
       addNewPart = () => {
-        $('.table-parts .newPart td:eq(0)').html($('.table-parts tbody tr').length)
+        let lastId = $('.table-parts tbody tr').length;
+        if (lastId > 1) {
+          lastId = 1 + parseInt($('.table-parts tbody tr:eq(' + (lastId - 2) + ') td:eq(0)').text()) 
+        }
+
+        $('.table-parts .newPart td:eq(0)').html(lastId)
         $('.table-parts .newPart').css('display', 'table-row')
         $('.table-parts .newPart .error').remove()
       }
@@ -87,8 +92,13 @@
         $trClone.find('select, input').attr('readonly', true)
 
         if ($trParent.hasClass('newPart')) {
+          let lastId = $('.table-parts tbody tr').length;
+          if (lastId > 1) {
+            lastId = 1 + parseInt($('.table-parts tbody tr:eq(' + (lastId - 2) + ') td:eq(0)').text()) 
+          }
+
           $trClone.find('.form-control').each((index, element) => {
-            $(element).attr('name', 'parts[' + $('.table-parts tbody tr').length + '][' + $(element).attr('name') + ']')
+            $(element).attr('name', 'parts[' + lastId + '][' + $(element).attr('name') + ']')
           })
           $trClone.insertBefore($trParent)
           $trParent.css('display', 'none')

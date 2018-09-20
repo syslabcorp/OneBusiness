@@ -15,7 +15,7 @@
               <label style="padding: 5px;"><strong>Asset #:</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-             <input type="text" class="form-control" readonly value="{{ $equipment->asset_id }}">
+             <input type="text" class="form-control" readonly value="{{ $equipment->asset_id ?: (isset($lastAssetId) ? $lastAssetId : 1) }}">
             </div>
           </div>
           <div class="rown">
