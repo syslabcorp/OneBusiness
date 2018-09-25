@@ -52,7 +52,7 @@
           </select>
         </td>
         <td><input type="text" class="form-control"></td>
-        <td><input type="text" class="form-control"></td>
+        <td><input type="number" class="form-control" name="parts[{{ $row->item_id }}][qty]" value="{{ $row->qty }}"></td>
         <td><input type="text" class="form-control"></td>
         <td>
           <select name="parts[{{ $row->item_id }}][supplier_id]" class="form-control">
@@ -102,7 +102,7 @@
           </select>
         </td>
         <td><input type="text" class="form-control"></td>
-        <td><input type="text" class="form-control"></td>
+        <td><input type="number" class="form-control" name="qty"></td>
         <td><input type="text" class="form-control"></td>
         <td>
           <select name="supplier_id" class="form-control">

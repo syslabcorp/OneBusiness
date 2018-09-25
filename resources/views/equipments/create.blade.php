@@ -18,9 +18,6 @@
                 <li class="{{ $tab == 'auto' ? 'active' : '' }}">
                   <a href="#personInfo" data-toggle="tab">Equipment Detail</a>
                 </li>
-                <li class="{{ $tab == 'shortages' ? 'active' : '' }}">
-                  <a href="#shortages" data-toggle="tab">History</a>
-                </li>
               </ul>
               <div class="tab-content" style="padding: 1em;">
                 @include('equipments.detail-tab')

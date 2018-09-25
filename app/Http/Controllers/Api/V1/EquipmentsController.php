@@ -54,7 +54,8 @@ class EquipmentsController extends Controller
         }
 
         return response()->json([
-            'success' => true
+            'success' => true,
+            'message' => 'Equipment #' . $id . ' has been successfully deleted'
         ]);
     }
 }

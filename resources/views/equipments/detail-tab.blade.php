@@ -38,6 +38,14 @@
               <input type="number" class="form-control" readonly>
             </div>
           </div>
+          <div class="rown">
+            <div class="col-sm-3 form-group text-right">
+              <label style="padding: 5px;"><strong>Active:</strong></label>
+            </div>
+            <div class="col-sm-9 form-group" style="margin-top: 5px;">
+              <input type="checkbox"  name="isActive" value="1" {{ (old('isActive') ?: $equipment->isActive) ? 'checked' : '' }}>
+            </div>
+          </div>
         </div>
         <div class="col-sm-6">
           <div class="rown">

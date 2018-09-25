@@ -29,7 +29,7 @@ class EquipTransformer extends Fractal\TransformerAbstract
             'department' => $dept ? $dept->department : '',
             'status' => '',
             'isActive' => $item->isActive,
-            'qty' => 0
+            'qty' => $item->details->sum('qty')
         ];
     }
 }

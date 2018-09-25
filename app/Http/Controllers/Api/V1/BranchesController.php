@@ -20,4 +20,30 @@ class BranchesController extends Controller
 
         return response()->json(['depts' => $depts]);
     }
+
+    public function getBranchesAndDepts()
+    {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $deptModel = new \App\Models\T\Depts;
+        $deptModel->setConnection($company->database_name);
+
+        $deptItems = $deptModel->orderBy('department', 'ASC')
+                                ->select(['dept_ID', 'department'])
+                                ->get();
+
+        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
+
+        $branches = $branches->map(function($branch, $index) {
+            return [
+                'Branch' => $branch->Branch,
+                'ShortName' => $branch->ShortName
+            ];
+        });
+
+        return response()->json([
+            'depts' => $deptItems,
+            'branches' => $branches
+        ]);
+    }
 }

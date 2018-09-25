@@ -18,17 +18,7 @@ class EquipmentsController extends Controller
 
         $company = $companies->first();
         
-        $deptModel = new \App\Models\T\Depts;
-        $deptModel->setConnection($company->database_name);
-
-        $deptItems = $deptModel->orderBy('department', 'ASC')
-                                ->get();
-        
-        $branches = \Auth::user()->getBranchesByArea($company->corp_id);
-
         return view('equipments.index', [
-            'deptItems' => $deptItems,
-            'branches' => $branches,
             'companies' => $companies,
             'company' => $company
         ]);
@@ -74,11 +64,13 @@ class EquipmentsController extends Controller
     {
         $company = Corporation::findOrFail(request()->corpID);
 
-        $equipment = \App\Models\Equip\Hdr::create(
-            request()->only([
-                'description', 'branch', 'dept_id', 'type', 'jo_dept'
-            ])
-        );
+        $equipParams = request()->only([
+            'description', 'branch', 'dept_id', 'type', 'jo_dept'
+        ]);
+
+        $equipParams['isActive'] = request()->isActive ? 1 : 0;
+
+        $equipment = \App\Models\Equip\Hdr::create($equipParams);
 
         if (is_array(request()->parts)) {
             foreach (request()->parts as $partParams) {
@@ -92,10 +84,13 @@ class EquipmentsController extends Controller
 
                 $equipment->details()->create([
                     'item_id' => $item->item_id,
-                    'status' => $partParams['status']
+                    'status' => $partParams['status'],
+                    'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
                 ]);
             }
         }
+
+        \Session::flash('success', 'New equipment #' . $equipment->asset_id . ' has been created');
 
         return redirect(route('equipments.index', ['corpID' => request()->corpID]));
     }
@@ -119,7 +114,7 @@ class EquipmentsController extends Controller
         $categories = \App\Models\Equip\Category::orderBy('description', 'ASC')->get();
 
         $histories = $equipment->histories()
-                            ->selectRaw('*, DATE_FORMAT(created_at, "%d/%m/%Y") as log_at')
+                            ->selectRaw('*, DATE_FORMAT(created_at, "%m/%d/%Y") as log_at')
                             ->orderBy('created_at', 'DESC')
                             ->get()
                             ->groupBy('log_at');
@@ -180,7 +175,8 @@ class EquipmentsController extends Controller
                     'item_id' => $item->item_id,
                     'asset_id' => $equipment->asset_id
                 ],[
-                    'status' => $partParams['status']
+                    'status' => $partParams['status'],
+                    'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
                 ]);
 
 

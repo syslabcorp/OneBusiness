@@ -80,7 +80,7 @@
         $trParent.find('.error').remove()
         
         if ($trParent.find('td:eq(1) input').val().trim() == '') {
-          $trParent.find('td:eq(1)').append('<span class="error">Name can\'t blank</span>')
+          $trParent.find('td:eq(1)').append('<span class="error">Name required</span>')
           return;
         }
 
@@ -90,6 +90,10 @@
         $trClone.find('.btnSaveRow').css('display', 'none')
         $trClone.find('.btnEditRow').css('display', 'inline-block')
         $trClone.find('select, input').attr('readonly', true)
+        $trClone.find('select[name="status"]').val($trParent.find('select[name="status"]').val())
+        $trClone.find('select[name="brand_id"]').val($trParent.find('select[name="brand_id"]').val())
+        $trClone.find('select[name="cat_id"]').val($trParent.find('select[name="cat_id"]').val())
+        $trClone.find('select[name="supplier_id"]').val($trParent.find('select[name="supplier_id"]').val())
 
         if ($trParent.hasClass('newPart')) {
           let lastId = $('.table-parts tbody tr').length;
@@ -102,6 +106,7 @@
           })
           $trClone.insertBefore($trParent)
           $trParent.css('display', 'none')
+          $trParent.find('select, input').val('')
         } else {
           $trParent.find('input, select').attr('readonly', true)
           $trParent.find('.btnSaveRow').css('display', 'none')

@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5>Equipment Inventory</h5>
+                <h5><strong>Equipment Inventory</strong></h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
                 <a href="{{ route('equipments.create', ['corpID' => $company->corp_id]) }}">Add Item</a>
@@ -65,17 +65,11 @@
           <select disabled class="form-control department-select" style="width: 150px;"> </select> \
         </div>')
 
-        @foreach($deptItems as $item)
-          $('.department-select').append('<option value="{{ $item->dept_ID }}">{{ $item->department }}</option>')
-        @endforeach
-
-        @foreach($branches as $item)
-          $('.branch-select').append('<option value="{{ $item->Branch }}">{{ $item->ShortName }}</option>')
-        @endforeach
-
         @foreach($companies as $item)
           $('.company-select').append('<option value="{{ $item->corp_id }}">{{ $item->corp_name }}</option>')
         @endforeach
+
+        reloadBranchesAndDepts()
       },
       ajax: baseEquipmentAPI,
       columns: [
@@ -223,6 +217,29 @@
     $('body').on('change', '.department-select', (event) => {
       reloadEquipmentTable(baseEquipmentAPI + '&department=' + $('.department-select').val())
     })
+
+    $('body').on('change', '.company-select', (event) => {
+      reloadBranchesAndDepts()
+    })
+
+    reloadBranchesAndDepts = () => {
+      $('.department-select option').remove()
+      $('.branch-select option').remove()
+
+      $.ajax({
+        url: '{{ url('/') }}/api/v1/branches/depts?corpID=' + $('.company-select').val(),
+        type: 'GET',
+        success: (res) => {
+          for(let i = 0; i < res.depts.length; i++) {
+            $('.department-select').append('<option value="' + res.depts[i].dept_ID + '">' + res.depts[i].department + '</option>')
+          }
+
+          for(let i = 0; i < res.branches.length; i++) {
+            $('.branch-select').append('<option value="' + res.branches[i].Branch + '">' + res.branches[i].ShortName + '</option>')
+          }
+        }
+      })
+    }
 
     reloadEquipmentTable = (url) => {
       tableEquipment.ajax.url(url).load()
