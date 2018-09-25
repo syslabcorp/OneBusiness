@@ -7,12 +7,12 @@
         $('.table-parts').slideDown()
       }
 
-      $('#equipmentDetail select[name="branch"]').change((event) => {
+      $('#equipDetail select[name="branch"]').change((event) => {
         updateDepartmentsSelect()
       })
 
       updateDepartmentsSelect = () => {
-        let branchID = $('#equipmentDetail select[name="branch"]').val()
+        let branchID = $('#equipDetail select[name="branch"]').val()
         $('select[name="dept_id"] option').css('display', 'none')
         $('select[name="jo_dept"] option').css('display', 'none')
 
@@ -37,7 +37,7 @@
 
       updateDepartmentsSelect()
 
-      // $('.editEquipment .form-control').prop('disabled', true)
+      $('.editEquipment .form-control').prop('disabled', true)
       $('.partRow input, .partRow select').attr('readonly', true)
 
       $(window).keydown((event) => {
@@ -108,6 +108,14 @@
           $trParent.find('.btnEditRow').css('display', 'inline-block')
           // $trParent.remove()
         }
+      })
+
+      $('.editEquipment .btn-edit').click((event) => {
+        $('.editEquipment .form-control').prop('disabled', false)
+        $('.editEquipment .btnAddRow, .btnEditRow, .btnSaveRow, .btnRemoveRow').prop('disabled', false)
+        $('.editEquipment .btn-edit').css('display', 'none')
+        $('.editEquipment .btn-save').css('display', 'inline-block')
+        // $('.partRow input, .partRow select').attr('readonly', true)
       })
     })()
   </script>

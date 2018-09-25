@@ -1,6 +1,7 @@
 <div class="table-responsive table-parts" style="{{ count($partItems) ? '' : 'display: none;'}}">
   <div class="text-right">
-    <button type="button" onclick="addNewPart()" class="btn btn-success btn-sm" style="margin-bottom: 10px;">Add Row (F2)</button>
+    <button {{ $equipment->asset_id ? 'disabled' : '' }} type="button" onclick="addNewPart()" 
+      class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
   </div>
   <table class="table table-bordered table-striped">
     <thead>
@@ -62,13 +63,13 @@
         </td>
         <td class="text-center"><input {{ $row->item->consumable ? 'checked' : '' }} type="checkbox" value="1" name="parts[{{ $row->item_id }}][consumable]"></td>
         <td style="width: 100px;">
-          <button type="button" class="btn btn-info btn-md btnEditRow">
+          <button type="button" class="btn btn-info btn-md btnEditRow" disabled>
             <i class="fas fa-pencil-alt"></i>
           </button>
           <button type="button" class="btn btn-primary btn-md btnSaveRow" style="display: none;">
             <i class="fas fa-check"></i>
           </button>
-          <button type="button" class="btn btn-danger btn-md btnRemoveRow">
+          <button type="button" class="btn btn-danger btn-md btnRemoveRow" disabled>
             <i class="fas fa-trash-alt"></i>
           </button>
         </td>

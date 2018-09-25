@@ -46,7 +46,7 @@
             </div>
             <div class="col-sm-7 form-group">
               <select name="type" class="form-control">
-                <option {{ $equipment->type == 'Com Proper' ? 'selected' : '' }} value="Com Proper">Com Proper</option>
+                <option {{ $equipment->type == 'Com Proper' ? 'selected' : '' }} value="Com Proper">Company Property</option>
                 <option {{ $equipment->type == 'Rental' ? 'selected' : '' }} value="Rental">Rental</option>
               </select>
             </div>
@@ -104,9 +104,10 @@
         </div>
         <div class="col-xs-6 text-right">
           @if($equipment->asset_id)
-            <button class="btn btn-info"><i class="fas fa-pencil-alt"></i> Edit</button>
+            <button type="button" class="btn btn-edit btn-info"><i class="fas fa-pencil-alt"></i> Edit</button>
+            <button style="display: none;" class="btn btn-success btn-save"><i class="far fa-save"></i> Save</button>
           @else
-            <button class="btn btn-success btn-save"><i class="far fa-save"></i> Save</button>
+            <button class="btn btn-success btn-save"><i class="far fa-save"></i> Create</button>
           @endif
         </div>
       </div>

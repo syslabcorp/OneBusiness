@@ -29,6 +29,7 @@
                         <th>Department</th>
                         <th>Status</th>
                         <th>Qty</th>
+                        <th>Active</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -114,6 +115,14 @@
         },
         {
           targets: 7,
+          data: 'isActive',
+          class: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" onclick="return false;" ' + (data == 1 ? 'checked' : '') + '/>'
+          }
+        },
+        {
+          targets: 8,
           class: 'text-center',
           render: (data, type, row, meta) => {
             return '<button onclick="removeEquipment(' + row.asset_id +',\'' + row.description + '\')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
@@ -131,19 +140,62 @@
     })
 
     removeEquipment = (id, description) => {
-      showConfirmMessage('Are you sure you want to delete equipment #' + id + ' ' + description + '?', 'Confirm', () => {
+      swal({
+        title: "<div class='delete-title'>Confirm Delete <a onclick='swal.close()' class='close'><i class='fas fa-times'></i></a></div>",
+        text:  "<div class='delete-text'>You are about to delete <strong>Equipment</strong> #" + id + "- <strong>" + description + "</strong> \
+          and its parts and other details. Would you like to set it as <strong>Inactive</strong> instead?</div>",
+        html:  true,
+        customClass: 'swal-wide',
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Delete anyway',
+        cancelButtonText: 'Set to Inactive',
+        showCancelButton: true,
+        closeOnConfirm: false,
+        closeOnCancel: false,
+        allowEscapeKey: false,
+      }, function(isConfirm) {
+        $('.alert-nothing').remove()
         $.ajax({
-          url: '{{ route('api.equipments.index') }}/' + id,
+          url: '{{ route('api.equipments.index') }}/' + id + '?delete=' + (isConfirm ? 1 : 0),
           type: 'DELETE',
           success: (res) => {
-            tableEquipment.ajax.reload()
+            if (res.success) {
+              tableEquipment.ajax.reload()
+              if (res.message) {
+                $('#page-content-togle-sidebar-sec').prepend('\
+                <div class="row alert-nothing">\
+                  <div class="alert alert-success col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                    <span class="fa fa-close"></span> <em>' + res.message + '</em>\
+                  </div>\
+                </div>\
+                ');
+                setTimeout(function() {
+                  $('.alert-nothing').slideUp()
+                }, 3000);
+              }
+            } else {
+              $('#page-content-togle-sidebar-sec').prepend('\
+              <div class="row alert-nothing">\
+                <div class="alert alert-danger col-md-8 col-md-offset-2" style="border-radius: 3px;">\
+                  <span class="fa fa-close"></span> <em>' + res.message + '</em>\
+                </div>\
+              </div>\
+              ');
+              setTimeout(function() {
+                $('.alert-nothing').slideUp()
+              }, 3000);
+            }
+            
+            swal.close()
           },
           error: (res) => {
-
+            swal.close()
           }
         })
       })
     }
+
+
 
     $('body').on('change', 'input[name="document-filter"]', (event) => {
       switch(event.target.value) {

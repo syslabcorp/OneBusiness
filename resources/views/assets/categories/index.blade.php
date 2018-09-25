@@ -59,10 +59,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h5 class="modal-title"><strong>New Equipment Category</strong></h5>
+          <h5 class="modal-title">New Equipment Category</h5>
         </div>
-        <div class="modal-body">
-          <form action="{{ route('asset-categories.store') }}" method="post" role="form">
+        <form action="{{ route('asset-categories.store') }}" method="post" role="form">
+          <div class="modal-body">
             {{ csrf_field() }}
             <div class="form-group">
               <div class="rown">
@@ -78,6 +78,8 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="modal-footer">
             <div class="rown">
               <div class="col-xs-6">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fas fa-reply"></i>&nbsp;&nbsp;Back</button>
@@ -86,8 +88,8 @@
                 <button type="submit" class="btn btn-primary">Create</button>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -100,10 +102,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h5 class="modal-title"><strong>Edit Equipment Category</strong></h5>
+          <h5 class="modal-title">Edit Equipment Category</h5>
         </div>
-        <div class="modal-body">
-          <form action="{{ route('asset-categories.index') }}" method="post" role="form">
+        <form action="{{ route('asset-categories.index') }}" method="post" role="form">
+          <div class="modal-body">
             {{ csrf_field() }}
             <input type="hidden" name="_method" value="PUT">
             <div class="form-group">
@@ -120,6 +122,8 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="modal-footer">
             <div class="rown">
               <div class="col-xs-6">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fas fa-reply"></i>&nbsp;&nbsp;Back</button>
@@ -128,8 +132,8 @@
                 <button type="submit" class="btn btn-primary">Save</button>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@ class Hdr extends Model {
     protected $primaryKey = "asset_id";
 
     protected $fillable = [
-        'description', 'branch', 'dept_id', 'type', 'jo_dept'
+        'description', 'branch', 'dept_id', 'type', 'jo_dept', 'isActive'
     ];
 
     public function branchObj()
@@ -26,5 +26,15 @@ class Hdr extends Model {
     public function histories()
     {
         return $this->hasMany(History::class, 'equipment_id', 'asset_id');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($equipment) {
+            $equipment->details->each->delete();
+            $equipment->histories->each->delete();
+        });
     }
 }

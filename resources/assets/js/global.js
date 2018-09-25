@@ -41,3 +41,4 @@ showConfirmMessage = (message, title = "Alert", callback = () => {}) => {
     }
   });
 }
+
