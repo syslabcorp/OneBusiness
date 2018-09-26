@@ -15,15 +15,13 @@
           <ul class="list-unstyled listHistories">
             @foreach($group as $history)
             <li>
-              <a>
-                <strong>
-                @if($history->item)
-                  Part #{{ $history->item_id }} - {{ $history->item->description }}
-                @else
-                  Equipment #{{ $history->equipment_id }} - {{ $history->equipment->description }}
-                @endif
-                </strong>
-              </a>
+              <strong style="color: #337ab7">
+              @if($history->item)
+                Part #{{ $history->item_id }} - {{ $history->item->description }}
+              @else
+                Equipment #{{ $history->equipment_id }} - {{ $history->equipment->description }}
+              @endif
+              </strong>
               {{ $history->content }} by
               <strong> {{ $history->changedBy->UserName }}</strong>
             </li>

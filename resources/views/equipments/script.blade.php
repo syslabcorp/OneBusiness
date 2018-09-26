@@ -42,7 +42,7 @@
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
 
       $(window).keydown((event) => {
-        if (event.which === 113) {
+        if (event.which === 113 && !$('.btn-edit').is(':visible')) {
           addNewPart()
         }
       })
@@ -108,7 +108,11 @@
           })
           $trClone.insertBefore($trParent)
           $trParent.css('display', 'none')
-          $trParent.find('select, input').val('')
+          $trParent.find('input').val('')
+          $trParent.find('select').each((index, element) => {
+            $(element).val($(element).find('option:first').val())
+          })
+          $trParent.find('select[name="status"]').val(1)
         } else {
           $trParent.find('input, select').attr('readonly', true)
           $trParent.find('.btnSaveRow').css('display', 'none')

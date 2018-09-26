@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="rown">
                 <div class="col-xs-9">
-                  <h5>Equipment Brands</h5>
+                  <h5><strong>Equipment Brands</strong></h5>
                 </div>
                 <div class="col-xs-3 text-right" style="margin-top: 10px;">
                   @if(\Auth::user()->checkAccessById(54, 'A'))

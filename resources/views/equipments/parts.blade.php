@@ -114,7 +114,7 @@
           </select>
         </td>
         <td class="text-center"><input value="1" type="checkbox" name="consumable"></td>
-        <td class="text-center"><input value="1" type="checkbox" name="isActive"></td>
+        <td class="text-center"><input checked value="1" type="checkbox" name="isActive"></td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-info btn-md btnEditRow" style="display: none;">
             <i class="fas fa-pencil-alt"></i>

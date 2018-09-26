@@ -220,7 +220,12 @@
       reloadEquipmentTable(baseEquipmentAPI + '&department=' + $('.department-select').val())
     })
 
+    reloadEquipmentTable = (url) => {
+      tableEquipment.ajax.url(url).load()
+    }
+
     $('body').on('change', '.company-select', (event) => {
+      reloadEquipmentTable(baseEquipmentAPI.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val())
       reloadBranchesAndDepts()
       baseEquipmentAPI = baseEquipmentAPI.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val()
       let createLink = $('.addEquipment').attr('href')
@@ -244,10 +249,6 @@
           }
         }
       })
-    }
-
-    reloadEquipmentTable = (url) => {
-      tableEquipment.ajax.url(url).load()
     }
   })()
 </script>
