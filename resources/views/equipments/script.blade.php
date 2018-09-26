@@ -39,6 +39,7 @@
 
       $('.editEquipment .form-control').prop('disabled', true)
       $('.partRow input, .partRow select').attr('readonly', true)
+      $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
 
       $(window).keydown((event) => {
         if (event.which === 113) {
@@ -61,6 +62,7 @@
       $('.table-parts').on('click', '.btnEditRow', function(event) {
         $(this).css('display', 'none')
         $(this).parents('tr').find('.btnSaveRow').css('display', 'inline-block')
+        $(this).parents('tr').find('input[type="checkbox"]').attr('onclick', '')
 
         $(this).parents('tr').find('select, input').attr('readonly', false)
       })

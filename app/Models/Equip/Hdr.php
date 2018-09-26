@@ -32,6 +32,24 @@ class Hdr extends Model {
     {
         parent::boot();
 
+        self::created(function($item) {
+            \App\Models\Equip\History::create([
+                'changed_by' => \Auth::user()->UserID,
+                'content' => 'has been created',
+                'equipment_id' => $item->asset_id
+            ]);
+        });
+
+        self::saving(function($item) {
+            if ($item->isDirty()) {
+                \App\Models\Equip\History::create([
+                    'changed_by' => \Auth::user()->UserID,
+                    'content' => 'has been updated',
+                    'equipment_id' => $item->asset_id
+                ]);
+            }
+        });
+
         static::deleting(function($equipment) {
             $equipment->details->each->delete();
             $equipment->histories->each->delete();

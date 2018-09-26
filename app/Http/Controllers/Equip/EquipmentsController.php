@@ -79,7 +79,8 @@ class EquipmentsController extends Controller
                     'brand_id' => $partParams['brand_id'],
                     'cat_id' => $partParams['cat_id'],
                     'supplier_id' => $partParams['supplier_id'],
-                    'consumable' => isset($partParams['consumable']) ? 1 : 0
+                    'consumable' => isset($partParams['consumable']) ? 1 : 0,
+                    'isActive' => isset($partParams['isActive']) ? 1 : 0
                 ]);
 
                 $equipment->details()->create([
@@ -90,7 +91,7 @@ class EquipmentsController extends Controller
             }
         }
 
-        \Session::flash('success', 'New equipment #' . $equipment->asset_id . ' has been created');
+        \Session::flash('success', 'New equipment #' . $equipment->asset_id . '-' . $equipment->description . ' has been created');
 
         return redirect(route('equipments.index', ['corpID' => request()->corpID]));
     }
@@ -160,7 +161,8 @@ class EquipmentsController extends Controller
                         'brand_id' => $partParams['brand_id'],
                         'cat_id' => $partParams['cat_id'],
                         'supplier_id' => $partParams['supplier_id'],
-                        'consumable' => isset($partParams['consumable']) ? 1 : 0
+                        'consumable' => isset($partParams['consumable']) ? 1 : 0,
+                        'isActive' => isset($partParams['isActive']) ? 1 : 0
                     ]);
                 } else {
                     $item = \App\Models\Item\Master::create([
@@ -187,7 +189,7 @@ class EquipmentsController extends Controller
             }
         }
 
-        \Session::flash('success', 'Equipment has been updated successfully');
+        \Session::flash('success', 'Equipment #' . $equipment->asset_id . '-' . $equipment->description . ' has been updated');
         
         return redirect(route('equipments.show', [$equipment, 'corpID' => request()->corpID]));
     }

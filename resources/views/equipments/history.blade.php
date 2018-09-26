@@ -17,7 +17,11 @@
             <li>
               <a>
                 <strong>
-                Part #{{ $history->item_id }} - {{ $history->item->description }}
+                @if($history->item)
+                  Part #{{ $history->item_id }} - {{ $history->item->description }}
+                @else
+                  Equipment #{{ $history->equipment_id }} - {{ $history->equipment->description }}
+                @endif
                 </strong>
               </a>
               {{ $history->content }} by

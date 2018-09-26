@@ -17,6 +17,7 @@
         <th>Cost</th>
         <th>Vendor</th>
         <th>Consumable</th>
+        <th>Active</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -62,6 +63,7 @@
           </select>
         </td>
         <td class="text-center"><input {{ $row->item->consumable ? 'checked' : '' }} type="checkbox" value="1" name="parts[{{ $row->item_id }}][consumable]"></td>
+        <td class="text-center"><input {{ $row->item->isActive ? 'checked' : '' }} type="checkbox" value="1" name="parts[{{ $row->item_id }}][isActive]"></td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-info btn-md btnEditRow" disabled>
             <i class="fas fa-pencil-alt"></i>
@@ -112,6 +114,7 @@
           </select>
         </td>
         <td class="text-center"><input value="1" type="checkbox" name="consumable"></td>
+        <td class="text-center"><input value="1" type="checkbox" name="isActive"></td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-info btn-md btnEditRow" style="display: none;">
             <i class="fas fa-pencil-alt"></i>

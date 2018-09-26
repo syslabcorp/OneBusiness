@@ -21,4 +21,9 @@ class History extends Model
     {
         return $this->belongsTo(\App\Models\Item\Master::class, 'item_id', 'item_id');
     }
+
+    public function equipment()
+    {
+        return $this->belongsTo(Hdr::class, 'equipment_id', 'asset_id');
+    }
 }

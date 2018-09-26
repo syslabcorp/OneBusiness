@@ -10,7 +10,7 @@ class Master extends Model {
     protected $primaryKey = "item_id";
 
     protected $fillable = [
-        'description', 'brand_id', 'cat_id', 'supplier_id', 'consumable'
+        'description', 'brand_id', 'cat_id', 'supplier_id', 'consumable', 'isActive'
     ];
 
     public function detail()
