@@ -12,6 +12,11 @@ class EquipmentsController extends Controller
 {
     public function index()
     {
+        if(!\Auth::user()->checkAccessById(56, 'V')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $companies = Corporation::orderBy('corp_name')
                                 ->where('database_name', '!=', '')
                                 ->get();
@@ -26,6 +31,11 @@ class EquipmentsController extends Controller
 
     public function create()
     {
+        if(!\Auth::user()->checkAccessById(56, 'A')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $company = Corporation::findOrFail(request()->corpID);
         $tab = 'auto';
         
@@ -62,6 +72,11 @@ class EquipmentsController extends Controller
 
     public function store(EquipmentRequest $request)
     {
+        if(!\Auth::user()->checkAccessById(56, 'A')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $company = Corporation::findOrFail(request()->corpID);
 
         $equipParams = request()->only([
@@ -98,6 +113,11 @@ class EquipmentsController extends Controller
 
     public function show($id)
     {
+        if(!\Auth::user()->checkAccessById(56, 'V')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $company = Corporation::findOrFail(request()->corpID);
         $tab = 'auto';
 
@@ -134,6 +154,11 @@ class EquipmentsController extends Controller
 
     public function update(EquipmentRequest $request, $id)
     {
+        if(!\Auth::user()->checkAccessById(56, 'E')) {
+            \Session::flash('error', "You don't have permission"); 
+            return redirect("/home"); 
+        }
+
         $company = Corporation::findOrFail(request()->corpID);
 
         $equipment = \App\Models\Equip\Hdr::findOrFail($id);

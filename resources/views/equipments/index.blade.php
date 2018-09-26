@@ -11,7 +11,9 @@
                 <h5><strong>Equipment Inventory</strong></h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                <a href="{{ route('equipments.create', ['corpID' => $company->corp_id]) }}">Add Item</a>
+                @if(\Auth::user()->checkAccessById(56, 'A'))
+                  <a class="addEquipment" href="{{ route('equipments.create', ['corpID' => $company->corp_id]) }}">Add Item</a>
+                @endif
               </div>
             </div>
           </div>
@@ -119,7 +121,7 @@
           targets: 8,
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<button onclick="removeEquipment(' + row.asset_id +',\'' + row.description + '\')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
+            return '<button {{ \Auth::user()->checkAccessById(56, 'D') ? '' : 'disabled' }} onclick="removeEquipment(' + row.asset_id +',\'' + row.description + '\')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
           }
         }
       ],
@@ -220,6 +222,9 @@
 
     $('body').on('change', '.company-select', (event) => {
       reloadBranchesAndDepts()
+      baseEquipmentAPI = baseEquipmentAPI.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val()
+      let createLink = $('.addEquipment').attr('href')
+      $('.addEquipment').attr('href', createLink.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val())
     })
 
     reloadBranchesAndDepts = () => {

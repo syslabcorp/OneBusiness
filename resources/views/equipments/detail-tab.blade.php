@@ -112,10 +112,14 @@
         </div>
         <div class="col-xs-6 text-right">
           @if($equipment->asset_id)
-            <button type="button" class="btn btn-edit btn-info"><i class="fas fa-pencil-alt"></i> Edit</button>
+            <button {{ \Auth::user()->checkAccessById(56, 'E') ? : 'disabled' }} type="button" class="btn btn-edit btn-info">
+              <i class="fas fa-pencil-alt"></i> Edit
+            </button>
             <button style="display: none;" class="btn btn-success btn-save"><i class="far fa-save"></i> Save</button>
           @else
-            <button class="btn btn-success btn-save"><i class="far fa-save"></i> Create</button>
+            <button class="btn btn-success btn-save" {{ \Auth::user()->checkAccessById(56, 'A') ? : 'disabled' }} >
+              <i class="far fa-save"></i> Create
+            </button>
           @endif
         </div>
       </div>
