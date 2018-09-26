@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5>Add Equipment</h5>
+                <h5><strong>Add Equipment</strong></h5>
               </div>
             </div>
           </div>

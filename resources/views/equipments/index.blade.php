@@ -51,7 +51,7 @@
 @section('pageJS')
 <script>
   (() => {
-    let baseEquipmentAPI = '{{ route('api.equipments.index', ['corpID' => $company->corp_id]) }}'
+    let baseEquipmentAPI = '{{ route('api.equipments.index') }}?corpID=' + ( localStorage.getItem('equipmentCompany') || {{ $company->corp_id }})
 
     let tableEquipment = $('.table-equipments').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
@@ -70,6 +70,10 @@
         @foreach($companies as $item)
           $('.company-select').append('<option value="{{ $item->corp_id }}">{{ $item->corp_name }}</option>')
         @endforeach
+        
+        if (localStorage.getItem('equipmentCompany')) {
+          $('.company-select').val(localStorage.getItem('equipmentCompany'))
+        }
 
         reloadBranchesAndDepts()
       },
@@ -210,14 +214,18 @@
           reloadEquipmentTable(baseEquipmentAPI)
           break;
       }
+
+      saveFilter()
     })
 
     $('body').on('change', '.branch-select', (event) => {
       reloadEquipmentTable(baseEquipmentAPI + '&branch=' + $('.branch-select').val())
+      saveFilter()
     })
 
     $('body').on('change', '.department-select', (event) => {
       reloadEquipmentTable(baseEquipmentAPI + '&department=' + $('.department-select').val())
+      saveFilter()
     })
 
     reloadEquipmentTable = (url) => {
@@ -230,6 +238,7 @@
       baseEquipmentAPI = baseEquipmentAPI.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val()
       let createLink = $('.addEquipment').attr('href')
       $('.addEquipment').attr('href', createLink.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val())
+      saveFilter()
     })
 
     reloadBranchesAndDepts = () => {
@@ -247,8 +256,29 @@
           for(let i = 0; i < res.branches.length; i++) {
             $('.branch-select').append('<option value="' + res.branches[i].Branch + '">' + res.branches[i].ShortName + '</option>')
           }
+
+          if(localStorage.getItem('equipmentFilter') == 'branch') {
+            $('input[name="document-filter"][value="branch"]').prop('checked', true)
+            $('.branch-select').val(localStorage.getItem('equipmentBranch'))
+            $('.branch-select').prop('disabled', false)
+          }
+
+          if(localStorage.getItem('equipmentFilter') == 'department') {
+            $('input[name="document-filter"][value="department"]').prop('checked', true)
+            $('.department-select').val(localStorage.getItem('equipmentDept'))
+            $('.department-select').prop('disabled', false)
+          }
+
+          saveFilter()
         }
       })
+    }
+
+    saveFilter = () => {
+      localStorage.setItem('equipmentCompany', $('.company-select').val())
+      localStorage.setItem('equipmentFilter', $('input[name="document-filter"]:checked').val())
+      localStorage.setItem('equipmentBranch', $('.branch-select').val())
+      localStorage.setItem('equipmentDept', $('.department-select').val())
     }
   })()
 </script>

@@ -21,7 +21,7 @@ class EquipmentsController extends Controller
                     });
 
         if (request()->branch) {
-            $items = $items->where('branch', request()->branch);
+            $items = $items->where('equip_hdr.branch', request()->branch);
         }
 
         if (request()->department) {
