@@ -49,6 +49,7 @@ class EquipmentsController extends Controller
         
 
         $equipment = new \App\Models\Equip\Hdr;
+        $equipment->isActive = 1;
 
         $lastEquipment = $equipment->orderBy('asset_id', 'DESC')->first();
 

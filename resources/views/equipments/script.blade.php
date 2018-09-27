@@ -25,8 +25,13 @@
               $('select[name="jo_dept"] option[value="' + res.depts[i] + '"]').css('display', 'block')
             }
             
-            $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
-            $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+            @if($equipment->asset_id)
+              $('select[name="dept_id"] option[value="{{ $equipment->dept_id }}"]').prop('selected', true)
+              $('select[name="jo_dept"] option[value="{{ $equipment->jo_dept }}"]').prop('selected', true)
+            @else
+              $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+              $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+            @endif
 
           },
           error: (res) => {
@@ -125,7 +130,8 @@
         $('.editEquipment .form-control').prop('disabled', false)
         $('.editEquipment .btnAddRow, .btnEditRow, .btnSaveRow, .btnRemoveRow').prop('disabled', false)
         $('.editEquipment .btn-edit').css('display', 'none')
-        $('.editEquipment .btn-save').css('display', 'inline-block')
+        $('.editEquipment .btn-save, .editEquipment .addHere').css('display', 'inline-block')
+        $('.editEquipment .equipActive').attr('onclick', '')
         // $('.partRow input, .partRow select').attr('readonly', true)
       })
     })()

@@ -43,7 +43,8 @@
               <label style="padding: 5px;"><strong>Active:</strong></label>
             </div>
             <div class="col-sm-9 form-group" style="margin-top: 5px;">
-              <input type="checkbox"  name="isActive" value="1" {{ (old('isActive') ?: $equipment->isActive) ? 'checked' : '' }}>
+              <input type="checkbox" class="equipActive" name="isActive" value="1" {{ (old('isActive') ?: $equipment->isActive) ? 'checked' : '' }}
+                onclick="{{ $equipment->asset_id ? 'return false;' : '' }}">
             </div>
           </div>
         </div>
@@ -102,7 +103,12 @@
       <hr>
       <h4>Hardware Information</h4>
       @if(!count($partItems))
-      <p>No parts yet. <a href="javascript:void(0)" onclick="openTablePart(event)">Add here</a></p>
+      <p>
+        No parts yet. 
+        <a href="javascript:void(0)" class="addHere" onclick="openTablePart(event)" style="{{ $equipment->asset_id ? 'display: none;' : '' }}">
+          Add here
+        </a>
+      </p>
       @endif
 
       @include('equipments.parts')

@@ -257,6 +257,9 @@
             $('.branch-select').append('<option value="' + res.branches[i].Branch + '">' + res.branches[i].ShortName + '</option>')
           }
 
+          $('.department-select').val(res.depts[0].dept_ID)
+          $('.branch-select').val(res.branches[0].Branch)
+
           if(localStorage.getItem('equipmentFilter') == 'branch') {
             $('input[name="document-filter"][value="branch"]').prop('checked', true)
             $('.branch-select').val(localStorage.getItem('equipmentBranch'))
