@@ -34,11 +34,11 @@
                       <td class="text-center">{{ $cat->cat_id }}</td>
                       <td>{{ $cat->description }}</td>
                       <td class="text-center">
-                        <button data-toggle="modal" data-target="#editCategoryModal" onclick="editCategory({{ $cat->cat_id }}, '{{ $cat->description }}')" class="btn btn-primary btn-md" {{ \Auth::user()->checkAccessById(55, 'E') ? '' : 'checked' }}>
+                        <button data-toggle="modal" data-target="#editCategoryModal" onclick="editCategory({{ $cat->cat_id }}, '{{ $cat->description }}')" class="btn btn-primary btn-md" {{ \Auth::user()->checkAccessById(55, 'E') ? '' : 'disabled' }}>
                           <i class="fas fa-pencil-alt"></i>
                         </button>
                         <button onclick="deleteCategory({{ $cat->cat_id }}, '{{ $cat->description }}')"  class="btn btn-danger btn-md"
-                          {{ \Auth::user()->checkAccessById(55, 'D') ? '' : 'checked' }}>
+                          {{ \Auth::user()->checkAccessById(55, 'D') ? '' : 'disabled' }}>
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </td>

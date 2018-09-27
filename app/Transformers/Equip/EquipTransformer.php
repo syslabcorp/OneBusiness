@@ -21,13 +21,29 @@ class EquipTransformer extends Fractal\TransformerAbstract
 
         $dept = $deptModel->find($item->dept_id);
 
+        $status = '';
+
+        $details = $item->details;
+
+        if ($details->count()) {
+            $status = 'For Repair';
+
+            if ($details->where('status', 1)->count() == $details->count()) {
+                $status = 'In Use';
+            }
+
+            if ($details->where('status', 0)->count() == $details->count()) {
+                $status = 'Retired';
+            }
+        }
+
         return [
             'asset_id' => $item->asset_id,
             'description' => $item->description,
             'type' => $item->type,
             'branch' => $item->branchObj ? $item->branchObj->ShortName : '',
             'department' => $dept ? $dept->department : '',
-            'status' => '',
+            'status' => $status,
             'isActive' => $item->isActive,
             'qty' => $item->details->sum('qty')
         ];
