@@ -88,7 +88,10 @@
           targets: 1,
           data: 'description',
           render: (data, type, row, meta) => {
-            return '<a href="{{ route('equipments.index') }}/' + row.asset_id + '?corpID={{ $company->corp_id }}">' + row.description + '</a>'
+            let corpId = localStorage.getItem('equipmentCompany') || {{ $company->corp_id }}
+            corpId = $('.company-select').val() || corpId
+
+            return '<a href="{{ route('equipments.index') }}/' + row.asset_id + '?corpID=' + corpId + '">' + row.description + '</a>'
           }
         },
         {
