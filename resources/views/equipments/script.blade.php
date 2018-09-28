@@ -29,9 +29,16 @@
               $('select[name="dept_id"] option[value="{{ $equipment->dept_id }}"]').prop('selected', true)
               $('select[name="jo_dept"] option[value="{{ $equipment->jo_dept }}"]').prop('selected', true)
             @else
-              $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
-              $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+              if (res.depts.length) {
+                $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+                $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+              }
             @endif
+
+            if (res.depts.length == 0) {
+              $('select[name="dept_id"]').val('')
+              $('select[name="jo_dept"]').val('')
+            }
 
           },
           error: (res) => {
