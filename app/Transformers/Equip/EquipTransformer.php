@@ -37,10 +37,12 @@ class EquipTransformer extends Fractal\TransformerAbstract
             }
         }
 
+        $type = $item->type == 'Com Proper' ? 'Company Property' : $item->type;
+
         return [
             'asset_id' => $item->asset_id,
             'description' => $item->description,
-            'type' => $item->type,
+            'type' => $type,
             'branch' => $item->branchObj ? $item->branchObj->ShortName : '',
             'department' => $dept ? $dept->department : '',
             'status' => $status,
