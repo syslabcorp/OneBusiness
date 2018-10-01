@@ -36,7 +36,8 @@ class Hdr extends Model {
             \App\Models\Equip\History::create([
                 'changed_by' => \Auth::user()->UserID,
                 'content' => 'has been created',
-                'equipment_id' => $item->asset_id
+                'equipment_id' => $item->asset_id,
+                'item' => 'Equipment #' . $item->asset_id . ' - ' . $item->description
             ]);
         });
 
@@ -45,7 +46,8 @@ class Hdr extends Model {
                 \App\Models\Equip\History::create([
                     'changed_by' => \Auth::user()->UserID,
                     'content' => 'has been updated',
-                    'equipment_id' => $item->asset_id
+                    'equipment_id' => $item->asset_id,
+                    'item' => 'Equipment #' . $item->asset_id . ' - ' . $item->description
                 ]);
             }
         });

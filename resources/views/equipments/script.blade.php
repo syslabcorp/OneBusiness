@@ -131,7 +131,7 @@
         $('.editEquipment .btnAddRow, .btnEditRow, .btnSaveRow, .btnRemoveRow').prop('disabled', false)
         $('.editEquipment .btn-edit').css('display', 'none')
         $('.editEquipment .btn-save, .editEquipment .addHere').css('display', 'inline-block')
-        $('.editEquipment .equipActive').attr('onclick', '')
+        $('.editEquipment .equipActive').removeAttr('onclick')
         // $('.partRow input, .partRow select').attr('readonly', true)
       })
     })()

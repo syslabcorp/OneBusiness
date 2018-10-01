@@ -43,7 +43,7 @@
               <label style="padding: 5px;"><strong>Active:</strong></label>
             </div>
             <div class="col-sm-9 form-group" style="margin-top: 5px;">
-              <input type="checkbox" class="equipActive" name="isActive" value="1" {{ (old('isActive') ?: $equipment->isActive) ? 'checked' : '' }}
+              <input type="checkbox" class="equipActive" name="active" value="1" {{ (old('active') ?: $equipment->isActive) ? 'checked' : '' }}
                 onclick="{{ $equipment->asset_id ? 'return false;' : '' }}">
             </div>
           </div>

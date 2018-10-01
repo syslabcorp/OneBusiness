@@ -16,11 +16,7 @@
             @foreach($group as $history)
             <li>
               <strong style="color: #337ab7">
-              @if($history->item)
-                Part #{{ $history->item_id }} - {{ $history->item->description }}
-              @else
-                Equipment #{{ $history->equipment_id }} - {{ $history->equipment->description }}
-              @endif
+              {{ $history->item }}
               </strong>
               {{ $history->content }} by
               <strong> {{ $history->changedBy->UserName }}</strong>

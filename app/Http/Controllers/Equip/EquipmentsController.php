@@ -20,8 +20,11 @@ class EquipmentsController extends Controller
         $companies = Corporation::orderBy('corp_name')
                                 ->where('database_name', '!=', '')
                                 ->get();
-
-        $company = $companies->first();
+        if (request()->corpID) {
+            $company = Corporation::findOrFail(request()->corpID);
+        } else {
+            $company = $companies->first();
+        }
         
         return view('equipments.index', [
             'companies' => $companies,
@@ -84,7 +87,7 @@ class EquipmentsController extends Controller
             'description', 'branch', 'dept_id', 'type', 'jo_dept'
         ]);
 
-        $equipParams['isActive'] = request()->isActive ? 1 : 0;
+        $equipParams['isActive'] = request()->active ? 1 : 0;
 
         $equipment = \App\Models\Equip\Hdr::create($equipParams);
 
@@ -97,6 +100,13 @@ class EquipmentsController extends Controller
                     'supplier_id' => $partParams['supplier_id'],
                     'consumable' => isset($partParams['consumable']) ? 1 : 0,
                     'isActive' => isset($partParams['isActive']) ? 1 : 0
+                ]);
+
+                \App\Models\Equip\History::create([
+                    'changed_by' => \Auth::user()->UserID,
+                    'content' => 'details has been created',
+                    'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
+                    'equipment_id' => $equipment->asset_id
                 ]);
 
                 $equipment->details()->create([
@@ -164,13 +174,22 @@ class EquipmentsController extends Controller
 
         $equipment = \App\Models\Equip\Hdr::findOrFail($id);
 
-        $equipment->update(
-            request()->only([
-                'description', 'branch', 'dept_id', 'type', 'jo_dept'
-            ])
-        );
+        $equipParams = request()->only([
+            'description', 'branch', 'dept_id', 'type', 'jo_dept'
+        ]);
+
+        $equipParams['isActive'] = request()->active ? 1 : 0;
+
+        $equipment->update($equipParams);
 
         if (is_array(request()->parts)) {
+            $equipment->details->each(function($item, $index) {
+                $listParts = collect(request()->parts);
+                if (!$listParts->where('item_id', $item->item_id)->first()) {
+                    $item->delete();
+                }
+            });
+
             foreach (request()->parts as $partParams) {
                 if (isset($partParams['item_id'])) {
                     $item = \App\Models\Item\Master::find($partParams['item_id']);
@@ -178,11 +197,12 @@ class EquipmentsController extends Controller
                         \App\Models\Equip\History::create([
                             'changed_by' => \Auth::user()->UserID,
                             'content' => 'set as "' . \App\Models\Equip\Detail::STATUSES[$partParams['status']] . '"',
-                            'item_id' => $item->item_id
+                            'equipment_id' => $equipment->asset_id,
+                            'item' => 'Part #' . $item->item_id . ' - ' . $equipment->description
                         ]);
                     }
 
-                    $item->update([
+                    $item->fill([
                         'description' => $partParams['desc'],
                         'brand_id' => $partParams['brand_id'],
                         'cat_id' => $partParams['cat_id'],
@@ -190,6 +210,17 @@ class EquipmentsController extends Controller
                         'consumable' => isset($partParams['consumable']) ? 1 : 0,
                         'isActive' => isset($partParams['isActive']) ? 1 : 0
                     ]);
+
+                    if ($item->isDirty()) {
+                        \App\Models\Equip\History::create([
+                            'changed_by' => \Auth::user()->UserID,
+                            'content' => 'details has been updated',
+                            'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
+                            'equipment_id' => $equipment->asset_id
+                        ]);
+                    }
+
+                    $item->save();
                 } else {
                     $item = \App\Models\Item\Master::create([
                         'description' => $partParams['desc'],
@@ -197,6 +228,13 @@ class EquipmentsController extends Controller
                         'cat_id' => $partParams['cat_id'],
                         'supplier_id' => $partParams['supplier_id'],
                         'consumable' => isset($partParams['consumable']) ? 1 : 0
+                    ]);
+
+                    \App\Models\Equip\History::create([
+                        'changed_by' => \Auth::user()->UserID,
+                        'content' => 'details has been created',
+                        'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
+                        'equipment_id' => $equipment->asset_id
                     ]);
                 }
                 \App\Models\Equip\Detail::updateOrCreate([
@@ -206,13 +244,9 @@ class EquipmentsController extends Controller
                     'status' => $partParams['status'],
                     'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
                 ]);
-
-
-
-                $item->histories()->update([
-                    'equipment_id' => $equipment->asset_id
-                ]);
             }
+        } else {
+            $equipment->details->each->delete();
         }
 
         \Session::flash('success', 'Equipment #' . $equipment->asset_id . '-' . $equipment->description . ' has been updated');
