@@ -115,7 +115,7 @@
             lastId = 1 + parseInt($('.table-parts tbody tr:eq(' + (lastId - 2) + ') td:eq(0)').text()) 
           }
 
-          $trClone.find('.form-control').each((index, element) => {
+          $trClone.find('.form-control, input[type="checkbox"]').each((index, element) => {
             $(element).attr('name', 'parts[' + lastId + '][' + $(element).attr('name') + ']')
           })
           $trClone.insertBefore($trParent)

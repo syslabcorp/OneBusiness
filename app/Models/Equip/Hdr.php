@@ -42,7 +42,7 @@ class Hdr extends Model {
         });
 
         self::saving(function($item) {
-            if ($item->isDirty()) {
+            if ($item->isDirty() &&  $item->asset_id) {
                 \App\Models\Equip\History::create([
                     'changed_by' => \Auth::user()->UserID,
                     'content' => 'has been updated',

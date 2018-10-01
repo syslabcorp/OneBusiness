@@ -227,7 +227,8 @@ class EquipmentsController extends Controller
                         'brand_id' => $partParams['brand_id'],
                         'cat_id' => $partParams['cat_id'],
                         'supplier_id' => $partParams['supplier_id'],
-                        'consumable' => isset($partParams['consumable']) ? 1 : 0
+                        'consumable' => isset($partParams['consumable']) ? 1 : 0,
+                        'isActive' => isset($partParams['isActive']) ? 1 : 0
                     ]);
 
                     \App\Models\Equip\History::create([
