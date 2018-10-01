@@ -16,9 +16,9 @@ class EquipmentsController extends Controller
         $items = $hdrModel->orderBy('asset_id')
                     ->leftJoin('t_sysdata', 't_sysdata.Branch', '=', 'equip_hdr.branch')
                     ->where(function($query) {
-                        return $query->where('corp_id', request()->corpID)
-                                ->orWhereNull('corp_id');
-                    });
+                        return $query->where('corp_id', request()->corpID);
+                    })
+                    ->whereIn('equip_hdr.branch', \Auth::user()->getBranchesByArea(request()->corpID)->pluck('Branch'));
 
         if (request()->branch) {
             $items = $items->where('equip_hdr.branch', request()->branch);
