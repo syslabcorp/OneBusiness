@@ -15,6 +15,8 @@
         let branchID = $('#equipDetail select[name="branch"]').val()
         $('select[name="dept_id"] option').css('display', 'none')
         $('select[name="jo_dept"] option').css('display', 'none')
+        $('select[name="dept_id"]').val('')
+        $('select[name="jo_dept"]').val('')
 
         $.ajax({
           type: 'GET',
@@ -25,21 +27,13 @@
               $('select[name="jo_dept"] option[value="' + res.depts[i] + '"]').css('display', 'block')
             }
             
-            @if($equipment->asset_id)
+            if (branchID == $('#equipDetail select[name="branch"]').attr('data-branch')) {
               $('select[name="dept_id"] option[value="{{ $equipment->dept_id }}"]').prop('selected', true)
               $('select[name="jo_dept"] option[value="{{ $equipment->jo_dept }}"]').prop('selected', true)
-            @else
-              if (res.depts.length) {
-                $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
-                $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
-              }
-            @endif
-
-            if (res.depts.length == 0) {
-              $('select[name="dept_id"]').val('')
-              $('select[name="jo_dept"]').val('')
+            } else if (res.depts.length) {
+              $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
+              $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
             }
-
           },
           error: (res) => {
 

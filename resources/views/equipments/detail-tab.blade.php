@@ -65,7 +65,7 @@
               <label style="padding: 5px;"><strong>Branch:</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <select name="branch" class="form-control">
+              <select name="branch" class="form-control" data-branch="{{ $equipment->branch }}">
                 @foreach($branches as $branch)
                 <option {{ $equipment->branch == $branch->Branch ? 'selected' : '' }} value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                 @endforeach
@@ -77,7 +77,7 @@
               <label style="padding: 5px;"><strong>Department:</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <select name="dept_id" id="" class="form-control">
+              <select name="dept_id" class="form-control" data-dept="{{ $equipment->dept_id }}">
                 <option value="">-- select --</option>
                 @foreach($deptItems as $item)
                 <option {{ $equipment->dept_id == $item->dept_ID ? 'selected' : '' }} value="{{ $item->dept_ID }}">{{ $item->department }}</option>
@@ -90,7 +90,7 @@
               <label style="padding: 5px;"><strong>Job order Department:</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <select name="jo_dept" class="form-control">
+              <select name="jo_dept" class="form-control" data-job="{{ $equipment->jo_dept }}">
                 <option value="">-- select --</option>
                 @foreach($deptItems as $item)
                 <option {{ $equipment->jo_dept == $item->dept_ID ? 'selected' : '' }} value="{{ $item->dept_ID }}">{{ $item->department }}</option>
