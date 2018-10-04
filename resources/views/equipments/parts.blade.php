@@ -8,7 +8,6 @@
       <tr>
         <th style="width: 80px">Part No.</th>
         <th style="width: 150px">Part Name</th>
-        <th style="width: 130px">Status</th>
         <th>Warranty Status</th>
         <th style="width: 150px">Brand</th>
         <th style="width: 150px">Category</th>
@@ -30,13 +29,6 @@
           <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}">
         </td>
         <td><input type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control" value="{{ $row->item->description }}"></td>
-        <td>
-          <select name="parts[{{ $row->item_id }}][status]" class="form-control">
-            <option {{ $row->status == 2 ? 'selected' : '' }} value="2">For Repair</option>
-            <option {{ $row->status == 1 ? 'selected' : '' }} value="1">In Use</option>
-            <option {{ $row->status == 0 ? 'selected' : '' }} value="0">Retire</option>
-          </select>
-        </td>
         <td><input type="text" class="form-control"></td>
         <td>
           <select name="parts[{{ $row->item_id }}][brand_id]" class="form-control">
@@ -81,13 +73,6 @@
       <tr class="newPart" style="display: none;">
         <td class="text-center"></td>
         <td><input type="text" name="desc" class="form-control"></td>
-        <td>
-          <select name="status" class="form-control">
-            <option value="2">For Repair</option>
-            <option selected value="1">In Use</option>
-            <option value="0">Retire</option>
-          </select>
-        </td>
         <td><input type="text" class="form-control"></td>
         <td>
           <select name="brand_id" class="form-control">

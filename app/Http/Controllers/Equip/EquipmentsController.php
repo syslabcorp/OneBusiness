@@ -111,7 +111,6 @@ class EquipmentsController extends Controller
 
                 $equipment->details()->create([
                     'item_id' => $item->item_id,
-                    'status' => $partParams['status'],
                     'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
                 ]);
             }
@@ -193,14 +192,6 @@ class EquipmentsController extends Controller
             foreach (request()->parts as $partParams) {
                 if (isset($partParams['item_id'])) {
                     $item = \App\Models\Item\Master::find($partParams['item_id']);
-                    if ($item->detail->status != $partParams['status']) {
-                        \App\Models\Equip\History::create([
-                            'changed_by' => \Auth::user()->UserID,
-                            'content' => 'set as "' . \App\Models\Equip\Detail::STATUSES[$partParams['status']] . '"',
-                            'equipment_id' => $equipment->asset_id,
-                            'item' => 'Part #' . $item->item_id . ' - ' . $equipment->description
-                        ]);
-                    }
 
                     $item->fill([
                         'description' => $partParams['desc'],
@@ -242,7 +233,6 @@ class EquipmentsController extends Controller
                     'item_id' => $item->item_id,
                     'asset_id' => $equipment->asset_id
                 ],[
-                    'status' => $partParams['status'],
                     'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
                 ]);
             }

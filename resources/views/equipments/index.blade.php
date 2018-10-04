@@ -29,7 +29,6 @@
                         <th>Type</th>
                         <th>Branch</th>
                         <th>Department</th>
-                        <th>Status</th>
                         <th>Qty</th>
                         <th>Active</th>
                         <th>Action</th>
@@ -108,16 +107,11 @@
         },
         {
           targets: 5,
-          data: 'status',
-          class: 'text-center'
-        },
-        {
-          targets: 6,
           data: 'qty',
           class: 'text-center'
         },
         {
-          targets: 7,
+          targets: 6,
           data: 'isActive',
           class: 'text-center',
           render: (data, type, row, meta) => {
@@ -125,7 +119,7 @@
           }
         },
         {
-          targets: 8,
+          targets: 7,
           class: 'text-center',
           render: (data, type, row, meta) => {
             return '<button {{ \Auth::user()->checkAccessById(56, 'D') ? '' : 'disabled' }} onclick="removeEquipment(' + row.asset_id +',\'' + row.description + '\')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
