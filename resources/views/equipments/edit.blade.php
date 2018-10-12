@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5><strong>Equipment Inventory</strong></h5>
+                <h5><strong>Equipment Masterfile</strong></h5>
               </div>
             </div>
           </div>
@@ -18,13 +18,9 @@
                 <li class="{{ $tab == 'auto' ? 'active' : '' }}">
                   <a href="#equipDetail" data-toggle="tab">Equipment Detail</a>
                 </li>
-                <li class="{{ $tab == 'history' ? 'active' : '' }}">
-                  <a href="#equipHistory" data-toggle="tab">History</a>
-                </li>
               </ul>
               <div class="tab-content editEquipment" style="padding: 1em;">
                 @include('equipments.detail-tab')
-                @include('equipments.history')
               </div>
             </div>
           </div>

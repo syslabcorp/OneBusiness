@@ -250,4 +250,6 @@ Route::group(['middleware' => 'auth'], function() {
   Route::resource('equipments', 'Equip\EquipmentsController');
   Route::resource('asset-brands', 'Asset\BrandsController');
   Route::resource('asset-categories', 'Asset\CategoriesController');
+
+  Route::resource('parts', 'PartsController');
 });

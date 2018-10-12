@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5><strong>Equipment Inventory</strong></h5>
+                <h5><strong>Equipment Masterfile</strong></h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
                 @if(\Auth::user()->checkAccessById(56, 'A'))
