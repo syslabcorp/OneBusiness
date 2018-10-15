@@ -135,6 +135,19 @@
         $('.editEquipment .equipActive').removeAttr('onclick')
         // $('.partRow input, .partRow select').attr('readonly', true)
       })
+
+
+      searchPart = () => {
+        $.ajax({
+          url: '{{ route('parts.searchPart') }}',
+          type: 'GET',
+          success: (res) => {
+            $('.editEquipment').append(res)
+          }
+        });
+      }
+
+      searchPart();
     })()
   </script>
 @endsection

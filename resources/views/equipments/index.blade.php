@@ -275,7 +275,6 @@
         }
       })
     }
-
     saveFilter = () => {
       localStorage.setItem('equipmentCompany', $('.company-select').val())
       localStorage.setItem('equipmentFilter', $('input[name="document-filter"]:checked').val())

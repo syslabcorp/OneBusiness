@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Equip\Brands;
 use App\Models\Equip\Category;
 use App\Models\Vendor;
+use App\Models\Item\Master;
 
 class PartsController extends Controller
 {
@@ -22,7 +23,56 @@ class PartsController extends Controller
         ]);
     }
 
-    public function create(){
-        dd('ok');
+    public function store(Request $request){
+        $item = Master::create($request->only([
+            'description', 'brand_id', 'cat_id', 'supplier_id', 'consumable', 'with_serialno', 'isActive'
+        ]));
+
+        \Session::flash('success', "Part #" . $item->item_id . ' has been created.');
+
+        return redirect(route('parts.index'));
+    }
+
+    public function edit($id){
+        $item = Master::findOrFail($id);
+        
+        $brands = Brands::orderBy('description')->get();
+        $categories = Category::orderBy('description')->get();
+        $vendors = Vendor::orderBy('VendorName')->get();
+
+        return view('parts.modal-edit', [
+            'item' => $item,
+            'brands' => $brands,
+            'categories' => $categories,
+            'vendors' => $vendors
+        ]);
+    }
+
+    public function update($item, Request $request){
+        $item = Master::findOrFail($item);
+
+        $item->update($request->only([
+            'description', 'brand_id', 'cat_id', 'supplier_id', 'consumable', 'with_serialno', 'isActive'
+        ]));
+
+        \Session::flash('success', "Part #" . $item->item_id . ' has been updated.');
+
+        return redirect(route('parts.index'));
+    }
+
+    public function destroy($item){
+        $item = Master::destroy($item);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function searchPart(){
+        $items = Master::all();
+
+        return view('parts.search-part', [
+            'items' => $items
+        ]);
     }
 }

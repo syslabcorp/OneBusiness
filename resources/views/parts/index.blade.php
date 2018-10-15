@@ -111,7 +111,10 @@
           targets: 8,
           class: 'text-center',
           render: (data, type, row, meta) => {
-              return '<button {{ \Auth::user()->checkAccessById(56, 'E') ? '' : 'disabled' }} onclick="removeEquipment(' + row.item_id +',\'' + row.description + '\')" class="btn btn-md btn-primary fas fa-pencil-alt"> </button> <button {{ \Auth::user()->checkAccessById(56, 'D') ? '' : 'disabled' }} onclick="removeEquipment(' + row.asset_id +',\'' + row.description + '\')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
+              return '<button onclick="editPart(' + row.item_id + ')" \
+              class="btn btn-md btn-primary fas fa-pencil-alt" data-toggle="modal" data-target=".edit-part-modal"> </button> \
+              <button onclick="removePart(' + row.item_id +',\''+ row.description + '\')" \
+              class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=".edit-part-modal"> </button>'
           }
           }
       ],
@@ -120,10 +123,47 @@
           $dateCell.attr('data-order', data.start_date_order)
                   .text(data.StartDate)
       },
+     
       order: [
           [0, 'desc']
       ],
   })
+
+  editPart = (itemId) => {
+    $('.edit-part-modal').remove();
+    $.ajax({
+      url: '{{ route('parts.index') }}/' + itemId + '/edit',
+      type: 'GET',
+      success: (res) => {
+        $('body').append(res);
+        $('.edit-part-modal').modal('show');
+      }
+    })
+  }
+
+  removePart = (itemId, description) => {
+    swal({
+    title: "<div class='delete-title'>Delete</div>",
+    text:  "<div class='delete-text'>You are about to delete PartID ["+ itemId +"] - ["+ description +"]</strong></div>",
+    html:  true,
+    customClass: 'swal-wide',
+    confirmButtonClass: 'btn-danger',
+    confirmButtonText: 'Delete',
+    showCancelButton: true,
+    closeOnConfirm: true,
+    allowEscapeKey: true
+  }, (data) => {
+    if(data) {
+      $.ajax({
+      url: '{{ route('parts.index') }}/' + itemId,
+      type: 'DELETE',
+      success: (res) => {
+        tablePart.ajax.reload()
+      }
+    })
+    }
+  });
+  }
 })()
 </script>
 @endsection

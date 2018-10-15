@@ -251,5 +251,6 @@ Route::group(['middleware' => 'auth'], function() {
   Route::resource('asset-brands', 'Asset\BrandsController');
   Route::resource('asset-categories', 'Asset\CategoriesController');
 
+  Route::get('/parts/search-part', ['uses' => 'PartsController@searchPart'])->name('parts.searchPart');
   Route::resource('parts', 'PartsController');
 });
