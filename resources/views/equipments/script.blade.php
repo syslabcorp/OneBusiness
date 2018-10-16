@@ -54,12 +54,6 @@
       })
 
       addNewPart = () => {
-        let lastId = $('.table-parts tbody tr').length;
-        if (lastId > 1) {
-          lastId = 1 + parseInt($('.table-parts tbody tr:eq(' + (lastId - 2) + ') td:eq(0)').text()) 
-        }
-
-        $('.table-parts .newPart td:eq(0)').html(lastId)
         $('.table-parts .newPart').css('display', 'table-row')
         $('.table-parts .newPart .error').remove()
       }
@@ -83,46 +77,31 @@
         }
       })
 
-      $('.table-parts').on('click', '.btnSaveRow', (event) => {
-        let $trParent = $(event.target).parents('tr')
+      $('.table-parts').on('click', '.btnAddRow', (event) => {
+        let $trParent = $('.newPart')
         $trParent.find('.error').remove()
         
-        if ($trParent.find('td:eq(1) input').val().trim() == '') {
-          $trParent.find('td:eq(1)').append('<span class="error">Name required</span>')
-          return;
-        }
-
 
         let $trClone = $trParent.clone()
         $trClone.removeClass('newPart').addClass('partRow')
         $trClone.find('.btnSaveRow').css('display', 'none')
-        $trClone.find('.btnEditRow').css('display', 'inline-block')
-        $trClone.find('select, input').attr('readonly', true)
-        $trClone.find('select[name="status"]').val($trParent.find('select[name="status"]').val())
+        $trClone.find('select, input').attr('readonly', false)
+        $trClone.find('select[name=""]').val($trParent.find('select[name=""]').val())
         $trClone.find('select[name="brand_id"]').val($trParent.find('select[name="brand_id"]').val())
         $trClone.find('select[name="cat_id"]').val($trParent.find('select[name="cat_id"]').val())
         $trClone.find('select[name="supplier_id"]').val($trParent.find('select[name="supplier_id"]').val())
-
+        
         if ($trParent.hasClass('newPart')) {
           let lastId = $('.table-parts tbody tr').length;
-          if (lastId > 1) {
-            lastId = 1 + parseInt($('.table-parts tbody tr:eq(' + (lastId - 2) + ') td:eq(0)').text()) 
-          }
-
+        
           $trClone.find('.form-control, input[type="checkbox"]').each((index, element) => {
             $(element).attr('name', 'parts[' + lastId + '][' + $(element).attr('name') + ']')
           })
           $trClone.insertBefore($trParent)
-          $trParent.css('display', 'none')
           $trParent.find('input').val('')
-          $trParent.find('select').each((index, element) => {
-            $(element).val($(element).find('option:first').val())
-          })
-          $trParent.find('select[name="status"]').val(1)
+          $trParent.find('.label-table').text('')
         } else {
-          $trParent.find('input, select').attr('readonly', true)
           $trParent.find('.btnSaveRow').css('display', 'none')
-          $trParent.find('.btnEditRow').css('display', 'inline-block')
           // $trParent.remove()
         }
       })
@@ -137,9 +116,10 @@
       })
 
 
-      searchPart = () => {
+      searchPart = (column, value) => {
+        $('.listPart').remove();  
         $.ajax({
-          url: '{{ route('parts.searchPart') }}',
+          url: '{{ route('parts.searchPart') }}?' + column + '=' + value,
           type: 'GET',
           success: (res) => {
             $('.editEquipment').append(res)
@@ -147,7 +127,30 @@
         });
       }
 
-      searchPart();
+      $('.table-parts').on('keyup', '.showSuggest', (event) => {
+        $parent = $(event.target);
+        console.log($parent.offset().top)
+        
+        $('.table-parts tr').removeClass('rowFocus');
+        $parent.parents('tr').addClass('rowFocus');
+  
+        searchPart($parent.attr('data-column'), $parent.val())
+      })
+
+      $('body').on('click', '.listPart tbody tr', (event) => {
+        $parent = $(event.target).parents('tr');
+
+        $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
+        $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
+        $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(3) label').text($parent.find('td:eq(2)').text())
+        $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(4) label').text($parent.find('td:eq(3)').text())
+        $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(5) label').text($parent.find('td:eq(4)').text())
+      })
+
     })()
   </script>
 @endsection

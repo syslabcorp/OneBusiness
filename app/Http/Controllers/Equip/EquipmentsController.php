@@ -177,7 +177,7 @@ class EquipmentsController extends Controller
             'description', 'branch', 'dept_id', 'type', 'jo_dept'
         ]);
 
-        $equipParams['isActive'] = request()->active ? 1 : 0;
+        // $equipParams['isActive'] = request()->active ? 1 : 0;
 
         $equipment->update($equipParams);
 
@@ -188,54 +188,61 @@ class EquipmentsController extends Controller
                     $item->delete();
                 }
             });
-
             foreach (request()->parts as $partParams) {
-                if (isset($partParams['item_id'])) {
-                    $item = \App\Models\Item\Master::find($partParams['item_id']);
-
-                    $item->fill([
-                        'description' => $partParams['desc'],
-                        'brand_id' => $partParams['brand_id'],
-                        'cat_id' => $partParams['cat_id'],
-                        'supplier_id' => $partParams['supplier_id'],
-                        'consumable' => isset($partParams['consumable']) ? 1 : 0,
-                        'isActive' => isset($partParams['isActive']) ? 1 : 0
-                    ]);
-
-                    if ($item->isDirty()) {
-                        \App\Models\Equip\History::create([
-                            'changed_by' => \Auth::user()->UserID,
-                            'content' => 'details has been updated',
-                            'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
-                            'equipment_id' => $equipment->asset_id
-                        ]);
-                    }
-
-                    $item->save();
-                } else {
-                    $item = \App\Models\Item\Master::create([
-                        'description' => $partParams['desc'],
-                        'brand_id' => $partParams['brand_id'],
-                        'cat_id' => $partParams['cat_id'],
-                        'supplier_id' => $partParams['supplier_id'],
-                        'consumable' => isset($partParams['consumable']) ? 1 : 0,
-                        'isActive' => isset($partParams['isActive']) ? 1 : 0
-                    ]);
-
-                    \App\Models\Equip\History::create([
-                        'changed_by' => \Auth::user()->UserID,
-                        'content' => 'details has been created',
-                        'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
-                        'equipment_id' => $equipment->asset_id
-                    ]);
-                }
-                \App\Models\Equip\Detail::updateOrCreate([
-                    'item_id' => $item->item_id,
-                    'asset_id' => $equipment->asset_id
-                ],[
-                    'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
+                \App\Models\Equip\Detail::create([
+                    'asset_id' => $equipment->asset_id,
+                    'item_id' => $partParams['item_id'],
+                    'qty' => $partParams['qty']
                 ]);
             }
+
+            // foreach (request()->parts as $partParams) {
+            //     if (isset($partParams['item_id'])) {
+            //         $item = \App\Models\Item\Master::find($partParams['item_id']);
+
+            //         $item->fill([
+            //             'description' => $partParams['desc'],
+            //             'brand_id' => $partParams['brand_id'],
+            //             'cat_id' => $partParams['cat_id'],
+            //             'supplier_id' => $partParams['supplier_id'],
+            //             'consumable' => isset($partParams['consumable']) ? 1 : 0,
+            //             'isActive' => isset($partParams['isActive']) ? 1 : 0
+            //         ]);
+
+            //         if ($item->isDirty()) {
+            //             \App\Models\Equip\History::create([
+            //                 'changed_by' => \Auth::user()->UserID,
+            //                 'content' => 'details has been updated',
+            //                 'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
+            //                 'equipment_id' => $equipment->asset_id
+            //             ]);
+            //         }
+
+            //         $item->save();
+            //     } else {
+            //         $item = \App\Models\Item\Master::create([
+            //             'description' => $partParams['desc'],
+            //             'brand_id' => $partParams['brand_id'],
+            //             'cat_id' => $partParams['cat_id'],
+            //             'supplier_id' => $partParams['supplier_id'],
+            //             'consumable' => isset($partParams['consumable']) ? 1 : 0,
+            //             'isActive' => isset($partParams['isActive']) ? 1 : 0
+            //         ]);
+
+            //         \App\Models\Equip\History::create([
+            //             'changed_by' => \Auth::user()->UserID,
+            //             'content' => 'details has been created',
+            //             'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
+            //             'equipment_id' => $equipment->asset_id
+            //         ]);
+            //     }
+            //     \App\Models\Equip\Detail::updateOrCreate([
+            //         'item_id' => $item->item_id,
+            //         'asset_id' => $equipment->asset_id
+            //     ],[
+            //         'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
+            //     ]);
+            // }
         } else {
             $equipment->details->each->delete();
         }

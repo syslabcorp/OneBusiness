@@ -68,8 +68,10 @@ class PartsController extends Controller
         ]);
     }
 
-    public function searchPart(){
-        $items = Master::all();
+    public function searchPart(Request $request){
+        if ($request->description) {
+            $items = Master::where('description','like','%' . $request->description .'%')->get();
+        }
 
         return view('parts.search-part', [
             'items' => $items

@@ -64,5 +64,43 @@ a:active, a:visited, a:hover {
 }
 
 .listPart {
-    background: red;
+    width: 100%;
+    thead {
+        tr {
+            th {
+                background: #ed7a82;
+                padding: 8px 5px;
+                border-right: 1px solid #FFF;
+            }
+        }
+        border-bottom: 1px solid #FFF;
+    }
+    tbody {
+        tr {
+            cursor: pointer;
+            border-bottom: 1px solid #FFF;
+            td {
+                background: #f3b2b6;
+                border-right: 1px solid #FFF;
+                padding: 8px 5px;
+            }
+        }
+    }
 }
+
+.table-parts .label-table-max{
+    white-space: nowrap;
+    text-overflow: initial;
+    overflow: hidden;
+    font-weight: normal;
+    max-width: "120px";
+}
+.table-parts .label-table-min{
+    white-space: nowrap;
+    text-overflow: initial;
+    overflow: hidden;
+    font-weight: normal;
+    min-width: "5px";
+}
+
+
