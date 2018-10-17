@@ -122,15 +122,16 @@
           url: '{{ route('parts.searchPart') }}?' + column + '=' + value,
           type: 'GET',
           success: (res) => {
-            $('.editEquipment').append(res)
+            $('#equipDetail').append(res)
             $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
+            $('.listPart').css('width', $('.table-parts').width())
           }
         });
       }
 
       $('.table-parts').on('keyup', '.showSuggest', (event) => {
         $parent = $(event.target);
-
+     
         $('.table-parts tr').removeClass('rowFocus');
         $parent.parents('tr').addClass('rowFocus');
   

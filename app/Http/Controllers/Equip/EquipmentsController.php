@@ -81,8 +81,6 @@ class EquipmentsController extends Controller
             return redirect("/home"); 
         }
 
-        $company = Corporation::findOrFail(request()->corpID);
-
         $equipParams = request()->only([
             'description', 'branch', 'dept_id', 'type', 'jo_dept'
         ]);
@@ -93,25 +91,10 @@ class EquipmentsController extends Controller
 
         if (is_array(request()->parts)) {
             foreach (request()->parts as $partParams) {
-                $item = \App\Models\Item\Master::create([
-                    'description' => $partParams['desc'],
-                    'brand_id' => $partParams['brand_id'],
-                    'cat_id' => $partParams['cat_id'],
-                    'supplier_id' => $partParams['supplier_id'],
-                    'consumable' => isset($partParams['consumable']) ? 1 : 0,
-                    'isActive' => isset($partParams['isActive']) ? 1 : 0
-                ]);
-
-                \App\Models\Equip\History::create([
-                    'changed_by' => \Auth::user()->UserID,
-                    'content' => 'details has been created',
-                    'item' => 'Part #' . $item->item_id . ' - ' . $item->description,
-                    'equipment_id' => $equipment->asset_id
-                ]);
-
-                $equipment->details()->create([
-                    'item_id' => $item->item_id,
-                    'qty' => isset($partParams['qty']) ? $partParams['qty'] : 0
+                \App\Models\Equip\Detail::create([
+                    'asset_id' => $equipment->asset_id,
+                    'item_id' => $partParams['item_id'],
+                    'qty' => $partParams['qty']
                 ]);
             }
         }
