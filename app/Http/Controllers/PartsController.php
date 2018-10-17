@@ -69,12 +69,54 @@ class PartsController extends Controller
     }
 
     public function searchPart(Request $request){
+        $items = Master::orderBy('description');
+
         if ($request->description) {
-            $items = Master::where('description','like','%' . $request->description .'%')->get();
+            $items = $items->where('description','like','%' . $request->description .'%');
         }
+
+        $items = $items->get();
 
         return view('parts.search-part', [
             'items' => $items
         ]);
+    }
+
+    public function getFilter(Request $request){
+        $items = [];
+
+        if($request->type == 'brand'){
+            $brands = Brands::orderBy('description')->get();
+            $items = $brands->map(function($brand) {
+                return [
+                    'id' => $brand->brand_id,
+                    'label' => $brand->description
+                ];
+            });
+        }
+        elseif($request->type == 'category'){
+            $categories = Category::orderBy('description')->get();
+            $items = $categories->map(function($category) {
+                return [
+                    'id' => $category->cat_id,
+                    'label' => $category->description
+                ];
+            });
+        }
+        else{
+            $vendors = Vendor::orderBy('VendorName')->get();
+            $items = $vendors->map(function($vendor){
+                return [
+                    'id' => $vendor->Supp_ID,
+                    'label' => $vendor->VendorName
+                ];
+            });
+        }
+        
+        return response()->json([
+            'type' => $request->type,
+            'items' => $items
+        ]);
+        
     }
 }

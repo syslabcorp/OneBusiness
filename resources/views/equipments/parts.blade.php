@@ -24,7 +24,7 @@
           {{ $row->item->item_id }}
           <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}">
         </td>
-        <td><input type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control label-table-min" value="{{ $row->item->description }}"></td>
+        <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control label-table-min showSuggest" value="{{ $row->item->description }}"></td>
         <td><input type="text" class="form-control"></td>
         <td>
           <label class="form-control text-center label-table-max">{{ $row->item->Brand->description }}</label>
@@ -53,19 +53,19 @@
       @endif
       <tr class="newPart" style="display: none;">
         <td class="text-center">
-          <label class="label-table"></label>
+          <label class="label-table-min"></label>
           <input type="hidden" class="form-control" name="item_id">
         </td>
         <td><input type="text" name="desc" data-column="description" class="form-control showSuggest"></td>
         <td><input type="text" class="form-control"></td>
         <td>
-          <label class="form-control label-table"></label>
+          <label class="form-control label-table-max"></label>
         </td>
         <td>
-          <label class="form-control label-table"></label>
+          <label class="form-control label-table-max"></label>
         </td>
         <td>
-          <label class="form-control label-table"></label>
+          <label class="form-control label-table-max"></label>
         </td>
         <td>
           <input type="text" class="form-control" name="qty">

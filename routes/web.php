@@ -252,5 +252,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::resource('asset-categories', 'Asset\CategoriesController');
 
   Route::get('/parts/search-part', ['uses' => 'PartsController@searchPart'])->name('parts.searchPart');
+  Route::get('/parts/get-filter', ['uses' => 'PartsController@getFilter'])->name('parts.getFilters');
+
   Route::resource('parts', 'PartsController');
 });

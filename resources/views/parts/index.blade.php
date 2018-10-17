@@ -53,9 +53,19 @@
 @section('pageJS')
 <script>
   (() => {
-    let basePartAPI = '{{ route('api.parts.index') }}?corpID=' + ( localStorage.getItem('partCompany') )
+    let basePartAPI = '{{ route('api.parts.index') }}'
     
     let tablePart = $('.table-parts').DataTable({
+      dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      initComplete: ()  => {
+        $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;"> \
+          Filter: \
+          <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
+          <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="by" type="radio" /> Filter By: </label> \
+          <select disabled class="form-control branch-select" style="width: 150px;"> <option value="brand">Brand</option><option value="category">Category</option><option value="vendor">Vendor</option></select> \
+          <select disabled class="form-control filter-select" style="width: 150px;"> </select> \
+        </div>')
+      },
       ajax: basePartAPI,
       columns: [
           {
@@ -143,27 +153,64 @@
 
   removePart = (itemId, description) => {
     swal({
-    title: "<div class='delete-title'>Delete</div>",
-    text:  "<div class='delete-text'>You are about to delete PartID ["+ itemId +"] - ["+ description +"]</strong></div>",
-    html:  true,
-    customClass: 'swal-wide',
-    confirmButtonClass: 'btn-danger',
-    confirmButtonText: 'Delete',
-    showCancelButton: true,
-    closeOnConfirm: true,
-    allowEscapeKey: true
-  }, (data) => {
-    if(data) {
-      $.ajax({
-      url: '{{ route('parts.index') }}/' + itemId,
-      type: 'DELETE',
-      success: (res) => {
-        tablePart.ajax.reload()
+      title: "<div class='delete-title'>Delete</div>",
+      text:  "<div class='delete-text'>You are about to delete PartID ["+ itemId +"] - ["+ description +"]</strong></div>",
+      html:  true,
+      customClass: 'swal-wide',
+      confirmButtonClass: 'btn-danger',
+      confirmButtonText: 'Delete',
+      showCancelButton: true,
+      closeOnConfirm: true,
+      allowEscapeKey: true
+    }, (data) => {
+      if(data) {
+        $.ajax({
+        url: '{{ route('parts.index') }}/' + itemId,
+        type: 'DELETE',
+        success: (res) => {
+          tablePart.ajax.reload()
+        }
+      })
       }
-    })
-    }
-  });
+    });
   }
+
+  $('body').on('change', 'input[name="document-filter"]', (event) => {
+    if(event.target.value == 'all') {
+      $('.branch-select').prop('disabled', true);
+      $('.filter-select').prop('disabled', true); 
+      tablePart.ajax.url(basePartAPI).load()
+    }
+    else{
+      $('.branch-select').prop('disabled', false);
+      $('.filter-select').prop('disabled', false);
+      $('.branch-select').change()
+    }  
+  })
+
+  $('body').on('change', '.branch-select', (event) =>{
+    $.ajax({
+    url:'{{ route('parts.getFilters') }}?type=' +  event.target.value,
+    type: 'GET',
+    success: (res) => {
+      $('.filter-select option').remove()
+
+      for (i = 0; i < res.items.length; i++) {
+        let item = res.items[i]
+
+        $('.filter-select').append('<option value="' + item.id + '">' + item.label + '</option>')
+      }
+
+      $('.filter-select').change();
+    }
+    });
+  })
+
+  $('body').on('change', '.filter-select', (event) => {
+    let requestAPI = basePartAPI + '?type=' +  $('.branch-select').val() + '&id=' + $('.filter-select').val()
+
+    tablePart.ajax.url(requestAPI).load()
+  })
 })()
 </script>
 @endsection

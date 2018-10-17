@@ -64,7 +64,8 @@ a:active, a:visited, a:hover {
 }
 
 .listPart {
-    width: 100%;
+    position: absolute;
+    width: 846px;
     thead {
         tr {
             th {

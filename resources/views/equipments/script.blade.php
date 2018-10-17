@@ -123,14 +123,14 @@
           type: 'GET',
           success: (res) => {
             $('.editEquipment').append(res)
+            $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
           }
         });
       }
 
       $('.table-parts').on('keyup', '.showSuggest', (event) => {
         $parent = $(event.target);
-        console.log($parent.offset().top)
-        
+
         $('.table-parts tr').removeClass('rowFocus');
         $parent.parents('tr').addClass('rowFocus');
   
@@ -151,6 +151,11 @@
         $('.table-parts .rowFocus td:eq(5) label').text($parent.find('td:eq(4)').text())
       })
 
+      $('body').click((event) => {
+        if (!$(event.target).parents('.listPart').length) {
+          $('.listPart').remove()
+        }
+      })
     })()
   </script>
 @endsection
