@@ -1,6 +1,6 @@
 <div class="table-responsive table-parts" style="{{ count($partItems) ? '' : 'display: none;'}}">
   <div class="text-right">
-    <button {{ $equipment->asset_id ? 'disabled' : '' }} type="button" onclick="addNewPart()" 
+    <button {{ $equipment->asset_id ? 'disabled' : '' }} type="button"  
       class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
   </div>
   <table class="table table-bordered table-striped">
@@ -27,7 +27,7 @@
         <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control label-table-min showSuggest" value="{{ $row->item->description }}"></td>
         <td><input type="text" class="form-control"></td>
         <td>
-          <label class="form-control text-center label-table-max">{{ $row->item->Brand->description }}</label>
+          <input type="text" class="form-control text-center label-table-max" name="brand_name" value="{{ $row->item->Brand->description }}">
         </td>
         <td>
           <label class="form-control text-center label-table-max">{{ $row->item->Category->description }}</label>
@@ -51,7 +51,7 @@
       </tr>
       @endforeach
       @endif
-      <tr class="newPart" style="display: none;">
+      <tr class="newPart" style="display: table-row;">
         <td class="text-center">
           <label class="label-table-min"></label>
           <input type="hidden" class="form-control" name="item_id">
@@ -59,13 +59,13 @@
         <td><input type="text" name="desc" data-column="description" class="form-control showSuggest"></td>
         <td><input type="text" class="form-control"></td>
         <td>
-          <label class="form-control label-table-max"></label>
+          <input type="text" data-column="brand" class="form-control label-table-max showSuggest">
         </td>
         <td>
-          <label class="form-control label-table-max"></label>
+          <input type="text" data-column="category" class="form-control label-table-max showSuggest">
         </td>
         <td>
-          <label class="form-control label-table-max"></label>
+        <input type="text" data-column="vendor" class="form-control label-table-max showSuggest">
         </td>
         <td>
           <input type="text" class="form-control" name="qty">

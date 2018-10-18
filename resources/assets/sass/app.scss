@@ -66,6 +66,8 @@ a:active, a:visited, a:hover {
 .listPart {
     position: absolute;
     width: 846px;
+    max-height: 400px;
+    overflow: scroll;
     thead {
         tr {
             th {

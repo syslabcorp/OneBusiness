@@ -11,7 +11,7 @@
                 <h5><strong>Equipment Parts</strong></h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                @if(\Auth::user()->checkAccessById(56, 'A'))
+                @if(\Auth::user()->checkAccessById(57, 'A'))
                   <a class="addPart" data-toggle="modal" data-target=".create-part-modal">Add Part</a>
                 @endif
               </div>
@@ -65,6 +65,13 @@
           <select disabled class="form-control branch-select" style="width: 150px;"> <option value="brand">Brand</option><option value="category">Category</option><option value="vendor">Vendor</option></select> \
           <select disabled class="form-control filter-select" style="width: 150px;"> </select> \
         </div>')
+        if (localStorage.getItem('partsType')) {
+          $('.branch-select').val(localStorage.getItem('partsType'))
+        }
+        if (localStorage.getItem('partsFilter')) {
+          $('input[name="document-filter"][value="' + localStorage.getItem('partsFilter') + '"]').prop('checked', true)
+          $('input[name="document-filter"][value="' + localStorage.getItem('partsFilter') + '"]').change();
+        }
       },
       ajax: basePartAPI,
       columns: [
@@ -121,9 +128,9 @@
           targets: 8,
           class: 'text-center',
           render: (data, type, row, meta) => {
-              return '<button onclick="editPart(' + row.item_id + ')" \
+              return '<button onclick="editPart(' + row.item_id + ')" {{ \Auth::user()->checkAccessById(57, 'E') ? '' : 'disabled' }}\
               class="btn btn-md btn-primary fas fa-pencil-alt" data-toggle="modal" data-target=".edit-part-modal"> </button> \
-              <button onclick="removePart(' + row.item_id +',\''+ row.description + '\')" \
+              <button onclick="removePart(' + row.item_id +',\''+ row.description + '\')" {{ \Auth::user()->checkAccessById(57, 'D') ? '' : 'disabled' }}\
               class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=".edit-part-modal"> </button>'
           }
           }
@@ -176,38 +183,48 @@
   }
 
   $('body').on('change', 'input[name="document-filter"]', (event) => {
-    if(event.target.value == 'all') {
+    if (event.target.value == 'all') {
       $('.branch-select').prop('disabled', true);
-      $('.filter-select').prop('disabled', true); 
-      tablePart.ajax.url(basePartAPI).load()
-    }
-    else{
+      $('.filter-select').prop('disabled', true);
+    } else {
       $('.branch-select').prop('disabled', false);
       $('.filter-select').prop('disabled', false);
-      $('.branch-select').change()
-    }  
+    }
+    $('.branch-select').change()
   })
 
-  $('body').on('change', '.branch-select', (event) =>{
-    $.ajax({
-    url:'{{ route('parts.getFilters') }}?type=' +  event.target.value,
-    type: 'GET',
-    success: (res) => {
-      $('.filter-select option').remove()
+  $('body').on('change', '.branch-select', (event) => {
 
-      for (i = 0; i < res.items.length; i++) {
-        let item = res.items[i]
-
-        $('.filter-select').append('<option value="' + item.id + '">' + item.label + '</option>')
-      }
-
-      $('.filter-select').change();
+    if (event.target.value != localStorage.getItem('partsType')) {
+      localStorage.removeItem('partsTypeId')
     }
+
+    $.ajax({
+      url:'{{ route('parts.getFilters') }}?type=' +  event.target.value,
+      type: 'GET',
+      success: (res) => {
+        $('.filter-select option').remove()
+
+        for (i = 0; i < res.items.length; i++) {
+          let item = res.items[i]
+
+          $('.filter-select').append('<option value="' + item.id + '">' + item.label + '</option>')
+        }
+
+        if (localStorage.getItem('partsTypeId')) {
+          $('.filter-select').val(localStorage.getItem('partsTypeId'))
+        }
+
+        $('.filter-select').change();
+      }
     });
   })
 
   $('body').on('change', '.filter-select', (event) => {
     let requestAPI = basePartAPI + '?type=' +  $('.branch-select').val() + '&id=' + $('.filter-select').val()
+    
+    localStorage.setItem('partsType', $('.branch-select').val())
+    localStorage.setItem('partsTypeId', $('.filter-select').val())
 
     tablePart.ajax.url(requestAPI).load()
   })

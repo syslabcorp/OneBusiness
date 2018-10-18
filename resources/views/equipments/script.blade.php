@@ -2,7 +2,6 @@
   <script type="text/javascript">
     (() => {
       openTablePart = (event) => {
-        addNewPart()
         $(event.target).parent('p').slideUp()
         $('.table-parts').slideDown()
       }
@@ -48,15 +47,10 @@
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
 
       $(window).keydown((event) => {
-        if (event.which === 113 && !$('.btn-edit').is(':visible')) {
-          addNewPart()
+        if (event.which === 113) {
+          $('.btnAddRow').click()
         }
       })
-
-      addNewPart = () => {
-        $('.table-parts .newPart').css('display', 'table-row')
-        $('.table-parts .newPart .error').remove()
-      }
 
       // Table Parts
       $('.table-parts').on('click', '.btnEditRow', function(event) {
@@ -116,14 +110,24 @@
       })
 
 
-      searchPart = (column, value) => {
-        $('.listPart').remove();  
+      searchPart = () => {
+        $('.listPart').remove();
+
+        let params = {};
+        let listFilters = $('.rowFocus input[data-column]')
+
+        for(let i = 0; i < listFilters.length; i++) {
+          params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+        }
+
+
         $.ajax({
-          url: '{{ route('parts.searchPart') }}?' + column + '=' + value,
+          url: '{{ route('parts.searchPart') }}',
           type: 'GET',
+          data: params,
           success: (res) => {
             $('#equipDetail').append(res)
-            $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
+            // $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
             $('.listPart').css('width', $('.table-parts').width())
           }
         });
@@ -134,8 +138,8 @@
      
         $('.table-parts tr').removeClass('rowFocus');
         $parent.parents('tr').addClass('rowFocus');
-  
-        searchPart($parent.attr('data-column'), $parent.val())
+
+        searchPart();
       })
 
       $('body').on('click', '.listPart tbody tr', (event) => {
@@ -156,6 +160,15 @@
         if (!$(event.target).parents('.listPart').length) {
           $('.listPart').remove()
         }
+      })
+
+      $('.table-parts').on('click', '.showSuggest', function(){
+        $parent = $(event.target);
+     
+        $('.table-parts tr').removeClass('rowFocus');
+        $parent.parents('tr').addClass('rowFocus');
+        
+        searchPart();
       })
     })()
   </script>

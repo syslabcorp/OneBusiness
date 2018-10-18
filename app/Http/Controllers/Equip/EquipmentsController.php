@@ -38,7 +38,7 @@ class EquipmentsController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-
+        
         $company = Corporation::findOrFail(request()->corpID);
         $tab = 'auto';
         
@@ -57,7 +57,7 @@ class EquipmentsController extends Controller
         $lastEquipment = $equipment->orderBy('asset_id', 'DESC')->first();
 
         $lastAssetId = $lastEquipment ? $lastEquipment->asset_id + 1 : 1;
-
+        
         $vendors = \App\Models\Vendor::orderBy('VendorName', 'ASC')->get();
         $brands = \App\Models\Equip\Brands::orderBy('description', 'ASC')->get();
         $categories = \App\Models\Equip\Category::orderBy('description', 'ASC')->get();
@@ -80,7 +80,7 @@ class EquipmentsController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-
+        
         $equipParams = request()->only([
             'description', 'branch', 'dept_id', 'type', 'jo_dept'
         ]);
@@ -98,7 +98,7 @@ class EquipmentsController extends Controller
                 ]);
             }
         }
-
+        
         \Session::flash('success', 'New equipment #' . $equipment->asset_id . '-' . $equipment->description . ' has been created');
 
         return redirect(route('equipments.index', ['corpID' => request()->corpID]));
@@ -151,7 +151,7 @@ class EquipmentsController extends Controller
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
-
+     
         $company = Corporation::findOrFail(request()->corpID);
 
         $equipment = \App\Models\Equip\Hdr::findOrFail($id);
@@ -160,10 +160,10 @@ class EquipmentsController extends Controller
             'description', 'branch', 'dept_id', 'type', 'jo_dept'
         ]);
 
-        // $equipParams['isActive'] = request()->active ? 1 : 0;
+        $equipParams['isActive'] = request()->active ? 1 : 0;
 
         $equipment->update($equipParams);
-
+       
         if (is_array(request()->parts)) {
             $equipment->details->each(function($item, $index) {
                 $listParts = collect(request()->parts);

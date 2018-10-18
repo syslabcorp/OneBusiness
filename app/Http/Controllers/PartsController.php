@@ -12,6 +12,11 @@ use App\Models\Item\Master;
 class PartsController extends Controller
 {
     public function index(){
+        if(!\Auth::user()->checkAccessById(57, "V")) {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
         $brands = Brands::orderBy('description')->get();
         $categories = Category::orderBy('description')->get();
         $vendors = Vendor::orderBy('VendorName')->get();
@@ -23,7 +28,12 @@ class PartsController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(Request $request) {
+        if(!\Auth::user()->checkAccessById(57, "A")) {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
         $item = Master::create($request->only([
             'description', 'brand_id', 'cat_id', 'supplier_id', 'consumable', 'with_serialno', 'isActive'
         ]));
@@ -34,6 +44,11 @@ class PartsController extends Controller
     }
 
     public function edit($id){
+        if(!\Auth::user()->checkAccessById(57, "E")) {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+        
         $item = Master::findOrFail($id);
         
         $brands = Brands::orderBy('description')->get();
@@ -49,6 +64,11 @@ class PartsController extends Controller
     }
 
     public function update($item, Request $request){
+        if(!\Auth::user()->checkAccessById(57, "E")) {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
         $item = Master::findOrFail($item);
 
         $item->update($request->only([
@@ -61,6 +81,11 @@ class PartsController extends Controller
     }
 
     public function destroy($item){
+        if(!\Auth::user()->checkAccessById(57, "D")) {
+            \Session::flash('error', "You don't have permission");
+            return redirect("/home");
+        }
+
         $item = Master::destroy($item);
 
         return response()->json([
@@ -69,12 +94,28 @@ class PartsController extends Controller
     }
 
     public function searchPart(Request $request){
-        $items = Master::orderBy('description');
+        $items = Master::orderBy('item_master.description')
+                        ->select('item_master.*');
 
-        if ($request->description) {
-            $items = $items->where('description','like','%' . $request->description .'%');
+        if ($request->description){
+            $items = $items->where('item_master.description','like','%' . $request->description .'%');
+        }
+        
+        if ($request->brand){
+            $items = $items->leftJoin('equip_brands', 'equip_brands.brand_id', '=', 'item_master.brand_id')
+                            ->where('equip_brands.description','like','%' . $request->brand .'%');
         }
 
+        if ($request->category){
+            $items = $items->leftJoin('equip_category', 'equip_category.cat_id', '=', 'item_master.cat_id')
+                            ->where('equip_category.description','like','%' . $request->category .'%');
+        }
+
+        if ($request->vendor){
+            $items = $items->leftJoin('s_vendors', 's_vendors.Supp_ID', '=', 'item_master.supplier_id')
+                            ->where('s_vendors.VendorName','like','%' . $request->vendor .'%');
+        }
+        
         $items = $items->get();
 
         return view('parts.search-part', [
