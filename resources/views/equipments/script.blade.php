@@ -10,38 +10,6 @@
         updateDepartmentsSelect()
       })
 
-      updateDepartmentsSelect = () => {
-        let branchID = $('#equipDetail select[name="branch"]').val()
-        $('select[name="dept_id"] option').css('display', 'none')
-        $('select[name="jo_dept"] option').css('display', 'none')
-        $('select[name="dept_id"]').val('')
-        $('select[name="jo_dept"]').val('')
-
-        $.ajax({
-          type: 'GET',
-          url: '{{ url('/') }}/api/v1/branches/' + branchID + '/depts?corpID={{ request()->corpID }}',
-          success: (res) => {
-            for(let i = 0; i < res.depts.length; i++) {
-              $('select[name="dept_id"] option[value="' + res.depts[i] + '"]').css('display', 'block')
-              $('select[name="jo_dept"] option[value="' + res.depts[i] + '"]').css('display', 'block')
-            }
-            
-            if (branchID == $('#equipDetail select[name="branch"]').attr('data-branch')) {
-              $('select[name="dept_id"] option[value="{{ $equipment->dept_id }}"]').prop('selected', true)
-              $('select[name="jo_dept"] option[value="{{ $equipment->jo_dept }}"]').prop('selected', true)
-            } else if (res.depts.length) {
-              $('select[name="dept_id"] option[value="' + res.depts[0] + '"]').prop('selected', true)
-              $('select[name="jo_dept"] option[value="' + res.depts[0] + '"]').prop('selected', true)
-            }
-          },
-          error: (res) => {
-
-          }
-        })
-      }
-
-      updateDepartmentsSelect()
-
       $('.editEquipment .form-control').prop('disabled', true)
       $('.partRow input, .partRow select').attr('readonly', true)
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
@@ -53,13 +21,7 @@
       })
 
       // Table Parts
-      $('.table-parts').on('click', '.btnEditRow', function(event) {
-        $(this).css('display', 'none')
-        $(this).parents('tr').find('.btnSaveRow').css('display', 'inline-block')
-        $(this).parents('tr').find('input[type="checkbox"]').attr('onclick', '')
-
-        $(this).parents('tr').find('select, input').attr('readonly', false)
-      })
+   
       $('.table-parts').on('click', '.btnRemoveRow', (event) => {
         let $trParent = $(event.target).parents('tr')
 
@@ -78,6 +40,7 @@
 
         let $trClone = $trParent.clone()
         $trClone.removeClass('newPart').addClass('partRow')
+        console.log($trClone.removeClass('newPart').addClass('partRow'))
         $trClone.find('.btnSaveRow').css('display', 'none')
         $trClone.find('select, input').attr('readonly', false)
         $trClone.find('select[name=""]').val($trParent.find('select[name=""]').val())
@@ -102,13 +65,20 @@
 
       $('.editEquipment .btn-edit').click((event) => {
         $('.editEquipment .form-control').prop('disabled', false)
-        $('.editEquipment .btnAddRow, .btnEditRow, .btnSaveRow, .btnRemoveRow').prop('disabled', false)
+        $('.editEquipment .btnAddRow, .btnSaveRow, .btnRemoveRow').prop('disabled', false)
         $('.editEquipment .btn-edit').css('display', 'none')
         $('.editEquipment .btn-save, .editEquipment .addHere').css('display', 'inline-block')
         $('.editEquipment .equipActive').removeAttr('onclick')
+
+        enablePart()
         // $('.partRow input, .partRow select').attr('readonly', true)
       })
 
+      enablePart = () => {
+        $('.btnRemoveRow').parents('tr').find('input[type="checkbox"]').attr('onclick', '')
+
+        $('.btnRemoveRow').parents('tr').find('select, input').attr('readonly', false)
+      };
 
       searchPart = () => {
         $('.listPart').remove();

@@ -30,14 +30,7 @@
               @endif
             </div>
           </div>
-          <div class="rown">
-            <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Total Cost:</strong></label>
-            </div>
-            <div class="col-sm-9 form-group">
-              <input type="number" class="form-control" readonly>
-            </div>
-          </div>
+          
           <div class="rown">
             <div class="col-sm-3 form-group text-right">
               <label style="padding: 5px;"><strong>Active:</strong></label>
@@ -62,40 +55,10 @@
           </div>
           <div class="rown">
             <div class="col-sm-5 form-group text-right">
-              <label style="padding: 5px;"><strong>Branch:</strong></label>
+              <label style="padding: 5px;"><strong>Total Cost:</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <select name="branch" class="form-control" data-branch="{{ $equipment->branch }}">
-                @foreach($branches as $branch)
-                <option {{ $equipment->branch == $branch->Branch ? 'selected' : '' }} value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="rown">
-            <div class="col-sm-5 form-group text-right">
-              <label style="padding: 5px;"><strong>Department:</strong></label>
-            </div>
-            <div class="col-sm-7 form-group">
-              <select name="dept_id" class="form-control" data-dept="{{ $equipment->dept_id }}">
-                <option value="">-- select --</option>
-                @foreach($deptItems as $item)
-                <option {{ $equipment->dept_id == $item->dept_ID ? 'selected' : '' }} value="{{ $item->dept_ID }}">{{ $item->department }}</option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="rown">
-            <div class="col-sm-5 form-group text-right">
-              <label style="padding: 5px;"><strong>Job order Department:</strong></label>
-            </div>
-            <div class="col-sm-7 form-group">
-              <select name="jo_dept" class="form-control" data-job="{{ $equipment->jo_dept }}">
-                <option value="">-- select --</option>
-                @foreach($deptItems as $item)
-                <option {{ $equipment->jo_dept == $item->dept_ID ? 'selected' : '' }} value="{{ $item->dept_ID }}">{{ $item->department }}</option>
-                @endforeach
-              </select>
+              <input type="number" class="form-control" readonly>
             </div>
           </div>
         </div>

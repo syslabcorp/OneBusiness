@@ -96,7 +96,7 @@ class PartsController extends Controller
     public function searchPart(Request $request){
         $items = Master::orderBy('item_master.description')
                         ->select('item_master.*');
-
+        
         if ($request->description){
             $items = $items->where('item_master.description','like','%' . $request->description .'%');
         }

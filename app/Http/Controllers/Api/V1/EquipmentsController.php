@@ -13,16 +13,7 @@ class EquipmentsController extends Controller
     {
         $hdrModel = new \App\Models\Equip\Hdr;
 
-        $items = $hdrModel->orderBy('asset_id')
-                    ->leftJoin('t_sysdata', 't_sysdata.Branch', '=', 'equip_hdr.branch')
-                    ->where(function($query) {
-                        return $query->where('corp_id', request()->corpID);
-                    })
-                    ->whereIn('equip_hdr.branch', \Auth::user()->getBranchesByArea(request()->corpID)->pluck('Branch'));
-
-        if (request()->branch) {
-            $items = $items->where('equip_hdr.branch', request()->branch);
-        }
+        $items = $hdrModel->orderBy('asset_id');
 
         if (request()->department) {
             $items = $items->where('dept_id', request()->department);

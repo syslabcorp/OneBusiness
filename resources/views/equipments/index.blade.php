@@ -27,8 +27,6 @@
                         <th>Asset No.</th>
                         <th>Equipment</th>
                         <th>Type</th>
-                        <th>Branch</th>
-                        <th>Department</th>
                         <th>Qty</th>
                         <th>Active</th>
                         <th>Action</th>
@@ -60,10 +58,6 @@
           <select class="form-control company-select" style="width: 200px;margin-right: 20px;"></select> \
           Filter: \
           <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
-          <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="branch" type="radio" /> Branch </label> \
-          <select disabled class="form-control branch-select" style="width: 150px;"> </select> \
-          <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="department" type="radio" /> Department </label> \
-          <select disabled class="form-control department-select" style="width: 150px;"> </select> \
         </div>')
 
         @foreach($companies as $item)
@@ -99,19 +93,11 @@
         },
         {
           targets: 3,
-          data: "branch"
-        },
-        {
-          targets: 4,
-          data: "department"
-        },
-        {
-          targets: 5,
           data: 'qty',
           class: 'text-center'
         },
         {
-          targets: 6,
+          targets: 4,
           data: 'isActive',
           class: 'text-center',
           render: (data, type, row, meta) => {
@@ -119,7 +105,7 @@
           }
         },
         {
-          targets: 7,
+          targets: 5,
           class: 'text-center',
           render: (data, type, row, meta) => {
             return '<button {{ \Auth::user()->checkAccessById(56, 'D') ? '' : 'disabled' }} onclick="removeEquipment(' + row.asset_id +',\'' + row.description + '\')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
@@ -133,7 +119,7 @@
       },
       order: [
         [0, 'desc']
-      ],
+      ]
     })
 
     removeEquipment = (id, description) => {

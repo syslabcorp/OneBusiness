@@ -16,9 +16,9 @@
         <tr>
             <td data-id="{{ $item->item_id }}">{{ $item->item_id }}</td>
             <td>{{ $item->description }}</td>
-            <td data-id="{{ $item->Brand->brand_id }}">{{ $item->Brand->description }}</td>
-            <td data-id="{{ $item->Category->cat_id }}">{{ $item->Category->description }}</td>
-            <td data-id="{{ $item->Vendor->Supp_ID }}">{{ $item->Vendor->VendorName }}</td>
+            <td data-id="{{ $item->Brand ? $item->Brand->brand_id : 'Null' }}">{{ $item->Brand ? $item->Brand->description : 'Data Null'}}</td>
+            <td data-id="{{ $item->Category ? $item->Category->cat_id : 'Null' }}">{{ $item->Category ? $item->Category->description : 'Data Null' }}</td>
+            <td data-id="{{ $item->Vendor ? $item->Vendor->Supp_ID : 'Null' }}">{{ $item->Vendor ? $item->Vendor->VendorName : 'Data Null' }}</td>
             <td class="text-center"><input type="checkbox" value="1" {{ $item->consumable == 1 ? 'checked' : '' }}></td>
             <td class="text-center"><input type="checkbox" value="1" {{ $item->with_serialno == 1 ? 'checked' : '' }}></td>
             <td class="text-center"><input type="checkbox" value="1" {{ $item->isActive == 1 ? 'checked' : '' }}></td>
