@@ -53,12 +53,7 @@
     let tableEquipment = $('.table-equipments').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: ()  => {
-        $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;"> \
-          Company: \
-          <select class="form-control company-select" style="width: 200px;margin-right: 20px;"></select> \
-          Filter: \
-          <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
-        </div>')
+        $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;"> </div>')
 
         @foreach($companies as $item)
           $('.company-select').append('<option value="{{ $item->corp_id }}">{{ $item->corp_name }}</option>')

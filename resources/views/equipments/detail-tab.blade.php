@@ -58,7 +58,7 @@
               <label style="padding: 5px;"><strong>Total Cost:</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="number" class="form-control" readonly>
+              <input type="number" class="form-control sumtotal" readonly>
             </div>
           </div>
         </div>

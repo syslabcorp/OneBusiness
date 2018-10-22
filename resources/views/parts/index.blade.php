@@ -68,6 +68,7 @@
         if (localStorage.getItem('partsType')) {
           $('.branch-select').val(localStorage.getItem('partsType'))
         }
+        
         if (localStorage.getItem('partsFilter')) {
           $('input[name="document-filter"][value="' + localStorage.getItem('partsFilter') + '"]').prop('checked', true)
           $('input[name="document-filter"][value="' + localStorage.getItem('partsFilter') + '"]').change();
@@ -190,11 +191,13 @@
       $('.branch-select').prop('disabled', false);
       $('.filter-select').prop('disabled', false);
     }
+    localStorage.setItem('partsFilter', event.target.value)
+    
     $('.branch-select').change()
   })
 
   $('body').on('change', '.branch-select', (event) => {
-
+ 
     if (event.target.value != localStorage.getItem('partsType')) {
       localStorage.removeItem('partsTypeId')
     }
@@ -210,7 +213,6 @@
 
           $('.filter-select').append('<option value="' + item.id + '">' + item.label + '</option>')
         }
-
         if (localStorage.getItem('partsTypeId')) {
           $('.filter-select').val(localStorage.getItem('partsTypeId'))
         }
@@ -224,6 +226,7 @@
     let requestAPI = basePartAPI + '?type=' +  $('.branch-select').val() + '&id=' + $('.filter-select').val()
     
     localStorage.setItem('partsType', $('.branch-select').val())
+      
     localStorage.setItem('partsTypeId', $('.filter-select').val())
 
     tablePart.ajax.url(requestAPI).load()
