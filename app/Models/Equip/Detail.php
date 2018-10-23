@@ -27,17 +27,6 @@ class Detail extends Model {
     protected static function boot()
     {
         parent::boot();
-
-        static::deleting(function($detail) {
-            \App\Models\Equip\History::create([
-                'changed_by' => \Auth::user()->UserID,
-                'content' => 'details has been deleted',
-                'equipment_id' => $detail->asset_id,
-                'item' => 'Part #' . $detail->item_id . ' - ' . $detail->item->description
-            ]);
-
-            $detail->item ? $detail->item()->delete() : null;
-        });
     }
 
     protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)

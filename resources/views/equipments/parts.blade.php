@@ -35,16 +35,16 @@
           <input type="text" class="form-control text-center label-table-max" name="category_name" value="{{ $row->item->Category->description }}">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-max" name="vendor_name" value="{{ $row->item->Vendor ? $row->item->Vendor->VendorName : 'Data Null'  }}">
+          <input type="text" class="form-control text-center label-table-max" name="vendor_name" value="{{ $row->item->Vendor ? $row->item->Vendor->VendorName : '0.00'  }}">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min" name="last_cost" value="{{ $row->item ? $row->item->LastCost : 'Data Null'  }}">
+          <input type="text" class="form-control text-center label-table-min" name="last_cost" value="{{ $row->item ? number_format($row->item->LastCost, 2, '.', null) : '0.00'  }}">
         </td>
         <td>
           <input type="number" class="form-control text-center label-table-min quantity" name="parts[{{ $row->item_id }}][qty]" value="{{ $row->qty }}">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min" name="total_cost" value="{{ $row->qty*$row->item->LastCost }}">
+          <input type="text" class="form-control text-center label-table-min" name="total_cost" value="{{ number_format($row->qty * $row->item->LastCost, 2, '.', null) }}">
         </td>
 
         

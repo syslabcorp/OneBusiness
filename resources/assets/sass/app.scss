@@ -94,6 +94,10 @@ a:active, a:visited, a:hover {
     }
 }
 
+.equipmentPage {
+    padding-bottom: 350px;
+}
+
 .table-parts .label-table-max{
     white-space: nowrap;
     text-overflow: initial;
@@ -108,5 +112,9 @@ a:active, a:visited, a:hover {
     font-weight: normal;
     min-width: "5px";
 }
-
+.listPart tr.active {
+    td {
+        background: #ed7a82;
+    }
+}
 

@@ -109,7 +109,7 @@
 
       $('.table-parts').on('keyup', '.showSuggest', (event) => {
         $parent = $(event.target);
-     
+        
         $('.table-parts tr').removeClass('rowFocus');
         $parent.parents('tr').addClass('rowFocus');
         
@@ -118,8 +118,10 @@
 
       $('body').on('keyup', '.quantity', (event) => {
         let $parent = $(event.target).parents('tr')
+        let total = 0.000000000001+ $parent.find('td:eq(6) input').val()*$parent.find('td:eq(7) input').val()
+
         if ($parent.find('td:eq(6) input').val()){
-          $parent.find('td:eq(8) input').val($parent.find('td:eq(6) input').val()*$parent.find('td:eq(7) input').val())
+          $parent.find('td:eq(8) input').val(total.toFixed(2))
         }
 
         totalCost()
@@ -127,7 +129,7 @@
 
       totalCost = () => {
         let $rows = $('.table-parts tbody tr')
-        let total = 0
+        let total = 0.000000000001
 
         for(let i = 0; i < $rows.length; i++) {
           let $tr = $($rows[i])
@@ -141,18 +143,22 @@
 
       totalCost()
 
-      $('body').on('click', '.listPart tbody tr', (event) => {
-        $parent = $(event.target).parents('tr');
-
+      $('body').on('click', '.listPart tbody tr', function(event)  {
+        $('.listPart tbody tr').removeClass('active')
+        $parent = $(this);
+        $parent.addClass('active')
+        
         $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
         $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
         $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
         $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
         $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
         $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(8) input').val($('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val())
+        $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
 
+        let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
+        $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+        
         totalCost()
       })
 
@@ -169,6 +175,30 @@
         $parent.parents('tr').addClass('rowFocus');
         
         searchPart();
+      })
+
+      $(window).on('keyup', (event) => {
+        let index = $('.listPart tbody tr.active').index();
+        
+        if (event.which == 38) {
+          if ($('.listPart tbody tr.active').length) {
+            if (index >= 1) {
+              index -= 1;
+              $('.listPart tbody tr:eq(' + index + ')').click()
+            }
+          } else {
+            $('.listPart tbody tr:eq(0)').click()
+          }
+        } else if (event.which == 40) {
+          if (($('.listPart tbody tr.active').length - 2)) {          
+            if (index != $('.listPart tbody tr').length) {
+              index += 1;
+              $('.listPart tbody tr:eq(' + index + ')').click()
+            }  
+          } else {
+            $('.listPart tbody tr:eq(0)').click()
+          }
+        }
       })
     })()
   </script>
