@@ -117,7 +117,7 @@ class PartsController extends Controller
         }
         
         $items = $items->get();
-
+  
         return view('parts.search-part', [
             'items' => $items
         ]);

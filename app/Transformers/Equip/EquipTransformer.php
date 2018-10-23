@@ -20,22 +20,8 @@ class EquipTransformer extends Fractal\TransformerAbstract
         $deptModel->setConnection($this->company->database_name);
 
         $dept = $deptModel->find($item->dept_id);
-
-        $status = '';
-
+        
         $details = $item->details;
-
-        if ($details->count()) {
-            $status = 'For Repair';
-
-            if ($details->where('status', 1)->count() == $details->count()) {
-                $status = 'In Use';
-            }
-
-            if ($details->where('status', 0)->count() == $details->count()) {
-                $status = 'Retired';
-            }
-        }
 
         $type = $item->type == 'Com Proper' ? 'Company Property' : $item->type;
         
@@ -43,7 +29,6 @@ class EquipTransformer extends Fractal\TransformerAbstract
             'asset_id' => $item->asset_id,
             'description' => $item->description,
             'type' => $type,
-            'status' => $status,
             'isActive' => $item->isActive,
             'qty' => $item->details->sum('qty')
         ];

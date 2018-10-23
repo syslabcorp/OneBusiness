@@ -63,7 +63,6 @@
           $('.company-select').val(localStorage.getItem('equipmentCompany'))
         }
 
-        reloadBranchesAndDepts()
       },
       ajax: baseEquipmentAPI,
       columns: [
@@ -212,50 +211,12 @@
 
     $('body').on('change', '.company-select', (event) => {
       reloadEquipmentTable(baseEquipmentAPI.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val())
-      reloadBranchesAndDepts(true)
       baseEquipmentAPI = baseEquipmentAPI.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val()
       let createLink = $('.addEquipment').attr('href')
       $('.addEquipment').attr('href', createLink.replace(/corpID=[0-9]+/, '') + 'corpID=' + $('.company-select').val())
       saveFilter()
     })
 
-    reloadBranchesAndDepts = (isPreset = false) => {
-      $('.department-select option').remove()
-      $('.branch-select option').remove()
-
-      $.ajax({
-        url: '{{ url('/') }}/api/v1/branches/depts?corpID=' + $('.company-select').val(),
-        type: 'GET',
-        success: (res) => {
-          for(let i = 0; i < res.depts.length; i++) {
-            $('.department-select').append('<option value="' + res.depts[i].dept_ID + '">' + res.depts[i].department + '</option>')
-          }
-
-          for(let i = 0; i < res.branches.length; i++) {
-            $('.branch-select').append('<option value="' + res.branches[i].Branch + '">' + res.branches[i].ShortName + '</option>')
-          }
-
-          if(localStorage.getItem('equipmentFilter') == 'branch') {
-            $('input[name="document-filter"][value="branch"]').prop('checked', true)
-            $('.branch-select').val(localStorage.getItem('equipmentBranch'))
-            $('.branch-select').prop('disabled', false)
-          }
-
-          if(localStorage.getItem('equipmentFilter') == 'department') {
-            $('input[name="document-filter"][value="department"]').prop('checked', true)
-            $('.department-select').val(localStorage.getItem('equipmentDept'))
-            $('.department-select').prop('disabled', false)
-          }
-          
-          if(isPreset) {
-            $('.department-select').val(res.depts[0].dept_ID)
-            $('.branch-select').val(res.branches[0].Branch)
-          }
-
-          saveFilter()
-        }
-      })
-    }
     saveFilter = () => {
       localStorage.setItem('equipmentCompany', $('.company-select').val())
       localStorage.setItem('equipmentFilter', $('input[name="document-filter"]:checked').val())

@@ -23,7 +23,7 @@
       @foreach($partItems as $row)
       <tr class="partRow">
         <td class="text-center">
-          {{ $row->item->item_id }}
+          {{ $row->item_id }}
           <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}">
         </td>
         <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control text-center label-table-min showSuggest" value="{{ $row->item->description }}"></td>
@@ -59,7 +59,7 @@
       </tr>
       @endforeach
       @endif
-      <tr class="newPart" style="display: {{ $equipment->asset_id ? 'none' : 'table-row' }};">
+      <tr class="newPart" style="display: none;">
         <td class="text-center">
           <label class="label-table-min"></label>
           <input type="hidden" class="form-control" name="item_id">

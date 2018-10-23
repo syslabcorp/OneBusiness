@@ -68,6 +68,9 @@ a:active, a:visited, a:hover {
     width: 846px;
     max-height: 400px;
     overflow: scroll;
+    table {
+        width: 100%;
+    }
     thead {
         tr {
             th {

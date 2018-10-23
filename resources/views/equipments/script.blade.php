@@ -4,6 +4,7 @@
       openTablePart = (event) => {
         $(event.target).parent('p').slideUp()
         $('.table-parts').slideDown()
+        $('.table-parts .btnAddRow').click()
       }
 
       $('#equipDetail select[name="branch"]').change((event) => {
@@ -59,6 +60,7 @@
           $trParent.find('input').val('')
           $trParent.find('input[name="qty"]').val(1)
           $trParent.find('.label-table').text('')
+          $trParent.css('display', 'none')
         } else {
           $trParent.find('.btnSaveRow').css('display', 'none')
           // $trParent.remove()
@@ -134,7 +136,7 @@
           }
         }
 
-        $('.sumtotal').val(total)
+        $('.sumtotal').val(total.toFixed(2))
       }
 
       totalCost()
