@@ -21,6 +21,10 @@
     <tbody>
       @if(count($partItems))
       @foreach($partItems as $row)
+      @php
+        if (is_array($row)) $row = new \App\Models\Equip\Detail($row);
+        if (!$row->item_id) continue;
+      @endphp
       <tr class="partRow">
         <td class="text-center">
           {{ $row->item_id }}
@@ -49,10 +53,7 @@
 
         
         <td style="width: 100px;">
-          <button type="button" class="btn btn-primary btn-md btnSaveRow" style="display: none;">
-            <i class="fas fa-check"></i>
-          </button>
-          <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" disabled>
+          <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" {{ $equipment->asset_id ? 'disabled' : '' }}>
             <i class="fas fa-trash-alt"></i>
           </button>
         </td>

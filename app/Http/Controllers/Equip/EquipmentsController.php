@@ -91,11 +91,13 @@ class EquipmentsController extends Controller
    
         if (is_array(request()->parts)) {
             foreach (request()->parts as $partParams) {
-                \App\Models\Equip\Detail::create([
-                    'asset_id' => $equipment->asset_id,
-                    'item_id' => $partParams['item_id'],
-                    'qty' => $partParams['qty']
-                ]);
+                if (!empty($partParams['item_id'])) {
+                    \App\Models\Equip\Detail::create([
+                        'asset_id' => $equipment->asset_id,
+                        'item_id' => $partParams['item_id'],
+                        'qty' => $partParams['qty']
+                    ]);
+                }
             }
         }
         
@@ -168,11 +170,13 @@ class EquipmentsController extends Controller
        
         if (is_array(request()->parts)) {
             foreach (request()->parts as $partParams) {
-                \App\Models\Equip\Detail::create([
-                    'asset_id' => $equipment->asset_id,
-                    'item_id' => $partParams['item_id'],
-                    'qty' => $partParams['qty']
-                ]);
+                if (!empty($partParams['item_id'])) {
+                    \App\Models\Equip\Detail::create([
+                        'asset_id' => $equipment->asset_id,
+                        'item_id' => $partParams['item_id'],
+                        'qty' => $partParams['qty']
+                    ]);
+                } 
             }
         } else {
             $equipment->details->each->delete();

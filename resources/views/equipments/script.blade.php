@@ -12,7 +12,7 @@
       })
 
       $('.editEquipment .form-control').prop('disabled', true)
-      $('.partRow input, .partRow select').attr('readonly', true)
+      $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
 
       $(window).keydown((event) => {
@@ -144,23 +144,32 @@
       totalCost()
 
       $('body').on('click', '.listPart tbody tr', function(event)  {
+  
         $('.listPart tbody tr').removeClass('active')
         $parent = $(this);
         $parent.addClass('active')
         
-        $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
-        $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
-        $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
+        $(document).keypress(function(event) {
+          if(event.which == 13) {
+            $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
+            $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
+            $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
+            $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
+            $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
+            $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
+            $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
 
-        let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
-        $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
-        
-        totalCost()
+            let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
+            $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+            
+            totalCost()
+
+            $('.listPart').css('display','none')
+          }
+        });
       })
+      
+      
 
       $('body').click((event) => {
         if (!$(event.target).parents('.listPart').length) {
@@ -178,6 +187,7 @@
       })
 
       $(window).on('keyup', (event) => {
+
         let index = $('.listPart tbody tr.active').index();
         
         if (event.which == 38) {
