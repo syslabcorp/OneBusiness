@@ -103,6 +103,7 @@
             $('#equipDetail').append(res)
             // $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
             $('.listPart').css('width', $('.table-parts').width())
+            $('.listPart tbody tr:eq(0)').addClass('active')
           }
         });
       }
@@ -112,8 +113,7 @@
         
         $('.table-parts tr').removeClass('rowFocus');
         $parent.parents('tr').addClass('rowFocus');
-        
-        searchPart();
+        if (event.which != 38 && event.which != 40) searchPart();
       })
 
       $('body').on('keyup', '.quantity', (event) => {

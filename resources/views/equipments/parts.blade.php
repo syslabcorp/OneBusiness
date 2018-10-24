@@ -28,30 +28,28 @@
       <tr class="partRow">
         <td class="text-center">
           {{ $row->item_id }}
-          <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}">
+          <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}" >
         </td>
-        <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control text-center label-table-min showSuggest" value="{{ $row->item->description }}"></td>
-        <td><input type="text" class="form-control"></td>
+        <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control text-center label-table-min showSuggest" value="{{ $row->item->description }}" autocomplete="off"></td>
+        <td><input type="text" class="form-control" autocomplete="off"></td>
         <td>
-          <input type="text" class="form-control text-center label-table-max" name="brand_name" value="{{ $row->item->Brand->description }}">
-        </td>
-        <td>
-          <input type="text" class="form-control text-center label-table-max" name="category_name" value="{{ $row->item->Category->description }}">
+          <input type="text" class="form-control text-center label-table-max" name="brand_name" value="{{ $row->item->Brand->description }}" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-max" name="vendor_name" value="{{ $row->item->Vendor ? $row->item->Vendor->VendorName : '0.00'  }}">
+          <input type="text" class="form-control text-center label-table-max" name="category_name" value="{{ $row->item->Category->description }}" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min" name="last_cost" value="{{ $row->item ? number_format($row->item->LastCost, 2, '.', null) : '0.00'  }}">
+          <input type="text" class="form-control text-center label-table-max" name="vendor_name" value="{{ $row->item->Vendor ? $row->item->Vendor->VendorName : '0.00'  }}" autocomplete="off">
         </td>
         <td>
-          <input type="number" class="form-control text-center label-table-min quantity" name="parts[{{ $row->item_id }}][qty]" value="{{ $row->qty }}">
+          <input type="text" class="form-control text-center label-table-min" name="last_cost" value="{{ $row->item ? number_format($row->item->LastCost, 2, '.', null) : '0.00'  }}" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min" name="total_cost" value="{{ number_format($row->qty * $row->item->LastCost, 2, '.', null) }}">
+          <input type="number" class="form-control text-center label-table-min quantity" name="parts[{{ $row->item_id }}][qty]" value="{{ $row->qty }}" autocomplete="off">
         </td>
-
-        
+        <td>
+          <input type="text" class="form-control text-center label-table-min" name="total_cost" value="{{ number_format($row->qty * $row->item->LastCost, 2, '.', null) }}" autocomplete="off">
+        </td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" {{ $equipment->asset_id ? 'disabled' : '' }}>
             <i class="fas fa-trash-alt"></i>
@@ -65,25 +63,25 @@
           <label class="label-table-min"></label>
           <input type="hidden" class="form-control" name="item_id">
         </td>
-        <td><input type="text" name="desc" data-column="description" class="form-control text-center showSuggest"></td>
-        <td><input type="text" class="form-control"></td>
+        <td><input type="text" name="desc" data-column="description" class="form-control text-center showSuggest" autocomplete="off"></td>
+        <td><input type="text" class="form-control" autocomplete="off"></td>
         <td>
-          <input type="text" data-column="brand" class="form-control text-center label-table-max showSuggest">
+          <input type="text" data-column="brand" class="form-control text-center label-table-max showSuggest" autocomplete="off">
         </td>
         <td>
-          <input type="text" data-column="category" class="form-control text-center label-table-max showSuggest">
+          <input type="text" data-column="category" class="form-control text-center label-table-max showSuggest" autocomplete="off">
         </td>
         <td>
-          <input type="text" data-column="vendor" class="form-control text-center label-table-max showSuggest">
+          <input type="text" data-column="vendor" class="form-control text-center label-table-max showSuggest" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min" name="lastcost">
+          <input type="text" class="form-control text-center label-table-min" name="lastcost" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min quantity" name="qty" value="1">
+          <input type="text" class="form-control text-center label-table-min quantity" name="qty" value="1" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min" name="totalcost">
+          <input type="text" class="form-control text-center label-table-min" name="totalcost" autocomplete="off">
         </td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
