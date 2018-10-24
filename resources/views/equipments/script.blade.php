@@ -150,11 +150,10 @@
       })
 
       $(document).keypress(function(event) {
-        event.preventDefault();
-
-        $parent = $('.listPart tr.active')
-
         if(event.which == 13) {
+          event.preventDefault();
+          $parent = $('.listPart tr.active')
+
           $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
           $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
           $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
