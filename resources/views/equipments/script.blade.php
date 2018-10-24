@@ -113,7 +113,7 @@
         
         $('.table-parts tr').removeClass('rowFocus');
         $parent.parents('tr').addClass('rowFocus');
-        if (event.which != 38 && event.which != 40) searchPart();
+        if (event.which != 38 && event.which != 40 &&  event.which != 13) searchPart();
       })
 
       $('body').on('keyup', '.quantity', (event) => {
@@ -144,30 +144,33 @@
       totalCost()
 
       $('body').on('click', '.listPart tbody tr', function(event)  {
-  
         $('.listPart tbody tr').removeClass('active')
         $parent = $(this);
         $parent.addClass('active')
-        
-        $(document).keypress(function(event) {
-          if(event.which == 13) {
-            $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
-            $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
-            $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
-            $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
-            $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
-            $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
-            $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
-
-            let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
-            $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
-            
-            totalCost()
-
-            $('.listPart').css('display','none')
-          }
-        });
       })
+
+      $(document).keypress(function(event) {
+        event.preventDefault();
+
+        $parent = $('.listPart tr.active')
+
+        if(event.which == 13) {
+          $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
+          $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
+          $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
+          $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
+          $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
+          $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
+          $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
+
+          let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
+          $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+          
+          totalCost()
+
+          $('.listPart').css('display','none')
+        }
+      });
       
       
 
@@ -188,8 +191,18 @@
 
       $(window).on('keyup', (event) => {
 
+        if (!$('.listPart tr.active').length) {
+          return;
+        }
+
         let index = $('.listPart tbody tr.active').index();
         
+        let position = $('.listPart tr.active').offset().top - $('.listPart').offset().top - 250.5 
+      
+        if (position > 0) {
+          $('.listPart').scrollTop(position)
+        }
+
         if (event.which == 38) {
           if ($('.listPart tbody tr.active').length) {
             if (index >= 1) {
