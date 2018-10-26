@@ -128,7 +128,10 @@
             <div class="col-md-4">
             <div class="rown">
                 <div class="col-xs-10">
-                  <input type="text" name="SSS" id="" class="form-control disabled" value="{{$user->SSS}}" disabled>
+                  <input type="text" name="SSS" id="" class="form-control disabled" value="{{$user->SSS}}" placeholder="00-0000000-0"  disabled>
+                  @if ($errors->has('SSS'))
+                    <span class="error">{{ $errors->first('SSS') }}</span>
+                  @endif
                 </div>
                 <div class="col-xs-2">
                   <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 4) }}">
@@ -154,9 +157,12 @@
               </label>
             </div>
             <div class="col-md-4">
-            <div class="rown">
+              <div class="rown">
                 <div class="col-xs-10">
-                  <input type="text" name="PHIC" id="" class="form-control disabled" value="{{$user->PHIC}}" disabled>
+                  <input type="text" name="PHIC" id="" class="form-control disabled" value="{{$user->PHIC}}" placeholder="00-000000000-0" disabled>
+                  @if ($errors->has('PHIC'))
+                    <span class="error">{{ $errors->first('PHIC') }}</span>
+                  @endif
                 </div>
                 <div class="col-xs-2">
                   <button class="btn btn-default btn-sm btnModalImage" type="button" data-image="{{ $user->getImageFile(request()->corpID, 1, 5) }}">

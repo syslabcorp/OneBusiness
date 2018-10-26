@@ -55,7 +55,9 @@
                                         <div class="col-md-6 col-xs-6">
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
+                                        @if(\Auth::user()->checkAccessById(19, 'A'))
                                             <a href="{!! url('inventory/create') !!}" class="pull-right  @if(!\Auth::user()->checkAccessById(19, "A")) disabled @endif">Add Item</a>
+                                        @endif
                                         </div>
                                     </div>
 

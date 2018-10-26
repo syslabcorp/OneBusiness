@@ -15,18 +15,20 @@
       </div>
     </div>
     <div class="panel-body">
-      <table class="table table-departments table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>Dept_ID</th>
-            <th>Department</th>
-            <th>Main</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-departments table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Dept_ID</th>
+              <th>Department</th>
+              <th>Main</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   @include('departments.edit-modal')
@@ -126,7 +128,8 @@
         html:  true,
         customClass: 'swal-wide',
         showCancelButton: true,
-        confirmButtonClass: 'btn-success',
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Delete',
         closeOnConfirm: false,
         closeOnCancel: true
       },

@@ -16,6 +16,7 @@ use Config;
 use App\HDocs;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\EmployessRequest;
 use App\Http\Controllers\Controller;
 
 class EmployeesController extends Controller {
@@ -290,7 +291,7 @@ class EmployeesController extends Controller {
     ]);
   }
 
-    public function update(Request $request, $id)
+    public function update(EmployessRequest $request, $id)
     {
         $company = Corporation::findOrFail($request->corpID);
         $user = User::find($id);

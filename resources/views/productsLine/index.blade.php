@@ -58,7 +58,9 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
+                                        @if(\Auth::user()->checkAccessById(24, 'A'))
                                             <a href="#" class="pull-right  @if(!\Auth::user()->checkAccessById(24, "A")) disabled @endif" data-toggle="modal" data-target="#addNewProductLine">Add New Product Line</a>
+                                        @endif
                                         </div>
                                     </div>
 

@@ -82,7 +82,9 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <a href="#" class="pull-right  addCheckbook @if(!\Auth::user()->checkAccessById(28, "A")) disabled @endif">Add Checkbook</a>
+                                        @if(\Auth::user()->checkAccessById(28, 'A'))
+                                            <a href="#" class="pull-right  addCheckbook">Add Checkbook</a>
+                                        @endif
                                         </div>
                                     </div>
 

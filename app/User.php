@@ -114,7 +114,7 @@ class User extends Authenticatable
             }
         }
 
-        return false;
+        return true;
     }
 
     public function checkAccessByIdForCorp($corpID, $feature_id, $action) {
@@ -134,6 +134,7 @@ class User extends Authenticatable
         }
       }
 
+      return true;
     }
 
     public function isAdmin() {

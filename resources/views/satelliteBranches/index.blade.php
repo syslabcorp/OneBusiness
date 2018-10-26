@@ -70,7 +70,9 @@
                                         <div class="col-xs-6">
                                         </div>
                                         <div class="col-xs-6 text-right">
+                                        @if(\Auth::user()->checkAccessById(26, 'A'))
                                             <a href="{{ route('satellite-branch.create') }}" class="pull-right @if(!\Auth::user()->checkAccessById(26, "A")) disabled @endif" >Add Satellite Branch</a>
+                                        @endif
                                         </div>
                                     </div>
 
