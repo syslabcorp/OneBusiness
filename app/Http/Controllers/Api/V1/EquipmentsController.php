@@ -31,22 +31,14 @@ class EquipmentsController extends Controller
         if(request()->delete) {
             $item->delete();
         } else {
-            if ($item->details()->where('status', '!=', 0)->first()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please set all of its parts to "Retired" and try again'
-                ]);
-            } else {
-                $item->update([
-                    'isActive' => 0
-                ]);
+            $item->update([
+                'isActive' => 0
+            ]);
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Equipment has been set to Inactive'
-                ]);
-            }
-            
+            return response()->json([
+                'success' => true,
+                'message' => 'Equipment has been set to Inactive'
+            ]);
         }
 
         return response()->json([
