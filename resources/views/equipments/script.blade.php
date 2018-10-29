@@ -170,7 +170,7 @@
           setPart();
           return;
         }
-
+        
         if ($('.listPart tr.active').length) {
           let index = $('.listPart tbody tr.active').index();
         
@@ -179,6 +179,7 @@
           if (position > 0) {
             $('.listPart').scrollTop(position)
           }
+
 
           if (event.which == 38) {
             if ($('.listPart tbody tr.active').length) {
@@ -199,6 +200,8 @@
               $('.listPart tbody tr:eq(0)').click()
             }
           }
+        } else {
+          $('.listPart tbody tr:eq(0)').click()
         }
       })
 
