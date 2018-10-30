@@ -365,6 +365,8 @@ transferStocks = () => {
         $('.table-items tbody tr:eq(' + currentRow + ') td:eq(' + currentCol + ') .form-control')[0].focus();
       }
     });
+
+    
   })()
 </script>
 @endsection

@@ -255,7 +255,7 @@
           </div>
           <div class="modal-footer">
             <button class="pull-left btn btn-default" data-dismiss="modal"><i class="fa fa-reply"></i> Back</button>
-            <button class="btn btn-primary">Copy</button>
+            <button class="btn btn-primary set-copy">Copy</button>
           </div>
         </form>
       </div>
@@ -272,6 +272,13 @@
       var listBranchs = [];
       
       $('body').on('click', '.btn-copy', function(event) {
+        if ($('input[name="branch_ids[]"]:checked').length) {
+          $('.set-copy').prop('disabled', false)
+        }
+        else {
+          $('.set-copy').prop('disabled', true)
+        }
+
         if($('#selectableBranches .ui-selected').length != 1) {
           $('#page-content-togle-sidebar-sec').prepend('\
             <div class="row alert-nothing">\
@@ -557,7 +564,15 @@
                 });
             }
         });
-
+        
+        $('body').on('change', function(event){
+          if ($('input[name="branch_ids[]"]:checked').length) {
+            $('.set-copy').prop('disabled', false)
+          }
+          else {
+            $('.set-copy').prop('disabled', true)
+          }
+        });
     </script>
     
 @endsection

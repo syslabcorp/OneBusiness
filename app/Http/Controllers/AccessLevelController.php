@@ -119,19 +119,38 @@ class AccessLevelController extends Controller
             );
             $mod_id = isset($formData["module_id"]) ? $formData["module_id"] : 0;
             if ($feature_id == NULL || $feature_id == 0) {
+                
                 if(!\Auth::user()->checkAccessById(12, "A"))
                 {
                     \Session::flash('error', "You don't have permission"); 
                     return redirect("/home"); 
                 }
-                $id_feature = DB::table('feature_masters')->insertGetId($data);
-                $tid_is_admin = DB::table('rights_template')->select('template_id')->where('is_super_admin', 1)->get();
-                if(isset($tid_is_admin)){
-                    foreach ($tid_is_admin as $key => $value) {
-                            DB::table('rights_detail')->insertGetId(array('module_id'   => $mod_id,'template_id' => $value->template_id,'feature_id'  => $id_feature,
-                            'access_type' => 'DAVE'));
+                // date('Y-m-d H:i:s');
+                $data['feature_id'] = Request::get('feature_id');
+                
+                $feature = \App\Models\FeatureMaster::create($data);
+                $templateIds = \App\Models\RightTemplate::select('template_id')->where('is_super_admin', 1)->get();
+            
+                if(count($templateIds)) {
+                    foreach ($templateIds as $templateId) {
+                        \App\Models\RightDetail::create([
+                            'module_id'=> $mod_id, 
+                            'template_id' => $templateId->template_id,
+                            'feature_id'  => Request::get('feature_id'),
+                            'access_type' => 'DAVE'
+                        ]);
                     }
                 }
+
+
+                // $id_feature = DB::table('feature_masters')->insertGetId($data);
+                // $tid_is_admin = DB::table('rights_template')->select('template_id')->where('is_super_admin', 1)->get();
+                // if(isset($tid_is_admin)){
+                //     foreach ($tid_is_admin as $key => $value) {
+                //             DB::table('rights_detail')->insertGetId(array('module_id'   => $mod_id,'template_id' => $value->template_id,'feature_id'  => $id_feature,
+                //             'access_type' => 'DAVE'));
+                //     }
+                // }
                 Request::session()->flash('flash_message', 'Feature has been added.');
             }else{
                 if(!\Auth::user()->checkAccessById(12, "E"))
@@ -553,7 +572,7 @@ class AccessLevelController extends Controller
         }
         /*Menus Tree View End */
         /*List of Menus Start */
-        if(!\Auth::user()->checkAccessById(13, "A"))
+        if(!\Auth::user()->checkAccessById(13, "V"))
         {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 

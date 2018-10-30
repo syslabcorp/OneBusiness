@@ -14,7 +14,7 @@
       $('.editEquipment .form-control').prop('disabled', true)
       $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
-
+     
       $(window).keydown((event) => {
         if (event.which === 113) {
           $('.btnAddRow').click()
@@ -149,30 +149,7 @@
         $parent.addClass('active')
       })
 
-      $(document).keypress(function(event) {
-        if(event.which == 13) {
-          event.preventDefault();
-          $parent = $('.listPart tr.active')
-
-          $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
-          $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
-          $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
-          $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
-          $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
-          $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
-          $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
-
-          let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
-          $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
-          
-          totalCost()
-
-          $('.listPart').css('display','none')
-        }
-      });
       
-      
-
       $('body').click((event) => {
         if (!$(event.target).parents('.listPart').length) {
           $('.listPart').remove()
@@ -189,39 +166,70 @@
       })
 
       $(window).on('keyup', (event) => {
-
-        if (!$('.listPart tr.active').length) {
+        if (event.which == 13) {
+          setPart();
           return;
         }
-
-        let index = $('.listPart tbody tr.active').index();
         
-        let position = $('.listPart tr.active').offset().top - $('.listPart').offset().top - 250.5 
-      
-        if (position > 0) {
-          $('.listPart').scrollTop(position)
-        }
+        if ($('.listPart tr.active').length) {
+          let index = $('.listPart tbody tr.active').index();
+        
+          let position = $('.listPart tr.active').offset().top - $('.listPart').offset().top - 250.5 
+        
+          if (position > 0) {
+            $('.listPart').scrollTop(position)
+          }
 
-        if (event.which == 38) {
-          if ($('.listPart tbody tr.active').length) {
-            if (index >= 1) {
-              index -= 1;
-              $('.listPart tbody tr:eq(' + index + ')').click()
+
+          if (event.which == 38) {
+            if ($('.listPart tbody tr.active').length) {
+              if (index >= 1) {
+                index -= 1;
+                $('.listPart tbody tr:eq(' + index + ')').click()
+              }
+            } else {
+              $('.listPart tbody tr:eq(0)').click()
             }
-          } else {
-            $('.listPart tbody tr:eq(0)').click()
+          } else if (event.which == 40) {
+            if (($('.listPart tbody tr.active').length - 2)) {          
+              if (index != $('.listPart tbody tr').length) {
+                index += 1;
+                $('.listPart tbody tr:eq(' + index + ')').click()
+              }  
+            } else {
+              $('.listPart tbody tr:eq(0)').click()
+            }
           }
-        } else if (event.which == 40) {
-          if (($('.listPart tbody tr.active').length - 2)) {          
-            if (index != $('.listPart tbody tr').length) {
-              index += 1;
-              $('.listPart tbody tr:eq(' + index + ')').click()
-            }  
-          } else {
-            $('.listPart tbody tr:eq(0)').click()
-          }
+        } else {
+          $('.listPart tbody tr:eq(0)').click()
         }
       })
+
+      $('body').keypress(function(event) {
+        if(event.which == 13) {
+          event.preventDefault();
+          setPart();
+        }
+      });
+
+      setPart = () => {
+        $parent = $('.listPart tr.active')
+
+        $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
+        $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
+        $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
+        $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
+
+        let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
+        $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+        
+        totalCost()
+        
+        $('.listPart').css('display','none')
+      }
     })()
   </script>
 @endsection

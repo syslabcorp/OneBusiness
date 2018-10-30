@@ -27,7 +27,7 @@
       @endphp
       <tr class="partRow">
         <td class="text-center">
-          {{ $row->item_id }}
+          <label for="">{{ $row->item_id }}</label>
           <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}" >
         </td>
         <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control text-center label-table-min showSuggest" value="{{ $row->item->description }}" autocomplete="off"></td>

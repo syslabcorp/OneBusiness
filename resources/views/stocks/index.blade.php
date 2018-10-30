@@ -44,7 +44,7 @@
                 </form>
               </div>
             <div class="table-responsive">
-              <table class="table table-striped table-bordered" id="stocks_table">
+              <table class="table table-striped table-bordered table-parts" id="stocks_table">
                 <thead>
                   @if( true )
                     <tr>
@@ -234,6 +234,19 @@
 
 @section('pageJS')
   <script>
+    let tablePart = $('.table-parts').DataTable({
+      dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
+      initComplete: ()  => {
+        $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;"> \
+          Filter: \
+          <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
+          <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="by" type="radio" /> Filter By: </label> \
+          <select disabled class="form-control branch-select" style="width: 150px;"> <option value="brand">Brand</option><option value="category">Category</option><option value="vendor">Vendor</option></select> \
+          <select disabled class="form-control filter-select" style="width: 150px;"> </select> \
+        </div>')
+      },
+    })
+
     // $('#confirm-delete').onclick(function(event){
     //   event.preventDefault();
     // });

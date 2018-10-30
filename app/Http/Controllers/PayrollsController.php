@@ -125,8 +125,10 @@ class PayrollsController extends Controller
         if($request->id) {
             $deductItem = $deductModel->find($request->id);
             $deductItem->update($deductParams);
+            \Session::flash('success', "Deduction #{$deductItem->ID_deduct} has been updated.");
         }else {
             $deductItem = $deductModel->create($deductParams);
+            \Session::flash('success', "New deduction category has been created.");
         }
 
         $deductItem->details()->delete();
@@ -135,8 +137,7 @@ class PayrollsController extends Controller
                 $deductItem->details()->create($detail);
             }
         }
-
-        \Session::flash('success', "Deduction #{$deductItem->ID_deduct} has been updated.");
+        
 
         return redirect(route('payrolls.index', [
             'corpID' => $request->corpID,
@@ -164,8 +165,10 @@ class PayrollsController extends Controller
         if($request->id) {
             $benfItem = $benfModel->find($request->id);
             $benfItem->update($benfParams);
+            \Session::flash('success', "Benefit #{$benfItem->ID_benf} has been updated.");
         }else {
             $benfItem = $benfModel->create($benfParams);
+            \Session::flash('success', "New benefit category has been created.");
         }
 
         $benfItem->details()->delete();
@@ -175,8 +178,8 @@ class PayrollsController extends Controller
             }
         }
 
-        \Session::flash('success', "Benefit #{$benfItem->ID_benf} has been updated.");
-
+        
+        
         return redirect(route('payrolls.index', [
             'corpID' => $request->corpID,
             'status' => $benfItem->active,
@@ -203,8 +206,10 @@ class PayrollsController extends Controller
         if($request->id) {
             $expItem = $expModel->find($request->id);
             $expItem->update($expParams);
+            \Session::flash('success', "Expense #{$expItem->ID_exp} has been updated.");
         }else {
             $expItem = $expModel->create($expParams);
+            \Session::flash('success', "New expense category has been created.");
         }
 
         $expItem->details()->delete();
@@ -214,8 +219,6 @@ class PayrollsController extends Controller
                 $expItem->details()->create($detail);
             }
         }
-
-        \Session::flash('success', "Expense #{$expItem->ID_exp} has been updated.");
 
         return redirect(route('payrolls.index', [
             'corpID' => $request->corpID,

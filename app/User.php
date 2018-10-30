@@ -134,6 +134,7 @@ class User extends Authenticatable
         }
       }
 
+      return false;
     }
 
     public function isAdmin() {
