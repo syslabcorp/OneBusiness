@@ -13,6 +13,7 @@ const { mix } = require('laravel-mix');
 
 mix.js([
     'resources/assets/js/app.js',
+    'resources/assets/js/plugins/jquery.mask.js',
     'resources/assets/js/global.js',
     'resources/assets/js/tooltipster.bundle.js',
     ], 'public/js/')
