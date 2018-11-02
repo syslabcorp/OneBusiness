@@ -131,8 +131,8 @@
                         </div>
                         <hr>
                         <div class="form-group">
-                            <label class="col-md-3 col-xs-12 control-label" for="startingNum">Starting Number:</label>
-                            <div class="col-md-6 col-xs-10">
+                            <label class="col-md-3 col-xs-3 control-label" for="startingNum">Starting Number:</label>
+                            <div class="col-md-6 col-xs-9">
                                 <input id="startingNum" name="startingNum" type="text" class="form-control input-md" data-parsley-type="digits"
                                        data-parsley-required-message="Starting Number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 8 characters"
@@ -140,8 +140,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 col-xs-12 control-label" for="endingNum">Ending Number:</label>
-                            <div class="col-md-6 col-xs-10">
+                            <label class="col-md-3 col-xs-3 control-label" for="endingNum">Ending Number:</label>
+                            <div class="col-md-6 col-xs-9">
                                 <input id="endingNum" name="endingNum" type="text" class="form-control input-md" data-parsley-type="digits"
                                        data-parsley-required-message="Ending Number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 8 characters"
@@ -174,7 +174,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">Add new Checkbook Series</h5>
+                    <h5 class="modal-title">Edit Checkbook Series</h5>
                 </div>
                 <form class="form-horizontal" action="{{ url('/checkbooks') }}" METHOD="POST" id="editCheckbookForm">
                     <div class="modal-body">
@@ -190,8 +190,8 @@
                         </div>
                         <hr>
                         <div class="form-group">
-                            <label class="col-md-3 col-xs-12 control-label" for="editStartingNum">Starting Number:</label>
-                            <div class="col-md-6 col-xs-10">
+                            <label class="col-md-3 col-xs-3 control-label" for="editStartingNum">Starting Number:</label>
+                            <div class="col-md-6 col-xs-9">
                                 <input id="editStartingNum" name="editStartingNum" type="text" class="form-control input-md" data-parsley-type="digits"
                                        data-parsley-required-message="Starting Number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 8 characters"
@@ -199,8 +199,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 col-xs-12 control-label" for="editEndingNum">Ending Number:</label>
-                            <div class="col-md-6 col-xs-10">
+                            <label class="col-md-3 col-xs-3 control-label" for="editEndingNum">Ending Number:</label>
+                            <div class="col-md-6 col-xs-9">
                                 <input id="editEndingNum" name="editEndingNum" type="text" class="form-control input-md" data-parsley-type="digits"
                                        data-parsley-required-message="Ending Number is required"
                                        data-parsley-maxlength-message="The template name may not be greater than 8 characters"
@@ -842,8 +842,13 @@
                         $('#startingNum').val('');
                         $('#endingNum').val('');
                         $('#addNewCheckbook').modal("hide");
+                        $("#result").css('display', 'block')
+                        $("#result").html('<div class="alert alert-success col-md-8 col-md-offset-2"> <span class="glyphicon glyphicon-remove">' +
+                                '</span><em>&nbspCheck book added successfully!</em></div></div>');
                         mainTable.ajax.reload();
-                    }
+                        
+                    },
+
                 })
             })
         })(jQuery);

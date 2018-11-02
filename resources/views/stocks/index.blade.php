@@ -184,7 +184,7 @@
           )
         @endforeach
       },
-      ajax: '/api/v1/stocks?corpID=6',
+      ajax: '{{ route('api.stocks.index', ["corpID" => request()->corpID]) }}',
       columns: [
         {
           targets: 0,

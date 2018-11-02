@@ -69,7 +69,7 @@ class StocksController extends Controller
 
   public function update(Request $request)
   {
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'A')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }    

@@ -103,6 +103,7 @@ class RetailItemPriceConfController extends Controller
 
     public function update(Request $request, $id) {
       $branches = \App\Branch::whereIn('Branch', $request->branch_ids)->get();
+      $company = Corporation::findOrFail($request->corpID);
       $itemModel = new \App\Models\SItem\Cfg;
       $itemModel->setConnection($company->database_name);
 

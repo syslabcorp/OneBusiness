@@ -404,20 +404,17 @@ showHidden = (isShow) => {
           targets: 6,
           data: '',
           render: (data, type, row, meta) => {
-            let resultHTML =  '<a class="btn btn-primary btn-md" title="View PO Details" \
-              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }} \
+            let resultHTML =  '<a class="btn btn-primary btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}" title="View PO Details" \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '?corpID={{$corpID}}"> \
                 <span class="far fa-eye"></span> \
             </a> \
-            <a class="btn btn-warning btn-md" title="View original Details"  \
-              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }} \
+            <a class="btn btn-warning btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}" title="View original Details"  \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '/original?corpID={{$corpID}}"> \
               <span class="glyphicon glyphicon-inbox"></span> \
             </a> ';
 
             if(row.served == '0') {
-              resultHTML += '<a class="btn btn-success btn-md" title="Edit" \
-              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}\
+              resultHTML += '<a class="btn btn-success btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}" title="Edit" \
               onclick="markToserved(event,' + row.po_no + ')">\
                <span class="glyphicon glyphicon-ok"></span>\
               </a>'
