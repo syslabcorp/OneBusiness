@@ -41,4 +41,9 @@ showConfirmMessage = (message, title = "Alert", callback = () => {}) => {
     }
   });
 }
+  
+  $( document ).ready(function() {
+    $('.date-mask').mask("00/00/0000", {placeholder: "__/__/____"})
+    $('.number-mask').mask("00-0000000-0", {placeholder: "00-0000000-0"})
+  });
 

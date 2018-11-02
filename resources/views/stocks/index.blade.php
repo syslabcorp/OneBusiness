@@ -20,29 +20,6 @@
           </div>
 
           <div class="panel-body" style="margin: 30px 0px;">
-            <div class="row" style="margin-bottom: 20px;">
-                <form id="form-search" action="{{route('stocks.index' , ['corpID' => $corpID] )}}" class="form-inline">
-                  <div class="row">
-                        <div class="radio">
-                          <label><input type="radio" {{ $one_vendor ? "" : "checked" }} id="all" value="all" name="vendor">All Vendors</label>
-                          <input type="hidden" name="corpID" value="{{$corpID}}">
-                        </div>
-                  </div>
-                  <div class="radio">
-                    <label><input type="radio" id="one" value="one" {{ $one_vendor ? "checked" : "" }} name="vendor">Vendor:</label>
-                  </div>
-
-                  <div class="form-group">
-                    <select class="form-control" style="min-width: 200px;" name="vendorID" id="select-vendor" {{ $one_vendor ? "" : "disabled" }} >
-                      @foreach($vendors as $vendor)
-                        <option {{ $vendor_ID == $vendor->Supp_ID ? "selected": "" }} value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-
-                  
-                </form>
-              </div>
             <div class="table-responsive">
               <table class="table table-striped table-bordered table-parts" id="stocks_table">
                 <thead>
@@ -118,50 +95,8 @@
                   @endif
                 </thead>
                 <tbody>
-                  @php $checkCountZero = true; @endphp
-                  @foreach($stocks as $stock)
-                    @php $checkCountZero = false; @endphp
-                    <tr>
-                      <td>{{$stock->txn_no}}</td>
-                      <td>{{$stock->RR_No}}</td>
-                      <td>{{$stock->RcvDate->format('M,d,Y') }}</td>
-                      <td class="text-right">{{number_format($stock->TotalAmt,2)}}</td>
-                      <td>{{$stock->vendor ? $stock->vendor->VendorName : ""}}</td>
-                      <td>{{$stock->DateSaved->format('M,d,Y h:m:s A')}}</td>
-                      <td class="text-center" >
-                        <a href="{{ route('stocks.show', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-success {{ Auth::user()->checkAccessByIdForCorp($corpID, 35, 'V') ? "" : "disabled" }}">
-                          <i class="fa fa-eye"></i>
-                        </a>
-                        @if($stock->check_transfered() )
-                          <a class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#alert" >
-                            <i class="fa fa-trash"></i>
-                          </a>
-                        @else
-                          <a data-href="{{ route('stocks.destroy', [ $stock , 'corpID' => $corpID] ) }}" class="btn btn-danger {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" data-dr="{{$stock->RR_No}}" data-toggle="modal" data-target="#confirm-delete" >
-                            <i class="fa fa-trash"></i>
-                          </a>
-                        @endif
-                      </td>
-                    </tr>
-                  @endforeach
-
-                  @if($checkCountZero)
-                    <tr>
-                      <td colspan="7" style="color:red;">No received stock for this vendor</td>
-                    </tr>
-                  @endif
                 </tbody>
               </table>
-            </div>
-            <div class="col-md-6">
-              Show {{ $stocks->firstItem()  }} to {{ $stocks->lastItem()  }} of {{ $stocks->total() }} 
-            </div>
-            <div class="col-md-6 text-right">
-              @if($one_vendor)
-                {{ $stocks->appends(request()->except('page'))->links() }}
-              @else
-                {{ $stocks->appends(request()->except('page'))->links() }}
-              @endif
             </div>
           </div>
         </div>
@@ -202,8 +137,6 @@
       </div>
     </div>
 
-    <!-- End modal confirm detele -->
-
     <!-- Modal alert -->
 
     <div class="modal fade" id="alert" role="dialog">
@@ -224,7 +157,6 @@
         </div>
       </div>
     </div>
-    <!-- End modal alert -->
 
 
 
@@ -234,22 +166,104 @@
 
 @section('pageJS')
   <script>
+    let baseAPI = '{{ route('api.stocks.index', ["corpID" => request()->corpID]) }}'
+
     let tablePart = $('.table-parts').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: ()  => {
         $("#customFilter").append('<div class="col-sm-12" style="margin: 15px 0px;"> \
           Filter: \
-          <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> Show All </label> \
-          <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="by" type="radio" /> Filter By: </label> \
-          <select disabled class="form-control branch-select" style="width: 150px;"> <option value="brand">Brand</option><option value="category">Category</option><option value="vendor">Vendor</option></select> \
-          <select disabled class="form-control filter-select" style="width: 150px;"> </select> \
+          <label style="font-weight: normal;"><input checked name="document-filter" value="all" type="radio" /> All Vendors </label> \
+          <label style="font-weight: normal;padding-left: 30px;"><input name="document-filter" value="by" type="radio" /> Vendor </label> \
+          <select disabled class="form-control vendor-select" style="width: 350px;"></select> \
         </div>')
+
+        @foreach($vendors as $vendor)
+          $('.vendor-select').append(
+          '<option value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>'
+          )
+        @endforeach
       },
+      ajax: '/api/v1/stocks?corpID=6',
+      columns: [
+        {
+          targets: 0,
+          data: "txn_no"
+        },
+        {
+          targets: 1,
+          data: "RR_No"
+        },
+        {
+          targets: 2,
+          data: "RcvDate"
+        },
+        {
+          targets: 3,
+          data: "TotalAmt"
+        },
+        {
+          targets: 4,
+          data: "VendorName"
+        },
+        {
+          targets: 5,
+          data: "DateSaved"
+        },
+        {
+          targets: 6,
+          class: 'text-center',
+          render: (data, type, row, meta) => {
+              return '<button onclick="editPart(' + row.item_id + ')" {{ \Auth::user()->checkAccessById(57, 'E') ? '' : 'disabled' }}\
+              class="btn btn-md btn-success fas fa-eye" data-toggle="modal" data-target=".edit-part-modal"> </button> \
+              <button onclick="removePart(' + row.item_id +',\''+ row.description + '\')" {{ \Auth::user()->checkAccessById(57, 'D') ? '' : 'disabled' }}\
+              class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=".edit-part-modal"> </button>'
+          }
+        }
+      ]
     })
 
     // $('#confirm-delete').onclick(function(event){
     //   event.preventDefault();
     // });
+
+    removePart = (itemId, description) => {
+      swal({
+        title: "<div class='delete-title'>Delete</div>",
+        text:  "<div class='delete-text'>You are about to delete StockID ["+ itemId +"] - ["+ description +"]</strong></div>",
+        html:  true,
+        customClass: 'swal-wide',
+        confirmButtonClass: 'btn-danger',
+        confirmButtonText: 'Delete',
+        showCancelButton: true,
+        closeOnConfirm: true,
+        allowEscapeKey: true
+      }, (data) => {
+        if(data) {
+          $.ajax({
+          url: '{{ route('parts.index') }}/' + itemId,
+          type: 'DELETE',
+          success: (res) => {
+            tablePart.ajax.reload()
+          }
+        })
+        }
+      });
+    }
+
+    $('body').on('change', 'input[name="document-filter"]', (event) => {
+      if (event.target.value == 'all') {
+        $('.vendor-select').prop('disabled', true);
+        tablePart.ajax.url(baseAPI).load()
+      } else {
+        $('.vendor-select').prop('disabled', false);
+        tablePart.ajax.url(baseAPI + '&vendor_id=' + $('.vendor-select').val()).load()
+      }
+    })
+    
+    $('body').on('change', '.vendor-select', (event) => {
+      tablePart.ajax.url(baseAPI + '&vendor_id=' + $('.vendor-select').val()).load()
+    })
 
     $('#confirm-delete').on('show.bs.modal', function(e) {
       $(this).find('.btn-ok').attr('action', $(e.relatedTarget).data('href'));
@@ -259,18 +273,6 @@
     $('#alert').on('show.bs.modal', function(e) {
       $('#alert-dr').text( $(e.relatedTarget).data('dr'));
     });
-
-    // $('#stocks_table').dataTable({
-    //   "bPaginate": false,
-    //   "bLengthChange": false,
-    //   "bFilter": false,
-    //   "aaSorting": [[ 0, "asc" ]],
-    //   "columnDefs": [ {
-    //     "targets": 6,
-    //     "orderable": false
-    //     } ],
-    //   "bInfo": false,
-    //   "bAutoWidth": false
-    // });
+    
   </script>
 @endsection

@@ -35,4 +35,5 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
     Route::get('/branches/depts', 'BranchesController@getBranchesAndDepts');
 
     Route::resource('parts','PartsController');
+    Route::resource('stocks', 'StocksController');
 });

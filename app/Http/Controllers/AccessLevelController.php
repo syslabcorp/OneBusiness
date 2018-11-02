@@ -11,6 +11,8 @@ use Nexmo;
 use Hash;
 use App\UserArea;
 use Session;
+use App\Http\Controllers\Controller;
+
 class AccessLevelController extends Controller
 {
 	public function __construct()
