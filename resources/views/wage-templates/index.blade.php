@@ -24,22 +24,24 @@
       </div>
     </div>
     <div class="panel-body">
-      <table class="table table-departments table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>Department</th>
-            <th>Wage ID</th>
-            <th>Code</th>
-            <th>Position</th>
-            <th>Active</th>
-            <th>Entry Level</th>
-            <th>Total</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-departments table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Wage ID</th>
+              <th>Code</th>
+              <th>Position</th>
+              <th>Active</th>
+              <th>Entry Level</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   @include('wage-templates.modal-wage-document')

@@ -185,11 +185,12 @@ class CheckbookController extends Controller
         $checkbook->lastchknum = $ending;
         $checkbook->bank_code = $bankCode->banks->bank_code;
         $success = $checkbook->save();
-        
+
+        \Session::flash('success', "Checkbook added successfully");
+
         if($success) {
             return response()->json("success", 200);
-            
-            // \Session::flash('success', "Checkbook added successfully");
+
             // return redirect()->route('checkbooks.index');
         }
         return response()->json("failure", 200);

@@ -146,7 +146,7 @@ class BranchRemittanceController extends Controller
   public function create(Request $request, $id = null)
   {
 
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'A')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'A')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }
@@ -217,7 +217,7 @@ class BranchRemittanceController extends Controller
   }
 
   public function edit(Request $request, $id) {
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'E')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'E')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }
@@ -388,7 +388,7 @@ class BranchRemittanceController extends Controller
 
   public function destroy(Request $request, $id){
 
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 22, 'D')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'D')) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }

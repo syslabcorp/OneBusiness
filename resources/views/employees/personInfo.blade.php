@@ -128,7 +128,7 @@
             <div class="col-md-4">
             <div class="rown">
                 <div class="col-xs-10">
-                  <input type="text" name="SSS" id="" class="form-control disabled" value="{{$user->SSS}}" placeholder="00-0000000-0"  disabled>
+                  <input type="text" name="SSS" id="" class="form-control disabled sss-mask" value="{{$user->SSS}}" placeholder="00-0000000-0"  disabled>
                   @if ($errors->has('SSS'))
                     <span class="error">{{ $errors->first('SSS') }}</span>
                   @endif
@@ -159,7 +159,7 @@
             <div class="col-md-4">
               <div class="rown">
                 <div class="col-xs-10">
-                  <input type="text" name="PHIC" id="" class="form-control disabled" value="{{$user->PHIC}}" placeholder="00-000000000-0" disabled>
+                  <input type="text" name="PHIC" id="" class="form-control disabled phic-mask" value="{{$user->PHIC}}" placeholder="00-000000000-0" disabled>
                   @if ($errors->has('PHIC'))
                     <span class="error">{{ $errors->first('PHIC') }}</span>
                   @endif
