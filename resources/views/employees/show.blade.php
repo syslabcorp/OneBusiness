@@ -606,14 +606,17 @@ function onEditRow(param){
 
     checkDateValid = () => {
       $('input[name="to_date"]').parent('div').find('.error').remove()
-
-      if ((new $('input[name="from_date"]').val() < new $('input[name="to_date"]').val())) {
+      
+      if ((new Date($('input[name="from_date"]').val()) < new Date($('input[name="to_date"]').val()))) {
         $('.btn_submit').prop('disabled', false)
       } else {
-        $('input[name="to_date"]').parent('div').append(
-          '<span class="error">"To" date should be greater than "From" date</span>'
-        )
         $('.btn_submit').prop('disabled', true)
+    
+        if ($('input[name="from_date"]').val() && $('input[name="to_date"]').val()) {
+          $('input[name="to_date"]').parent('div').append(
+            '<span class="error">"To" date should be greater than "From" date</span>'
+          )
+        }
       }
     }
 

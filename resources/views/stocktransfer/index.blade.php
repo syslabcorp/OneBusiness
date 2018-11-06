@@ -182,13 +182,12 @@ $(document).ready(function() {
           targets: 7,
           data: '',
           render: (data, type, row, meta) => {
-            return '<a class="btn btn-primary btn-md edit" title="Edit" \
-              {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }} \
-              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?corpID={{ $corpID }}&stockStatus={{ $stockStatus }}">\
+            return '<a class="btn btn-primary btn-md edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" title="Edit" \
+              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?
+              {{ $corpID }}&stockStatus={{ $stockStatus }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
-              <a class="btn btn-danger btn-md" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" \
-                {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'D') ? "" : "disabled" }} >\
+              <a class="btn btn-danger btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'D') ? "" : "disabled" }}" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" >\
                 <i class="glyphicon glyphicon-trash"></i> \
               </a>';
           }

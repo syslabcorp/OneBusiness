@@ -79,7 +79,9 @@
                                             <a href="{{ route('vendors.index') }}">  {{ $VendorName }} </a>
                                         </div>
                                         <div class="col-xs-6 text-right">
+                                        @if(!\Auth::user()->checkAccessById(29, 'A'))
                                             <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
+                                        @endif
                                         </div>
                                     </div>
 

@@ -46,3 +46,12 @@
   </div>
 </div>
 @endsection
+
+@section('pageJS')
+<script>
+  $(document).ready(() => {
+    $('.table-striped').dataTable()
+  })
+</script>
+
+@endsection

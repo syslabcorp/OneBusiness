@@ -47,12 +47,13 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Inventory</h3>
+                        <h3 class="text-center"></h3>
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-md-6 col-xs-6">
+                                        <h4><strong>Inventory</strong></h4>
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
                                         @if(\Auth::user()->checkAccessById(19, 'A'))

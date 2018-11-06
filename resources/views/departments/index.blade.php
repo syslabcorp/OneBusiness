@@ -5,7 +5,7 @@
     <div class="panel-heading">
       <div class="rown">
         <div class="col-md-6">
-          <h4>Departments</h4>
+          <h4><strong>Departments</strong></h4>
         </div>
         <div class="col-md-6 text-right">
           @if(\Auth::user()->checkAccessByIdForCorp($corpID, 44, 'A'))
