@@ -61,12 +61,14 @@ class AccessLevelController extends Controller
                 return redirect("/home"); 
             }
             $data['detail_edit_module'] = DB::table('module_masters')->where('module_id', $module_id)->first();   
+        } else {
+            if(!\Auth::user()->checkAccessById(12, "A"))
+            {
+                \Session::flash('error', "You don't have permission"); 
+                return redirect("/home"); 
+            }
         }
-        if(!\Auth::user()->checkAccessById(12, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
+        
         return view('accesslevel.addmodule', $data);
     }
 	
@@ -213,12 +215,14 @@ class AccessLevelController extends Controller
             }
 			$default_module['module_id'] = $module_id;
 			$data['detail_edit_feature'] = (object) $default_module;
-		}
-        if(!\Auth::user()->checkAccessById(12, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
+		} else {
+            if(!\Auth::user()->checkAccessById(12, "A"))
+            {
+                \Session::flash('error', "You don't have permission"); 
+                return redirect("/home"); 
+            }
         }
+        
         return view('accesslevel.addfeature', $data);
     }
 	
@@ -349,16 +353,19 @@ class AccessLevelController extends Controller
             $menu_id_data = explode(",", $template_menu_ids->template_menus);
             $data['menu_ids'] = $menu_id_data;
             $data['detail_edit_template'] = $template_menu_ids;  
+        } else {
+            if(!\Auth::user()->checkAccessById(11, "A"))
+            {
+                \Session::flash('error', "You don't have permission"); 
+                return redirect("/home"); 
+            }
         }
+
         $menu = DB::table('menus')->select('id')->get();
         foreach ($menu as $value) {
             $menu_id[] = $value->id; 
         }
-        if(!\Auth::user()->checkAccessById(11, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
+        
         $data['all_menu_ids'] = $menu_id;     
         return view('accesslevel.addtemplate', $data);
     }
@@ -733,12 +740,14 @@ class AccessLevelController extends Controller
             $branch_id_data = explode(",", $detail_edit_group->branch);
             $data['branch_ids'] = $branch_id_data;
             $data['detail_edit'] = $detail_edit_group;  
+        } else {
+            if(!\Auth::user()->checkAccessById(14, "A"))
+            {
+                \Session::flash('error', "You don't have permission"); 
+                return redirect("/home"); 
+            }
         }
-        if(!\Auth::user()->checkAccessById(14, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
+        
         $branches=DB::table('t_sysdata')->LeftJoin('corporation_masters', 'corporation_masters.corp_id', '=', 't_sysdata.corp_id')->LeftJoin('t_cities', 't_cities.City_ID', '=', 't_sysdata.City_ID')->select('t_sysdata.*', 'corporation_masters.corp_name','t_cities.City')->orderBy('t_cities.City', 'asc')->orderBy('corporation_masters.corp_name', 'asc')->orderBy('t_sysdata.ShortName', 'asc')->get();
         $data['branches'] = array();
         foreach ($branches as $branch) {
@@ -872,12 +881,14 @@ class AccessLevelController extends Controller
             $detail_edit_sysuser = \App\User::find($id);
             $data['group_ids'] = explode(",", $detail_edit_sysuser->group_ID);
             $data['detail_edit_sysuser'] = $detail_edit_sysuser;  
+        } else {
+            if(!\Auth::user()->checkAccessById(14, "A"))
+            {
+                \Session::flash('error', "You don't have permission"); 
+                return redirect("/home"); 
+            }
         }
-        if(!\Auth::user()->checkAccessById(14, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
+        
         $data['template'] = DB::table('rights_template')->select('template_id', 'description','is_super_admin')->get();
         return view('accesslevel.add_user', $data);
     }
