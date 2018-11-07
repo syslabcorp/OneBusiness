@@ -487,12 +487,14 @@ class AccessLevelController extends Controller
                 return redirect("/home"); 
             }
             $data['detail_edit'] = DB::table('menus')->where('id', $id)->first();   
+        } else {
+            if(!\Auth::user()->checkAccessById(13, "A"))
+            {
+                \Session::flash('error', "You don't have permission"); 
+                return redirect("/home"); 
+            }
         }
-        if(!\Auth::user()->checkAccessById(13, "A"))
-        {
-            \Session::flash('error', "You don't have permission"); 
-            return redirect("/home"); 
-        }
+        
         $data['parent_id'] = $parent_id;
         return view('accesslevel.add_menu',$data);
     }

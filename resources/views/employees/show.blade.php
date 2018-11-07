@@ -599,7 +599,7 @@ function onEditRow(param){
         }
       });
     });
-    
+
     $('body').on('change', 'input[name="from_date"], input[name="to_date"]', (event) => {
       checkDateValid()
     })
@@ -608,15 +608,19 @@ function onEditRow(param){
       $('input[name="to_date"]').parent('div').find('.error').remove()
       
       if ((new Date($('input[name="from_date"]').val()) < new Date($('input[name="to_date"]').val()))) {
+        $('.table-responsive').css('display','block') 
         $('.btn_submit').prop('disabled', false)
       } else {
         $('.btn_submit').prop('disabled', true)
-    
+        $('.table-responsive').css('display','none')
+
         if ($('input[name="from_date"]').val() && $('input[name="to_date"]').val()) {
           $('input[name="to_date"]').parent('div').append(
             '<span class="error">"To" date should be greater than "From" date</span>'
           )
         }
+
+        
       }
     }
 

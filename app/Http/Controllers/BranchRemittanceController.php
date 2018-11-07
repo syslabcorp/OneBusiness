@@ -146,7 +146,7 @@ class BranchRemittanceController extends Controller
   public function create(Request $request, $id = null)
   {
 
-    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'A')) {
+    if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 15, 'A') && !$id) {
       \Session::flash('error', "You don't have permission"); 
       return redirect("/home"); 
     }
