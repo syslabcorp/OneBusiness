@@ -60,7 +60,7 @@
                                         </div>
                                         <div class="col-md-6 col-xs-6 text-right">
                                         @if(\Auth::user()->checkAccessById(29, 'A'))
-                                            <a href="{!! url('vendors/create') !!}" class="pull-right">Add Account</a>
+                                            <a href="{!! url('vendors/create') !!}" class="pull-right">Add Vendor</a>
                                         @endif
                                         </div>
                                     </div>

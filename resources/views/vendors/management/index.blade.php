@@ -55,22 +55,19 @@
     <div class="container-fluid">
         <div class="row">
             <div id="togle-sidebar-sec" class="active">
-                <!-- Sidebar -->
                 <div id="sidebar-togle-sidebar-sec">
                   <div id="sidebar_menu" class="sidebar-nav">
                     <ul></ul>
                   </div>
                 </div>
 
-                <!-- Page content -->
                 <div id="page-content-togle-sidebar-sec">
                     @if(Session::has('success'))
                         <div class="alert alert-success col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('success') !!}</em></div>
                     @elseif(Session::has('error'))
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
-                    <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Vendor Management</h3>
+                    <div class="col-md-12 col-xs-12" style="margin-top: 30px;">
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -79,8 +76,8 @@
                                             <a href="{{ route('vendors.index') }}">  {{ $VendorName }} </a>
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                        @if(!\Auth::user()->checkAccessById(29, 'A'))
-                                            <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right @if(!\Auth::user()->checkAccessById(29, "A")) disabled @endif" >Add Account</a>
+                                        @if(\Auth::user()->checkAccessById(29, 'A'))
+                                          <a href="#" data-toggle="modal" data-target="#addNewAccount" class="pull-right" >Add Account</a>
                                         @endif
                                         </div>
                                     </div>
