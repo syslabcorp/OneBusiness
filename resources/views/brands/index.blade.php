@@ -45,15 +45,18 @@
                         <div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="glyphicon glyphicon-remove"></span><em> {!! session('error') !!}</em></div>
                     @endif
                     <div class="col-md-12 col-xs-12">
-                        <h3 class="text-center">Brands</h3>
+                        <h3 class="text-center"></h3>
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-6">
+                                        <h4><strong>Brands</strong></h4>
                                         </div>
                                         <div class="col-xs-6 text-right">
+                                        @if(\Auth::user()->checkAccessById(23, 'A'))
                                             <a href="#" class="pull-right @if(!\Auth::user()->checkAccessById(23, "A")) disabled @endif" data-toggle="modal" data-target="#addNewBrand">Add New Brand</a>
+                                        @endif
                                         </div>
                                     </div>
 

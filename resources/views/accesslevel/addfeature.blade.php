@@ -22,6 +22,9 @@
                 <div class="panel-body">
                     <form class="form-horizontal form" role="form" method="POST" action="" id ="featureform">
                         {{ csrf_field() }}
+                        <input type="hidden" name="old_feature_id" value="{{ isset($detail_edit_feature->feature) ? $detail_edit_feature->feature_id : "" }}">
+                        <input type="hidden" name="old_feature_name" value="{{ isset($detail_edit_feature->feature) ? $detail_edit_feature->feature : "" }}">
+                        <input type="hidden" name="old_module_id" value="{{ isset($detail_edit_feature->module_id) ? $detail_edit_feature->module_id : "" }}">
                         <div class="form-group{{ $errors->has('module_name') ? ' has-error' : '' }}">
                             <label for="module_nam" class="col-md-4 control-label">Module Description</label>
                             <div class="col-md-6"> 

@@ -14,7 +14,17 @@
       </div>
     </div>
   </div>
-
+  @if (request()->action != 'new')
+  <div class="col-md-2 col-xs-6">
+    <div class="form-group">
+      <select class="form-control" onchange="statusChange(event, 'benefit')"
+        {{ $action == 'new' ? 'disabled' : '' }}>
+        <option {{ $status == 1 ? 'selected' : '' }} value="1">Active</option>
+        <option {{ $status == 0 ? 'selected' : '' }} value="0">Inactive</option>
+      </select>
+    </div>
+  </div>
+  @endif
   <div class="col-md-12" style="margin-top: 15px;">
     <form action="{{ route('payrolls.benefit', ['corpID' => $corpID, 'tab' => $tab, 'status' => $status]) }}" method="POST">
       {{ csrf_field() }}

@@ -14,6 +14,7 @@
       </div>
     </div>
   </div>
+  @if (request()->action != 'new')
   <div class="col-md-2 col-xs-6">
     <div class="form-group">
       <select class="form-control" onchange="statusChange(event, 'deduct')"
@@ -23,6 +24,7 @@
       </select>
     </div>
   </div>
+  @endif
   <div class="col-md-12" style="margin-top: 15px;">
     <form action="{{ route('payrolls.deduct', ['corpID' => $corpID, 'tab' => $tab, 'status' => $status]) }}" method="POST">
       {{ csrf_field() }}
