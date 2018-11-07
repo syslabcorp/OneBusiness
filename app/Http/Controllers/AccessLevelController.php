@@ -161,23 +161,26 @@ class AccessLevelController extends Controller
                     return redirect("/home"); 
                 }
                 $request = Request::all();
-                DB::table('feature_masters')
-                    ->where('feature_id', $request['old_feature_id'])
-                    ->where('module_id', $request['old_module_id'])
-                    ->update([
-                        'feature' => $request['feature_name'],
-                        'feature_id' => $request['feature_id'],
-                        'module_id' => $request['module_id']
-                    ]);
-                
-                DB::table('rights_detail')
-                    ->where('feature_id', $request['old_feature_id'])
-                    ->where('module_id', $request['old_module_id'])
-                    ->update([
-                        'feature_id' => $request['feature_id'],
-                        'module_id' => $request['module_id']
-                    ]);
-
+                if (isset($data['module_id'])) 
+                {
+                    DB::table('feature_masters')
+                        ->where('feature_id', $request['old_feature_id'])
+                        ->where('module_id', $request['old_module_id'])
+                        ->update([
+                            'feature' => $request['feature_name'],
+                            'feature_id' => $request['feature_id'],
+                            'module_id' => $data['module_id']
+                        ]);
+            
+                    DB::table('rights_detail')
+                        ->where('feature_id', $request['old_feature_id'])
+                        ->where('module_id', $request['old_module_id'])
+                        ->update([
+                            'feature_id' => $request['feature_id'],
+                            'module_id' => $data['module_id']
+                        ]);
+                }
+               
                 Request::session()->flash('flash_message', 'Feature has been updated.');
             }
             Request::Session()->flash('alert-class', 'alert-success');
