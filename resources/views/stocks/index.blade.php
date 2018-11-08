@@ -214,23 +214,19 @@
           targets: 6,
           class: 'text-center',
           render: (data, type, row, meta) => {
-              return '<button onclick="editPart(' + row.item_id + ')" {{ \Auth::user()->checkAccessById(57, 'E') ? '' : 'disabled' }}\
-              class="btn btn-md btn-success fas fa-eye" data-toggle="modal" data-target=".edit-part-modal"> </button> \
-              <button onclick="removePart(' + row.item_id +',\''+ row.description + '\')" {{ \Auth::user()->checkAccessById(57, 'D') ? '' : 'disabled' }}\
+              return '<a  class="btn bt-mdn btn-success fas fa-eye {{ \Auth::user()->checkAccessById(35, 'V') ? '' : 'disabled' }}" \
+              href="{{ route('stocks.index') }}/' + row.txn_no + '?corpID={{ request()->corpID }}"> </a> \
+              <button onclick="removeStock(' + row.txn_no +')" {{ \Auth::user()->checkAccessById(35, 'D') ? '' : 'disabled' }}\
               class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=".edit-part-modal"> </button>'
           }
         }
       ]
     })
 
-    // $('#confirm-delete').onclick(function(event){
-    //   event.preventDefault();
-    // });
-
-    removePart = (itemId, description) => {
+    removeStock = (itemId) => {
       swal({
         title: "<div class='delete-title'>Delete</div>",
-        text:  "<div class='delete-text'>You are about to delete StockID ["+ itemId +"] - ["+ description +"]</strong></div>",
+        text:  "<div class='delete-text'>You are about to delete StockID ["+ itemId +"]</strong></div>",
         html:  true,
         customClass: 'swal-wide',
         confirmButtonClass: 'btn-danger',
@@ -241,7 +237,7 @@
       }, (data) => {
         if(data) {
           $.ajax({
-          url: '{{ route('parts.index') }}/' + itemId,
+          url: '{{ route('api.stocks.index') }}/' + itemId + '?corpID={{ request()->corpID }}' ,
           type: 'DELETE',
           success: (res) => {
             tablePart.ajax.reload()
