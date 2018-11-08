@@ -360,26 +360,14 @@ $(function()
 
 
   $('.table-remittances tbody td').click(function(event) {
-    if(!event.ctrlKey && !event.shiftKey) {
-      return;
-    }
-
     var isSelected = $(this).hasClass('selected');
     var startIndex = $(this).parent('tr').index();
     var endIndex = startIndex;
     var branchId = $(this).parent('tr').attr('data-branch');
     var dateGroup = $(this).parent('tr').attr('data-date');
     $tbodyEl = $(this).parents('tbody');
-  
-    if(event.ctrlKey) {
-      if($(this).hasClass('col-branch')) {
-        endIndex = startIndex + $(this).attr('rowspan')*1;
-      }else if($(this).hasClass('col-date')) {
-        endIndex = startIndex + $(this).attr('rowspan')*1;
-      }else {
-        endIndex = startIndex + 1;
-      }
-    }else if(event.shiftKey) {
+    
+    if(event.shiftKey) {
       if($('.table-remittances tbody td.selected').length == 0) {
         endIndex = startIndex + 1;
       }else {
@@ -396,6 +384,14 @@ $(function()
         startIndex = temp;
       }
       $tbodyEl.find('tr td').removeClass('selected');
+    } else {
+      if($(this).hasClass('col-branch')) {
+        endIndex = startIndex + $(this).attr('rowspan')*1;
+      }else if($(this).hasClass('col-date')) {
+        endIndex = startIndex + $(this).attr('rowspan')*1;
+      }else {
+        endIndex = startIndex + 1;
+      }
     }
 
     for(var col = startIndex; col < endIndex; col++) {
