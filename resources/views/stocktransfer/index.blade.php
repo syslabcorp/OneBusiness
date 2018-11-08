@@ -183,8 +183,7 @@ $(document).ready(function() {
           data: '',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-md edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" title="Edit" \
-              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?
-              {{ $corpID }}&stockStatus={{ $stockStatus }}">\
+              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?{{ $corpID }}&stockStatus={{ $stockStatus }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
               <a class="btn btn-danger btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'D') ? "" : "disabled" }}" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" >\
@@ -403,11 +402,11 @@ showHidden = (isShow) => {
           targets: 6,
           data: '',
           render: (data, type, row, meta) => {
-            let resultHTML =  '<a class="btn btn-primary btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}" title="View PO Details" \
+            let resultHTML =  '<a class="btn btn-primary btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }}" title="View PO Details" \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '?corpID={{$corpID}}"> \
                 <span class="far fa-eye"></span> \
             </a> \
-            <a class="btn btn-warning btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'E') ? "" : "disabled" }}" title="View original Details"  \
+            <a class="btn btn-warning btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 43, 'V') ? "" : "disabled" }}" title="View original Details"  \
               href="{{ route('stocktransfer.index') }}/' + row.po_no + '/original?corpID={{$corpID}}"> \
               <span class="glyphicon glyphicon-inbox"></span> \
             </a> ';
