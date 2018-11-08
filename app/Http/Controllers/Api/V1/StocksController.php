@@ -22,4 +22,18 @@ class StocksController extends Controller
 
         return fractal($stocks, new StockTransformer)->toJson();
     }
+
+    public function destroy(Request $request, $txnNo)
+    {
+        $company = Corporation::findOrFail($request->corpID);
+        $stockModel = new \App\Stock;
+        $stockModel->setConnection($company->database_name);
+
+        $stock = $stockModel->findOrFail($txnNo);
+        $stock->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }
