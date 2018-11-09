@@ -430,6 +430,8 @@
                                 });
                             });
 
+                            self.ri_selectedBranchIds = []
+
                             setTimeout(function() {
                               self.activateSelectable();
                             }, 500);
