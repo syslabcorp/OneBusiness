@@ -100,7 +100,7 @@ use App\Srcvdetail;
                                                 @endphp
                                                 <td style="width: 250px; min-width: 150px" class="col-qty" 
                                                   data-branch="{{ $branch->Branch }}" data-max="{{ $maxQty }}">
-                                                  <input type="text" class="form-control" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E')? "" : "readonly" }}
+                                                  <input type="text" class="form-control" {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "readonly" }}
                                                     value="{{ $maxQty }}" {{ $maxQty == 0 ? 'readonly' : '' }}>
                                                 </td>
                                               @endforeach
@@ -125,7 +125,7 @@ use App\Srcvdetail;
                                     </div>
 
                                     <div class="col-md-6">
-                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E')? "" : "disabled" }}>Transfer Stocks</button>
+                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}>Transfer Stocks</button>
                                     </div>
                                   </div>
                                 </div>
