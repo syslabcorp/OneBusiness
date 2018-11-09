@@ -437,7 +437,7 @@ class StocktransferController extends Controller {
 
    
     public function show(Request $request, $id) {
-        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 42, 'E')) {
+        if(!\Auth::user()->checkAccessByIdForCorp($request->corpID, 42, 'V')) {
             \Session::flash('error', "You don't have permission"); 
             return redirect("/home"); 
         }
