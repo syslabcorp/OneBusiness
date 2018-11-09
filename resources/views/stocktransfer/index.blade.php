@@ -127,12 +127,11 @@
 </div>
 </div>
 </div>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
+<script src="{{ asset('js/table-edits.min.js') }}"></script>
+<script src="{{ asset('js/momentjs.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
 
 <script>
-
 $(document).ready(function() {
     $('#table-deliveries').DataTable({
       "dom": '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#stockStatus">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
@@ -183,7 +182,7 @@ $(document).ready(function() {
           data: '',
           render: (data, type, row, meta) => {
             return '<a class="btn btn-primary btn-md edit {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E') ? "" : "disabled" }}" title="Edit" \
-              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?{{ $corpID }}&stockStatus={{ $stockStatus }}">\
+              href="{{ route('stocktransfer.index') }}/' + row.Txfr_ID + '/edit?corpID={{ $corpID }}&stockStatus={{ $stockStatus }}">\
                 <i class="fas fa-pencil-alt"></i>\
               </a>\
               <a class="btn btn-danger btn-md {{ \Auth::user()->checkAccessByIdForCorp($corpID, 42, 'D') ? "" : "disabled" }}" title="Delete" onclick="deleteStock(' + row.Txfr_ID + ')" >\
