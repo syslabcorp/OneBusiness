@@ -100,9 +100,10 @@
   </div>
   @include('employees.new-recommendation-modal')
   @include('employees.image-modal')
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
+<script src="{{ asset('js/table-edits.min.js') }}"></script>
+<script src="{{ asset('js/momentjs.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+
 <script>
 
 $(document).ready(function() {

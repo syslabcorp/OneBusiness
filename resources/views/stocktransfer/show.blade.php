@@ -125,7 +125,9 @@ use App\Srcvdetail;
                                     </div>
 
                                     <div class="col-md-6">
+                                    @if (!\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V')) 
                                       <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" >Transfer Stocks</button>
+                                    @endif
                                     </div>
                                   </div>
                                 </div>
@@ -148,9 +150,9 @@ use App\Srcvdetail;
 </div>
 </div>
 </div>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/table-edits.min.js"></script>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/momentjs.min.js"></script>
-<script src="http://onebusiness.shacknet.biz/OneBusiness/js/bootstrap-datetimepicker.min.js"></script>
+<script src="{{ asset('js/table-edits.min.js') }}"></script>
+<script src="{{ asset('js/momentjs.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
 <script>
  changedRowArr = [];
 
