@@ -28,9 +28,9 @@ use App\Srcvdetail;
 		@elseif(Session::has('flash_message'))
 			<div class="alert alert-danger col-md-8 col-md-offset-2 alertfade"><span class="fa fa-close"></span><em> {!! session('flash_message') !!}</em></div>
 		@endif
-             <div class="col-md-12">
-			 <h3 class="text-center">Stock Transfer</h3>
-    	<div class="row">    
+      <div class="col-md-12">
+
+    	<div class="row" style="margin-top: 30px;">    
         <div class="panel panel-default">
           <div class="panel-heading">
             Stock Transfer
@@ -100,7 +100,7 @@ use App\Srcvdetail;
                                                 @endphp
                                                 <td style="width: 250px; min-width: 150px" class="col-qty" 
                                                   data-branch="{{ $branch->Branch }}" data-max="{{ $maxQty }}">
-                                                  <input type="text" class="form-control"
+                                                  <input type="text" class="form-control" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E')? "" : "readonly" }}
                                                     value="{{ $maxQty }}" {{ $maxQty == 0 ? 'readonly' : '' }}>
                                                 </td>
                                               @endforeach
@@ -125,7 +125,7 @@ use App\Srcvdetail;
                                     </div>
 
                                     <div class="col-md-6">
-                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V')? "" : "disabled" }}>Transfer Stocks</button>
+                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'E')? "" : "disabled" }}>Transfer Stocks</button>
                                     </div>
                                   </div>
                                 </div>
