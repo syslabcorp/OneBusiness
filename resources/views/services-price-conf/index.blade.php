@@ -389,6 +389,8 @@
                                 self.listBranches.push(self.corpBranches[i]);
                               }
                             }
+
+                            self.selectedBranchIds = []
                           })
                           .catch(function (error) {
                             console.log(error);
@@ -438,7 +440,7 @@
                 },
                 activateSelectable: function() {
                     var self = this;
-
+          
                     $("#selectableBranches").selectable({
                       selected: function( event, ui ) {
                             if(self.selectedBranchIds.indexOf(ui.selected.getAttribute('branchid')) == -1)
