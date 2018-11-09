@@ -101,7 +101,7 @@ use App\Srcvdetail;
                                                 <td style="width: 250px; min-width: 150px" class="col-qty" 
                                                   data-branch="{{ $branch->Branch }}" data-max="{{ $maxQty }}">
                                                   <input type="text" class="form-control"
-                                                    value="{{ $maxQty }}" {{ $maxQty == 0 ? 'disabled' : '' }}>
+                                                    value="{{ $maxQty }}" {{ $maxQty == 0 ? 'readonly' : '' }}>
                                                 </td>
                                               @endforeach
                                               <td class="col-total text-center">{{ $row->sum('Qty')  - $row->sum('ServedQty') }}</td>
@@ -125,9 +125,7 @@ use App\Srcvdetail;
                                     </div>
 
                                     <div class="col-md-6">
-                                    @if (!\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V')) 
-                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" >Transfer Stocks</button>
-                                    @endif
+                                      <button onclick="transferStocks()" class="btn btn-info btn-transfer" style="background-color:green;width:9em;float:right;" {{ !\Auth::user()->checkAccessByIdForCorp($corpID, 42, 'V')? "" : "disabled" }}>Transfer Stocks</button>
                                     </div>
                                   </div>
                                 </div>
