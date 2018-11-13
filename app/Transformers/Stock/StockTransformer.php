@@ -16,8 +16,8 @@ class StockTransformer extends Fractal\TransformerAbstract
             'Payment_ID' => $stock ? $stock->Payment_ID : '',
             // 'VendorName' => $stock->vendor ? $stock->vendor->VendorName : '',
             'DateSaved' => $stock->DateSaved ? $stock->DateSaved->format('M,d,Y h:m:s A') : '',
-            'RcvdBy' => $stock ? $stock->RcvdBy : '',
-            'transfered' => $stock ? $stock->check_transfered() : ''
+            'RcvdBy' => $stock ? $stock->RcvdBy : ''
+            // 'transfered' => $stock->check_transfered()
         ];
     }
 }
