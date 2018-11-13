@@ -27,7 +27,7 @@
                     <tr>
                       <th>
                         <a href="{{route('stocks.index', ['corpID' => $corpID, 'sortBy' => 'txn_no', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ]  )}}">
-                          SRR #
+                          <strong>SRR #</strong>
                           @if($sortBy == 'txn_no')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right">
                             </span> 
@@ -39,7 +39,7 @@
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RR_No', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
-                          D.R.#
+                          <strong>D.R.#</strong>
                           @if($sortBy == 'RR_No')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
@@ -49,7 +49,7 @@
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RcvDate', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
-                          Date
+                          <strong>Date</strong>
                           @if($sortBy == 'RcvDate')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
@@ -59,7 +59,7 @@
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'TotalAmt', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
-                          Total Amount
+                          <strong>Total Amount</strong>
                           @if($sortBy == 'TotalAmt')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
@@ -69,7 +69,7 @@
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'Supp_ID', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
-                          Vendor Name
+                          <strong>Vendor Name</strong>
                           @if($sortBy == 'Supp_ID')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
@@ -79,7 +79,7 @@
                       </th>
                       <th>
                         <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'DateSaved', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
-                          Date Saved
+                          <strong>Date Saved</strong>
                           @if($sortBy == 'DateSaved')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
                           @else
@@ -87,7 +87,7 @@
                           @endif
                         </a>
                       </th>
-                      <th>Action</th>
+                      <th><strong>Action</strong></th>
                     </tr>
                   @else
 
@@ -183,6 +183,11 @@
           '<option value="{{$vendor->Supp_ID}}">{{$vendor->VendorName}}</option>'
           )
         @endforeach
+
+        if (localStorage.getItem('stocksFilter')) {
+          $('input[name="document-filter"][value="' + localStorage.getItem('stocksFilter') + '"]').prop('checked', true)
+          $('input[name="document-filter"][value="' + localStorage.getItem('stocksFilter') + '"]').change();
+        }
       },
       ajax: '{{ route('api.stocks.index', ["corpID" => request()->corpID]) }}',
       columns: [
@@ -253,11 +258,20 @@
         tablePart.ajax.url(baseAPI).load()
       } else {
         $('.vendor-select').prop('disabled', false);
+
+        if (localStorage.getItem('stocksTypeId')) {
+          $('.vendor-select').val(localStorage.getItem('stocksTypeId'))
+        }
+
         tablePart.ajax.url(baseAPI + '&vendor_id=' + $('.vendor-select').val()).load()
       }
+
+      localStorage.setItem('stocksFilter', event.target.value)
     })
     
     $('body').on('change', '.vendor-select', (event) => {
+      localStorage.setItem('stocksTypeId', event.target.value)
+
       tablePart.ajax.url(baseAPI + '&vendor_id=' + $('.vendor-select').val()).load()
     })
 
@@ -269,6 +283,6 @@
     $('#alert').on('show.bs.modal', function(e) {
       $('#alert-dr').text( $(e.relatedTarget).data('dr'));
     });
-    
+
   </script>
 @endsection
