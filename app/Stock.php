@@ -38,7 +38,7 @@ class Stock extends Model
        $res =true; 
       }
     }
-    return true;
+    return $res;
   }
 
   public function total_amount()
