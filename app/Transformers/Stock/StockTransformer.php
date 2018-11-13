@@ -8,6 +8,7 @@ class StockTransformer extends Fractal\TransformerAbstract
 {
     public function transform(Stock $stock)
     {
+        dd($stock);
         return [
             'txn_no' => $stock ? (int) $stock->txn_no : '',
             'RR_No' =>  $stock ? (int) $stock->RR_No : '',
