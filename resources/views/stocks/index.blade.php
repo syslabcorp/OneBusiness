@@ -26,7 +26,6 @@
                   @if( true )
                     <tr>
                       <th>
-                        <a href="{{route('stocks.index', ['corpID' => $corpID, 'sortBy' => 'txn_no', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ]  )}}">
                           <strong>SRR #</strong>
                           @if($sortBy == 'txn_no')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right">
@@ -38,7 +37,6 @@
                         </a>
                       </th>
                       <th>
-                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RR_No', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           <strong>D.R.#</strong>
                           @if($sortBy == 'RR_No')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
@@ -48,7 +46,6 @@
                         </a>
                       </th>
                       <th>
-                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'RcvDate', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           <strong>Date</strong>
                           @if($sortBy == 'RcvDate')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
@@ -58,7 +55,6 @@
                         </a>
                       </th>
                       <th>
-                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'TotalAmt', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           <strong>Total Amount</strong>
                           @if($sortBy == 'TotalAmt')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
@@ -68,7 +64,6 @@
                         </a>
                       </th>
                       <th>
-                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'Supp_ID', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           <strong>Vendor Name</strong>
                           @if($sortBy == 'Supp_ID')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
@@ -78,7 +73,6 @@
                         </a>
                       </th>
                       <th>
-                        <a href="{{route('stocks.index' , ['corpID' => $corpID, 'sortBy' => 'DateSaved', 'order' => $next_order, 'page' => $stocks->currentPage(), 'vendor' => $vendor_list_type, 'vendorID' => $vendor_ID ] )}}">
                           <strong>Date Saved</strong>
                           @if($sortBy == 'DateSaved')
                             <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
