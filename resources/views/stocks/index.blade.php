@@ -27,58 +27,26 @@
                     <tr>
                       <th>
                           <strong>SRR #</strong>
-                          @if($sortBy == 'txn_no')
-                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right">
-                            </span> 
-                          @else
-                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right">
-                            </span> 
-                          @endif
                         </a>
                       </th>
                       <th>
                           <strong>D.R.#</strong>
-                          @if($sortBy == 'RR_No')
-                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
-                          @else
-                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
-                          @endif
                         </a>
                       </th>
                       <th>
                           <strong>Date</strong>
-                          @if($sortBy == 'RcvDate')
-                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
-                          @else
-                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
-                          @endif
                         </a>
                       </th>
                       <th>
                           <strong>Total Amount</strong>
-                          @if($sortBy == 'TotalAmt')
-                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
-                          @else
-                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
-                          @endif
                         </a>
                       </th>
                       <th>
                           <strong>Vendor Name</strong>
-                          @if($sortBy == 'Supp_ID')
-                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
-                          @else
-                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
-                          @endif
                         </a>
                       </th>
                       <th>
                           <strong>Date Saved</strong>
-                          @if($sortBy == 'DateSaved')
-                            <span class="text-right fa fa-sort-amount-{{ $next_order == 'asc' ? 'desc' : 'asc' }} pull-right"></span> 
-                          @else
-                            <span class="text-right fa fa-exchange fa-rotate-90 pull-right"></span> 
-                          @endif
                         </a>
                       </th>
                       <th><strong>Action</strong></th>
