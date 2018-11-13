@@ -9,15 +9,15 @@ class StockTransformer extends Fractal\TransformerAbstract
     public function transform(Stock $stock)
     {
         return [
-            'txn_no' => (int) $stock->txn_no,
-            'RR_No' => (int) $stock->RR_No,
+            'txn_no' => $stock ? (int) $stock->txn_no : '',
+            'RR_No' =>  $stock ? (int) $stock->RR_No : '',
             'RcvDate' => $stock->RcvDate ? $stock->RcvDate->format('M,d,Y') : '',
-            'TotalAmt' => number_format($stock->TotalAmt,2),
-            'Payment_ID' => $stock->Payment_ID,
+            'TotalAmt' => $stock ? number_format($stock->TotalAmt,2) : '',
+            'Payment_ID' => $stock ? $stock->Payment_ID : '',
             'VendorName' => $stock->vendor ? $stock->vendor->VendorName : '',
             'DateSaved' => $stock->DateSaved ? $stock->DateSaved->format('M,d,Y h:m:s A') : '',
-            'RcvdBy' => $stock->RcvdBy,
-            'transfered' => $stock->check_transfered()
+            'RcvdBy' => $stock ? $stock->RcvdBy : '',
+            'transfered' => $stock ? $stock->check_transfered() : ''
         ];
     }
 }
