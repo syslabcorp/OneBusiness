@@ -167,7 +167,8 @@
         },
         {
           targets: 3,
-          data: "TotalAmt"
+          data: "TotalAmt",
+          class: "text-right"
         },
         {
           targets: 4,
