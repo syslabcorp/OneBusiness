@@ -152,10 +152,7 @@
                     <td> <input type="text" name="Sub" id=""  data-validation-error-msg="Invalid input: Please enter a number."  data-validation="number" data-validation-allowing="float" data-validation-optional="true" class="input_Sub form-control"> </td>
                     <td class="input_Unit" ></td>
                     <td class="text-center" >
-                      <a class="btn btn-primary add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }}" 
-                        href="javascript:void(0);">
-                        <i class="fa fa-check"></i>
-                      </a>
+                      
                       <a type="button" data-href="#"  class="btn btn-danger delete_add_detail {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'D') ? "" : "disabled" }}" href="javascript:void(0);">
                         <i class="fa fa-trash"></i>
                       </a>
@@ -684,17 +681,25 @@
 
     $(document).keydown(function(e) {
       if(e.which == 113) {
-        $('#add-row').css('display' , ''); 
-        $('#no-item').css('display', 'none');
-        $('#alert_nothing').remove();
+        let addRow = $('#add-row').clone();
+        addRow.css("display", "");
+        $('#table_editable').append(addRow);
+
+        // $('#add-row').css('display' , ''); 
+        // $('#no-item').css('display', 'none');
+        // $('#alert_nothing').remove();
         return false;
       }
     });
 
     $('#pressF2').click(function(){
-      $('#add-row').css('display' , ''); 
-      $('#no-item').css('display', 'none');
-      $('#alert_nothing').remove();
+      let addRow = $('#add-row').clone();
+      addRow.css("display", "");
+      $('#table_editable').append(addRow);
+
+      // $('#add-row').css('display' , ''); 
+      // $('#no-item').css('display', 'none');
+      // $('#alert_nothing').remove();
     });
 
     $('body').on('click', '.input_ItemCode ,.input_Prod_Line, .input_Brand', function(){

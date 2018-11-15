@@ -136,7 +136,7 @@
             </form>
             @else
             <div class="error">
-              You don't have assigned any groups
+            You have no remit group
             </div>
             @endif
           </div>
