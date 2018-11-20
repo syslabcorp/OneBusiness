@@ -31,7 +31,7 @@
         @php $totalShortage = 0; @endphp
         @if(request()->from_date && request()->to_date && $tab == 'shortages')
         <h3 class="print">Name: <strong>{{ $user->UserName }}</strong></h3>
-        <table class="col-sm-12 table table-striped table-bordered shortages-datatable" cellspacing="0" width="100%">
+        <table class="col-sm-12 table table-striped table-bordered shortages-datatable table-shortages" cellspacing="0" width="100%">
           <tbody>
             @foreach($shortageItems as $periodItems)
               <tr>

@@ -19,7 +19,7 @@ class StocksController extends Controller
         }
 
         $stocks = $stockModel->get();
-
+  
         return fractal($stocks, new StockTransformer)->toJson();
     }
 
@@ -36,4 +36,5 @@ class StocksController extends Controller
             'success' => true
         ]);
     }
+    
 }

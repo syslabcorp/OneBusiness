@@ -514,4 +514,5 @@ class StocksController extends Controller
       return back();
     }
   }
+
 }
