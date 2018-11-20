@@ -613,7 +613,7 @@ function onEditRow(param){
         $('.btn_submit').prop('disabled', false)
       } else {
         $('.btn_submit').prop('disabled', true)
-        $('.table-responsive').css('display','none')
+        $('.table-shortages').css('display','none')
 
         if ($('input[name="from_date"]').val() && $('input[name="to_date"]').val()) {
           $('input[name="to_date"]').parent('div').append(
