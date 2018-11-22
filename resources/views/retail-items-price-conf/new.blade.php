@@ -260,7 +260,7 @@
                                                       <span class="price">{{ $item ? number_format($item->Sell_Price, 2) : '0.00' }}</span>
                                                     </td> 
                                                     <td>
-                                                      {{ $item ? number_format(($item->Sell_Price - $stock->LastCost) / $stock->LastCost * 100, 2) : '0.00' }}
+                                                      {{ $item && $stock->LastCost != 0 ? number_format(($item->Sell_Price - $stock->LastCost) / $stock->LastCost * 100, 2) : '0.00' }}
                                                     </td> 
                                                     <td class="rightBorder">
                                                       {{ $item ? number_format($item->Sell_Price - $stock->LastCost, 2) : '0.00' }}

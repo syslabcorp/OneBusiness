@@ -35,33 +35,17 @@ class StocksController extends Controller
     $retailID = StockType::where('type_desc', 'Retail')->first()->inv_type;
     $typeID = [0,$retailID];
 
-    $stockitems = StockItem::where( 'Active', 1 )->whereIn('Type', $typeID)->orderBy('ItemCode')->get();
     $stock = $stockModel->find($request->stock);
-    $stock_details = $stock->stock_details;
     $vendors = Vendor::orderBy('VendorName')->get();
 
-    $brands = Brand::all();
-
-    $prod_lines = ProductLine::all();
-
-    $prod_lines = $prod_lines->map(function ($prod_lines) {
-      return $prod_lines->Product;
-    });
-    $brands = $brands->map(function ($brands) {
-      return $brands->Brand;
-    });
-    // dd(Brand::all());
+  
     $pos = $purchaseOrderModel->where('served', 0)->get();
     return view('stocks.show',
       [
-        'brands' => $brands,
-        'prod_lines' => $prod_lines,
         'corpID' => $request->corpID,
-        'vendors' => $vendors,
         'stock' => $stock,
-        'stock_details' => $stock_details,
         'pos' => $pos,
-        'stockitems' => $stockitems,
+        'vendors' => $vendors,
         'print' => $request->print
       ]
     )->with('corpID', $request->corpID);
@@ -77,8 +61,7 @@ class StocksController extends Controller
     $company = Corporation::findOrFail($request->corpID);
     $stockModel = new \App\Stock;
     $stockModel->setConnection($company->database_name);
-    $stockDetailModel = new \App\StockDetail;
-    $stockDetailModel->setConnection($company->database_name);
+    
     $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
     $purchaseOrderDetailModel->setConnection($company->database_name);
 
@@ -87,64 +70,28 @@ class StocksController extends Controller
     $stock->RcvDate = $request->RcvDate;
     $stock->RcvdBy = \Auth::user()->UserID;
     $stock->DateSaved = date('Y-m-d H:i:s');
-    
-    $stock->save();
-    if($request->type) {
-      foreach ($request->type as $key => $value) {
-        $stock_detail = $stockDetailModel->find($key);
-
-        //edit row
-        if($value == "none") {
-          if($request->old_item_id[$key] != $request->item_id[$key]) {
-            $stock_detail->item_id = intval($request->item_id[$key]);
-          }
-          //$stock_detail->ItemCode = $request->ItemCode[$key];
-          $stock_detail->RcvDate = date('Y-m-d H:i:s');
-          $stock_detail->Qty = floatval($request->Qty[$key]) ;
-          $stock_detail->Bal = floatval($request->Qty[$key]);
-          $stock_detail->Cost = floatval($request->Cost[$key]);
-          $stock_detail->save();
-
-          $stock_item = StockItem::find($stock_detail->item_id);
-          if($stock_item) {
-            $stock_item->LastCost = $stock_detail->Cost;
-            $stock_item->save();
-          }
-        }
   
-        //delete row
-        if($value == "deleted")
-        {
-          $stock_detail->delete();
-        }
-      }
-    }
-    if($request->add_type)
-    {
-      foreach ($request->add_type as $key => $value)
-      {
-        $stockDetailModel = new \App\StockDetail;
-        $stockDetailModel->setConnection($company->database_name);
+    $stock->save();
+    
+    $stock->stock_details()->delete();
+    
+    if (is_array($request->stocks)) {
+      foreach($request->stocks as $detail) {
+        $stock_detail = new \App\StockDetail;
+        $stock_detail->setConnection($company->database_name);
 
-        $stock_detail = $stockDetailModel;
-        
-        //add row
-        if($value == "add" && $request->add_item_id[$key] )
-        {
-          $stock_detail->item_id = intval($request->add_item_id[$key]);
-          //$stock_detail->ItemCode = $request->add_ItemCode[$key];
-          $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
-          $stock_detail->Bal = floatval($request->add_Qty[$key]);
-          $stock_detail->Cost = floatval($request->add_Cost[$key]);
-          $stock_detail->RcvDate = date('Y-m-d H:i:s');
-          $stock_detail->RR_No = $request->RR_No;
-          $stock_detail->save();
+        $stock_detail->item_id = $detail['item_id'];
+        $stock_detail->ItemCode = $detail['item_code'];
+        $stock_detail->Qty = floatval($detail['qty']) ;
+        $stock_detail->Bal = floatval($detail['qty']);
+        $stock_detail->Cost = floatval($detail['cost']);
+        $stock_detail->RcvDate = $request->RcvDate;
+        $stock_detail->RR_No = $stock->RR_No;
+        $stock_detail->save();
 
-          $stock_item = StockItem::find($stock_detail->item_id);
-          $stock_item->LastCost = $stock_detail->Cost;
-          $stock_item->save();
-
-        }
+        $stock_item = StockItem::find($detail['item_id']);
+        $stock_item->LastCost = $detail['cost'];
+        $data = $stock_item->save();
       }
     }
 
@@ -230,7 +177,6 @@ class StocksController extends Controller
 
   public function update_detail(Request $request)
   {
-
     if(\Auth::user()->checkAccessByIdForCorp($request->corpID, 35, 'E')) {
       $company = Corporation::findOrFail($request->corpID);
       $stockModel = new \App\Stock;
@@ -394,47 +340,28 @@ class StocksController extends Controller
     $stock->RcvdBy = \Auth::user()->UserID;
     $stock->DateSaved = date('Y-m-d H:i:s');
     $success = $stock->save();
+    
+    if ($success && is_array($request->stocks)) {
+      foreach($request->stocks as $detail) {
+        $stock_detail = new \App\StockDetail;
+        $stock_detail->setConnection($company->database_name);
 
-    if($success && $request->add_type)
-    {
-      foreach ($request->add_type as $key => $value)
-      {
-        $stockDetailModel = new \App\StockDetail;
-        $stockDetailModel->setConnection($company->database_name);
+        $stock_detail->item_id = $detail['item_id'];
+        $stock_detail->ItemCode = $detail['item_code'];
+        $stock_detail->Qty = floatval($detail['qty']) ;
+        $stock_detail->Bal = floatval($detail['qty']);
+        $stock_detail->Cost = floatval($detail['cost']);
+        $stock_detail->RcvDate = $request->RcvDate;
+        $stock_detail->RR_No = $stock->RR_No;
+        $stock_detail->save();
 
-        $stock_detail = $stockDetailModel;
-        
-        //add row
-        if($value == "add" && $request->add_item_id[$key] )
-        {
-          $stock_detail->item_id = intval($request->add_item_id[$key]);
-          //$stock_detail->ItemCode = $request->add_ItemCode[$key];
-          $stock_detail->Qty = floatval($request->add_Qty[$key]) ;
-          $stock_detail->Bal = floatval($request->add_Qty[$key]);
-          $stock_detail->Cost = floatval($request->add_Cost[$key]);
-          $stock_detail->RcvDate = $request->RcvDate;
-          $stock_detail->RR_No = $stock->RR_No;
-          $stock_detail->save();
+        $stock_item = StockItem::find($detail['item_id']);
+        $stock_item->LastCost = $detail['cost'];
+        $stock_item->save();
 
-          $stock_item = StockItem::find($stock_detail->item_id);
-          $stock_item->LastCost = $stock_detail->Cost;
-          $stock_item->save();
-        }
       }
-
-      // if($success && $request->po && ($request->po != ""))
-      // {
-      //   $purchaseOrderDetailModel = new \App\PurchaseOrderDetail;
-      //   $purchaseOrderDetailModel->setConnection($company->database_name);
-      //   $detail = $purchaseOrderDetailModel;
-      //   $detail->item_id = intval($request->add_item_id[$key]);
-      //   $detail->ItemCode = $request->add_ItemCode[$key];
-      //   $detail->po_no = $request->po;
-      //   $detail->Qty = floatval($request->add_Qty[$key]);
-      //   $detail->cost = $request->add_Cost[$key];
-      //   $detail->save();
-      // }
     }
+
     \Session::flash('success', "D.R #$stock->RR_No is successfully created");
     return redirect()->route('stocks.show', [$stock, 'corpID' => $request->corpID, 'print' => $request->print ]);
   }
@@ -513,6 +440,15 @@ class StocksController extends Controller
       \Session::flash('success', "D.R. # $dr has been deleted"); 
       return back();
     }
+  }
+
+  public function searchStock(Request $request)
+  {
+    $items = StockItem::orderBy('s_invtry_hdr.item_id')->select('s_invtry_hdr.*')->where('Active','=',1)->where('Type','=',0)->get();
+   
+    return view('stocks.search-stock',[
+      'items' => $items
+    ]);
   }
 
 }
