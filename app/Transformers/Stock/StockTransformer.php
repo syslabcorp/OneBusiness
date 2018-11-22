@@ -17,7 +17,6 @@ class StockTransformer extends Fractal\TransformerAbstract
             'VendorName' => $stock->vendor ? $stock->vendor->VendorName : '',
             'DateSaved' => $stock->DateSaved ? $stock->DateSaved->format('M,d,Y h:m:s A') : '',
             'RcvdBy' => $stock ? $stock->RcvdBy : '',
-            'transfered' => true
         ];
     }
 }

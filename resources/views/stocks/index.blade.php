@@ -64,64 +64,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal confirm detele -->
-    
-    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">
-                  <strong>Confirm Delete</strong>
-                </h4>
-            </div>
-        
-            <div class="modal-body" style="margin-bottom: 150px; margin-top: 50px;">
-                <p>You are sure you want to delete <strong>DR #</strong><strong id="dr"></strong> </p>
-            </div>
-            
-            <div class="modal-footer">
-              <div class="col-md-6">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
-                  <i class="fa fa-reply"></i> Back  
-                </button>
-              </div>
-              <div class="col-md-6">
-                <form action="" class="btn-ok" method="POST">
-                  {{ csrf_field() }}
-                  <input type="hidden" name="_method" value="DELETE">
-                  <button class="btn btn-danger btn-ok" type="submit">Delete</button>
-                </form>
-              </div>
-            </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal alert -->
-
-    <div class="modal fade" id="alert" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">
-              <strong>Delete DR #<span id="alert-dr"></span></strong>
-            </h4>
-          </div>
-          <div class="modal-body">
-            <p>Some or all of the items on this DR have been transferred already. You cannot delete this anymore...</p>
-          </div>
-          <div class="modal-footer" style="margin-top: 100px;">
-            <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
 </section>
 
 @endsection
@@ -191,7 +133,7 @@
       ]
     })
 
-    removeStock = (itemId) => {
+    removeStock = (itemId, isTransfered) => {
       swal({
         title: "<div class='delete-title'>Delete</div>",
         text:  "<div class='delete-text'>You are about to delete StockID ["+ itemId +"]</strong></div>",
@@ -205,12 +147,17 @@
       }, (data) => {
         if(data) {
           $.ajax({
-          url: '{{ route('api.stocks.index') }}/' + itemId + '?corpID={{ request()->corpID }}' ,
-          type: 'DELETE',
-          success: (res) => {
-            tableStock.ajax.reload()
-          }
-        })
+            url: '{{ route('api.stocks.index') }}/' + itemId + '?corpID={{ request()->corpID }}' ,
+            type: 'DELETE',
+            success: (res) => {
+              tablePart.ajax.reload()
+            },
+            error: (res) => {
+              setTimeout(() => {
+                showAlertMessage('Some or all of the items on this DR have been transferred already. You cannot delete this anymore...')
+              }, 500);
+            }
+          })
         }
       });
     }
@@ -237,15 +184,5 @@
 
       tablePart.ajax.url(baseAPI + '&vendor_id=' + $('.vendor-select').val()).load()
     })
-
-    $('#confirm-delete').on('show.bs.modal', function(e) {
-      $(this).find('.btn-ok').attr('action', $(e.relatedTarget).data('href'));
-      $('#dr').text( $(e.relatedTarget).data('dr'));
-    });
-
-    $('#alert').on('show.bs.modal', function(e) {
-      $('#alert-dr').text( $(e.relatedTarget).data('dr'));
-    });
-
   </script>
 @endsection
