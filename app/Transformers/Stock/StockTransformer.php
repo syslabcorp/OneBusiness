@@ -10,7 +10,7 @@ class StockTransformer extends Fractal\TransformerAbstract
     {
         return [
             'txn_no' => $stock ? (int) $stock->txn_no : '',
-            'RR_No' =>  $stock ? (int) $stock->RR_No : '',
+            'RR_No' =>  $stock ? $stock->RR_No : '',
             'RcvDate' => $stock->RcvDate ? $stock->RcvDate->format('M,d,Y') : '',
             'TotalAmt' => $stock ? number_format($stock->TotalAmt,2) : '',
             'Payment_ID' => $stock ? $stock->Payment_ID : '',
