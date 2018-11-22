@@ -216,6 +216,7 @@ Route::post('branch_remittances/{id}/remittances', 'BranchRemittanceController@u
 ->middleware('auth');
 Route::post('branch_remittances/render_modal', 'BranchRemittanceController@renderModal', ['middleware' => 'auth']);
 
+Route::get('/stocks/search-stock', 'StocksController@searchStock')->name('stocks.searchStock');
 Route::post('/stocks/{stock_id}/update_detail', 'StocksController@update_detail')->middleware('auth')->name('stocks.update_detail');
 Route::post('/stocks/{stock_id}/save_new_row_ajax', 'StocksController@save_new_row_ajax')->middleware('auth')->name('stocks.save_new_row_ajax');
 Route::post('/stocks/get_details', 'StocksController@get_details')->middleware('auth')->name('stocks.get_details');
@@ -255,6 +256,4 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('/parts/get-filter', ['uses' => 'PartsController@getFilter'])->name('parts.getFilters');
 
   Route::resource('parts', 'PartsController');
-
-  Route::get('/stocks/search-part', ['uses' => 'StocksController@searchPart'])->name('stocks.searchPart');
 });

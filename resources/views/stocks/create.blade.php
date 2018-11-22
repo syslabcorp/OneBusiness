@@ -17,7 +17,7 @@
           </div>
         <form class="form-horizontal" action="{{ route('stocks.store', [ 'corpID' => $corpID]) }}" method="POST" >
             {{ csrf_field() }}
-            <input type="hidden" name="corpID" value="{{$corpID}}" >
+          <input type="hidden" name="corpID" value="{{$corpID}}" >
           <div class="panel-body" style="margin: 30px 0px;">
             <div class="row" style="margin-bottom: 20px;">
                 <div class="form-group">
@@ -68,7 +68,7 @@
                     </div>
                   </div>
                   <div class="col-sm-6">
-                    <a href="javascript:void(0)" class="addHere btnAddRow pull-right btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " onclick="openTablePart(event)">
+                    <a href="javascript:void(0)" class="addHere btnAddRow pull-right btn btn-success {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " onclick="openTableStock(event)">
                     Add Row
                     <br>
                     (F2)
@@ -152,36 +152,7 @@
               </table>
             </div>
 
-
-            <table class="table table-bordered" id="recommend-table" style=" display: none; " >
-              <thead>
-                <tr style="display:table;width:99%;table-layout:fixed; background:  #f27b82" >
-                  <th>Item Code</th>
-                  <th>Product Line</th>
-                  <th>Brand</th>
-                  <th>Description</th>
-                  <th>Unit</th>
-                  <th>Unit Cost</th>
-                </tr>
-              </thead>
-              <tbody style="display:block; max-height:300px; overflow-y:scroll; background: #f4b2b6;">
-                @foreach($stockitems as $stockitem )
-                  <tr class="recommend_row" style="display:table;width:100%;table-layout:fixed;" >
-                    <td class="recommend_item_id" style="display: none;">{{$stockitem->item_id}} </td>
-                    <td class="recommend_itemcode" >{{$stockitem->ItemCode}}</td>
-                    <td class="recommend_prod_line" >{{$stockitem->product_line->Product}} </td>
-                    <td class="recommend_prod_line_id" style="display: none;" >{{$stockitem->Prod_Line}} </td>
-                    <td class="recommend_brand"  >{{$stockitem->brand->Brand}}</td>
-                    <td class="recommend_brand_id" style="display: none;" >{{$stockitem->Brand_ID}}</td>
-                    <td class="recommend_description">{{$stockitem->Description}}</td>
-                    <td class="recommend_unit">{{$stockitem->Unit}}</td>
-                    <td class="recommend_cost">{{$stockitem->LastCost}}</td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-
-            @include('stocks.parts')
+            @include('stocks.stocks-item')
             
             <div class="row" style="margin-top: 200px;">
               <div class="col-sm-3 pull-right">
@@ -200,12 +171,12 @@
                 </a>
               </div>
               <div class="col-md-6">
-                <button type="button" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
+                <button type="submit" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
                   Save
                 </button>
               </div>
             </div>
-            <div id="equipDetail">
+            
             
             </div>
                 <!-- Modal alert -->
@@ -238,8 +209,6 @@
                   </div>
                 </div>
                 <!-- End modal alert -->
-
-
           </div>
         </form>
           

@@ -208,7 +208,7 @@
           url: '{{ route('api.stocks.index') }}/' + itemId + '?corpID={{ request()->corpID }}' ,
           type: 'DELETE',
           success: (res) => {
-            tablePart.ajax.reload()
+            tableStock.ajax.reload()
           }
         })
         }
