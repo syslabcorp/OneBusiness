@@ -30,15 +30,15 @@ class Stock extends Model
 
   public function check_transfered()
   {
-    $res = 0;
-    foreach($this->stock_details as $stock_detail )
+    foreach ($this->stock_details as $detail )
     {
-      if($stock_detail->Qty != $stock_detail->Bal) 
+      if($detail->Qty != $detail->Bal) 
       {
-       $res =true; 
+        return true; 
       }
     }
-    return $res;
+
+    return false;
   }
 
   public function total_amount()

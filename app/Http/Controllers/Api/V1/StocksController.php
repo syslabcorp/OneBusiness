@@ -30,11 +30,19 @@ class StocksController extends Controller
         $stockModel->setConnection($company->database_name);
 
         $stock = $stockModel->findOrFail($txnNo);
-        $stock->delete();
 
-        return response()->json([
-            'success' => true
-        ]);
+        if ($stock->check_transfered()) { 
+            return response()->json([
+                'success' => false
+            ], 400);
+        } else {
+            
+            $stock->delete();
+
+            return response()->json([
+                'success' => true
+            ]);
+        }
     }
     
 }
