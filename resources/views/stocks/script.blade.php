@@ -59,6 +59,7 @@
 					if (event.which != 38 && event.which != 40 && event.which != 13) searchStock()
 				})
 				
+        showMessage()
       })
       
       $(document).on('click', '.btnEditRow', (event) => {
@@ -96,6 +97,7 @@
 					if (event.which != 38 && event.which != 40 && event.which != 13) searchStock()
 				})
 				
+        showMessage()
 			})
 
 			$('.table-stocks').on('click', '.showSuggest', function(){
@@ -186,15 +188,15 @@
 
 			setStock = () => {
         $parent = $('.listStock tr.active')
-        $('.table-stocks .rowFocus td:eq(0) input.item_id').val($parent.find('td:eq(0)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(0) input.item_code').val($parent.find('td:eq(1)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(0) label').text($parent.find('td:eq(1)').text())
-        $('.table-stocks .rowFocus td:eq(1) input').val($parent.find('td:eq(2)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(2) input').val($parent.find('td:eq(3)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(3) input').val($parent.find('td:eq(4)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(8) input').val($parent.find('td:eq(5)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(0) input.item_id').val($parent.find('input[name="item_id"]').val())
+        $('.table-stocks .rowFocus td:eq(0) input.item_code').val($parent.find('td:eq(0)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
+        $('.table-stocks .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(2) input').val($parent.find('td:eq(2)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(3) label').text($parent.find('td:eq(3)').text())
+        $('.table-stocks .rowFocus td:eq(8) label').text($parent.find('td:eq(4)').text())
         
-        let cost = $parent.find('td:eq(12)').attr('data-id')
+        let cost = $parent.find('td:eq(5)').attr('data-id')
 
         if (!$.isNumeric(cost)) {
           cost = 0
@@ -207,6 +209,8 @@
         
         totalCost()
         
+        showMessage()
+
         $('.listStock').css('display','none')
       }
 
@@ -222,6 +226,30 @@
         totalCost()
       })
 
+      $('body').on('keyup', '.table-stocks .cost', (event) => {
+        
+        let $parent = $(event.target).parents('tr')
+        let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
+
+        if ($parent.find('td:eq(5) input').val()){
+          $parent.find('td:eq(7) input').val(total.toFixed(2))
+        }
+
+        totalCost()
+      })
+
+      $('body').on('keyup', '.table-stocks .subtotal', (event) => {
+        
+        let $parent = $(event.target).parents('tr')
+        let total = 0.000000000001+ $parent.find('td:eq(7) input').val()/$parent.find('td:eq(6) input').val()
+
+        if ($parent.find('td:eq(7) input').val()){
+          $parent.find('td:eq(5) input').val(total.toFixed(2))
+        }
+
+        totalCost()
+      })
+
       totalCost = () => {
         let $rows = $('.table-stocks tbody tr')
         let total = 0.000000000001
@@ -232,12 +260,43 @@
             total += parseFloat($tr.find('td:eq(7) input').val())
           }
         }
-               
+        $('#total_amt').val(total.toFixed(2))       
         $('#total_amount').text(total.toFixed(2))
       }     
 
       totalCost()
-      
+
+      $('body').on('click', '.save_button', (event) => {
+        showMessage()
+        console.log(1)
+        if (!$('.DR').val()) {
+          $('.errorDR').remove()
+          $('.error_DR').append('<div class="errorDR" align="center" style="color:red; font-size: 16px">D.R.# is required</div>')
+        } else {
+          if ($('.showMessage').length == 0) {
+            $('.submit_form').submit()
+          }
+          console.log(1)
+        }
+        
+      })
+
+      showMessage = (event) => {
+        $('.table-stocks .showMessage').remove()
+        if($('.table-stocks tbody .stockRow').length > 0) {
+          for(let i = 0; i < $('.table-stocks tbody .stockRow').length; i++) {
+            let row = $($('.table-stocks tbody .stockRow')[i]);
+
+            if (row.find('.item_id').val() == '') {
+              row.find('td:eq(1)').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')
+            } 
+          }
+        } else {  
+          $('.table-stocks ').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')   
+          showAlertMessage('Nothing to save...')
+        }
+      }
+
 		})()
 	</script>
 @endsection

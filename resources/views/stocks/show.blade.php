@@ -15,7 +15,7 @@
               </div>
             </div>
           </div>
-        <form class="form-horizontal" action="{{ route('stocks.update', [ $stock ,'corpID' => $corpID]) }}" method="POST" >
+        <form class="form-horizontal submit_form" action="{{ route('stocks.update', [ $stock ,'corpID' => $corpID]) }}" method="POST" >
             {{ csrf_field() }}
             <input type="hidden" name="corpID" value="{{$corpID}}" >
             <input type="hidden" name="_method" value="PATCH">
@@ -43,7 +43,7 @@
                       D.R#:
                     </label>
                     <div class="col-sm-5">
-                      <input type="text" class="form-control" name="RR_No" value="{{$stock->RR_No}}" disabled >
+                      <input type="text" class="form-control DR" name="RR_No" value="{{$stock->RR_No}}" disabled >
                       <input type="hidden" id="RR_No_hidden" class="form-control" name="RR_No" value="{{$stock->RR_No}}" >
                     </div>
 
@@ -98,7 +98,7 @@
                 </a>
               </div>
               <div class="col-md-6">
-                <button type="submit" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
+                <button type="button" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " {{ $stock->check_transfered() ? "disabled" : "" }}>
                   Save
                 </button>
               </div>
