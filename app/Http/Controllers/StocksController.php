@@ -70,7 +70,7 @@ class StocksController extends Controller
     $stock->RcvDate = $request->RcvDate;
     $stock->RcvdBy = \Auth::user()->UserID;
     $stock->DateSaved = date('Y-m-d H:i:s');
-  
+    $stock->TotalAmt = $request->total_amt;
     $stock->save();
     
     $stock->stock_details()->delete();
@@ -339,8 +339,9 @@ class StocksController extends Controller
     $stock->Supp_ID = $request->Supp_ID;
     $stock->RcvdBy = \Auth::user()->UserID;
     $stock->DateSaved = date('Y-m-d H:i:s');
+    $stock->TotalAmt = $request->total_amt;
     $success = $stock->save();
-    
+
     if ($success && is_array($request->stocks)) {
       foreach($request->stocks as $detail) {
         $stock_detail = new \App\StockDetail;
@@ -444,7 +445,13 @@ class StocksController extends Controller
 
   public function searchStock(Request $request)
   {
-    $items = StockItem::orderBy('s_invtry_hdr.item_id')->select('s_invtry_hdr.*')->where('Active','=',1)->where('Type','=',0)->get();
+    $items = StockItem::select('s_invtry_hdr.*')->where('s_invtry_hdr.Active','=',1)
+                        ->leftJoin('s_prodline', 's_prodline.ProdLine_ID', '=', 's_invtry_hdr.Prod_Line')
+                        ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID')
+                        ->orderBy('Product')
+                        ->orderBy('Brand')
+                        ->orderBy('ItemCode')
+                        ->where('s_invtry_hdr.Type','=',0)->get();
    
     return view('stocks.search-stock',[
       'items' => $items

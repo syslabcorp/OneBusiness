@@ -25,12 +25,13 @@
         </td>
         <td><input data-column="" type="text" name="stocks[{{ $loop->index+1 }}][product_line]" class="form-control text-center showSuggest" value="{{ $row->item->product_line->Product ? $row->item->product_line->Product : '' }}" autocomplete="off"></td>
         <td><input type="text" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][brand]" value="{{ $row->item->brand->Brand ? $row->item->brand->Brand : '' }}" autocomplete="off"></td>
-        <td><input type="text" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][description]" value="{{ $row->item->Description ? $row->item->Description : '' }}" autocomplete="off"></td>
-        <td><label class="form-control text-center" >{{ $row->ServedQty }}</label></td>
+        <td class="text-center"><label >{{ $row->item->Description ? $row->item->Description : '' }}</label></td>
+        <td class="text-center"><label>{{ $row->ServedQty }}</label></td>
         <td><input type="text" class="form-control text-center " name="stocks[{{ $loop->index+1 }}][cost]" value="{{ $row->Cost ? $row->Cost*100/100 : '' }}" autocomplete="off"></td>
         <td><input type="number" class="form-control text-center  quantity" name="stocks[{{ $loop->index+1 }}][qty]" value="{{ $row->Qty ? $row->Qty : ''}}" autocomplete="off"></td>
         <td><input type="text" class="form-control text-center subtotal" name="stocks[{{ $loop->index+1 }}][subtotal]" value="{{ $row->Cost ? ($row->Cost*100/100)*$row->Qty : '' }}" autocomplete="off"></td>
-        <td><input type="text" class="form-control text-center " name="stocks[{{ $loop->index+1 }}][unit]" value="{{ $row->item->Unit ? $row->item->Unit : '' }}" autocomplete="off"></td>
+        <td class="text-center"><label >{{ $row->item->Unit ? $row->item->Unit : '' }}</label></td>
+
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" >
             <i class="fas fa-trash-alt"></i>
@@ -47,12 +48,12 @@
         </td>
         <td><input type="text" data-column="" name="product_line" class="form-control text-center showSuggest" autocomplete="off"></td>
         <td><input type="text" data-column="" name="brand"  class="form-control text-center showSuggest" autocomplete="off"></td>
-        <td><input type="text" data-column="" name="description" class="form-control text-center showSuggest" autocomplete="off"></td>
-        <td><label class="form-control text-center">0</label></td>
-        <td><input type="text" data-column="" name="cost" class="form-control text-center" value="0" autocomplete="off"></td>
+        <td class="text-center"><label></label></td>
+        <td class="text-center"><label class="label-table-min">0</label></td>
+        <td><input type="text" data-column="" name="cost" class="form-control text-center cost" value="0" autocomplete="off"></td>
         <td><input type="number" data-column="" name="qty" class="form-control text-center quantity" value="1" autocomplete="off"></td>
-        <td><input type="text" data-column="" name="subtotal" class="form-control text-center" value="0" autocomplete="off"></td>
-        <td><input type="text" data-column="" name="unit" class="form-control text-center " autocomplete="off"></td>
+        <td><input type="text" data-column="" name="subtotal" class="form-control text-center subtotal" value="0" autocomplete="off"></td>
+        <td class="text-center"><label></label></td>
         
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">

@@ -15,7 +15,7 @@
               </div>
             </div>
           </div>
-        <form class="form-horizontal" action="{{ route('stocks.store', [ 'corpID' => $corpID]) }}" method="POST" >
+        <form class="form-horizontal submit_form" action="{{ route('stocks.store', [ 'corpID' => $corpID]) }}" method="POST" >
             {{ csrf_field() }}
           <input type="hidden" name="corpID" value="{{$corpID}}" >
           <div class="panel-body" style="margin: 30px 0px;">
@@ -26,7 +26,7 @@
                         P.O#:
                       </label>
                       <div class="col-sm-4">
-                        <select name="po" id="PO" class="form-control"  >
+                        <select name="po" id="PO" class="form-control PO"  >
                           <option value=""></option>
                           @foreach($pos as $po)
                             <option value="{{$po->po_no}}" >{{$po->po_no}}</option>
@@ -36,13 +36,13 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group ">
                   <div class="col-sm-6">
                     <label class="control-label col-sm-2">
                       D.R#:
                     </label>
-                    <div class="col-sm-5">
-                      <input type="text" data-validation="required,length" data-validation-length="max12" data-validation-error-msg="D.R.# is required" data-validation-error-msg-length="D.R.# should not exceed 12 characters" class="form-control" name="RR_No"   >
+                    <div class="col-sm-5 error_DR">
+                      <input type="text" data-validation="required,length" data-validation-length="max12" data-validation-error-msg-length="D.R.# should not exceed 12 characters" class="form-control DR" name="RR_No"   >
                     </div>
 
                     <label class="control-label col-sm-1">
@@ -171,7 +171,7 @@
                 </a>
               </div>
               <div class="col-md-6">
-                <button type="submit" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
+                <button type="button" data-toggle="modal" class="btn btn-success pull-right save_button {{ \Auth::user()->checkAccessByIdForCorp($corpID, 35, 'A') ? "" : "disabled" }} " >
                   Save
                 </button>
               </div>
