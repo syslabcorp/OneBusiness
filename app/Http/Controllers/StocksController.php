@@ -15,6 +15,7 @@ use App\PurchaseOrderDetail;
 use App\Corporation;
 use App\Brand;
 use App\ProductLine;
+use App\Spodetail;
 use DB;
 use Validator;
 use Datetime;
@@ -458,4 +459,13 @@ class StocksController extends Controller
     ]);
   }
 
+  public function searchPO(Request $request)
+  {
+    $items = Spodetail::select('s_po_detail.*')->where('s_po_detail.po_no', '=', $request['po'])->get();
+
+    return view('stocks.search-PO',[
+      'items' => $items
+    ]);
+    
+  }
 }

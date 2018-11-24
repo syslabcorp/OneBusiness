@@ -1,4 +1,4 @@
-<div class="table-responsive table-stocks" style="">
+<div class="table-responsive table-stocks" >
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -19,9 +19,8 @@
       @foreach($stock->stock_details as $row)
       <tr class="stockRow">
         <td class="text-center">
-          <label for="">{{ $row->ItemCode }}</label>
           <input type="hidden" class="item_id" name="stocks[{{ $loop->index+1 }}][item_id]" value="{{ $row->item_id }}" >
-          <input type="hidden" class="item_code" name="stocks[{{ $loop->index+1 }}][item_code]" value="{{ $row->ItemCode }}" >
+          <input type="text" class="form-control text-center item_code" name="stocks[{{ $loop->index+1 }}][item_code]" value="{{ $row->ItemCode }}" >
         </td>
         <td><input data-column="" type="text" name="stocks[{{ $loop->index+1 }}][product_line]" class="form-control text-center showSuggest" value="{{ $row->item->product_line->Product ? $row->item->product_line->Product : '' }}" autocomplete="off"></td>
         <td><input type="text" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][brand]" value="{{ $row->item->brand->Brand ? $row->item->brand->Brand : '' }}" autocomplete="off"></td>
@@ -42,9 +41,8 @@
       @endif
       <tr class="newStock" style="display: none;">
         <td class="text-center">
-          <label class="label-table-min"></label>
           <input type="hidden" class="form-control item_id" name="item_id">
-          <input type="hidden" class="form-control item_code" name="item_code">
+          <input type="text" class="form-control text-center item_code" name="item_code">
         </td>
         <td><input type="text" data-column="" name="product_line" class="form-control text-center showSuggest" autocomplete="off"></td>
         <td><input type="text" data-column="" name="brand"  class="form-control text-center showSuggest" autocomplete="off"></td>

@@ -13,7 +13,16 @@ class Spodetail extends Model
 
     protected $fillable = [
         'Branch', 'item_id', 'ItemCode',
-        'Qty', 'ServedQty' ,'cost'];
+        'Qty', 'ServedQty' ,'cost'
+    ];
 
+    public function item()
+    {
+        return $this->belongsTo(\App\StockItem::class, 'item_id', 'item_id');
+    }
+    
+    public function brand() {
+        return $this->belongsTo(\App\Brand::class, "Branch", "Brand_ID");
+    }
 
 }
