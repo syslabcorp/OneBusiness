@@ -9,6 +9,7 @@ class Brand extends Model
     protected $table = "s_brands";
     protected $primaryKey = "Brand_ID";
     public $timestamps = false;
+    protected $connection = 'mysql';
 
     protected $fillable = [
         'Brand'

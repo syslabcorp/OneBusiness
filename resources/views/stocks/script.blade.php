@@ -110,8 +110,6 @@
 			})
 			
 			searchStock = () => {
-        $('.listStock').remove();
-
 				let params = 'corpID='+{{ $corpID }};
 				
         $.ajax({
@@ -119,10 +117,31 @@
           type: 'GET',
           data: params,
           success: (res) => {
+            $('.listStock').remove()
             $('.table-stocks').append(res)
-            // $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
-            $('.listStock').css('width', $('.table-stocks').width())
             $('.listStock tbody tr:eq(0)').addClass('active')
+            $('.listStock').css('width', $('.table-stocks').width()) 
+          }
+        });
+			}
+
+      $('#PO').on('change', function() {
+        searchPO()
+      })
+
+      searchPO = () => {
+        $('.listPO').remove();
+        
+        $.ajax({
+          url: '{{ route('stocks.searchPO', ['corpID' => $corpID]) }}&po=' +  $('#PO').val(),
+          type: 'GET',
+          success: (res) => {
+            $('.Qty').remove()
+            $('.servedQty').remove()
+            $('.stockRow').remove()
+            $('.listPO').remove()
+            $('.table-stocks tbody').append(res)
+            totalCostPO()         
           }
         });
 			}
@@ -147,7 +166,6 @@
           if (position > 0) {
             $('.listStock').scrollTop(position)
           }
-
 
           if (event.which == 38) {
             if ($('.listStock tbody tr.active').length) {
@@ -262,13 +280,26 @@
         }
         $('#total_amt').val(total.toFixed(2))       
         $('#total_amount').text(total.toFixed(2))
-      }     
+      }
+
+      totalCostPO = () => {
+        let $rows = $('.table-stocks tbody tr.PO')
+        let Qty = $('.Qty').val() - $('.servedQty').val()
+        
+        for(let i = 0; i < $rows.length; i++) {
+          let $tr = $($rows[i])
+          if ($.isNumeric($tr.find('td:eq(5) input').val())) {
+            let a = $tr.find('td:eq(5) input').val()*Qty;
+            $tr.find('td:eq(7) input').val(a.toFixed(2))
+          }
+        }
+        totalCost()
+      }      
 
       totalCost()
 
       $('body').on('click', '.save_button', (event) => {
         showMessage()
-        console.log(1)
         if (!$('.DR').val()) {
           $('.errorDR').remove()
           $('.error_DR').append('<div class="errorDR" align="center" style="color:red; font-size: 16px">D.R.# is required</div>')
@@ -276,19 +307,18 @@
           if ($('.showMessage').length == 0) {
             $('.submit_form').submit()
           }
-          console.log(1)
         }
         
       })
 
-      showMessage = (event) => {
+      showMessage = () => {
         $('.table-stocks .showMessage').remove()
         if($('.table-stocks tbody .stockRow').length > 0) {
           for(let i = 0; i < $('.table-stocks tbody .stockRow').length; i++) {
             let row = $($('.table-stocks tbody .stockRow')[i]);
 
             if (row.find('.item_id').val() == '') {
-              row.find('td:eq(1)').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')
+              row.find('td:eq(0)').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')
             } 
           }
         } else {  
@@ -296,7 +326,24 @@
           showAlertMessage('Nothing to save...')
         }
       }
+      
+      $('.DR').on('keyup', function() {
+        if ($('.DR').val()) {
+          $('.errorDR').remove()
+        } else {
+          $('.error_DR').append('<div class="errorDR" align="center" style="color:red; font-size: 16px">D.R.# is required</div>')
+        }
+      })
 
+      $('body').on('change', '.filter-select', (event) => {
+        let requestAPI = basePartAPI + '?type=' +  $('.branch-select').val() + '&id=' + $('.filter-select').val()
+        
+        localStorage.setItem('partsType', $('.branch-select').val())
+          
+        localStorage.setItem('partsTypeId', $('.filter-select').val())
+
+        tablePart.ajax.url(requestAPI).load()
+      })
 		})()
 	</script>
 @endsection
