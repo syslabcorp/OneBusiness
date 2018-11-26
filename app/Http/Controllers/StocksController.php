@@ -80,9 +80,7 @@ class StocksController extends Controller
       foreach($request->stocks as $detail) {
         $stock_detail = new \App\StockDetail;
         $stock_detail->setConnection($company->database_name);
-
         $stock_detail->item_id = $detail['item_id'];
-        $stock_detail->ItemCode = $detail['item_code'];
         $stock_detail->Qty = floatval($detail['qty']) ;
         $stock_detail->Bal = floatval($detail['qty']);
         $stock_detail->Cost = floatval($detail['cost']);
@@ -349,7 +347,6 @@ class StocksController extends Controller
         $stock_detail->setConnection($company->database_name);
 
         $stock_detail->item_id = $detail['item_id'];
-        $stock_detail->ItemCode = $detail['item_code'];
         $stock_detail->Qty = floatval($detail['qty']) ;
         $stock_detail->Bal = floatval($detail['qty']);
         $stock_detail->Cost = floatval($detail['cost']);
@@ -446,14 +443,23 @@ class StocksController extends Controller
 
   public function searchStock(Request $request)
   {
-    $items = StockItem::select('s_invtry_hdr.*')->where('s_invtry_hdr.Active','=',1)
+    $items = StockItem::orderBy('s_prodline.Product')
+                        ->orderBy('s_invtry_hdr.item_id')
+                        ->where('s_invtry_hdr.Active','=',1)
+                        ->where('s_invtry_hdr.Type','=',0)
+                        ->select('s_invtry_hdr.*')
                         ->leftJoin('s_prodline', 's_prodline.ProdLine_ID', '=', 's_invtry_hdr.Prod_Line')
-                        ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID')
-                        ->orderBy('Product')
-                        ->orderBy('Brand')
-                        ->orderBy('ItemCode')
-                        ->where('s_invtry_hdr.Type','=',0)->get();
+                        ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID');
+    if ($request->product_line) {
+      $items = $items->where('s_prodline.Product','like','%' . $request->product_line.'%');
+    }
+
+    if ($request->brand) {
+      $items = $items->where('s_brands.Brand','like','%' . $request->brand.'%');
+    }
    
+    $items = $items->get();
+
     return view('stocks.search-stock',[
       'items' => $items
     ]);
@@ -466,6 +472,5 @@ class StocksController extends Controller
     return view('stocks.search-PO',[
       'items' => $items
     ]);
-    
   }
 }
