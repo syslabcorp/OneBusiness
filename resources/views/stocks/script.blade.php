@@ -109,7 +109,7 @@
         for(let i = 0; i < listFilters.length; i++) {
           params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
         }
-        console.log(params)
+      
         $.ajax({
           url: '{{ route('stocks.searchStock', ['corpID' => $corpID]) }}' ,
           type: 'GET',
@@ -203,21 +203,22 @@
 			setStock = () => {
         $parent = $('.listStock tr.active')
         $('.table-stocks .rowFocus td:eq(0) input.item_id').val($parent.find('input[name="item_id"]').val())
-        $('.table-stocks .rowFocus td:eq(0) input.product_line').val($parent.find('td:eq(1)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(1) input').val($parent.find('td:eq(2)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(2) label').text($parent.find('td:eq(3)').attr('data-id'))
-        $('.table-stocks .rowFocus td:eq(7) label').text($parent.find('td:eq(4)').text())
+        $('.table-stocks .rowFocus td:eq(0) input.item_code').val($parent.find('td:eq(0)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(2) input').val($parent.find('td:eq(2)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(3) label').text($parent.find('td:eq(3)').attr('data-id'))
+        $('.table-stocks .rowFocus td:eq(8) label').text($parent.find('td:eq(4)').text())
         
         let cost = $parent.find('td:eq(5)').attr('data-id')
-        console.log(cost)
+   
         if (!$.isNumeric(cost)) {
           cost = 0
         }
 
-        $('.table-stocks .rowFocus td:eq(4) input').val(cost)
+        $('.table-stocks .rowFocus td:eq(5) input').val(cost)
 
-        let total = 0.000000000001 + $('.table-stocks .rowFocus td:eq(4) input').val()*$('.table-stocks .rowFocus td:eq(5) input').val()
-        $('.table-stocks .rowFocus td:eq(6) input').val(total.toFixed(2))
+        let total = 0.000000000001 + $('.table-stocks .rowFocus td:eq(5) input').val()*$('.table-stocks .rowFocus td:eq(6) input').val()
+        $('.table-stocks .rowFocus td:eq(7) input').val(total.toFixed(2))
         
         totalCost()
         
@@ -229,10 +230,10 @@
       $('body').on('keyup', '.table-stocks .quantity', (event) => {
         
         let $parent = $(event.target).parents('tr')
-        let total = 0.000000000001+ $parent.find('td:eq(4) input').val()*$parent.find('td:eq(5) input').val()
+        let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
 
-        if ($parent.find('td:eq(4) input').val()){
-          $parent.find('td:eq(6) input').val(total.toFixed(2))
+        if ($parent.find('td:eq(5) input').val()){
+          $parent.find('td:eq(7) input').val(total.toFixed(2))
         }
 
         totalCost()
@@ -241,10 +242,10 @@
       $('body').on('keyup', '.table-stocks .cost', (event) => {
         
         let $parent = $(event.target).parents('tr')
-        let total = 0.000000000001+ $parent.find('td:eq(4) input').val()*$parent.find('td:eq(5) input').val()
+        let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
 
-        if ($parent.find('td:eq(4) input').val()){
-          $parent.find('td:eq(6) input').val(total.toFixed(2))
+        if ($parent.find('td:eq(5) input').val()){
+          $parent.find('td:eq(7) input').val(total.toFixed(2))
         }
 
         totalCost()
@@ -253,10 +254,10 @@
       $('body').on('keyup', '.table-stocks .subtotal', (event) => {
         
         let $parent = $(event.target).parents('tr')
-        let total = 0.000000000001+ $parent.find('td:eq(6) input').val()/$parent.find('td:eq(5) input').val()
+        let total = 0.000000000001+ $parent.find('td:eq(7) input').val()/$parent.find('td:eq(6) input').val()
 
-        if ($parent.find('td:eq(6) input').val()){
-          $parent.find('td:eq(4) input').val(total.toFixed(2))
+        if ($parent.find('td:eq(7) input').val()){
+          $parent.find('td:eq(5) input').val(total.toFixed(2))
         }
 
         totalCost()
@@ -268,8 +269,8 @@
 
         for(let i = 0; i < $rows.length; i++) {
           let $tr = $($rows[i])
-          if ($.isNumeric($tr.find('td:eq(6) input').val())) {
-            total += parseFloat($tr.find('td:eq(6) input').val())
+          if ($.isNumeric($tr.find('td:eq(7) input').val())) {
+            total += parseFloat($tr.find('td:eq(7) input').val())
           }
         }
         $('#total_amt').val(total.toFixed(2))       

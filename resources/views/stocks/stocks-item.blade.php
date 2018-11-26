@@ -2,7 +2,8 @@
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Product Line</th>
+        <th style="max-width: 100px;margin: 0px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;">Item Code</th>
+        <th>Product Line</th>
         <th>Brand</th>
         <th>Description</th>
         <th>Served</th>
@@ -19,8 +20,9 @@
       <tr class="stockRow">
         <td class="text-center">
           <input type="hidden" class="item_id" name="stocks[{{ $loop->index+1 }}][item_id]" value="{{ $row->item_id }}" >
-          <input type="text" data-column="product_line" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][product_line]" value="{{ $row->item->product_line->Product ? $row->item->product_line->Product : '' }}" autocomplete="off">
+          <input type="text" class="form-control text-center item_code" name="stocks[{{ $loop->index+1 }}][item_code]" value="{{ $row->item->ItemCode }}" >
         </td>
+        <td><input type="text" data-column="product_line" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][product_line]" value="{{ $row->item->product_line->Product ? $row->item->product_line->Product : '' }}" autocomplete="off"></td>
         <td><input type="text" data-column="brand" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][brand]" value="{{ $row->item->brand->Brand ? $row->item->brand->Brand : '' }}" autocomplete="off"></td>
         <td class="text-center"><label >{{ $row->item->Description ? $row->item->Description : '' }}</label></td>
         <td class="text-center"><label >{{ $row->ServedQty }}</label></td>
@@ -40,7 +42,9 @@
       <tr class="newStock" style="display: none;">
         <td class="text-center">
           <input type="hidden"   class="form-control item_id" name="item_id">
-          <input type="text"   data-column="product_line" name="product_line" class="form-control text-center showSuggest product_line" autocomplete="off">        </td>
+          <input type="text"   class="form-control item_code text-center" name="item_code">
+        </td>
+        <td><input type="text"   data-column="product_line" name="product_line" class="form-control text-center showSuggest" autocomplete="off"></td>
         <td><input type="text"   data-column="brand" name="brand"  class="form-control text-center showSuggest" autocomplete="off"></td>
         <td class="text-center"><label></label></td>
         <td class="text-center"><label class="label-table-min">0</label></td>
