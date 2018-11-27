@@ -125,6 +125,37 @@ a:active, a:visited, a:hover {
         }
     }
 }
+.listStocktransfer {
+    position: absolute;
+    width: 846px;
+    max-height: 400px;
+    overflow: scroll;
+    table {
+        width: 100%;
+    }
+    thead {
+        tr {
+            th {
+                background: #ed7a82;
+                padding: 8px 5px;
+                border-right: 1px solid #FFF;
+                font-size: 14px;
+            }
+        }
+        border-bottom: 1px solid #FFF;
+    }
+    tbody {
+        tr {
+            cursor: pointer;
+            border-bottom: 1px solid #FFF;
+            td {
+                background: #f3b2b6;
+                border-right: 1px solid #FFF;
+                padding: 8px 5px;
+            }
+        }
+    }
+}
 .listPO {
     position: absolute;
     width: 846px;
@@ -181,6 +212,11 @@ a:active, a:visited, a:hover {
     }
 }
 .listStock tr.active {
+    td {
+        background: #ed7a82;
+    }
+}
+.listStocktransfer tr.active{
     td {
         background: #ed7a82;
     }

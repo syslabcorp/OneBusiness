@@ -239,10 +239,11 @@ function onEditRow(param){
 }
 
 showHidden = (isShow) => {
-  if(isShow)
+  $('#addNewTransfer').html('')
+
+  if(isShow) {
     $('#addNewTransfer').append('<a href="{{route('stocktransfer.create' , ['corpID' => $corpID] )}}"  class="pull-right">New Stock Transfer</a>')
-  else
-    $('#addNewTransfer').empty()
+  }
 }
 
 @if($tab == 'stock')

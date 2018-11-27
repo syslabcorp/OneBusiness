@@ -35,7 +35,10 @@ Route::get('stocktransfer/delivery-items', 'StocktransferController@deliveryItem
 Route::post('stocktransfer/{item}/served', 'StocktransferController@markToServed');
 Route::post('stocktransfer/{stock}/transfer', 'StocktransferController@transfer', ['middleware' => 'auth'])->name('stocktransfer.transfer');
 Route::get('stocktransfer/{stock}/original', 'StocktransferController@original', ['middleware' => 'auth'])->name('stocktransfer.original');
+Route::get('/stocktransfer/search-stocktransfer', 'StocktransferController@searchStocktransfer')->name('stocktransfer.searchStocktransfer');
+
 Route::resource('stocktransfer', 'StocktransferController', ['middleware' => 'auth']);
+
 
 Route::post('payrolls-masterfile/deduct', 'PayrollsController@deduct')->middleware('auth')->name('payrolls.deduct');
 Route::post('payrolls-masterfile/benefit', 'PayrollsController@benefit')->middleware('auth')->name('payrolls.benefit');
