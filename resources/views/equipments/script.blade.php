@@ -205,30 +205,46 @@
         }
       })
 
-      $('body').keypress(function(event) {
-        if(event.which == 13) {
-          event.preventDefault();
-          setPart();
-        }
-      });
+      // $('body').keypress(function(event) {
+      //   if(event.which == 13) {
+      //     event.preventDefault();
+      //     setPart();
+      //   }
+      // });
 
       setPart = () => {
         $parent = $('.listPart tr.active')
 
-        $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
-        $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
-        $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
-        $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
+        if ($('.table-parts .partRow').length) {
+          for (let i = 0; i < $('.table-parts .partRow').length; i++) {
+            
+            let $row = $($('.table-parts .partRow')[i]);
+        
+            if ( $row.find('input.item_id').val() == $parent.find('td:eq(0)').attr('data-id') ) {
+              showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+              break;
+            }
+            
+            if ( i == $('.table-parts .partRow').length - 1 ) {
+              $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
+              $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
+              $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
+              $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
+              $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
+              $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
+              $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
 
-        let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
-        $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
-        
-        totalCost()
-        
-        $('.listPart').css('display','none')
+              let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
+              $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+              
+              totalCost()
+              
+              $('.listPart').css('display','none')
+            } 
+
+          }  
+        }
+
       }
     })()
   </script>
