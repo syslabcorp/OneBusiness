@@ -251,11 +251,6 @@ class StocktransferController extends Controller {
         $purchaseOrderModel = new \App\PurchaseOrder;
         $purchaseOrderModel->setConnection($company->database_name);
 
-        $suggestItems = $cfgModel->where('Active', 1)
-                                ->orderBy('ItemCode', 'ASC')
-                                ->distinct()
-                                ->get();
-
         $branches = $company->branches()->where('Active', 1)
                             ->orderBy('ShortName', 'ASC')
                             ->get();
@@ -263,7 +258,6 @@ class StocktransferController extends Controller {
         return view('stocktransfer.create', [
             'branches' => $branches,
             'corpID' => $request->corpID,
-            'suggestItems' => $suggestItems,
             'rcvModel' => $rcvModel
         ]);
     }
@@ -288,12 +282,6 @@ class StocktransferController extends Controller {
         $rcvModel = new \App\Srcvdetail;
         $rcvModel->setConnection($company->database_name);
 
-        $suggestItems = $cfgModel->where('Active', 1)
-                                ->distinct()
-                                ->orderBy('ItemCode', 'ASC')
-                                ->get();
-
-
         $branches = $company->branches()->where('Active', 1)
                             ->orderBy('ShortName', 'ASC')
                             ->get();
@@ -301,7 +289,6 @@ class StocktransferController extends Controller {
         return view('stocktransfer.edit', [
             'branches' => $branches,
             'corpID' => $request->corpID,
-            'suggestItems' => $suggestItems,
             'hdrItem' => $hdrItem,
             'rcvModel' => $rcvModel,
             'stockStatus' => $request->stockStatus
@@ -325,7 +312,6 @@ class StocktransferController extends Controller {
             'Uploaded' => 0
         ];
 
-
         $hdrItem = $hdrModel->create($hdrParams);
 
         if($request->details) {
@@ -335,7 +321,7 @@ class StocktransferController extends Controller {
                                     ->orderBy('RcvDate', 'ASC')
                                     ->get();
 
-                $itemQtyRemaining = $itemParams['Qty'];
+                $itemQtyRemaining = $itemParams['qty'];
                 foreach($rcvItems as $rcvItem) {
                     $itemQty = $itemQtyRemaining;
                     $itemQtyRemaining -= $rcvItem->Bal;
@@ -348,7 +334,7 @@ class StocktransferController extends Controller {
 
                     $hdrItem->details()->create([
                         'item_id' => $itemParams['item_id'],
-                        'ItemCode' => $itemParams['ItemCode'],
+                        'ItemCode' => $itemParams['item_code'],
                         'Qty' => $itemQty,
                         'Bal' => $itemQty,
                         'Movement_ID' => $rcvItem->Movement_ID,
@@ -401,7 +387,7 @@ class StocktransferController extends Controller {
                                     ->where('Bal', '>', 0)
                                     ->orderBy('RcvDate', 'ASC')
                                     ->get();
-                $itemQtyRemaining = $itemParams['Qty'];
+                $itemQtyRemaining = $itemParams['qty'];
                 foreach($rcvItems as $rcvItem) {
                     $itemQty = $itemQtyRemaining;
                     $itemQtyRemaining -= $rcvItem->Bal;
@@ -413,7 +399,7 @@ class StocktransferController extends Controller {
                     }
                     $hdrItem->details()->create([
                         'item_id' => $itemParams['item_id'],
-                        'ItemCode' => $itemParams['ItemCode'],
+                        'ItemCode' => $itemParams['item_code'],
                         'Qty' => $itemQty,
                         'Bal' => $itemQty,
                         'Movement_ID' => $rcvItem->Movement_ID,
@@ -493,6 +479,51 @@ class StocktransferController extends Controller {
 
         return response()->json([
             'success'=> true
+        ]);
+    }
+
+    public function searchStocktransfer(Request $request) {
+        $company = Corporation::findOrFail(request()->corpID);
+
+        $rcvModel = new \App\Srcvdetail;
+        $rcvModel->setConnection($company->database_name);
+
+        $items = StockItem::orderBy('s_prodline.Product')
+                        ->orderBy('s_invtry_hdr.item_id')
+                        ->where('s_invtry_hdr.Active','=',1)
+                        ->where('s_invtry_hdr.Type','=',0)
+                        ->select('s_invtry_hdr.*')
+                        ->leftJoin('s_prodline', 's_prodline.ProdLine_ID', '=', 's_invtry_hdr.Prod_Line')
+                        ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID');
+        if ($request->item_code) {
+            $items = $items->where('s_invtry_hdr.ItemCode','like','%' . $request->item_code.'%');
+        }
+
+        if ($request->product_line) {
+            $items = $items->where('s_prodline.Product','like','%' . $request->product_line.'%');
+        }
+
+        if ($request->brand) {
+            $items = $items->where('s_brands.Brand','like','%' . $request->brand.'%');
+        }
+    
+        $items = $items->get();
+
+        foreach ($items as &$item) {
+            $item->sumBal = $rcvModel->where('item_id', $item->item_id)->sum('Bal');
+        }
+        
+        return view('stocktransfer.search-stocktransfer',[
+            'items' => $items
+        ]);
+    }
+
+    public function searchTransfer(Request $request)
+    {
+        $items = \App\Stxfrhdr::select('s_txfr_hdr.*')->where('s_txfr_hdr.Txfr_To_Branch', '=', $request['brand_id'])->get();
+        dd($items->toArray());
+        return view('stocktransfer.search-transfer',[
+            'items' => $items
         ]);
     }
 }
