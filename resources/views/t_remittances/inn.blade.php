@@ -63,7 +63,7 @@
         <th class="text-center">ACTION</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="selectable">
       @php $totalShifts = 0 @endphp
       @foreach($collection->details()->get() as $detail)
         @foreach($detail->shifts($company->corp_id, $queries) as $branch => $shifts_by_date)
@@ -160,6 +160,9 @@ $(document).ready(function(){
     #status-filter input[name="remarks_only"]').change(function(event) {
     $(this).parents('form').submit();
   });
+
+  $( "#selectable" ).selectable();
+
 });
 </script>
 @endsection

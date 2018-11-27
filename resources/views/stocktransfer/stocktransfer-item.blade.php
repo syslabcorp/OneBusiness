@@ -6,7 +6,7 @@
         <th>Product Line</th>
         <th>Brand</th>
         <th>Description</th>
-        <th>Qty On Hand</th>
+        <th>Qty</th>
         <th>Unit</th>
         <th style="min-width: 100px;">Action</th>
       </tr>

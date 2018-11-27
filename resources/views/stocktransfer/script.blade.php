@@ -171,26 +171,43 @@
       $parent.addClass('active')
     })
     
-    $('body').keypress(function(event) {
-      if(event.which == 13) {
-        event.preventDefault();
-        setStocktransfer();
-      }
-    });
+    // $('body').keypress(function(event) {
+    //   if(event.which == 13) {
+    //     event.preventDefault();
+    //     setStocktransfer();
+    //   }
+    // });
 
     setStocktransfer = () => {
       $parent = $('.listStocktransfer tr.active')
-      $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val($parent.find('input[name="item_id"]').val())
-      $('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val($parent.find('td:eq(0)').attr('data-id'))
-      $('.table-stocktransfer .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').attr('data-id'))
-      $('.table-stocktransfer .rowFocus td:eq(2) input').val($parent.find('td:eq(2)').attr('data-id'))
-      $('.table-stocktransfer .rowFocus td:eq(3) label').text($parent.find('td:eq(3)').text())
-      $('.table-stocktransfer .rowFocus td:eq(4) input').attr('data-hand', $parent.find('td:eq(4)').attr('data-id'))
-      $('.table-stocktransfer .rowFocus td:eq(5) label').text($parent.find('td:eq(5)').text())
-      
-      showMessage()
 
-      $('.listStocktransfer').css('display','none')
+      if ($('.table-stocktransfer .stocktransferRow').length) {
+        for (let i = 0; i < $('.table-stocktransfer .stocktransferRow').length; i++) {
+          
+          let $row = $($('.table-stocktransfer .stocktransferRow')[i]);
+          // console.log($row.find('input.item_id').val())
+          // console.log($parent.find('input[name="item_id"]').val())
+          if ( $row.find('input.item_id').val() == $parent.find('input[name="item_id"]').val() ) {
+            showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+            break;
+          }
+          
+          if ( i == $('.table-stocktransfer .stocktransferRow').length - 1 ) {
+            $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val($parent.find('input[name="item_id"]').val())
+            $('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val($parent.find('td:eq(0)').attr('data-id'))
+            $('.table-stocktransfer .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').attr('data-id'))
+            $('.table-stocktransfer .rowFocus td:eq(2) input').val($parent.find('td:eq(2)').attr('data-id'))
+            $('.table-stocktransfer .rowFocus td:eq(3) label').text($parent.find('td:eq(3)').text())
+            $('.table-stocktransfer .rowFocus td:eq(4) input').attr('data-hand', $parent.find('td:eq(4)').attr('data-id'))
+            $('.table-stocktransfer .rowFocus td:eq(5) label').text($parent.find('td:eq(5)').text())
+            
+            showMessage()
+
+            $('.listStocktransfer').css('display','none')
+          } 
+
+        }  
+      }
     }
 
     $('body').on('keyup', '.table-stocktransfer .rowFocus td:eq(4) input', (event) => {
