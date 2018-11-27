@@ -28,7 +28,7 @@
       <tr class="partRow">
         <td class="text-center">
           <label for="">{{ $row->item_id }}</label>
-          <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}" >
+          <input type="hidden" class="item_id" name="parts[{{ $row->item_id }}][item_id]" value="{{ $row->item_id }}" >
         </td>
         <td><input data-column="description" type="text" name="parts[{{ $row->item_id }}][desc]" class="form-control text-center label-table-min showSuggest" value="{{ $row->item->description }}" autocomplete="off"></td>
         <td><input type="text" class="form-control" autocomplete="off"></td>
@@ -61,7 +61,7 @@
       <tr class="newPart" style="display: none;">
         <td class="text-center">
           <label class="label-table-min"></label>
-          <input type="hidden" class="form-control" name="item_id">
+          <input type="hidden" class="form-control item_id" name="item_id">
         </td>
         <td><input type="text" name="desc" data-column="description" class="form-control text-center showSuggest" autocomplete="off"></td>
         <td><input type="text" class="form-control" autocomplete="off"></td>

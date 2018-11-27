@@ -231,6 +231,8 @@
 
     tablePart.ajax.url(requestAPI).load()
   })
+
+  
 })()
 </script>
 @endsection
