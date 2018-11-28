@@ -1,6 +1,10 @@
 @section('pageJS')
 	<script type="text/javascript">
 		(() => {
+      @if(isset($stock) && $stock->check_transfered())
+        showAlertMessage('Some or all of the items on this DR have been transferred already. You cannot edit or delete this anymore...', 'Error')
+      @endif
+
 			openTableStock = (event) => {
 				$('.table-stocks').slideDown()
 			}
@@ -232,7 +236,7 @@
         let $parent = $(event.target).parents('tr')
 
         if ($parent.find('td:eq(6) input').val() < 1) {
-          $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val()) : showAlertMessage('Zero quantity detected on ItemCode ') ;
+          $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val(), 'Error') : showAlertMessage('Zero quantity detected on ItemCode ', 'Error') ;
           $parent.find('td:eq(6) input').val(1)
         } else {
           let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
@@ -325,7 +329,7 @@
           }
         } else {  
           $('.table-stocks ').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')   
-          showAlertMessage('Nothing to save...')
+          showAlertMessage('Nothing to save...', 'Error')
         }
       }
       
