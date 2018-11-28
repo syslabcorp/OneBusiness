@@ -26,13 +26,13 @@
         <td><input type="text" data-column="brand" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][brand]" value="{{ $row->item ? $row->item->brand->Brand : '' }}" autocomplete="off"></td>
         <td class="text-center"><label >{{ $row->item ? $row->item->Description : '' }}</label></td>
         <td class="text-center"><label >{{ $row->ServedQty }}</label></td>
-        <td><input type="text"   class="form-control text-center " name="stocks[{{ $loop->index+1 }}][cost]" value="{{ $row->Cost ? $row->Cost*100/100 : '' }}" autocomplete="off"></td>
+        <td><input type="text"   class="form-control text-center cost" name="stocks[{{ $loop->index+1 }}][cost]" value="{{ $row->Cost ? $row->Cost*100/100 : '' }}" autocomplete="off"></td>
         <td><input type="number" class="form-control text-center  quantity" name="stocks[{{ $loop->index+1 }}][qty]" value="{{ $row->Qty ? $row->Qty : ''}}" autocomplete="off"></td>
         <td><input type="text"   class="form-control text-center subtotal" name="stocks[{{ $loop->index+1 }}][subtotal]" value="{{ $row->Cost ? ($row->Cost*100/100)*$row->Qty : '' }}" autocomplete="off"></td>
         <td class="text-center"><label >{{ $row->item ? $row->item->Unit : '' }}</label></td>
 
         <td style="width: 100px;">
-          <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" >
+          <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" {{ $stock->check_transfered() ? "disabled" : "" }}>
             <i class="fas fa-trash-alt"></i>
           </button>
         </td>
