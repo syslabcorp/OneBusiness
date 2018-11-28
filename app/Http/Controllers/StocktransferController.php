@@ -282,6 +282,11 @@ class StocktransferController extends Controller {
         $rcvModel = new \App\Srcvdetail;
         $rcvModel->setConnection($company->database_name);
 
+        $details = $hdrItem->details()
+                        ->groupBy('item_id')
+                        ->selectRaw('s_txfr_detail.*, SUM(Qty) as Qty')
+                        ->get();
+
         $branches = $company->branches()->where('Active', 1)
                             ->orderBy('ShortName', 'ASC')
                             ->get();
@@ -291,7 +296,8 @@ class StocktransferController extends Controller {
             'corpID' => $request->corpID,
             'hdrItem' => $hdrItem,
             'rcvModel' => $rcvModel,
-            'stockStatus' => $request->stockStatus
+            'stockStatus' => $request->stockStatus,
+            'details' => $details
         ]);
     }
 
