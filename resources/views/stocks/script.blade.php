@@ -246,6 +246,7 @@
       })
 
       $('body').on('keyup', '.table-stocks .cost', (event) => {
+        console.log(1)
         let $parent = $(event.target).parents('tr')
   
         let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
