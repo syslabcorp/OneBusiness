@@ -127,6 +127,31 @@
         totalCost()
       })
 
+      $('body').on('keyup', '.lastcost', (event) => {
+        let $parent = $(event.target).parents('tr')
+  
+        let total = 0.000000000001+ $parent.find('td:eq(6) input').val()*$parent.find('td:eq(7) input').val()
+
+        if ($parent.find('td:eq(6) input').val()){
+          $parent.find('td:eq(8) input').val(total.toFixed(2))
+        }
+
+        totalCost()
+      })
+
+      $('body').on('keyup', '.totalcost', (event) => {
+        
+        let $parent = $(event.target).parents('tr')
+        let total = 0.000000000001+ $parent.find('td:eq(8) input').val()/$parent.find('td:eq(7) input').val()
+
+        if ($parent.find('td:eq(8) input').val()){
+          $parent.find('td:eq(6) input').val(total.toFixed(2))
+        }
+
+        totalCost()
+      })
+
+
       totalCost = () => {
         let $rows = $('.table-parts tbody tr')
         let total = 0.000000000001
