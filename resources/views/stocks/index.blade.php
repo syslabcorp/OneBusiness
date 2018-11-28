@@ -130,7 +130,8 @@
               class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=".edit-part-modal"> </button>'
           }
         }
-      ]
+      ],
+      order: [[0, 'DESC']]
     })
 
     removeStock = (itemId, isTransfered) => {
