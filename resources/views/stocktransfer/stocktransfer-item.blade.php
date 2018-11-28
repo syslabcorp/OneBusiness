@@ -12,8 +12,8 @@
       </tr>
     </thead>
     <tbody>
-      @if(isset($hdrItem))
-      @foreach($hdrItem->details as $row)
+      @if(isset($details))
+      @foreach($details as $row)
       <tr class="stocktransferRow">
         <td class="text-center">
           <input type="hidden" class="item_id" name="details[{{ $loop->index+1 }}][item_id]" value="{{ $row->item_id }}" >
