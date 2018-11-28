@@ -8,6 +8,7 @@
 			$(window).keydown((event) => {
 				if (event.which === 113) {
 					$('.btnAddRow').click()
+          $('.btnEditRow').click()
 				}
 			})
 
@@ -53,7 +54,7 @@
         
         showMessage()
       })
-      
+
       $(document).on('click', '.btnEditRow', (event) => {
 				$('.rowFocus').removeClass('rowFocus')
 				let $trParent = $('.newStock')
@@ -228,20 +229,25 @@
       }
 
       $('body').on('keyup', '.table-stocks .quantity', (event) => {
-        
         let $parent = $(event.target).parents('tr')
-        let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
 
-        if ($parent.find('td:eq(5) input').val()){
-          $parent.find('td:eq(7) input').val(total.toFixed(2))
-        }
+        if ($parent.find('td:eq(6) input').val() < 1) {
+          $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val()) : showAlertMessage('Zero quantity detected on ItemCode ') ;
+          $parent.find('td:eq(6) input').val(1)
+        } else {
+          let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
 
-        totalCost()
+          if ($parent.find('td:eq(5) input').val()){
+            $parent.find('td:eq(7) input').val(total.toFixed(2))
+          }
+
+          totalCost()
+        }   
       })
 
       $('body').on('keyup', '.table-stocks .cost', (event) => {
-        
         let $parent = $(event.target).parents('tr')
+  
         let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
 
         if ($parent.find('td:eq(5) input').val()){

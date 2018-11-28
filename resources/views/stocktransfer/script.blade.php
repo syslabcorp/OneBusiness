@@ -8,6 +8,7 @@
     $(window).keydown((event) => {
       if (event.which === 113) {
         $('.btnAddRow').click()
+        $('.btnEditRow').click()
       }
     })
 
@@ -40,7 +41,7 @@
         })
         $trClone.insertBefore($trParent)
         $trParent.find('input').val('')
-        $trParent.find('input[name="qty"]').val(0)
+        $trParent.find('input[name="qty"]').val(1)
 
         $trParent.find('.label-table').text('')
         $trParent.css('display', 'none')
@@ -68,7 +69,7 @@
         })
         $trClone.insertBefore($trParent)
         $trParent.find('input').val('')
-        $trParent.find('input[name="qty"]').val(0)
+        $trParent.find('input[name="qty"]').val(1)
 
         $trParent.find('.label-table').text('')
         $trParent.css('display', 'none')
@@ -242,7 +243,15 @@
         showAlertMessage('Nothing to save...')
         }
     }
-
+    
+    $('body').on('keyup', '.table-stocktransfer .quantity', (event) => {
+      let $parent = $(event.target).parents('tr')
+      
+      if ($parent.find('td:eq(4) input').val() < 1) {
+        $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val()) : showAlertMessage('Zero quantity detected on ItemCode ') ;
+        $parent.find('td:eq(4) input').val(1)
+      } 
+    })
   })()
 </script>
 @endsection
