@@ -507,10 +507,11 @@ class StocktransferController extends Controller {
                         ->select('s_invtry_hdr.*')
                         ->leftJoin('s_prodline', 's_prodline.ProdLine_ID', '=', 's_invtry_hdr.Prod_Line')
                         ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID')
-                        ->leftJoin( $databaseName . '.s_item_cfg', 's_item_cfg.item_id', '=', 's_invtry_hdr.item_id');
+                        ->leftJoin( $databaseName.'.s_item_cfg', $databaseName.'s_item_cfg.item_id', '=', 's_invtry_hdr.item_id');
         
         if ($request->branch) {
-            $items = $items->where('s_item_cfg.Branch','=', $request->branch);
+            $items = $items->where($databaseName.'s_item_cfg.Branch', '=', $request->branch)
+                           ->where($databaseName.'s_item_cfg.Active', '=', 1);
         }      
                         
         if ($request->item_code) {
