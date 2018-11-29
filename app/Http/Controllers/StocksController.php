@@ -443,7 +443,8 @@ class StocksController extends Controller
 
   public function searchStock(Request $request)
   {
-    $items = StockItem::orderBy('s_prodline.Product')
+    $items = StockItem::orderBy('s_prodline.Product', 'ASC')
+                        ->orderBy('s_invtry_hdr.ItemCode', 'ASC')
                         ->orderBy('s_invtry_hdr.item_id')
                         ->where('s_invtry_hdr.Active','=',1)
                         ->where('s_invtry_hdr.Type','=',0)
