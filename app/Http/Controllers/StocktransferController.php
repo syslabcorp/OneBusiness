@@ -508,7 +508,8 @@ class StocktransferController extends Controller {
                         ->leftJoin('s_item_cfg', 's_item_cfg.item_id', '=', 's_invtry_hdr.item_id');
         
         if ($request->branch) {
-            $items = $items->where('s_item_cfg.Branch','=', $request->branch);
+            $items = $items->where('s_item_cfg.Branch', '=', $request->branch)
+                           ->where('s_item_cfg.Active', '=', 1);
         }      
                         
         if ($request->item_code) {
