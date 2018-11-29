@@ -23,7 +23,7 @@
                   <strong>Transfer to</strong>
                 </label>
                 <div class="col-sm-6">
-                  <select class="form-control Txfr_To_Branch" name="Txfr_To_Branch" onchange="branchChange()">
+                  <select class="form-control Txfr_To_Branch" name="Txfr_To_Branch">
                     @foreach($branches as $branch)
                     <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
                     @endforeach

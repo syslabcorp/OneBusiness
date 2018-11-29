@@ -287,6 +287,10 @@ class StocktransferController extends Controller {
                         ->selectRaw('s_txfr_detail.*, SUM(Qty) as Qty')
                         ->get();
 
+        foreach ($details as &$detail) {
+            $detail->sumBal = $rcvModel->where('item_id', $detail->item_id)->sum('Bal');
+        }
+
         $branches = $company->branches()->where('Active', 1)
                             ->orderBy('ShortName', 'ASC')
                             ->get();
@@ -500,7 +504,13 @@ class StocktransferController extends Controller {
                         ->where('s_invtry_hdr.Type','=',0)
                         ->select('s_invtry_hdr.*')
                         ->leftJoin('s_prodline', 's_prodline.ProdLine_ID', '=', 's_invtry_hdr.Prod_Line')
-                        ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID');
+                        ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID')
+                        ->leftJoin('s_item_cfg', 's_item_cfg.item_id', '=', 's_invtry_hdr.item_id');
+        
+        if ($request->branch) {
+            $items = $items->where('s_item_cfg.Branch','=', $request->branch);
+        }      
+                        
         if ($request->item_code) {
             $items = $items->where('s_invtry_hdr.ItemCode','like','%' . $request->item_code.'%');
         }

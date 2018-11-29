@@ -97,6 +97,11 @@ class EquipmentsController extends Controller
                         'item_id' => $partParams['item_id'],
                         'qty' => $partParams['qty']
                     ]);
+
+                    \App\Models\Item\Master::where('item_id', '=', $partParams['item_id'])
+                        ->update([
+                            'LastCost' => $partParams['lastcost']
+                        ]);
                 }
             }
         }
@@ -176,6 +181,11 @@ class EquipmentsController extends Controller
                         'item_id' => $partParams['item_id'],
                         'qty' => $partParams['qty']
                     ]);
+
+                    \App\Models\Item\Master::where('item_id', '=', $partParams['item_id'])
+                        ->update([
+                            'LastCost' => $partParams['lastcost']
+                        ]);
                 } 
             }
         } else {

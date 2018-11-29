@@ -101,14 +101,23 @@
 
     searchStocktransfer = () => {
       let params = {};
-      let listFilters = $('.rowFocus input[data-column]')
+      
+      
+      if ($('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val()) {
+        let listFilters = $('.rowFocus input[data-column]')
 
-      for(let i = 0; i < listFilters.length; i++) {
-        params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+        for(let i = 0; i < listFilters.length; i++) {
+          params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+        }
+      } else {
+        $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val('')
+        $('.table-stocktransfer .rowFocus td:eq(1) input').val('')
+        $('.table-stocktransfer .rowFocus td:eq(2) input').val('')
+        let params = {product_line: '', brand: ''};
       }
-    
+   
       $.ajax({
-        url: '{{ route('stocktransfer.searchStocktransfer', ['corpID' => $corpID]) }}' ,
+        url: '{{ route('stocktransfer.searchStocktransfer', ['corpID' => $corpID]) }}&branch=' + $('.Txfr_To_Branch').val(),
         type: 'GET',
         data:params,
         success: (res) => {
@@ -183,6 +192,7 @@
       $parent = $('.listStocktransfer tr.active')
 
       if ($('.table-stocktransfer .stocktransferRow').length) {
+
         for (let i = 0; i < $('.table-stocktransfer .stocktransferRow').length; i++) {
           
           let $row = $($('.table-stocktransfer .stocktransferRow')[i]);
@@ -190,6 +200,9 @@
           // console.log($parent.find('input[name="item_id"]').val())
           if ( $row.find('input.item_id').val() == $parent.find('input[name="item_id"]').val() ) {
             showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+            break;
+          } else if ($parent.find('td:eq(4)').attr('data-id') == 0) {
+            showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
             break;
           }
           
@@ -209,13 +222,23 @@
 
         }  
       }
+
+      
     }
 
     $('body').on('keyup', '.table-stocktransfer .rowFocus td:eq(4) input', (event) => {
 
       if (parseInt($('.table-stocktransfer .rowFocus td:eq(4) input').val()) > parseInt($('.table-stocktransfer .rowFocus td:eq(4) input').attr('data-hand'))) {
         showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
-        $('.table-stocktransfer .rowFocus td:eq(4) input').val(0)
+        $('.table-stocktransfer .rowFocus td:eq(4) input').val(1)
+      }
+    }) 
+
+    $('body').on('keyup', '.table-stocktransfer tr.stocktransferRow td:eq(4) input', (event) => {
+
+      if (parseInt($('.table-stocktransfer tr.stocktransferRow td:eq(4) input').val()) > parseInt($('.table-stocktransfer tr.stocktransferRow td:eq(4) input').attr('data-hand'))) {
+        showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
+        $('.table-stocktransfer tr.stocktransferRow td:eq(4) input').val(1)
       }
     }) 
 
@@ -229,8 +252,8 @@
     })
 
     showMessage = () => {
-        $('.table-stocktransfer .showMessage').remove()
-        if($('.table-stocktransfer tbody .stocktransferRow').length > 0) {
+      $('.table-stocktransfer .showMessage').remove()
+      if($('.table-stocktransfer tbody .stocktransferRow').length > 0) {
         for(let i = 0; i < $('.table-stocktransfer tbody .stocktransferRow').length; i++) {
             let row = $($('.table-stocktransfer tbody .stocktransferRow')[i]);
 
@@ -238,15 +261,15 @@
             row.find('td:eq(0)').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')
             } 
         }
-        } else {  
+      } else {  
         $('.table-stocktransfer ').append('<div class="showMessage" align="center" style="color:red; font-size: 16px">Please select an item</div>')   
         showAlertMessage('Nothing to save...')
-        }
+      }
     }
     
     $('body').on('keyup', '.table-stocktransfer .quantity', (event) => {
       let $parent = $(event.target).parents('tr')
-      
+     
       if ($parent.find('td:eq(4) input').val() < 1) {
         $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val()) : showAlertMessage('Zero quantity detected on ItemCode ') ;
         $parent.find('td:eq(4) input').val(1)
