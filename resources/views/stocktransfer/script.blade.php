@@ -285,26 +285,25 @@
     $('body').on('keyup', '.table-stocktransfer .rowFocus td:eq(4) input', (event) => {
 
       if (parseInt($('.table-stocktransfer .rowFocus td:eq(4) input').val()) > parseInt($('.table-stocktransfer .rowFocus td:eq(4) input').attr('data-hand'))) {
-        showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
+        $('.error_Qty').remove()
+        $('.table-stocktransfer .rowFocus td:eq(4)').append('<div class="error_Qty" align="center" style="color: red; font-size: 16px; font-style: italic; ">Input should not exceed required qty(['+ $('.table-stocktransfer .rowFocus td:eq(4) input').attr('data-hand')+'])</div>')
         $('.table-stocktransfer .rowFocus td:eq(4) input').val(1)
       }
     }) 
 
-    $('body').on('keyup', '.table-stocktransfer tr.stocktransferRow td:eq(4) input', (event) => {
-
-      if (parseInt($('.table-stocktransfer tr.stocktransferRow td:eq(4) input').val()) > parseInt($('.table-stocktransfer tr.stocktransferRow td:eq(4) input').attr('data-hand'))) {
-        showAlertMessage('Qty exceeds stock on hand...', 'Error in Qty')
-        $('.table-stocktransfer tr.stocktransferRow td:eq(4) input').val(1)
-      }
-    }) 
-
+    // $('body').on('keyup', '.table-stocktransfer tr.stocktransferRow td:eq(4)', (event) => {
+    //   if (parseInt($('.table-stocktransfer tr.stocktransferRow td:eq(4) input').val()) > parseInt($('.table-stocktransfer tr.stocktransferRow td:eq(4) input').attr('data-hand'))) {
+    //     $('.error_Qty').remove()
+    //     $('.table-stocktransfer .rowFocus td:eq(4)').append('<div class="error_Qty" align="center" style="color: red; font-size: 16px; font-style: italic; ">Input should not exceed required qty(['+ $('.table-stocktransfer .rowFocus td:eq(4) input').attr('data-hand')+'])</div>')
+    //     $('.table-stocktransfer tr.stocktransferRow td:eq(4) input').val(1)
+    //   }
+    // }) 
 
     $('body').on('click', '.save_button', (event) => {
       showMessage()
       if ($('.showMessage').length == 0) {
         $('.submit_form').submit()
-      }
-      
+      }   
     })
 
     showMessage = () => {
