@@ -123,10 +123,12 @@
         success: (res) => {
           if ( res.length == 458) {
             $('.errorSuggest').remove()
+            $('.show_errorSuggest').remove()
             $('.listStocktransfer').remove()
-            $('.table-stocktransfer').append('<div class="errorSuggest" align="center" style="color:red; font-size: 16px">No active items for this branch</div>')
+            $('.table-stocktransfer').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;">No active items for this branch</div><br></div>')
           } else {
             $('.errorSuggest').remove()
+            $('.show_errorSuggest').remove()
             $('.listStocktransfer').remove()
             $('.table-stocktransfer').append(res)
             $('.listStocktransfer tbody tr:eq(0)').addClass('active')

@@ -120,13 +120,14 @@
           type: 'GET',
           data:params,
           success: (res) => {
-            console.log(res.length)
             if (res.length == 432) {
               $('.errorSuggest').remove()
+              $('.show_errorSuggest').remove()
               $('.listStock').remove()
-              $('.table-stocks').append('<div class="errorSuggest" align="center" style="color:red; font-size: 16px">No active items for this branch</div>')
+              $('.table-stocks').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;">No active items for this branch</div></div>')
             } else {
               $('.errorSuggest').remove()
+              $('.show_errorSuggest').remove()
               $('.listStock').remove()
               $('.table-stocks').append(res)
               $('.listStock tbody tr:eq(0)').addClass('active')
@@ -148,6 +149,7 @@
             if (res.length == 124) {
               $('.errorDR').remove()
               $('.error_PO').append('<div class="errorDR" align="center" style="color:red; font-size: 16px">No active items for this branch</div>')
+              $('.stockRow').remove()
             } else {
               $('.errorDR').remove()
               $('.Qty').remove()
