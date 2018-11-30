@@ -98,22 +98,79 @@
       });
 
 
-			$('.table-stocks').on('keyup', '.showSuggest', function(){
-        $parent = $(event.target);
+			// $('.table-stocks').on('keyup', '.showSuggest', function(){
+      //   $parent = $(event.target);
      
-        $('.table-stocks tr').removeClass('rowFocus');
-        $parent.parents('tr').addClass('rowFocus');
+      //   $('.table-stocks tr').removeClass('rowFocus');
+      //   $parent.parents('tr').addClass('rowFocus');
         
-        if (event.which != 38 && event.which != 40 && event.which != 13) searchStock()
-			})
+      //   if (event.which != 38 && event.which != 40 && event.which != 13) searchStock()
+			// })
 			
-			searchStock = () => {
-        let params = {};
-        let listFilters = $('.rowFocus input[data-column]')
-
-        for(let i = 0; i < listFilters.length; i++) {
-          params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+      $('body').on('keyup', '.table-stocks .rowFocus td:eq(0) input.item_code', function() {
+ 
+        if (event.which != 38 && event.which != 40 && event.which != 13) {
+          let params = {};
+        
+          if ($('.table-stocks .rowFocus td:eq(0) input.item_code').val()) {
+            let listFilters = $('.rowFocus input[data-column]')
+            for(let i = 0; i < listFilters.length; i++) {
+              params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+            }
+          } else {
+            $('.table-stocks .rowFocus td:eq(0) input.item_id').val('')
+            $('.table-stocks .rowFocus td:eq(0) input.item_code').val('')
+            $('.table-stocks .rowFocus td:eq(1) input').val('')
+            $('.table-stocks .rowFocus td:eq(2) input').val('')
+            let params = {product_line: '', brand: ''};
+          }
+          searchStock(params)
         }
+      })
+
+      $('body').on('keyup', '.table-stocks .rowFocus td:eq(1) input', function() {
+ 
+        if (event.which != 38 && event.which != 40 && event.which != 13) {
+          let params = {};
+        
+          if ($('.table-stocks .rowFocus td:eq(1) input').val()) {
+            let listFilters = $('.rowFocus input[data-column]')
+            for(let i = 0; i < listFilters.length; i++) {
+              params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+            }
+          } else {
+            $('.table-stocks .rowFocus td:eq(0) input.item_id').val('')
+            $('.table-stocks .rowFocus td:eq(0) input.item_code').val('')
+            $('.table-stocks .rowFocus td:eq(1) input').val('')
+            $('.table-stocks .rowFocus td:eq(2) input').val('')
+            let params = {item_code: '', brand: ''};
+          }
+          searchStock(params)
+        }
+      })
+
+      $('body').on('keyup', '.table-stocks .rowFocus td:eq(2) input', function() {
+ 
+        if (event.which != 38 && event.which != 40 && event.which != 13) {
+          let params = {};
+        
+          if ($('.table-stocks .rowFocus td:eq(2) input').val()) {
+            let listFilters = $('.rowFocus input[data-column]')
+            for(let i = 0; i < listFilters.length; i++) {
+              params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+            }
+          } else {
+            $('.table-stocks .rowFocus td:eq(0) input.item_id').val('')
+            $('.table-stocks .rowFocus td:eq(0) input.item_code').val('')
+            $('.table-stocks .rowFocus td:eq(1) input').val('')
+            $('.table-stocks .rowFocus td:eq(2) input').val('')
+            let params = {item_code: '', product_line: ''};
+          }
+          searchStock(params)
+        }
+      })
+
+			searchStock = (params) => {
       
         $.ajax({
           url: '{{ route('stocks.searchStock', ['corpID' => $corpID]) }}' ,
@@ -124,7 +181,7 @@
               $('.errorSuggest').remove()
               $('.show_errorSuggest').remove()
               $('.listStock').remove()
-              $('.table-stocks').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;">No active items for this branch</div></div>')
+              $('.table-stocks').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;font-style: italic;">No active items for this branch</div></div>')
             } else {
               $('.errorSuggest').remove()
               $('.show_errorSuggest').remove()

@@ -90,32 +90,79 @@
     });
 
 
-    $('.table-stocktransfer').on('keyup', '.showSuggest', function(){
-      $parent = $(event.target);
+    // $('.table-stocktransfer').on('keyup', '.showSuggest', function(){
+    //   $parent = $(event.target);
     
-      $('.table-stocktransfer tr').removeClass('rowFocus');
-      $parent.parents('tr').addClass('rowFocus');
+    //   $('.table-stocktransfer tr').removeClass('rowFocus');
+    //   $parent.parents('tr').addClass('rowFocus');
       
-      if (event.which != 38 && event.which != 40 && event.which != 13) searchStocktransfer()
+    //   if (event.which != 38 && event.which != 40 && event.which != 13) searchStocktransfer()
+    // })
+    
+    // check input
+    $('body').on('keyup', '.table-stocktransfer .rowFocus td:eq(0) input.item_code', function() {
+ 
+      if (event.which != 38 && event.which != 40 && event.which != 13) {
+        let params = {};
+      
+        if ($('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val()) {
+          let listFilters = $('.rowFocus input[data-column]')
+          for(let i = 0; i < listFilters.length; i++) {
+            params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+          }
+        } else {
+          $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val('')
+          $('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val('')
+          $('.table-stocktransfer .rowFocus td:eq(1) input').val('')
+          $('.table-stocktransfer .rowFocus td:eq(2) input').val('')
+          let params = {product_line: '', brand: ''};
+        }
+        searchStocktransfer(params)
+      }
     })
 
-    searchStocktransfer = () => {
-      let params = {};
+    $('body').on('keyup', '.table-stocktransfer .rowFocus td:eq(1) input', function() {
+      if (event.which != 38 && event.which != 40 && event.which != 13) {
+        let params = {};
       
-      
-      if ($('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val()) {
-        let listFilters = $('.rowFocus input[data-column]')
-
-        for(let i = 0; i < listFilters.length; i++) {
-          params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+        if ($('.table-stocktransfer .rowFocus td:eq(1) input').val()) {
+          let listFilters = $('.rowFocus input[data-column]')
+          for(let i = 0; i < listFilters.length; i++) {
+            params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+          }
+        } else {
+          $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val('')
+          $('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val('')
+          $('.table-stocktransfer .rowFocus td:eq(1) input').val('')
+          $('.table-stocktransfer .rowFocus td:eq(2) input').val('')
+          let params = {item_code: '', brand: ''};
         }
-      } else {
-        $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val('')
-        $('.table-stocktransfer .rowFocus td:eq(1) input').val('')
-        $('.table-stocktransfer .rowFocus td:eq(2) input').val('')
-        let params = {product_line: '', brand: ''};
+        searchStocktransfer(params)
+      } 
+    })
+
+    $('body').on('keyup', '.table-stocktransfer .rowFocus td:eq(2) input', function() {
+      if (event.which != 38 && event.which != 40 && event.which != 13) {
+        let params = {};
+      
+        if ($('.table-stocktransfer .rowFocus td:eq(2) input').val()) {
+          let listFilters = $('.rowFocus input[data-column]')
+          for(let i = 0; i < listFilters.length; i++) {
+            params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
+          }
+        } else {
+          $('.table-stocktransfer .rowFocus td:eq(0) input.item_id').val('')
+          $('.table-stocktransfer .rowFocus td:eq(0) input.item_code').val('')
+          $('.table-stocktransfer .rowFocus td:eq(1) input').val('')
+          $('.table-stocktransfer .rowFocus td:eq(2) input').val('')
+          let params = {item_code: '', product_line: ''};
+        }
+        searchStocktransfer(params)
       }
-   
+    })
+
+    searchStocktransfer = (params) => {
+        
       $.ajax({
         url: '{{ route('stocktransfer.searchStocktransfer', ['corpID' => $corpID]) }}&branch=' + $('.Txfr_To_Branch').val(),
         type: 'GET',
@@ -125,7 +172,7 @@
             $('.errorSuggest').remove()
             $('.show_errorSuggest').remove()
             $('.listStocktransfer').remove()
-            $('.table-stocktransfer').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;">No active items for this branch</div><br></div>')
+            $('.table-stocktransfer').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;font-style: italic;">No active items for this branch</div><br></div>')
           } else {
             $('.errorSuggest').remove()
             $('.show_errorSuggest').remove()
