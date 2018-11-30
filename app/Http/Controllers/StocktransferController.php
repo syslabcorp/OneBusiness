@@ -541,7 +541,7 @@ class StocktransferController extends Controller {
     public function searchTransfer(Request $request)
     {
         $items = \App\Stxfrhdr::select('s_txfr_hdr.*')->where('s_txfr_hdr.Txfr_To_Branch', '=', $request['brand_id'])->get();
-        dd($items->toArray());
+        
         return view('stocktransfer.search-transfer',[
             'items' => $items
         ]);
