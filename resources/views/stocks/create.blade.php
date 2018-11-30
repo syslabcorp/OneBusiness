@@ -25,7 +25,7 @@
                     <label class="control-label col-sm-2">
                         P.O#:
                       </label>
-                      <div class="col-sm-4">
+                      <div class="col-sm-4 error_PO">
                         <select name="po" id="PO" class="form-control PO"  >
                           <option value=""></option>
                           @foreach($pos as $po)

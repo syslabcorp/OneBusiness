@@ -121,10 +121,17 @@
         type: 'GET',
         data:params,
         success: (res) => {
-          $('.listStocktransfer').remove()
-          $('.table-stocktransfer').append(res)
-          $('.listStocktransfer tbody tr:eq(0)').addClass('active')
-          $('.listStocktransfer').css('width', $('.table-stocktransfer').width()) 
+          if ( res.length == 458) {
+            $('.errorSuggest').remove()
+            $('.listStocktransfer').remove()
+            $('.table-stocktransfer').append('<div class="errorSuggest" align="center" style="color:red; font-size: 16px">No active items for this branch</div>')
+          } else {
+            $('.errorSuggest').remove()
+            $('.listStocktransfer').remove()
+            $('.table-stocktransfer').append(res)
+            $('.listStocktransfer tbody tr:eq(0)').addClass('active')
+            $('.listStocktransfer').css('width', $('.table-stocktransfer').width()) 
+          }
         }
       });
     }

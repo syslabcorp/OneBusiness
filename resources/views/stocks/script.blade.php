@@ -120,10 +120,18 @@
           type: 'GET',
           data:params,
           success: (res) => {
-            $('.listStock').remove()
-            $('.table-stocks').append(res)
-            $('.listStock tbody tr:eq(0)').addClass('active')
-            $('.listStock').css('width', $('.table-stocks').width()) 
+            console.log(res.length)
+            if (res.length == 432) {
+              $('.errorSuggest').remove()
+              $('.listStock').remove()
+              $('.table-stocks').append('<div class="errorSuggest" align="center" style="color:red; font-size: 16px">No active items for this branch</div>')
+            } else {
+              $('.errorSuggest').remove()
+              $('.listStock').remove()
+              $('.table-stocks').append(res)
+              $('.listStock tbody tr:eq(0)').addClass('active')
+              $('.listStock').css('width', $('.table-stocks').width()) 
+            }
           }
         });
 			}
@@ -137,12 +145,18 @@
           url: '{{ route('stocks.searchPO', ['corpID' => $corpID]) }}&po=' +  $('#PO').val(),
           type: 'GET',
           success: (res) => {
-            $('.Qty').remove()
-            $('.servedQty').remove()
-            $('.stockRow').remove()
-            $('.listPO').remove()
-            $('.table-stocks tbody').append(res)
-            totalCostPO()         
+            if (res.length == 124) {
+              $('.errorDR').remove()
+              $('.error_PO').append('<div class="errorDR" align="center" style="color:red; font-size: 16px">No active items for this branch</div>')
+            } else {
+              $('.errorDR').remove()
+              $('.Qty').remove()
+              $('.servedQty').remove()
+              $('.stockRow').remove()
+              $('.listPO').remove()
+              $('.table-stocks tbody').append(res)
+              totalCostPO() 
+            }       
           }
         });
 			}
