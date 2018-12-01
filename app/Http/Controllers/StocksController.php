@@ -472,7 +472,11 @@ class StocksController extends Controller
 
   public function searchPO(Request $request)
   {
-    $items = Spodetail::select('s_po_detail.*')
+    $company = Corporation::findOrFail($request->corpID);
+    $spoModel = new Spodetail;
+    $spoModel->setConnection($company->database_name);
+
+    $items = $spoModel->selectRaw('s_po_detail.*, SUM(ServedQty) as ServedQty, SUM(Qty) as Qty')
                       ->where('s_po_detail.po_no', '=', $request['po'])
                       ->groupBy('item_id')->get();
 
