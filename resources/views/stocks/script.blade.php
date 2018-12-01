@@ -27,6 +27,8 @@
 				} else {
 					$trParent.remove()
 				}
+
+        totalCost()
 			})
 
 			$(document).on('click', '.btnAddRow', (event) => {
@@ -310,7 +312,7 @@
 
         if ($parent.find('td:eq(6) input').val() < 1) {
           $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val(), 'Error') : showAlertMessage('Zero quantity detected on ItemCode ', 'Error') ;
-          $parent.find('td:eq(6) input').val(1)
+          $parent.find('td:eq(6) input').val(1).keyup()
         } else {
           let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
 

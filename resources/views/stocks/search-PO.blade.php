@@ -14,10 +14,10 @@
     </td>
     <td><input data-column="" type="text" name="stocks[{{ $loop->index+1 }}][product_line]" class="form-control text-center showSuggest" value="{{ $item->item->product_line ? $item->item->product_line->Product : '' }}" autocomplete="off"></td>
     <td><input type="text" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][brand]" value="{{ $item->brand ? $item->brand->Brand : '' }}" autocomplete="off"></td>
-    <td class="text-center"><label >{{ $item->item->Description }}</label></td>
-    <td class="text-center"><label></label></td>
-    <td><input type="text" class="form-control text-center " name="stocks[{{ $loop->index+1 }}][cost]" value="{{ $item->cost }}" autocomplete="off"></td>
-    <td><input type="number" class="form-control text-center  quantity_PO" name="stocks[{{ $loop->index+1 }}][qty]" value="{{ $item->Qty ? $item->Qty : '' }}" autocomplete="off"></td>
+    <td class="text-center"><label>{{ $item->item->Description }}</label></td>
+    <td class="text-center"><label>{{ $item->ServedQty }}</label></td>
+    <td><input type="text" class="form-control text-center cost" name="stocks[{{ $loop->index+1 }}][cost]" value="{{ $item->cost }}" autocomplete="off"></td>
+    <td><input type="number" class="form-control text-center  quantity" name="stocks[{{ $loop->index+1 }}][qty]" value="{{ $item->Qty - $item->ServedQty }}" autocomplete="off"></td>
     <td><input type="text" class="form-control text-center subtotal" name="stocks[{{ $loop->index+1 }}][subtotal]" value="" autocomplete="off"></td>
     <td class="text-center"><label>{{ $item->item->Unit }}</label></td>
 

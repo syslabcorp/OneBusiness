@@ -161,12 +161,16 @@
       }
     })
 
+    $('.Txfr_To_Branch').change((event) => {
+      searchStocktransfer({});
+    })
+
     searchStocktransfer = (params) => {
         
       $.ajax({
         url: '{{ route('stocktransfer.searchStocktransfer', ['corpID' => $corpID]) }}&branch=' + $('.Txfr_To_Branch').val(),
         type: 'GET',
-        data:params,
+        data: params,
         success: (res) => {
           if ( res.length == 458) {
             $('.errorSuggest').remove()
@@ -187,7 +191,7 @@
 
     // Hiden listStocktransfer
     $('body').click((event) => {
-      if (!$(event.target).parents('.listStocktransfer').length) {
+      if (!$(event.target).parents('.listStocktransfer').length && !$(event.target).hasClass('Txfr_To_Branch')) {
         $('.listStocktransfer').remove()
       }
     })
