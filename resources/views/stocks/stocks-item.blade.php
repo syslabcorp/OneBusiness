@@ -20,7 +20,7 @@
       <tr class="stockRow">
         <td class="text-center">
           <input type="hidden" class="item_id" name="stocks[{{ $loop->index+1 }}][item_id]" value="{{ $row->item_id }}" >
-          <input type="text" class="form-control text-center item_code showSuggest" name="stocks[{{ $loop->index+1 }}][item_code]" value="{{ $row->item ? $row->item->ItemCode : '' }}" autocomplete="off">
+          <input type="text" data-column="item_code" class="form-control text-center item_code showSuggest" name="stocks[{{ $loop->index+1 }}][item_code]" value="{{ $row->item ? $row->item->ItemCode : '' }}" autocomplete="off">
         </td>
         <td><input type="text" data-column="product_line" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][product_line]" value="{{ $row->item ? $row->item->product_line->Product : '' }}" autocomplete="off"></td>
         <td><input type="text" data-column="brand" class="form-control text-center showSuggest" name="stocks[{{ $loop->index+1 }}][brand]" value="{{ $row->item ? $row->item->brand->Brand : '' }}" autocomplete="off"></td>
@@ -42,7 +42,7 @@
       <tr class="newStock" style="display: none;">
         <td class="text-center">
           <input type="hidden"   class="form-control item_id" name="item_id">
-          <input type="text"   class="form-control item_code text-center showSuggest" name="item_code" autocomplete="off">
+          <input type="text"  data-column="item_code" class="form-control item_code text-center showSuggest" name="item_code" autocomplete="off">
         </td>
         <td><input type="text"   data-column="product_line" name="product_line" class="form-control text-center showSuggest" autocomplete="off"></td>
         <td><input type="text"   data-column="brand" name="brand"  class="form-control text-center showSuggest" autocomplete="off"></td>

@@ -458,7 +458,11 @@ class StocksController extends Controller
     if ($request->brand) {
       $items = $items->where('s_brands.Brand','like','%' . $request->brand.'%');
     }
-   
+    
+    if ($request->item_code) {
+      $items = $items->where('s_invtry_hdr.ItemCode','like','%'.$request->item_code.'%');
+    }
+
     $items = $items->get();
 
     return view('stocks.search-stock',[
@@ -468,7 +472,9 @@ class StocksController extends Controller
 
   public function searchPO(Request $request)
   {
-    $items = Spodetail::select('s_po_detail.*')->where('s_po_detail.po_no', '=', $request['po'])->get();
+    $items = Spodetail::select('s_po_detail.*')
+                      ->where('s_po_detail.po_no', '=', $request['po'])
+                      ->groupBy('item_id')->get();
 
     return view('stocks.search-PO',[
       'items' => $items
