@@ -78,6 +78,10 @@ class StocksController extends Controller
     
     if (is_array($request->stocks)) {
       foreach($request->stocks as $detail) {
+        if (floatval($detail['qty']) < 1) {
+          continue;
+        }
+
         $stock_detail = new \App\StockDetail;
         $stock_detail->setConnection($company->database_name);
         $stock_detail->item_id = $detail['item_id'];
@@ -343,11 +347,15 @@ class StocksController extends Controller
 
     if ($success && is_array($request->stocks)) {
       foreach($request->stocks as $detail) {
+        if (floatval($detail['qty']) < 1) {
+          continue;
+        }
+
         $stock_detail = new \App\StockDetail;
         $stock_detail->setConnection($company->database_name);
 
         $stock_detail->item_id = $detail['item_id'];
-        $stock_detail->Qty = floatval($detail['qty']) ;
+        $stock_detail->Qty = floatval($detail['qty']);
         $stock_detail->Bal = floatval($detail['qty']);
         $stock_detail->Cost = floatval($detail['cost']);
         $stock_detail->RcvDate = $request->RcvDate;
@@ -451,6 +459,7 @@ class StocksController extends Controller
                         ->select('s_invtry_hdr.*')
                         ->leftJoin('s_prodline', 's_prodline.ProdLine_ID', '=', 's_invtry_hdr.Prod_Line')
                         ->leftJoin('s_brands', 's_brands.Brand_ID', '=', 's_invtry_hdr.Brand_ID');
+
     if ($request->product_line) {
       $items = $items->where('s_prodline.Product','like','%' . $request->product_line.'%');
     }
