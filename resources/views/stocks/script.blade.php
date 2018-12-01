@@ -182,7 +182,6 @@
             if (res.length == 432) {
               $('.errorSuggest').remove()
               $('.show_errorSuggest').remove()
-              $('.listStock').remove()
               $('.table-stocks').append('<div class="show_errorSuggest"><div class="row errorSuggest" align="right" style="background:#ed7a82; padding: 5px 0px; font-size: 16px">&zwnj;</div><div class="row errorSuggest" align="left" style="background:#f3b2b6; padding: 5px 10px; font-size: 16px; color:red;font-style: italic;">No active items for this branch</div></div>')
             } else {
               $('.errorSuggest').remove()
@@ -215,7 +214,7 @@
               $('.servedQty').remove()
               $('.stockRow').remove()
               $('.listPO').remove()
-              $('.table-stocks tbody').append(res)
+              $('.table-stocks tbody').prepend(res)
               totalCostPO() 
             }       
           }
@@ -295,9 +294,9 @@
           cost = 0
         }
 
-        $('.table-stocks .rowFocus td:eq(5) input').val(cost)
+        $('.table-stocks .rowFocus td:eq(4) input').val(cost)
 
-        let total = 0.000000000001 + $('.table-stocks .rowFocus td:eq(5) input').val()*$('.table-stocks .rowFocus td:eq(6) input').val()
+        let total = 0.000000000001 + $('.table-stocks .rowFocus td:eq(4) input').val()*$('.table-stocks .rowFocus td:eq(6) input').val()
         $('.table-stocks .rowFocus td:eq(7) input').val(total.toFixed(2))
         
         totalCost()
@@ -314,9 +313,9 @@
           $parent.find('td:eq(0) input.item_id').val() ? showAlertMessage('Zero quantity detected on ItemCode '+$parent.find('td:eq(0) input.item_code').val(), 'Error') : showAlertMessage('Zero quantity detected on ItemCode ', 'Error') ;
           $parent.find('td:eq(6) input').val(1).keyup()
         } else {
-          let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
+          let total = 0.000000000001+ $parent.find('td:eq(4) input').val()*$parent.find('td:eq(6) input').val()
 
-          if ($parent.find('td:eq(5) input').val()){
+          if ($parent.find('td:eq(4) input').val()){
             $parent.find('td:eq(7) input').val(total.toFixed(2))
           }
 
@@ -328,9 +327,9 @@
     
         let $parent = $(event.target).parents('tr')
   
-        let total = 0.000000000001+ $parent.find('td:eq(5) input').val()*$parent.find('td:eq(6) input').val()
+        let total = 0.000000000001+ $parent.find('td:eq(4) input').val()*$parent.find('td:eq(6) input').val()
 
-        if ($parent.find('td:eq(5) input').val()){
+        if ($parent.find('td:eq(4) input').val()){
           $parent.find('td:eq(7) input').val(total.toFixed(2))
         }
 
@@ -343,7 +342,7 @@
         let total = 0.000000000001+ $parent.find('td:eq(7) input').val()/$parent.find('td:eq(6) input').val()
 
         if ($parent.find('td:eq(7) input').val()){
-          $parent.find('td:eq(5) input').val(total.toFixed(2))
+          $parent.find('td:eq(4) input').val(total.toFixed(2))
         }
 
         totalCost()
@@ -365,13 +364,12 @@
 
       totalCostPO = () => {
         let $rows = $('.table-stocks tbody tr.PO')
-        let Qty = $('.Qty').val() - $('.servedQty').val()
         
         for(let i = 0; i < $rows.length; i++) {
           let $tr = $($rows[i])
-          if ($.isNumeric($tr.find('td:eq(5) input').val())) {
-            let a = $tr.find('td:eq(5) input').val()*Qty;
-            $tr.find('td:eq(7) input').val(a.toFixed(2))
+          if ($.isNumeric($tr.find('td:eq(4) input').val())) {
+            let total = $tr.find('td:eq(4) input').val() * $tr.find('td:eq(6) input').val();
+            $tr.find('td:eq(7) input').val(total.toFixed(2))
           }
         }
         totalCost()
