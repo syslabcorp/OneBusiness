@@ -132,7 +132,7 @@
               return '<button onclick="editPart(' + row.item_id + ')" {{ \Auth::user()->checkAccessById(57, 'E') ? '' : 'disabled' }}\
               class="btn btn-md btn-primary fas fa-pencil-alt" data-toggle="modal" data-target=".edit-part-modal"> </button> \
               <button onclick="removePart(' + row.item_id +',\''+ row.description + '\')" {{ \Auth::user()->checkAccessById(57, 'D') ? '' : 'disabled' }}\
-              class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=".edit-part-modal"> </button>'
+              class="btn btn-md btn-danger fas fa-trash-alt" data-toggle="modal" data-target=""> </button>'
           }
           }
       ],
