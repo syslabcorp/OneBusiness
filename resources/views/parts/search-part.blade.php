@@ -23,7 +23,7 @@
             <td class="text-center"><input type="checkbox" value="1" {{ $item->consumable == 1 ? 'checked' : '' }}></td>
             <td class="text-center"><input type="checkbox" value="1" {{ $item->with_serialno == 1 ? 'checked' : '' }}></td>
             <td class="text-center"><input type="checkbox" value="1" {{ $item->isActive == 1 ? 'checked' : '' }}></td>
-            <td data-id="{{ $item->LastCost }}">{{ number_format($item->LastCost, 2, '.', null) }}</td>
+            <td data-id="{{ $item->LastCost }}">{{ number_format($item->LastCost, 2, '.', '') }}</td>
         </tr>
         @endforeach
         </tbody>
