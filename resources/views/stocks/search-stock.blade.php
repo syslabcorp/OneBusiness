@@ -16,7 +16,7 @@
             <td class="text-center" data-id="{{ $item->brand ? $item->brand->Brand : '' }}">{{ $item->brand ? $item->brand->Brand : '' }}</td>
             <td class="text-center" data-id="{{ $item->Description }}">{{ $item->Description }}</td>
             <td class="text-center" data-id="{{ $item->Unit }}">{{ $item->Unit }}</td>
-            <td class="text-center" data-id="{{ $item->LastCost }}">{{ $item->LastCost }}</td>
+            <td class="text-center" data-id="{{ number_format($item->LastCost, 2, '.', '') }}">{{ number_format($item->LastCost, 2, '.', '') }}</td>
         </tr>
         @endforeach
         </tbody>
