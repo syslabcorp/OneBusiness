@@ -42,13 +42,13 @@
           <input type="text" class="form-control text-center label-table-max" name="vendor_name" value="{{ $row->item->Vendor ? $row->item->Vendor->VendorName : '0.00'  }}" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min lastcost" name="parts[{{ $row->item_id }}][lastcost]" value="{{ $row->item ? number_format($row->item->LastCost, 2, '.', null) : '0.00'  }}" autocomplete="off">
+          <input type="text" class="form-control text-center label-table-min lastcost" name="parts[{{ $row->item_id }}][lastcost]" value="{{ $row->item ? number_format($row->item->LastCost, 2, '.', '') : '0.00'  }}" autocomplete="off">
         </td>
         <td>
           <input type="number" class="form-control text-center label-table-min quantity" name="parts[{{ $row->item_id }}][qty]" value="{{ $row->qty }}" autocomplete="off">
         </td>
         <td>
-          <input type="text" class="form-control text-center label-table-min totalcost" name="parts[{{ $row->item_id }}][totalcost]" value="{{ number_format($row->qty * $row->item->LastCost, 2, '.', null) }}" autocomplete="off">
+          <input type="text" class="form-control text-center label-table-min totalcost" name="parts[{{ $row->item_id }}][totalcost]" value="{{ number_format($row->qty * $row->item->LastCost, 2, '.', '') }}" autocomplete="off">
         </td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block" {{ $equipment->asset_id ? 'disabled' : '' }}>
