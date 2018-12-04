@@ -14,11 +14,14 @@
       $('.editEquipment .form-control').prop('disabled', true)
       $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
-     
+      
       $(window).keydown((event) => {
-        event.preventDefault()
         if (event.which === 113) {
           $('.btnAddRow').click()
+        }
+
+        if (event.which == 13) {
+          event.preventDefault();
         }
       })
 
@@ -194,7 +197,7 @@
       $(window).on('keyup', (event) => {
         if (event.which == 13) {
           setPart();
-          return;
+          return false;
         }
         
         if ($('.listPart tr.active').length) {
