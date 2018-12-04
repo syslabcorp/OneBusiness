@@ -16,6 +16,7 @@
       $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
      
       $(window).keydown((event) => {
+        event.preventDefault()
         if (event.which === 113) {
           $('.btnAddRow').click()
         }
