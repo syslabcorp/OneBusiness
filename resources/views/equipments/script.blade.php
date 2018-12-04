@@ -19,7 +19,7 @@
         if (event.which === 113) {
           $('.btnAddRow').click()
         }
-
+        
         if (event.which == 13) {
           event.preventDefault();
         }
