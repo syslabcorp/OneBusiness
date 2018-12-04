@@ -258,9 +258,13 @@
               $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
               $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
               $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
-
-              let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
-              $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+              
+              if ($.isNumeric($('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val())) {
+                let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
+                $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
+              } else {
+                $('.table-parts .rowFocus td:eq(8) input').val(0)
+              }
               
               totalCost()
               
