@@ -12,9 +12,35 @@
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
                 @if(\Auth::user()->checkAccessById(58, 'A'))
-                  <a class="addEquipment" href="{{ route('purchases.create', ['corpID' => $company->corp_id]) }}">New Request</a>
+                  <a class="" href="{{ route('purchase_request.create', ['corpID' => $company->corp_id]) }}">New Request</a>
                 @endif              
               </div>
+            </div>
+          </div>
+          <div class="modal fade" id="job_order" role="dialog">
+            <div class="modal-dialog" style="font-style: normal;font-family:  Times;">
+            
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title"><label for="">Job Order #000017</label></h4>
+                </div>
+                <div class="modal-body" style="padding-">
+                  <div class="rown">
+                    <div class="col-md-4 text-right">
+                      <label for=""><strong>Subject:</strong></label>
+                    </div>
+                    <p class="col-md-8">Some text in the modal.</p>
+                  </div>
+                  
+                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+                
             </div>
           </div>
           <div class="panel-body">
@@ -69,7 +95,7 @@
       $('.table_purchase').css('display','')
     })
 
-    let basePurchaseAPI = '{{ route('api.purchases.index') }}'
+    let basePurchaseAPI = '{{ route('api.purchase_request.index') }}?corpID=' + {{ $company->corp_id }}
     
     let tablePurchase = $('.table-purchases').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
@@ -100,12 +126,18 @@
         {
           targets: 2,
           data: "job_order",
-          class: 'text-center'
+          class: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<a href="javascript:void(0)" data-toggle="modal" data-target="#job_order">'+ data +'</a>'
+          }
         },
         {
           targets: 3,
           data: "pr",
           class: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<a href="{{ route('purchase_request.show',["corpID" => $company->corp_id]) }}">'+ data +'</a>'
+          }
         },
         {
           targets: 4,
@@ -114,7 +146,7 @@
         },
         {
           targets: 5,
-          data: "requester",
+          data: "requester_id",
           class: 'text-center'
         },
         {

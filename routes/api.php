@@ -36,5 +36,5 @@ Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], funct
 
     Route::resource('parts','PartsController');
     Route::resource('stocks', 'StocksController');
-    Route::resource('purchases','PurchasesController');
+    Route::resource('purchase_request','PurchasesController');
 });

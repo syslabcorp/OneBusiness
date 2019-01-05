@@ -261,5 +261,5 @@ Route::group(['middleware' => 'auth'], function() {
 
   Route::resource('parts', 'PartsController');
 
-  Route::resource('purchases', 'Purchase\PurchasesController');
+  Route::resource('purchase_request', 'Purchase\PurchasesController');
 });
