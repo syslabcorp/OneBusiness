@@ -1,11 +1,11 @@
 
 <div class="" id="equipDetail">
   <div class="row">
-  
-    <form class="form form-horizontal" action="{{ route('purchases.update', ['corpID' => request()->corpID]) }}" method="POST">
-      <input type="hidden" name="_method" value="PUT">
 
-    <form class="form form-horizontal" action="{{ route('purchases.store', ['corpID' => request()->corpID]) }}" method="POST">
+    <!-- <form class="form form-horizontal" action="{{ route('purchase_request.update', ['corpID' => request()->corpID]) }}" method="POST">
+      <input type="hidden" name="_method" value="PUT"> -->
+
+    <form class="form form-horizontal" action="{{ route('purchase_request.store', ['corpID' => request()->corpID]) }}" method="POST">
 
       {{ csrf_field() }}
       <div class="rown">
@@ -15,7 +15,7 @@
               <label style="padding: 5px;"><strong>Requester :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-             <input type="text" class="form-control" value="" name="">
+              <input type="text" class="form-control" name="requester_id" value="">
             </div>
           </div>
           <div class="rown">
@@ -23,12 +23,9 @@
               <label style="padding: 5px;"><strong>Branch :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-            <?php var_dump($branches);
-                  echo "<pre>";
-                  ?>
-              <select name="type" class="form-control">
+              <select name="branch" class="form-control">
               @foreach($branches as $branch)
-                <option value="">{{ $branch->Branch }}</option>
+                <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
               @endforeach
               </select>
             </div>
@@ -37,10 +34,8 @@
             <div class="col-sm-3 form-group text-right">
               <label style="padding: 5px;"><strong>Description :</strong></label>
             </div>
-            <div class="col-sm-9 form-group {{ $errors->has('description') ? 'has-error' : ''}}">
-              <input type="text" class="form-control" name="description" 
-                value="">
-                <span class="help-block"></span>
+            <div class="col-sm-9 form-group">
+              <input type="text" class="form-control" name="description" value="">
             </div>
           </div>
           
@@ -51,7 +46,7 @@
               <label style="padding: 5px;"><strong>Date Request :</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="text" class="form-control" name="" value="">
+              <input type="text" class="form-control date-mask" name="date"> 
             </div>
           </div>
           <div class="rown">
@@ -59,7 +54,7 @@
               <label style="padding: 5px;"><strong>Qty :</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="number" class="form-control sumtotal" readonly>
+              <input type="number" class="form-control sumtotal" name="total_qty" readonly>
             </div>
           </div>
         </div>
@@ -68,7 +63,7 @@
       <h4>Purchases Information</h4>
 
       <p>
-        No parts yet. 
+        No purchases yet. 
         <a href="javascript:void(0)" class="addHere" onclick="openTablePurchase(event)" style="">
           Add here
         </a>
@@ -77,7 +72,7 @@
       @include('purchases.purchases')
       <div class="rown">
         <div class="col-xs-6">
-          <a class="btn btn-default" href="{{ route('purchases.index', ['corpID' => request()->corpID]) }}">Back</a>
+          <a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
         </div>
         <div class="col-xs-6 text-right">
   
@@ -86,8 +81,8 @@
             </button>
             <button style="display: none;" class="btn btn-success btn-save"><i class="far fa-save"></i> Save</button>
 
-            <button class="btn btn-success btn-save" >
-              <i class="far fa-save"></i> Create
+            <button type="button" class="btn btn-primary btn-save" >
+              <i class="far fa-save"></i> Create P.R.
             </button>
   
         </div>

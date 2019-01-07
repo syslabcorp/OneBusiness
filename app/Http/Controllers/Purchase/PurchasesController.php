@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Company;
 use Illuminate\Http\Request;
 use App\Models\Corporation;
-use App\Http\Requests\Equip\EquipmentRequest;
 
 class PurchasesController extends Controller
 {
@@ -25,7 +24,7 @@ class PurchasesController extends Controller
         } else {
             $company = $companies->first();
         }
-       
+     
         return view('purchases.index', [
             'companies' => $companies,
             'company' => $company
@@ -48,83 +47,75 @@ class PurchasesController extends Controller
         ]);
     }
 
-    // public function store(EquipmentRequest $request)
-    // {
-    //     if(!\Auth::user()->checkAccessById(56, 'A')) {
-    //         \Session::flash('error', "You don't have permission"); 
-    //         return redirect("/home"); 
-    //     }
+    public function store(Request $request)
+    {
+        // if(!\Auth::user()->checkAccessById(56, 'A')) {
+        //     \Session::flash('error', "You don't have permission"); 
+        //     return redirect("/home"); 
+        // }
+        $company = Corporation::findOrFail($request->corpID);
+        $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
+        $purchaseModel->setConnection($company->database_name);
+
+        $purchaseParams = request()->only([
+            'requester_id', 'branch', 'description', 'date', 'total_qty'
+        ]);
+
+        $purchaseParams['date'] = date_create(request()->date) ?? date('Y-m-d');
+
+        $purchaseModel = $purchaseModel->create($purchaseParams);
         
-    //     $equipParams = request()->only([
-    //         'description', 'type'
-    //     ]);
-       
-    //     $equipParams['isActive'] = request()->active ? 1 : 0;
+        if (is_array(request()->purchases)) {
+            $purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+            $purchaseDetailModel->setConnection($company->database_name);
+            foreach (request()->purchases as $purchasedetail) {
+                $purchaseDetailModel->create([
+                    'eqp' => isset($purchasedetail['eqp']) ? $purchasedetail['eqp'] : 0,
+                    'prt' => isset($purchasedetail['prt']) ? $purchasedetail['prt'] : 0,
+                    'item_name' => $purchasedetail['item_name'],
+                    'qty_to_order' => $purchasedetail['qty_to_order']
+                ]);
+            }
+        }
 
-    //     $equipment = \App\Models\Equip\Hdr::create($equipParams);
-   
-    //     if (is_array(request()->parts)) {
-    //         foreach (request()->parts as $partParams) {
-    //             if (!empty($partParams['item_id'])) {
-    //                 \App\Models\Equip\Detail::create([
-    //                     'asset_id' => $equipment->asset_id,
-    //                     'item_id' => $partParams['item_id'],
-    //                     'qty' => $partParams['qty']
-    //                 ]);
-
-    //                 \App\Models\Item\Master::where('item_id', '=', $partParams['item_id'])
-    //                     ->update([
-    //                         'LastCost' => $partParams['lastcost']
-    //                     ]);
-    //             }
-    //         }
-    //     }
         
-    //     \Session::flash('success', 'New equipment #' . $equipment->asset_id . '-' . $equipment->description . ' has been created');
-
-    //     return redirect(route('equipments.index', ['corpID' => request()->corpID]));
-    // }
-
-    // public function show($id)
-    // {
-    //     if(!\Auth::user()->checkAccessById(56, 'V')) {
-    //         \Session::flash('error', "You don't have permission"); 
-    //         return redirect("/home"); 
-    //     }
-
-    //     $company = Corporation::findOrFail(request()->corpID);
-    //     $tab = 'auto';
-
-    //     $equipment = \App\Models\Equip\Hdr::findOrFail($id);
-
-    //     $deptModel = new \App\Models\T\Depts;
-    //     $deptModel->setConnection($company->database_name);
-
-    //     $deptItems = $deptModel->orderBy('department', 'ASC')
-    //                             ->get();
         
-    //     $branches = \Auth::user()->getBranchesByArea(request()->corpID);
-    //     $vendors = \App\Models\Vendor::orderBy('VendorName', 'ASC')->get();
-    //     $brands = \App\Models\Equip\Brands::orderBy('description', 'ASC')->get();
-    //     $categories = \App\Models\Equip\Category::orderBy('description', 'ASC')->get();
+        \Session::flash('success', 'New purchase request has been created');
+
+        return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+    }
+
+    public function show($id)
+    {
+        // if(!\Auth::user()->checkAccessById(56, 'V')) {
+        //     \Session::flash('error', "You don't have permission"); 
+        //     return redirect("/home"); 
+        // }
+
+        // $company = Corporation::findOrFail(request()->corpID);
+        // $tab = 'auto';
+
+        // $equipment = \App\Models\Equip\Hdr::findOrFail($id);
+
+        // $deptModel = new \App\Models\T\Depts;
+        // $deptModel->setConnection($company->database_name);
+
+        // $deptItems = $deptModel->orderBy('department', 'ASC')
+        //                         ->get();
         
-    //     $histories = $equipment->histories()
-    //                         ->selectRaw('*, DATE_FORMAT(created_at, "%m/%d/%Y") as log_at')
-    //                         ->orderBy('created_at', 'DESC')
-    //                         ->get()
-    //                         ->groupBy('log_at');
+        // $branches = \Auth::user()->getBranchesByArea(request()->corpID);
+        // $vendors = \App\Models\Vendor::orderBy('VendorName', 'ASC')->get();
+        // $brands = \App\Models\Equip\Brands::orderBy('description', 'ASC')->get();
+        // $categories = \App\Models\Equip\Category::orderBy('description', 'ASC')->get();
         
-    //     return view('equipments.edit', [
-    //         'tab' => $tab,
-    //         'equipment' => $equipment,
-    //         'deptItems' => $deptItems,
-    //         'branches' => $branches,
-    //         'vendors' => $vendors,
-    //         'brands' => $brands,
-    //         'categories' => $categories,
-    //         'histories' => $histories
-    //     ]);
-    // }
+        // $histories = $equipment->histories()
+        //                     ->selectRaw('*, DATE_FORMAT(created_at, "%m/%d/%Y") as log_at')
+        //                     ->orderBy('created_at', 'DESC')
+        //                     ->get()
+        //                     ->groupBy('log_at');
+        
+        return view('purchases.detailPR');
+    }
 
     // public function update(EquipmentRequest $request, $id)
     // {

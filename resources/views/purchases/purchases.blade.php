@@ -15,21 +15,22 @@
       </tr>
     </thead>
     <tbody>
-      
-      <tr class="newPart" style="display: none;">
+      <tr class="newPurchase" style="display: none;">
         <td class="text-center">
-          <label class="label-table-min"></label>
-          <input type="hidden" class="form-control item_id" name="item_id">
+          <label class="label-table-min index">1</label>
         </td>
-        <td align="center"><input type="checkbox" class="form-check-input"></td>
-        <td align="center"><input type="checkbox" class="form-check-input"></td>
+        <td><input type="checkbox" class="form-check-input" name="eqp" value="1"></td>
+        <td><input type="checkbox" class="form-check-input" name="prt" value="1"></td>
 
-        <td><select name="type" class="form-control">
-                <option value="">Branch5</option>
-                <option value="">Branch4</option>
-              </select></td>
         <td>
-          <input type="number" class="form-control text-center label-table-min quantity" name="qty" value="1" autocomplete="off">
+        <select name="item_name" class="form-control">
+        @foreach($branches as $branch)
+          <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
+        @endforeach
+        </select>
+        </td>
+        <td>
+          <input type="number" class="form-control text-center label-table-min quantity" name="qty_to_order" value="1" autocomplete="off">
         </td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">

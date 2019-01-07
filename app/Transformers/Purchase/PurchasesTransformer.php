@@ -14,7 +14,7 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'job_order' => $item->job_order,
             'pr' => $item->pr,
             'description' => $item->description,
-            'requester' => $item->requester,
+            'requester_id' => $item->requester_id,
             'branch' => $item->branch,
             'total_qty' => $item->total_qty,
             'total_cost' => $item->total_cost,
