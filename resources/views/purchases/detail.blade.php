@@ -15,7 +15,7 @@
               <label style="padding: 5px;"><strong>Requester :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <input type="text" class="form-control" name="requester_id" value="">
+              <input type="text" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}" {{ $purchase->id ? 'disabled' : '' }}>
             </div>
           </div>
           <div class="rown">
@@ -23,9 +23,13 @@
               <label style="padding: 5px;"><strong>Branch :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <select name="branch" class="form-control">
+              <select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
               @foreach($branches as $branch)
+              @if ($purchase->branch))
                 <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
+              @else
+                <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
+              @endif
               @endforeach
               </select>
             </div>
@@ -35,7 +39,7 @@
               <label style="padding: 5px;"><strong>Description :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <input type="text" class="form-control" name="description" value="">
+              <input type="text" class="form-control" name="description" value="" {{ $purchase->id ? 'disabled' : '' }}>
             </div>
           </div>
           
@@ -46,7 +50,7 @@
               <label style="padding: 5px;"><strong>Date Request :</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="text" class="form-control date-mask" name="date"> 
+              <input type="text" class="form-control date-mask" name="date" {{ $purchase->id ? 'disabled' : '' }}> 
             </div>
           </div>
           <div class="rown">

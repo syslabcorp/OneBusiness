@@ -14,4 +14,8 @@ class PurchaseRequest extends Model
         'disapproved_by', 'pr_date', 'items_changed', 'vendor', 'created_at', 'updated_at'
     ];
 
+    public function details()
+    {
+        return $this->hasMany(PurchaseDetail::class);
+    }
 }
