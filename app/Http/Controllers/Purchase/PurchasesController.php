@@ -16,17 +16,9 @@ class PurchasesController extends Controller
             return redirect("/home"); 
         }
 
-        $companies = Corporation::orderBy('corp_name')
-                                ->where('database_name', '!=', '')
-                                ->get();
-        if (request()->corpID) {
-            $company = Corporation::findOrFail(request()->corpID);
-        } else {
-            $company = $companies->first();
-        }
+        $company = Corporation::findOrFail(request()->corpID);
      
         return view('purchases.index', [
-            'companies' => $companies,
             'company' => $company
         ]);
     }
@@ -53,7 +45,7 @@ class PurchasesController extends Controller
 
     public function store(Request $request)
     {
-        $company = Corporation::findOrFail($request->corpID);
+        $company = Corporation::findOrFail(request()->corpID);
         $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
         $purchaseModel->setConnection($company->database_name);
         
@@ -116,18 +108,28 @@ class PurchasesController extends Controller
         // return view('purchases.edit');
     }
 
-    public function edit(Request $request, $corpID) 
+    public function edit(Request $request, $id) 
     {
-        $company = Corporation::findOrFail($corpID);
+        $company = Corporation::findOrFail(request()->corpID);
         $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
         $purchaseModel->setConnection($company->database_name);
 
-        $purchase = $purchaseModel->find($request->requestID);
+        $purchase = $purchaseModel->find($id);
+        
+        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
+        
+        if ($purchase->date_approved || $purchase->date_disapproved) {
+            return view('purchases.date-approved', [
+                'purchase' => $purchase, 
+                'branches' => $branches, 
+                ]);
+        } 
 
-        $branches = \Auth::user()->getBranchesByArea($corpID);
-        // dd($branches);
-        return view('purchases.edit', ['purchase' => $purchase, 'branches' => $branches]);
-    }
+        return view('purchases.edit', [
+                'purchase' => $purchase, 
+                'branches' => $branches, 
+                ]);
+}
 
     public function update(Request $request, $id)
     {
@@ -135,41 +137,55 @@ class PurchasesController extends Controller
         //     \Session::flash('error', "You don't have permission"); 
         //     return redirect("/home"); 
         // }
-        dd($request);
-        // $company = Corporation::findOrFail(request()->corpID);
 
-        // $equipment = \App\Models\Equip\Hdr::findOrFail($id);
+        $company = Corporation::findOrFail(request()->corpID);
+        $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
+        $purchaseModel->setConnection($company->database_name);
 
-        // $equipParams = request()->only([
-        //     'description', 'type', 'jo_dept'
-        // ]);
+        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
 
-        // $equipParams['isActive'] = request()->active ? 1 : 0;
+        $purchase = $purchaseModel->findOrFail($id);
+        
+        if ($request->approved) {
+            $purchase->update([
+                'date_approved' => date('Y-m-d')
+            ]);
+        } else if($request->disapproved) {
+            $purchase->update([
+                'date_disapproved' => date('Y-m-d')
+            ]);
+            
+            $purchase->details()->delete();
 
-        // $equipment->update($equipParams);
+            return view('purchases.date-approved', [
+                'purchase' => $purchase, 
+                'branches' => $branches, 
+                ]);
+        }
 
-        // $equipment->details()->delete();
-       
-        // if (is_array(request()->parts)) {
-        //     foreach (request()->parts as $partParams) {
-        //         if (!empty($partParams['item_id'])) {
-        //             \App\Models\Equip\Detail::create([
-        //                 'asset_id' => $equipment->asset_id,
-        //                 'item_id' => $partParams['item_id'],
-        //                 'qty' => $partParams['qty']
-        //             ]);
+        $purchase->update([
+            'total_qty' => $purchase->total_qty
+        ]);
+     
+        $purchase->details()->delete();
 
-        //             \App\Models\Item\Master::where('item_id', '=', $partParams['item_id'])
-        //                 ->update([
-        //                     'LastCost' => $partParams['lastcost']
-        //                 ]);
-        //         } 
-        //     }
-        // } else {
-        //     $equipment->details->each->delete();
-        // }
+        if (is_array(request()->purchases)) {
+            $purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+            $purchaseDetailModel->setConnection($company->database_name);
+            foreach (request()->purchases as $purchasedetail) {
+                $purchaseDetailModel->create([
+                    'purchase_request_id' => $purchase->id,
+                    'eqp' => isset($purchasedetail['eqp']) ? $purchasedetail['eqp'] : 0,
+                    'prt' => isset($purchasedetail['prt']) ? $purchasedetail['prt'] : 0,
+                    'item_name' => $purchasedetail['item_name'],
+                    'qty_to_order' => $purchasedetail['qty_to_order']
+                ]);
+            }
+        } else {
+            $purchase->details->each->delete();
+        }
 
-        // \Session::flash('success', 'Equipment # has been updated');
+        \Session::flash('success', 'Purchase # has been updated');
         
         return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
     }

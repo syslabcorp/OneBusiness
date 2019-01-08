@@ -1,6 +1,6 @@
 <div class="table-responsive table-purchases" style="display: ;">
   <div class="text-right">
-    <button type="button"  
+    <button type="button" {{ $purchase->date_approved ? 'disabled' : '' }}  
       class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
   </div>
   <table class="table table-bordered table-striped">
@@ -11,6 +11,7 @@
         <th style="width: 150px">PRT</th>
         <th style="width: 150px">Item Name</th>
         <th style="width: 150px">Qty to Order</th>
+        <th style="width: 150px">Qty Delivered</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -40,8 +41,11 @@
         <td>
           <input type="number" class="form-control text-center label-table-min quantity" name="purchases[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off">
         </td>
+        <td>
+          <input type="number" class="form-control text-center " name="" value="" autocomplete="off">
+        </td>
         <td style="width: 100px;">
-          <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
+          <button {{ $purchase->date_approved ? 'disabled' : '' }} type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
             <i class="fas fa-trash-alt"></i>
           </button>
         </td>
@@ -66,6 +70,9 @@
         </td>
         <td>
           <input type="number" class="form-control text-center label-table-min quantity" name="qty_to_order" value="1" autocomplete="off">
+        </td>
+        <td>
+          <input type="number" class="form-control text-center " name="" value="" autocomplete="off">
         </td>
         <td style="width: 100px;">
           <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">

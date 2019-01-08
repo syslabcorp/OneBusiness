@@ -1,12 +1,12 @@
 
 <div class="" id="equipDetail">
   <div class="row">
-
-    <!-- <form class="form form-horizontal" action="{{ route('purchase_request.update', ['corpID' => request()->corpID]) }}" method="POST">
-      <input type="hidden" name="_method" value="PUT"> -->
-
+    @if($purchase->id)
+    <form class="form form-horizontal" action="{{ route('purchase_request.update', [$purchase->id,'corpID' => request()->corpID]) }}" method="POST">
+      <input type="hidden" name="_method" value="PUT">
+    @else
     <form class="form form-horizontal" action="{{ route('purchase_request.store', ['corpID' => request()->corpID]) }}" method="POST">
-
+    @endif
       {{ csrf_field() }}
       <div class="rown">
         <div class="col-sm-6">
@@ -15,7 +15,8 @@
               <label style="padding: 5px;"><strong>Requester :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <input type="text" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}" {{ $purchase->id ? 'disabled' : '' }}>
+              <input type="text" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}" {{ $purchase->id ? 'readonly' : '' }}>
+             
             </div>
           </div>
           <div class="rown">
@@ -39,7 +40,7 @@
               <label style="padding: 5px;"><strong>Description :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <input type="text" class="form-control" name="description" value="" {{ $purchase->id ? 'disabled' : '' }}>
+              <input type="text" class="form-control" name="description" value="{{ $purchase->description ? $purchase->description : ''}}" {{ $purchase->id ? 'disabled' : '' }}>
             </div>
           </div>
           
@@ -50,7 +51,7 @@
               <label style="padding: 5px;"><strong>Date Request :</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="text" class="form-control date-mask" name="date" {{ $purchase->id ? 'disabled' : '' }}> 
+              <input type="text" class="form-control" name="date" value="{{ date('Y-m-d') }}" {{ $purchase->id ? 'disabled' : '' }}> 
             </div>
           </div>
           <div class="rown">
@@ -58,7 +59,7 @@
               <label style="padding: 5px;"><strong>Qty :</strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="number" class="form-control sumtotal" name="total_qty" readonly>
+              <input type="number" class="form-control sumtotal" name="total_qty" value="{{ $purchase->total_qty ? $purchase->total_qty : ''}}" readonly>
             </div>
           </div>
         </div>
@@ -67,10 +68,8 @@
       <h4>Purchases Information</h4>
 
       <p>
-        No purchases yet. 
-        <a href="javascript:void(0)" class="addHere" onclick="openTablePurchase(event)" style="">
-          Add here
-        </a>
+        
+       
       </p>
    
       @include('purchases.purchases')
@@ -79,16 +78,13 @@
           <a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
         </div>
         <div class="col-xs-6 text-right">
-  
-            <button type="button" class="btn btn-edit btn-info">
-              <i class="fas fa-pencil-alt"></i> Edit
-            </button>
-            <button style="display: none;" class="btn btn-success btn-save"><i class="far fa-save"></i> Save</button>
-
+            @if($purchase->id)
+            <button class="btn btn-primary btn-save"><i class="far fa-save"></i> Save P.R.</button>
+            @else
             <button type="button" class="btn btn-primary btn-save" >
               <i class="far fa-save"></i> Create P.R.
             </button>
-  
+            @endif
         </div>
       </div>
     </form>
