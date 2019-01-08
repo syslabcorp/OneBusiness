@@ -79,11 +79,6 @@
 											<div class="col-xs-6">
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
 											</div>
-											<div class="col-xs-6 text-right">
-													<button type="button" class="btn btn-edit btn-danger">Delete Request</button>
-
-													<button type="button" class="btn btn-primary btn-save" >Verify</button>
-											</div>
 										</div>
 										</form>
 									</div>

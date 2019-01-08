@@ -91,7 +91,7 @@
     $(document).ready(function() {
       var table = $('.table_purchase').DataTable();
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [5,8,9,10,11,12,13,14,15,16,17,18] ).visible( false );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18] ).visible( false );
       $('.table_purchase').css('display','')
     })
 
@@ -136,7 +136,13 @@
           data: "pr",
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<a href="{{ route('purchase_request.show',["corpID" => $company->corp_id]) }}">'+ data +'</a>'
+            if (row.date_approved) {
+              return '<a href="{{ route('purchase_request.edit',["corpID" => $company->corp_id]) }}/?requestID=' + row.id + '">'+ data +'</a>'
+            } else if(row.date_disapproved) {
+              return '<a href="{{ route('purchase_request.edit',["corpID" => $company->corp_id]) }}/?requestID=' + row.id + '">'+ data +'</a>'
+            } else {
+              return '<a href="{{ route('purchase_request.edit',["corpID" => $company->corp_id]) }}/?requestID=' + row.id + '">'+ data +'</a>'
+            }
           }
         },
         {
@@ -226,24 +232,24 @@
     if ($(event.target).val() == 'forpo') {
       var table = $('.table_purchase').DataTable();
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [5,8,9,10,11,12,13,14,15,16,17,18] ).visible( false );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18] ).visible( false );
     } else if ($(event.target).val() == 'requests') {
       var table = $('.table_purchase').DataTable();
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [9,10,11,12,13,14,15,16,17] ).visible( false );
+      table.columns( [0,9,10,11,12,13,14,15,16,17] ).visible( false );
     } else if($(event.target).val() == 'all') {
       var table = $('.table_purchase').DataTable();
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [8,11,12,13,14,15,16,17,18] ).visible( false );
+      table.columns( [0,8,11,12,13,14,15,16,17,18] ).visible( false );
     } else if($(event.target).val() == 'disapproved') {
       var table = $('.table_purchase').DataTable();
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [1,5,9,11,14,15,16,17] ).visible( false );
+      table.columns( [0,1,5,9,11,14,15,16,17] ).visible( false );
     } 
     else if($(event.target).val() == 'verify_request') {
       var table = $('.table_purchase').DataTable();
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [1,8,9,10,11,12,13,16,17] ).visible( false );
+      table.columns( [0,1,8,9,10,11,12,13,16,17] ).visible( false );
     }
   })
 

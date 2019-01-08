@@ -4,7 +4,7 @@
       openTablePurchase = (event) => {
         $(event.target).parent('p').slideUp()
         $('.table-purchases').slideDown()
-        $('.table-purchases .btnAddRow').click()
+        // $('.table-purchases .btnAddRow').click()
       }
 
       // $('#equipDetail select[name="branch"]').change((event) => {
@@ -26,7 +26,9 @@
       // })
 
       // // Table Parts
-   
+
+      // check length table
+
       $('.table-purchases').on('click', '.btnRemoveRow', (event) => {
         let $trParent = $(event.target).parents('tr')
 
@@ -45,13 +47,11 @@
 
         let $trClone = $trParent.clone()
         $trClone.css('display', 'table-row')
+        
         $trClone.removeClass('newPurchase').addClass('purchaseRow')
-        $trClone.find('.btnSaveRow').css('display', 'none')
-        $trClone.find('input, input').attr('readonly', false)
-        $trClone.find('input[name=""]').val($trParent.find('select[name=""]').val())
-        $trClone.find('input[name="brand_id"]').val($trParent.find('select[name="brand_id"]').val())
-        $trClone.find('input[name="cat_id"]').val($trParent.find('select[name="cat_id"]').val())
-        $trClone.find('input[name="supplier_id"]').val($trParent.find('select[name="supplier_id"]').val())
+        // $trClone.find('.btnSaveRow').css('display', 'none')
+        // $trClone.find('input, input').attr('readonly', false)
+        // $trClone.find('input[name=""]').val($trParent.find('select[name=""]').val())
         
         if ($trParent.hasClass('newPurchase')) {
           let lastId = $('.table-purchases tbody tr').length;
@@ -59,10 +59,13 @@
           $trClone.find('.form-control, input[type="checkbox"]').each((index, element) => {
             $(element).attr('name', 'purchases[' + lastId + '][' + $(element).attr('name') + ']')
           })
+
+          $trClone.find('label').text($('.table-purchases tbody tr').length)
+       
           $trClone.insertBefore($trParent)
           $trParent.find('input').val(1)
-          $trParent.find('label').text($('.table-purchases tbody tr').length )
-          $trParent.css('display', 'none')
+          $trParent.find('label .index').text($('.table-purchases tbody tr').length)
+          // $trParent.css('display', 'none')
         } else {
           $trParent.find('.btnSaveRow').css('display', 'none')
           // $trParent.remove()

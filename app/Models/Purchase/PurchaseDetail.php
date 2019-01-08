@@ -9,7 +9,7 @@ class PurchaseDetail extends Model
     protected $table = 'purchase_request_details';
     
     protected $fillable = [
-        'eqp', 'prt', 'item_name', 'qty_to_order', 'created_at', 'updated_at'
+        'purchase_request_id', 'eqp', 'prt', 'item_name', 'qty_to_order', 'created_at', 'updated_at'
     ];
 
 }
