@@ -219,7 +219,7 @@
           targets: 18,
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<button {{ \Auth::user()->checkAccessById(56, 'D') ? '' : '' }} class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
+            return '<button class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
           }
         },
       ],
