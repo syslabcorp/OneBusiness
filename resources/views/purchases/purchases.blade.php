@@ -7,8 +7,8 @@
     <thead>
       <tr>
         <th style="width: 80px">Item #</th>
-        <th style="width: 150px">EQP</th>
-        <th style="width: 150px">PRT</th>
+        <th style="width: 50px">EQP</th>
+        <th style="width: 50px">PRT</th>
         <th style="width: 150px">Item Name</th>
         <th style="width: 150px">Qty to Order</th>
         <th>Action</th>
@@ -16,26 +16,39 @@
     </thead>
     <tbody>
       @if(count($purchase->details))
+      @php
+        $hdrModel = new \App\Models\Equip\Hdr;
+        $hdrs = $hdrModel->orderBy('asset_id')->get();
+        $masterModel = new \App\Models\Item\Master;
+        $masters = $masterModel->orderBy('item_id')->get();
+      @endphp
       @foreach($purchase->details as $row)
       <tr class="purchaseRow" style="" >
         <td class="text-center">
           <label class="label-table-min index">{{ $loop->index+1 }}</label>
         </td>
-        <td><input type="checkbox" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp]" value="{{ $row->eqp == 1 ? '1' : '0' }}"  {{ $row->eqp == 1 ? 'checked' : '' }}></td>
-        <td><input type="checkbox" class="form-check-input" name="purchases[{{ $loop->index+1 }}][prt]" value="{{ $row->prt == 1 ? '1' : '0' }}" {{ $row->prt == 1 ? 'checked' : '' }}></td>
+        <td class="text-center"><input type="radio" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp_prt]" value="eqp"  {{ $row->eqp == 1 ? 'checked' : '' }}></td>
+        <td class="text-center"><input type="radio" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp_prt]" value="prt" {{ $row->prt == 1 ? 'checked' : '' }}></td>
         <td>
-        <select name="purchases[{{ $loop->index+1 }}][item_name]" class="form-control">
-        @if(count($branches))
-          @foreach($branches as $branch)
-          
-            @if($branch->Branch == $row->item_name)
-            <option value="{{ $branch->Branch }}" selected>{{ $branch->Description }}</option>
-            @else
-            <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
+          <select name="purchases[{{ $loop->index+1 }}][item_id]" class="form-control">
+            @if ($row->eqp == 1)
+              @foreach($hdrs as $hdr)
+                @if ($hdr->asset_id == $row->item_id)
+                <option class="brands" value="{{ $hdr->asset_id }}" selected>{{ $hdr->description }}</option>
+                @else 
+                <option class="brands" value="{{ $hdr->asset_id }}">{{ $hdr->description }}</option>
+                @endif
+              @endforeach
+            @else if ($row->prt == 1)
+              @foreach($masters as $master)
+                @if ($master->item_id == $row->item_id)
+                <option class="brands" value="{{ $master->item_id }}" selected>{{ $master->description }}</option>
+                @else 
+                <option class="brands" value="{{ $master->item_id }}">{{ $master->description }}</option>
+                @endif
+              @endforeach
             @endif
-          @endforeach
-        @endif
-        </select>
+          </select>
         </td>
         <td>
           <input type="number" class="form-control text-center label-table-min quantity" name="purchases[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off">
@@ -52,17 +65,11 @@
         <td class="text-center">
           <label class="label-table-min index">1</label>
         </td>
-        <td><input type="checkbox" class="form-check-input" name="eqp" value="1"></td>
-        <td><input type="checkbox" class="form-check-input" name="prt" value="1"></td>
-
+        <td class="text-center"><input type="radio" class="form-check-input" name="eqp_prt" value="eqp"></td>
+        <td class="text-center"><input type="radio" class="form-check-input" name="eqp_prt" value="prt"></td>
         <td>
-        <select name="item_name" class="form-control">
-        @if(!empty($branches))
-          @foreach($branches as $branch)
-            <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
-          @endforeach
-        @endif
-        </select>
+          <select name="item_id" class="form-control">
+          </select>
         </td>
         <td>
           <input type="number" class="form-control text-center label-table-min quantity" name="qty_to_order" value="1" autocomplete="off">
