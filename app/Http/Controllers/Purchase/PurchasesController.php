@@ -122,7 +122,7 @@ class PurchasesController extends Controller
         $purchase = $purchaseModel->find($id);
         
         $branches = \Auth::user()->getBranchesByArea(request()->corpID);
-        
+
         if ($purchase->date_approved || $purchase->date_disapproved) {
             return view('purchases.date-approved', [
                 'purchase' => $purchase, 
@@ -130,7 +130,7 @@ class PurchasesController extends Controller
                 ]);
         } 
 
-        return view('purchases.edit', [
+        return view('purchases.detailPR-PO', [
                 'purchase' => $purchase, 
                 'branches' => $branches, 
                 ]);
