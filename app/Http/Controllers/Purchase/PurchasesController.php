@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Company;
 use Illuminate\Http\Request;
 use App\Models\Corporation;
+use App\Http\Controllers\Purchase\EquipTransformer;
 
 class PurchasesController extends Controller
 {
@@ -56,16 +57,20 @@ class PurchasesController extends Controller
         $purchaseParams['date'] = date_create(request()->date) ? date_create(request()->date) : date('Y-m-d');
         
         $purchaseModel = $purchaseModel->create($purchaseParams);
-  
+
+        $updatePR = $purchaseModel->update([
+            'pr' => $purchaseModel->id
+        ]);
+       
         if (is_array(request()->purchases)) {
             $purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
             $purchaseDetailModel->setConnection($company->database_name);
             foreach (request()->purchases as $purchasedetail) {
                 $purchaseDetailModel->create([
                     'purchase_request_id' => $purchaseModel->id,
-                    'eqp' => isset($purchasedetail['eqp']) ? $purchasedetail['eqp'] : 0,
-                    'prt' => isset($purchasedetail['prt']) ? $purchasedetail['prt'] : 0,
-                    'item_name' => $purchasedetail['item_name'],
+                    'eqp' => ($purchasedetail['eqp_prt'] == 'eqp') ? 1 : 0,
+                    'prt' => ($purchasedetail['eqp_prt'] == 'prt') ? 1 : 0,
+                    'item_id' => $purchasedetail['item_id'],
                     'qty_to_order' => $purchasedetail['qty_to_order']
                 ]);
             }
@@ -129,7 +134,7 @@ class PurchasesController extends Controller
                 'purchase' => $purchase, 
                 'branches' => $branches, 
                 ]);
-}
+    }
 
     public function update(Request $request, $id)
     {
@@ -137,7 +142,7 @@ class PurchasesController extends Controller
         //     \Session::flash('error', "You don't have permission"); 
         //     return redirect("/home"); 
         // }
-
+  
         $company = Corporation::findOrFail(request()->corpID);
         $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
         $purchaseModel->setConnection($company->database_name);
@@ -175,9 +180,9 @@ class PurchasesController extends Controller
             foreach (request()->purchases as $purchasedetail) {
                 $purchaseDetailModel->create([
                     'purchase_request_id' => $purchase->id,
-                    'eqp' => isset($purchasedetail['eqp']) ? $purchasedetail['eqp'] : 0,
-                    'prt' => isset($purchasedetail['prt']) ? $purchasedetail['prt'] : 0,
-                    'item_name' => $purchasedetail['item_name'],
+                    'eqp' => ($purchasedetail['eqp_prt'] == 'eqp') ? 1 : 0,
+                    'prt' => ($purchasedetail['eqp_prt'] == 'prt') ? 1 : 0,
+                    'item_id' => $purchasedetail['item_id'],
                     'qty_to_order' => $purchasedetail['qty_to_order']
                 ]);
             }
@@ -188,5 +193,34 @@ class PurchasesController extends Controller
         \Session::flash('success', 'Purchase # has been updated');
         
         return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+    }
+
+    public function destroy($id){
+        $company = Corporation::findOrFail(request()->corpID);
+        $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
+        $purchaseModel->setConnection($company->database_name);
+
+        $purchase = $purchaseModel->findOrFail($id);
+       
+        $purchase->details()->delete();
+
+        $purchase->delete();
+    }
+
+    public function getBrands()
+    {  
+        if (request()->radio == 'eqp') {
+            $hdrModel = new \App\Models\Equip\Hdr;
+
+            $items = $hdrModel->orderBy('asset_id')->get();
+
+            return response()->json($items);
+        } else if (request()->radio == 'prt') {
+            $masterModel = new \App\Models\Item\Master;
+
+            $items = $masterModel->orderBy('item_id')->get();
+
+            return response()->json($items);
+        }
     }
 }

@@ -12,7 +12,7 @@
         <div class="col-sm-6">
           <div class="rown">
             <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Requester :</strong></label>
+              <label style="padding: 5px;"><strong>Username :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
               <input type="text" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}" {{ $purchase->id ? 'readonly' : '' }}>
@@ -21,7 +21,7 @@
           </div>
           <div class="rown">
             <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Branch :</strong></label>
+              <label style="padding: 5px;"><strong>Branch name :</strong></label>
             </div>
             <div class="col-sm-9 form-group">
               <select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
@@ -65,13 +65,6 @@
         </div>
       </div>
       <hr>
-      <h4>Purchases Information</h4>
-
-      <p>
-        
-       
-      </p>
-   
       @include('purchases.purchases')
       <div class="rown">
         <div class="col-xs-6">
@@ -79,7 +72,7 @@
         </div>
         <div class="col-xs-6 text-right">
             @if($purchase->id)
-            <button class="btn btn-primary btn-save"><i class="far fa-save"></i> Save P.R.</button>
+            <button type="button" class="btn btn-primary btn-save"><i class="far fa-save"></i> Save P.R.</button>
             @else
             <button type="button" class="btn btn-primary btn-save" >
               <i class="far fa-save"></i> Create P.R.

@@ -69,7 +69,7 @@
 												</div>
 										</div>
 										<hr>
-										<h4>Purchases Information</h4>
+										<h4></h4>
 
 										<p>
 									
@@ -81,7 +81,7 @@
 											</div>
 											<div class="col-xs-6 text-right">
 												<button {{ $purchase->date_approved ? 'disabled' : '' }} class="btn btn-danger btn-save" name="disapproved" value="1">Delete Request</button>
-												<button {{ $purchase->date_approved ? 'disabled' : '' }} class="btn btn-primary btn-save" name="approved" value="1">Verify</button>
+												<button type="button" {{ $purchase->date_approved ? 'disabled' : '' }} class="btn btn-primary btn-save" name="approved" value="1">Verify</button>
 											</div>
 										</div>
 										</form>

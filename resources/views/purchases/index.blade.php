@@ -68,6 +68,7 @@
                         <th>Items Changed</th>
                         <th>Vendor</th>
                         <th>Date Approved</th>
+                        <th>Approved By</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -90,13 +91,13 @@
   (() => {
     $(document).ready(function() {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
       $('.table_purchase').css('display','')
     })
 
     let basePurchaseAPI = '{{ route('api.purchase_request.index') }}?corpID=' + {{ $company->corp_id }}
-    
+
     let tablePurchase = $('.table-purchases').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: ()  => {
@@ -108,7 +109,9 @@
           <option value="requests">Requests</option>\
           <option value="all">All</option>\
           <option value="disapproved">Disapproved</option>\
-          <option value="verify_request">Verify </option></select> \
+          <option value="verify_request">Verify Requester</option> \
+          <option value="po_approved">Approved </option>\
+          <option value="served">Served </option></select> \
         </div>')
       },
       ajax: basePurchaseAPI,
@@ -217,9 +220,14 @@
         },
         {
           targets: 18,
+          data: "approved_by",
+          class: 'text-center',
+        },
+        {
+          targets: 19,
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<button class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
+            return '<button onclick="removePurchase(' + row.id + ')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
           }
         },
       ],
@@ -231,25 +239,42 @@
   $('body').on('change', '.branch-select', (event) => {
     if ($(event.target).val() == 'forpo') {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18] ).visible( false );
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
     } else if ($(event.target).val() == 'requests') {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [0,9,10,11,12,13,14,15,16,17] ).visible( false );
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,9,10,11,12,13,14,15,16,17,18] ).visible( false );
     } else if($(event.target).val() == 'all') {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [0,8,11,12,13,14,15,16,17,18] ).visible( false );
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,8,11,12,13,14,15,16,17,18,19] ).visible( false );
     } else if($(event.target).val() == 'disapproved') {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [0,1,5,9,11,14,15,16,17] ).visible( false );
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,1,5,9,11,14,15,16,17,18] ).visible( false );
     } 
     else if($(event.target).val() == 'verify_request') {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18] ).visible( true );
-      table.columns( [0,1,8,9,10,11,12,13,16,17] ).visible( false );
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,1,8,9,10,11,12,13,16,17,18] ).visible( false );
+    }
+    else if($(event.target).val() == 'po_approved') {
+      var table = $('.table_purchase').DataTable();
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,1,5,9,10,11,13,14,15,19] ).visible( false );
+    }
+    else if($(event.target).val() == 'served') {
+      var table = $('.table_purchase').DataTable();
+      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
     }
   })
 
@@ -265,29 +290,29 @@
   //   })
   // }
 
-  // removePart = (itemId, description) => {
-  //   swal({
-  //     title: "<div class='delete-title'>Delete</div>",
-  //     text:  "<div class='delete-text'>You are about to delete PartID ["+ itemId +"] - ["+ description +"]</strong></div>",
-  //     html:  true,
-  //     customClass: 'swal-wide',
-  //     confirmButtonClass: 'btn-danger',
-  //     confirmButtonText: 'Delete',
-  //     showCancelButton: true,
-  //     closeOnConfirm: true,
-  //     allowEscapeKey: true
-  //   }, (data) => {
-  //     if(data) {
-  //       $.ajax({
-  //       url: '{{ route('parts.index') }}/' + itemId,
-  //       type: 'DELETE',
-  //       success: (res) => {
-  //         tablePart.ajax.reload()
-  //       }
-  //     })
-  //     }
-  //   });
-  // }
+  removePurchase = (id) => {
+    swal({
+      title: "<div class='delete-title'>Delete</div>",
+      text:  "<div class='delete-text'>You are about to delete PurchaseID ["+ id +"]</strong></div>",
+      html:  true,
+      customClass: 'swal-wide',
+      confirmButtonClass: 'btn-danger',
+      confirmButtonText: 'Delete',
+      showCancelButton: true,
+      closeOnConfirm: true,
+      allowEscapeKey: true
+    }, (data) => {
+      if(data) {
+        $.ajax({
+        url: '{{ route('purchase_request.index') }}/' + id + '/?corpID={{ request()->corpID }}',
+        type: 'DELETE',
+        success: (res) => {
+          tablePurchase.ajax.reload()
+        }
+      })
+      }
+    });
+  }
 
   // $('body').on('change', 'input[name="document-filter"]', (event) => {
   //   if (event.target.value == 'all') {

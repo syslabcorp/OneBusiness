@@ -26,7 +26,8 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'pr_date' => $item->pr_date,
             'items_changed' => $item->items_changed,
             'vendor' => $item->vendor,
-            'date_approved' => $item->date_approved
+            'date_approved' => $item->date_approved,
+            'approved_by' => $item->approved_by
         ];
     }
 }
