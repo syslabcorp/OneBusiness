@@ -53,9 +53,11 @@ class PurchasesController extends Controller
         $purchaseParams = request()->only([
             'requester_id', 'branch', 'description', 'date', 'total_qty'
         ]);
-
+			
         $purchaseParams['date'] = date_create(request()->date) ? date_create(request()->date) : date('Y-m-d');
-        
+				
+				$purchaseParams['flag'] = 2;
+			
         $purchaseModel = $purchaseModel->create($purchaseParams);
 
         $updatePR = $purchaseModel->update([
