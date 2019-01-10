@@ -71,9 +71,7 @@
           <a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
         </div>
         <div class="col-xs-6 text-right">
-            @if($purchase->id)
-            <button type="button" class="btn btn-primary btn-save"><i class="far fa-save"></i> Save P.R.</button>
-            @else
+            @if(!$purchase->id)
             <button type="button" class="btn btn-primary btn-save" >
               <i class="far fa-save"></i> Create P.R.
             </button>

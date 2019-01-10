@@ -11,7 +11,7 @@
                 <h5><strong>Purchase Request</strong></h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                @if(\Auth::user()->checkAccessById(58, 'A'))
+                @if(\Auth::user()->checkAccessById(59, 'A'))
                   <a class="" href="{{ route('purchase_request.create', ['corpID' => $company->corp_id]) }}">New Request</a>
                 @endif              
               </div>
@@ -105,13 +105,13 @@
           Filter: \
           <label>\
           <select class="form-control branch-select" style="width: 150px;"> \
-          <option value="forpo">For PO</option>\
-          <option value="requests">Requests</option>\
-          <option value="all">All</option>\
-          <option value="disapproved">Disapproved</option>\
-          <option value="verify_request">Verify Requester</option> \
-          <option value="po_approved">Approved </option>\
-          <option value="served">Served </option></select> \
+          <option value="1">For PO</option>\
+          <option value="2">Requests</option>\
+          <option value="3">All</option>\
+          <option value="4">Disapproved</option>\
+          <option value="5">Verify Requester</option> \
+          <option value="6">Approved </option>\
+          <option value="7">Served </option></select> \
         </div>')
       },
       ajax: basePurchaseAPI,
@@ -237,40 +237,40 @@
   })
 
   $('body').on('change', '.branch-select', (event) => {
-    if ($(event.target).val() == 'forpo') {
+    if ($(event.target).val() == '1') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
       table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
-    } else if ($(event.target).val() == 'requests') {
+    } else if ($(event.target).val() == '2') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
       table.columns( [0,9,10,11,12,13,14,15,16,17,18] ).visible( false );
-    } else if($(event.target).val() == 'all') {
+    } else if($(event.target).val() == '3') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
       table.columns( [0,8,11,12,13,14,15,16,17,18,19] ).visible( false );
-    } else if($(event.target).val() == 'disapproved') {
+    } else if($(event.target).val() == '4') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
       table.columns( [0,1,5,9,11,14,15,16,17,18] ).visible( false );
     } 
-    else if($(event.target).val() == 'verify_request') {
+    else if($(event.target).val() == '5') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
       table.columns( [0,1,8,9,10,11,12,13,16,17,18] ).visible( false );
     }
-    else if($(event.target).val() == 'po_approved') {
+    else if($(event.target).val() == '6') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
       table.columns( [0,1,5,9,10,11,13,14,15,19] ).visible( false );
     }
-    else if($(event.target).val() == 'served') {
+    else if($(event.target).val() == '7') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
