@@ -260,6 +260,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('/parts/get-filter', ['uses' => 'PartsController@getFilter'])->name('parts.getFilters');
   
   Route::get('/purchase_request/get-brand', ['uses' => 'Purchase\PurchasesController@getBrands'])->name('purchase_request.getBrands');
+  Route::get('/purchase_request/get-part', ['uses' => 'Purchase\PurchasesController@getParts'])->name('purchase_request.getParts');
 
   Route::resource('parts', 'PartsController');
 

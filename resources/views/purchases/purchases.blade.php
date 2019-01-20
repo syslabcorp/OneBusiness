@@ -6,11 +6,9 @@
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th style="width: 80px">Item #</th>
-        <th style="width: 50px">EQP</th>
-        <th style="width: 50px">PRT</th>
-        <th style="width: 150px">Item Name</th>
-        <th style="width: 150px">Qty to Order</th>
+        <th style="width: 25%">Item #</th>
+        <th style="width: 25%">Item Name</th>
+        <th style="width: 25%">Qty to Order</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -65,8 +63,6 @@
         <td class="text-center">
           <label class="label-table-min index">1</label>
         </td>
-        <td class="text-center"><input type="radio" class="form-check-input" name="eqp_prt" value="eqp"></td>
-        <td class="text-center"><input type="radio" class="form-check-input" name="eqp_prt" value="prt"></td>
         <td>
           <select name="item_id" class="form-control">
           </select>

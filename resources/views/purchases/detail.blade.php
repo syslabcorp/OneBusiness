@@ -12,7 +12,7 @@
         <div class="col-sm-6">
           <div class="rown">
             <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Username :</strong></label>
+              <label style="padding: 5px;"><strong>Requester </strong></label>
             </div>
             <div class="col-sm-9 form-group">
               <input type="text" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}" {{ $purchase->id ? 'readonly' : '' }}>
@@ -21,7 +21,7 @@
           </div>
           <div class="rown">
             <div class="col-sm-3 form-group text-right">
-              <label style="padding: 5px;"><strong>Branch name :</strong></label>
+              <label style="padding: 5px;"><strong>Branch </strong></label>
             </div>
             <div class="col-sm-9 form-group">
               <select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
@@ -43,12 +43,21 @@
               <input type="text" class="form-control" name="description" value="{{ $purchase->description ? $purchase->description : ''}}" {{ $purchase->id ? 'disabled' : '' }}>
             </div>
           </div>
+          <div class="rown">
+            <div class="col-sm-3 form-group text-right" style="margin: 0px;">
+              <label><strong>Request for </strong></label>
+            </div>
+            <div class="form-group">
+              <input type="radio" class="form-check-input" name="eqp_prt" value="equipment">  Equipment
+              <input type="radio" class="form-check-input" name="eqp_prt" value="parts"> Parts
+            </div>
+          </div>
           
         </div>
         <div class="col-sm-6">
           <div class="rown">
             <div class="col-sm-5 form-group text-right">
-              <label style="padding: 5px;"><strong>Date Request :</strong></label>
+              <label style="padding: 5px;"><strong>Date Requested :</strong></label>
             </div>
             <div class="col-sm-7 form-group">
               <input type="text" class="form-control" name="date" value="{{ date('Y-m-d') }}" {{ $purchase->id ? 'disabled' : '' }}> 
