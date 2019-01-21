@@ -24,15 +24,19 @@
         $masters = $masterModel->orderBy('item_id')->get();
       @endphp
       @foreach($purchase->details as $row)
+      @php
+
+      @endphp
       <tr class="purchaseRow" style="" >
         <td class="text-center">
           <label class="label-table-min index">{{ $loop->index+1 }}</label>
         </td>
-        <td class="text-center"><input type="radio" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp_prt]" value="eqp"  {{ $row->eqp == 1 ? 'checked' : '' }}></td>
-        <td class="text-center"><input type="radio" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp_prt]" value="prt" {{ $row->prt == 1 ? 'checked' : '' }}></td>
+        <td class="text-center"><input type="radio" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp_prt]" value="eqp"  {{ $purchase->eqp_prt == 'equipment' ? 'checked' : '' }}></td>
+        <td class="text-center"><input type="radio" class="form-check-input" name="purchases[{{ $loop->index+1 }}][eqp_prt]" value="prt" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }}></td>
         <td>
           <select name="purchases[{{ $loop->index+1 }}][item_id]" class="form-control">
-          @if ($row->eqp == 1)
+          
+          @if ($purchase->eqp_prt == 'equipment')
             @foreach($hdrs as $hdr)
               @if ($hdr->asset_id == $row->item_id)
               <option class="brands" value="{{ $hdr->asset_id }}" selected>{{ $hdr->description }}</option>
@@ -40,7 +44,7 @@
               <option class="brands" value="{{ $hdr->asset_id }}">{{ $hdr->description }}</option>
               @endif
             @endforeach
-          @else if ($row->prt == 1)
+          @else if ($purchase->eqp_prt == 'parts')
             @foreach($masters as $master)
               @if ($master->item_id == $row->item_id)
               <option class="brands" value="{{ $master->item_id }}" selected>{{ $master->description }}</option>

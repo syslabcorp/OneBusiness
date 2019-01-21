@@ -230,7 +230,7 @@
           data: "eqp",
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<input type="checkbox" '+ ( row.eqp == 1 ? " checked " : "" ) +' disabled>'
+            return '<input type="checkbox" '+ ( row.eqp == 'equipment' ? " checked " : "" ) +' disabled>'
           }
         },
         {
@@ -238,7 +238,7 @@
           data: "prt",
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<input type="checkbox" '+ ( row.prt == 1 ? " checked " : "" ) +' disabled>'
+            return '<input type="checkbox" '+ ( row.prt == 'parts' ? " checked " : "" ) +' disabled>'
           }
         },
         {

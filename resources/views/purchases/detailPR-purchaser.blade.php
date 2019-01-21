@@ -25,7 +25,7 @@
 												<div class="col-sm-4">
 													<div class="rown">
 															<div class="col-sm-4 form-group">
-																<label style="padding: 5px;"><strong>P.R # :</strong></label>
+																<label style="padding: 5px;"><strong>P.R # </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
 																<label for="" class="form-control">{{ $purchase->id ? $purchase->id : $user_id }}</label>
@@ -34,25 +34,33 @@
 													</div>
 													<div class="rown">
 															<div class="col-sm-4 form-group">
-																<label style="padding: 5px;"><strong>Description :</strong></label>
+																<label style="padding: 5px;"><strong>Branch </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
-																<label for="" class="form-control">{{ $purchase->description ? $purchase->description : ''}}</label>
+																<label for="" class="form-control">{{ $purchase->branch }}</label>
+															</div>
+													</div>
+													<div class="rown">
+															<div class="col-sm-4 form-group">
+																<label style="padding: 5px;"><strong>Description </strong></label>
+															</div>
+															<div class="col-sm-9 form-group">
+																<label for="" class="form-control">{{ $purchase->description }}</label>
 															</div>
 													</div>
 												</div>
 												<div class="col-sm-4">
 													<div class="rown">
 															<div class="col-sm-4 form-group">
-																<label style="padding: 5px;"><strong>Branch :</strong></label>
+																<label style="padding: 5px;"><strong>Request Type </strong></label>
 															</div>
 															<div class="col-sm-5 form-group">
-																<label for="" class="form-control">{{ $purchase->branch }}</label>
+																<label for="" class="form-control">{{ $purchase->eqp_prt }}</label>
 															</div>
 													</div>
 													<div class="rown">
 															<div class="col-sm-4 form-group">
-																<label style="padding: 5px;"><strong>Date Request :</strong></label>
+																<label style="padding: 5px;"><strong>Date Requested </strong></label>
 															</div>
 															<div class="col-sm-4 form-group">
 																<label for="" class="form-control">{{ date('Y-m-d') }}</label>
@@ -62,7 +70,7 @@
 												<div class="col-sm-4">
 													<div class="rown">
 															<div class="col-sm-4 form-group">
-																<label style="padding: 5px;"><strong>JO# :</strong></label>
+																<label style="padding: 5px;"><strong>JO# </strong></label>
 															</div>
 															<div class="col-sm-4 form-group">
 																<label for="" class="form-control"></label>
@@ -70,10 +78,10 @@
 													</div>
 													<div class="rown">
 															<div class="col-sm-4 form-group">
-																<label style="padding: 5px;"><strong>Total Cost :</strong></label>
+																<label style="padding: 5px;"><strong>Total Cost </strong></label>
 															</div>
 															<div class="col-sm-4 form-group">
-																<label for="" class="form-control"></label>
+																<input type="number" class="form-control sumtotal" name="total_qty" value="" readonly>
 															</div>
 													</div>
 												</div>
@@ -82,7 +90,7 @@
 										<h4></h4>
 										<p>
 										</p>
-										@include('purchases.purchaser')
+										@include('purchases.purchaserPR')
 										<div class="rown">
 											<div class="col-xs-6">
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>

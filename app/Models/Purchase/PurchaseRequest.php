@@ -12,11 +12,15 @@ class PurchaseRequest extends Model
         'date', 'job_order', 'pr', 'description', 'requester_id', 'branch', 
         'total_qty', 'total_cost', 'status', 'remarks', 'date_disapproved', 'po',
         'disapproved_by', 'pr_date', 'items_changed', 'vendor', 'date_approved', 'approved_by', 
-        'flag', 'created_at', 'updated_at'
+        'flag', 'eqp_prt', 'created_at', 'updated_at'
     ];
 
     public function details()
     {
-        return $this->hasMany(PurchaseDetail::class);
+        return $this->hasMany(PurchaseDetail::class)->whereNull('parent_id');
+    }
+
+    public function user() {
+        return $this->belongsTo(\App\User::class, 'requester_id', 'UserID');
     }
 }
