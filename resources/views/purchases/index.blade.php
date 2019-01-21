@@ -69,6 +69,8 @@
                         <th>Vendor</th>
                         <th>Date Approved</th>
                         <th>Approved By</th>
+                        <th>EQP</th>
+                        <th>PRT</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -91,8 +93,8 @@
   (() => {
     $(document).ready(function() {
       var table = $('.table_purchase').DataTable();
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
+      table.columns( [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( false );
       $('.table_purchase').css('display','')
     })
 
@@ -225,6 +227,22 @@
         },
         {
           targets: 19,
+          data: "eqp",
+          class: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" '+ ( row.eqp == 1 ? " checked " : "" ) +' disabled>'
+          }
+        },
+        {
+          targets: 20,
+          data: "prt",
+          class: 'text-center',
+          render: (data, type, row, meta) => {
+            return '<input type="checkbox" '+ ( row.prt == 1 ? " checked " : "" ) +' disabled>'
+          }
+        },
+        {
+          targets: 21,
           class: 'text-center',
           render: (data, type, row, meta) => {
             return '<button onclick="removePurchase(' + row.id + ')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
@@ -240,41 +258,41 @@
     if ($(event.target).val() == '1') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( false );
     } else if ($(event.target).val() == '2') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,9,10,11,12,13,14,15,16,17,18] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,9,10,11,12,13,14,15,16,17,18,19,20] ).visible( false );
     } else if($(event.target).val() == '3') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,8,11,12,13,14,15,16,17,18,19] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,8,11,12,13,14,15,16,17,18,21] ).visible( false );
     } else if($(event.target).val() == '4') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,1,5,9,11,14,15,16,17,18] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,1,5,9,11,14,15,16,17,18,19,20] ).visible( false );
     } 
     else if($(event.target).val() == '5') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,1,8,9,10,11,12,13,16,17,18] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,1,8,9,10,11,12,13,16,17,18,19,20] ).visible( false );
     }
     else if($(event.target).val() == '6') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,1,5,9,10,11,13,14,15,19] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,1,5,9,10,11,13,14,15,19,20,21] ).visible( false );
     }
     else if($(event.target).val() == '7') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( true );
-      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19] ).visible( false );
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( false );
     }
   })
 

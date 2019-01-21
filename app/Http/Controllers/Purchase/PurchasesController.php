@@ -62,20 +62,30 @@ class PurchasesController extends Controller
 
         $updatePR = $purchaseModel->update([
             'pr' => $purchaseModel->id
-        ]);
-       
-        if (is_array(request()->purchases)) {
-            $purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
-            $purchaseDetailModel->setConnection($company->database_name);
-            foreach (request()->purchases as $purchasedetail) {
-                $purchaseDetailModel->create([
-                    'purchase_request_id' => $purchaseModel->id,
-                    'eqp' => ($purchasedetail['eqp_prt'] == 'eqp') ? 1 : 0,
-                    'prt' => ($purchasedetail['eqp_prt'] == 'prt') ? 1 : 0,
-                    'item_id' => $purchasedetail['item_id'],
-                    'qty_to_order' => $purchasedetail['qty_to_order']
-                ]);
-            }
+				]);
+
+        if (is_array(request()->parts)) {
+					$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+					$purchaseDetailModel->setConnection($company->database_name);
+					foreach (request()->purchases as $purchase) {
+						$detail_parents = $purchaseDetailModel->create([
+							'purchase_request_id' => $purchaseModel->id,
+							'item_id' => $purchase['item_id']
+						]);
+						
+						foreach (request()->parts as $key => $part) {
+							if ($key == $purchase['item_id']) {
+								for ($i=1; $i <= count($part['item_id']) ; $i++) { 
+									$purchaseDetailModel->create([
+											'purchase_request_id' => (int) $purchaseModel->id,
+											'item_id' => (int) $part['item_id'][$i],
+											'parent_id' => (int) $detail_parents->id,
+											'qty_to_order' => (int) $part['qty'][$i]
+										]);
+								}
+							}
+						}
+					}
         }
   
         \Session::flash('success', 'New purchase request has been created');
@@ -125,17 +135,28 @@ class PurchasesController extends Controller
         
         $branches = \Auth::user()->getBranchesByArea(request()->corpID);
 
-        if ($purchase->date_approved || $purchase->date_disapproved) {
-            return view('purchases.date-approved', [
-                'purchase' => $purchase, 
-                'branches' => $branches, 
-                ]);
-        } 
+        // if (\Auth::user()->checkAccessById(59 , 'E')) {
+        //     if ($purchase->date_approved || $purchase->date_disapproved) {
+        //             return view('purchases.date-approved', [
+        //                     'purchase' => $purchase, 
+        //                     'branches' => $branches, 
+        //                     ]);
+        //     } 
 
-        return view('purchases.detailPR-PO', [
-                'purchase' => $purchase, 
-                'branches' => $branches, 
-                ]);
+        //     return view('purchases.detailPR-PO', [
+        //                     'purchase' => $purchase, 
+        //                     'branches' => $branches, 
+        //                     ]);
+        // }
+
+        if (\Auth::user()->checkAccessById(58 , 'E')) {
+            return view('purchases.PR-purchaser', [
+                    'purchase' => $purchase, 
+                    'branches' => $branches, 
+                    ]);
+        }
+
+        
     }
 
     public function update(Request $request, $id)
@@ -211,18 +232,32 @@ class PurchasesController extends Controller
 
     public function getBrands()
     {  
-        if (request()->radio == 'eqp') {
+        if (request()->radio == 'equipment') {
             $hdrModel = new \App\Models\Equip\Hdr;
 
             $items = $hdrModel->orderBy('asset_id')->get();
 
-            return response()->json($items);
-        } else if (request()->radio == 'prt') {
-            $masterModel = new \App\Models\Item\Master;
-
-            $items = $masterModel->orderBy('item_id')->get();
-
-            return response()->json($items);
+            return view('purchases.searchEQP', [
+                'items' => $items
+                ]);
+        } else if (request()->radio == 'parts') {
+            $detailModel = new \App\Models\Equip\Detail;
+            
+            $itemparts = $detailModel->orderBy('item_id')->get();
+            
+            return view('purchases.searchPRT', [
+                'itemparts' => $itemparts
+                ]);
         }
+    }
+
+    public function getParts() {
+        $detailModel = new \App\Models\Equip\Detail;
+
+        $items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->get();
+        
+        return view('purchases.showEQP', [
+            'items' => $items
+        ]);
     }
 }

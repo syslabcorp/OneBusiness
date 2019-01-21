@@ -3,11 +3,19 @@ namespace App\Transformers\Purchase;
 
 use League\Fractal;
 use App\Models\Purchase\PurchaseRequest;
+use App\Models\Corporation;
 
 class PurchasesTransformer extends Fractal\TransformerAbstract
 {
     public function transform(PurchaseRequest $item)
     {
+        $company = Corporation::findOrFail(request()->corpID);
+      
+        $detailModel = new \App\Models\Purchase\PurchaseDetail;
+        $detailModel->setConnection($company->database_name);
+        
+        $detail = $detailModel->find($item->id);
+
         return [
             'id' => (int) $item->id,
             'date' => $item->date,
@@ -27,7 +35,9 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'items_changed' => $item->items_changed,
             'vendor' => $item->vendor,
             'date_approved' => $item->date_approved,
-            'approved_by' => $item->approved_by
+            'approved_by' => $item->approved_by,
+            'eqp' => $detail ? $detail->eqp : 'NULL',
+            'prt' => $detail ? $detail->prt : 'NULL'
         ];
     }
 }
