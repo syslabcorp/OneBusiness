@@ -15,8 +15,8 @@
               <label style="padding: 5px;"><strong>Requester </strong></label>
             </div>
             <div class="col-sm-9 form-group">
-              <input type="text" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}" {{ $purchase->id ? 'readonly' : '' }}>
-             
+              <input type="text" class="form-control" value="{{ $purchase->id ? $purchase->user->UserName : \Auth::user()->UserName }}" {{ $purchase->id ? 'readonly' : '' }}>
+              <input type="hidden" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : \Auth::user()->UserID }}" {{ $purchase->id ? 'readonly' : '' }}>
             </div>
           </div>
           <div class="rown">
@@ -27,9 +27,9 @@
               <select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
               @foreach($branches as $branch)
               @if ($purchase->branch))
-                <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
+                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
               @else
-                <option value="{{ $branch->Branch }}">{{ $branch->Description }}</option>
+                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
               @endif
               @endforeach
               </select>
@@ -48,8 +48,8 @@
               <label><strong>Request for </strong></label>
             </div>
             <div class="form-group">
-              <input type="radio" class="form-check-input" name="eqp_prt" value="equipment">  Equipment
-              <input type="radio" class="form-check-input" name="eqp_prt" value="parts"> Parts
+              <input type="radio" class="form-check-input" name="eqp_prt" value="equipment" {{ $purchase->eqp_prt == 'equipment' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}>  Equipment
+              <input type="radio" class="form-check-input" name="eqp_prt" value="parts" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts
             </div>
           </div>
           
@@ -80,7 +80,11 @@
           <a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
         </div>
         <div class="col-xs-6 text-right">
-            @if(!$purchase->id)
+            @if($purchase->id)
+            <button type="button" class="btn btn-info btn-save" >
+              <i class="far fa-save"></i> Edit PR
+            </button>
+            @else 
             <button type="button" class="btn btn-primary btn-save" >
               <i class="far fa-save"></i> Create P.R.
             </button>

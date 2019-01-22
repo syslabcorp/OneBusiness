@@ -9,13 +9,6 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
 {
     public function transform(PurchaseRequest $item)
     {
-        $company = Corporation::findOrFail(request()->corpID);
-      
-        $detailModel = new \App\Models\Purchase\PurchaseDetail;
-        $detailModel->setConnection($company->database_name);
-        
-        $detail = $detailModel->find($item->id);
-
         return [
             'id' => (int) $item->id,
             'date' => $item->date,
@@ -36,8 +29,8 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'vendor' => $item->vendor,
             'date_approved' => $item->date_approved,
             'approved_by' => $item->approved_by,
-            'eqp' => $detail ? $detail->eqp : 'NULL',
-            'prt' => $detail ? $detail->prt : 'NULL'
+            'eqp' => ($item->eqp_prt == 'equipment') ? $item->eqp_prt : '',
+            'prt' => ($item->eqp_prt == 'parts') ? $item->eqp_prt : ''
         ];
     }
 }

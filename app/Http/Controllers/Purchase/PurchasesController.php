@@ -33,13 +33,12 @@ class PurchasesController extends Controller
         
         $company = Corporation::findOrFail(request()->corpID);
         
-        $branches = \Auth::user()->getBranchesByArea(request()->corpID);
+				$branches = \App\Branch::all();
         $purchase = new \App\Models\Purchase\PurchaseRequest;
         $purchase->setConnection($company->database_name);
-     
+	
         return view('purchases.create', [
             'branches' => $branches,
-            'user_id' => \Auth::user()->UserID,
             'purchase' => $purchase
         ]);
     }
@@ -51,9 +50,9 @@ class PurchasesController extends Controller
         $purchaseModel->setConnection($company->database_name);
         
         $purchaseParams = request()->only([
-            'requester_id', 'branch', 'description', 'date', 'total_qty'
+            'requester_id', 'branch', 'description', 'date', 'total_qty', 'eqp_prt'
         ]);
-			
+	
         $purchaseParams['date'] = date_create(request()->date) ? date_create(request()->date) : date('Y-m-d');
 				
 				$purchaseParams['flag'] = 2;
@@ -63,30 +62,44 @@ class PurchasesController extends Controller
         $updatePR = $purchaseModel->update([
             'pr' => $purchaseModel->id
 				]);
-
-        if (is_array(request()->parts)) {
-					$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
-					$purchaseDetailModel->setConnection($company->database_name);
-					foreach (request()->purchases as $purchase) {
-						$detail_parents = $purchaseDetailModel->create([
-							'purchase_request_id' => $purchaseModel->id,
-							'item_id' => $purchase['item_id']
-						]);
-						
-						foreach (request()->parts as $key => $part) {
-							if ($key == $purchase['item_id']) {
-								for ($i=1; $i <= count($part['item_id']) ; $i++) { 
-									$purchaseDetailModel->create([
-											'purchase_request_id' => (int) $purchaseModel->id,
-											'item_id' => (int) $part['item_id'][$i],
-											'parent_id' => (int) $detail_parents->id,
-											'qty_to_order' => (int) $part['qty'][$i]
-										]);
+				if ($purchaseParams['eqp_prt'] == 'equipment') {
+					if (is_array(request()->parts)) {
+						$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+						$purchaseDetailModel->setConnection($company->database_name);
+						foreach (request()->purchases as $purchase) {
+							$detail_parents = $purchaseDetailModel->create([
+								'purchase_request_id' => $purchaseModel->id,
+								'item_id' => $purchase['item_id']
+							]);
+							
+							foreach (request()->parts as $key => $part) {
+								if ($key == $purchase['item_id']) {
+									for ($i=1; $i <= count($part['item_id']) ; $i++) { 
+										$purchaseDetailModel->create([
+												'purchase_request_id' => (int) $purchaseModel->id,
+												'item_id' => (int) $part['item_id'][$i],
+												'parent_id' => (int) $detail_parents->id,
+												'qty_to_order' => (int) $part['qty'][$i]
+											]);
+									}
 								}
 							}
 						}
 					}
-        }
+				} else if ($purchaseParams['eqp_prt'] == 'parts') {
+					if (is_array(request()->purchases)) {
+						$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+						$purchaseDetailModel->setConnection($company->database_name);
+						foreach (request()->purchases as $purchase) {
+							$detail_parents = $purchaseDetailModel->create([
+								'purchase_request_id' => $purchaseModel->id,
+								'item_id' => $purchase['item_id'],
+								'qty_to_order' => (int) $purchase['qty']
+							]);
+						}
+					}
+				}
+        
   
         \Session::flash('success', 'New purchase request has been created');
 
@@ -143,20 +156,23 @@ class PurchasesController extends Controller
         //                     ]);
         //     } 
 
-        //     return view('purchases.detailPR-PO', [
-        //                     'purchase' => $purchase, 
-        //                     'branches' => $branches, 
-        //                     ]);
+            // return view('purchases.detailPR-PO', [
+            //                 'purchase' => $purchase, 
+            //                 'branches' => $branches, 
+            //                 ]);
         // }
 
-        if (\Auth::user()->checkAccessById(58 , 'E')) {
-            return view('purchases.PR-purchaser', [
-                    'purchase' => $purchase, 
-                    'branches' => $branches, 
-                    ]);
-        }
-
-        
+        // if (\Auth::user()->checkAccessById(58 , 'E')) {
+        //     return view('purchases.PR-purchaser', [
+        //             'purchase' => $purchase, 
+        //             'branches' => $branches, 
+        //             ]);
+				// }   
+				
+				return view('purchases.edit', [
+                            'purchase' => $purchase, 
+                            'branches' => $branches, 
+                            ]);
     }
 
     public function update(Request $request, $id)

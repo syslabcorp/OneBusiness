@@ -88,39 +88,68 @@
 
       $('body').on('change', '.quantity', (event) => {
         let $parent = $(event.target).parents('tr')
-      
         if ($parent.find('td:eq(2) input').val() < 1){
           showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
           $parent.find('td:eq(2) input').val(1)
         }
+        
         if ($parent.find('td:eq(1) input').val() < 1){
           showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
           $parent.find('td:eq(1) input').val(1)
         }
+
+        if ($parent.find('td:eq(5) input').val() < 1){
+          showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+          $parent.find('td:eq(5) input').val(1)
+        }
         indexs()
-        // totalCost()
       })
 
-      // totalCost = () => {
-      //   let $rows = $('.table-purchases tbody tr.purchaseRow')
-      //   let total = 0
+      totalCost = () => {
+        let $rows = $('.table-purchases tbody tr.purchaseRow')
+        let total = 0
       
-      //   for(let i = 0; i < $rows.length; i++) {
-      //     let $tr = $($rows[i])
+        for(let i = 0; i < $rows.length; i++) {
+          let $tr = $($rows[i])
           
-      //     if ($.isNumeric($tr.find('td:eq(4) input').val())) {
-      //       total += parseFloat($tr.find('td:eq(4) input').val())
-      //     }
-      //   }
+          if ($.isNumeric($tr.find('td input.total').val())) {
+            total += parseFloat($tr.find('td input.total').val())
+          }
+        }
         
-      //   $('.sumtotal').val(total.toFixed(2))
-      // }
+        $('.sumtotal').val(total.toFixed(2))
+      }
 
-      // totalCost()
+      totalCost()
+
+      total = () => {
+        let $rows = $('.table-purchases tbody tr.purchaseRow')
+      
+        for(let i = 0; i < $rows.length; i++) {
+          let $tr = $($rows[i])
+            
+          if ($.isNumeric($tr.find('td input.cost').val())) {
+            let total = parseFloat($tr.find('td input.qty').val()*parseFloat($tr.find('td input.cost').val()))
+            $tr.find('td input.total').val(total.toFixed(2))
+          }
+        }
+      }
+
+      total()
+
+      $('.cost').on('keyup', function () {
+        let total = $(this).parents('tr').find('input.cost').val()*parseFloat($(this).parents('tr').find('input.qty').val())
+        $(this).parents('tr').find('input.total').val(total.toFixed(2))
+        totalCost()
+      })
 
       $('.btn-save').on('click', function() {
+        console.log($('select').val())
         if ($('input[type="radio"]:checked').length > 0 ) {
-          $('.form').submit()
+          // if (checkEQP() == true) {
+          //   console.log('ok')
+          // }
+          // $('.form').submit()
         } else {
           showAlertMessage('Not checked', 'Item Entry Error...')
         }
@@ -148,11 +177,16 @@
           if($(this).attr('data-id') == self.val())
             {
               showAlertMessage('Not checked', 'Item Entry Error...')
-              self.parents('tr').remove()
+              // self.parents('tr').remove()
+              self.parents('tr').find('select option[value=""]').attr("selected",false)
+              self.parents('tr').find('select option[value=""]').attr("selected",true)
+              self.parents('tr').find('td:eq(0)').attr("rowspan",'')
+              self.parents('tr').find('td:eq(3)').attr("rowspan",'')
               $('tr[data-parent="'+ self.parents('tr').attr('data-id') +'"]').remove()
               $value = false
               return false
             }   
+          console.log($(this).find('select').val())
         });
         return $value
       }
