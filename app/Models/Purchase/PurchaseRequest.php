@@ -15,6 +15,11 @@ class PurchaseRequest extends Model
         'flag', 'eqp_prt', 'created_at', 'updated_at'
     ];
 
+    public function request_details()
+    {
+        return $this->hasMany(PurchaseDetail::class, 'purchase_request_id','id');
+    }
+
     public function details()
     {
         return $this->hasMany(PurchaseDetail::class)->whereNull('parent_id');

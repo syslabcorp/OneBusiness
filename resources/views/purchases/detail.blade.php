@@ -26,8 +26,9 @@
             <div class="col-sm-9 form-group">
               <select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
               @foreach($branches as $branch)
-              @if ($purchase->branch))
-                <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
+              {{ $branch->id }}
+              @if ($branch->id == $purchase->branch)
+                <option value="{{ $branch->Branch }}" selected>{{ $branch->ShortName }}</option>
               @else
                 <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
               @endif
@@ -49,7 +50,7 @@
             </div>
             <div class="form-group">
               <input type="radio" class="form-check-input" name="eqp_prt" value="equipment" {{ $purchase->eqp_prt == 'equipment' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}>  Equipment
-              <input type="radio" class="form-check-input" name="eqp_prt" value="parts" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts
+              <input type="radio" class="form-check-input" name="eqp_prt" value="parts" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts              
             </div>
           </div>
           
@@ -79,16 +80,21 @@
         <div class="col-xs-6">
           <a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
         </div>
-        <div class="col-xs-6 text-right">
-            @if($purchase->id)
-            <button type="button" class="btn btn-info btn-save" >
-              <i class="far fa-save"></i> Edit PR
-            </button>
-            @else 
-            <button type="button" class="btn btn-primary btn-save" >
-              <i class="far fa-save"></i> Create P.R.
-            </button>
-            @endif
+        <div class="col-xs-6 text-right before_edt" >
+          @if($purchase->id)
+          <button type="button" class="btn btn-info edit" >
+            <i class="far fa-save"></i> Edit PR
+          </button>
+          @else 
+          <button type="button" class="btn btn-primary btn-save" >
+            <i class="far fa-save"></i> Create P.R.
+          </button>
+          @endif
+        </div>
+        <div class="col-xs-6 text-right after_edit" style="visibility:hidden">
+          <button type="button" class="btn btn-primary btn-save update">
+            <i class="far fa-save"></i> Update PR
+          </button>
         </div>
       </div>
     </form>
