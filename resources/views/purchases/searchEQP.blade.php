@@ -3,7 +3,7 @@
         <label class="label-table-min index">1</label>
     </td>
     <td>
-        <select name="" class="form-control">
+        <select name="" class="form-control brand">
             <option value=""> -- select -- </option>
             @foreach($items as $item)
                 <option value="{{ $item->asset_id }}">{{ $item->description }}</option>

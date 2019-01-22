@@ -1,6 +1,6 @@
 <div class="table-responsive table-purchases" style="display: ;">
   <div class="text-right">
-    <button type="button"  
+    <button type="button"  {{ $purchase->id ? 'disabled' : '' }}
       class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
   </div>
   <table class="table table-bordered table-striped">
@@ -29,7 +29,7 @@
             <label class="label-table-min index">{{ $a++ }}</label>
           </td>
           <td class="text-center">
-            <select name="" id="">
+            <select class="form-control brand" name="" id="" {{ $purchase->id ? 'disabled' : '' }} >
               <option value="">-- select --</option>
               @foreach($hdrs as $hdr)
                 @if ($hdr->asset_id == $row->item_id)
@@ -42,7 +42,7 @@
           </td>
           <td ></td>
           <td style="width: 100px;" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }}>
-            <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
+            <button type="button" {{ $purchase->id ? 'disabled' : '' }} class="btn btn-danger btn-md btnRemoveRow center-block">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -51,9 +51,10 @@
         <tr class="rowTR" data-parent="{{ $row->item_id }}">
           <td class="text-center">
             <label for="">{{ $part->getItemAttribute() ? $part->getItemAttribute()->description : 'NaN'}}</label>
+            <input type="hidden" name="parts[{{ $row->item_id }}][item_id][{{ $loop->index+1 }}]" value="{{ $part->item_id }}">
           </td>
           <td>
-            <input type="text" class="form-control text-center label-table-min qty quantity" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
+            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
           </td>
         </tr>
         @php 

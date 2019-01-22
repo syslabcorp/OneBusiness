@@ -108,18 +108,20 @@
       totalCost = () => {
         let $rows = $('.table-purchases tbody tr.purchaseRow')
         let total = 0
-      
-        for(let i = 0; i < $rows.length; i++) {
-          let $tr = $($rows[i])
+     
+        if($rows.find('td input').hasClass('total') != false) {
           
-          if ($.isNumeric($tr.find('td input.total').val())) {
-            total += parseFloat($tr.find('td input.total').val())
+        } 
+        for(let i = 0; i < $rows.length; i++) {
+            let $tr = $($rows[i])
+            
+            if ($.isNumeric($tr.find('td input.total').val())) {
+              total += parseFloat($tr.find('td input.total').val())
+            }
           }
-        }
-        
-        $('.sumtotal').val(total.toFixed(2))
+          
+          $('.sumtotal').val(total.toFixed(2))
       }
-
       totalCost()
 
       total = () => {
@@ -134,8 +136,23 @@
           }
         }
       }
-
       total()
+
+      totalQty = () => {
+        let $rows = $('.table-purchases tbody tr.rowTR')
+        let total = 0
+      
+        for(let i = 0; i < $rows.length; i++) {
+          let $tr = $($rows[i])
+          if ($.isNumeric($tr.find('td input.qty').val())) {
+            total += parseFloat($tr.find('td input.qty').val())
+          }
+        }
+       
+        $('.sumtotal').val(total.toFixed(2))
+      }
+
+      totalQty()
 
       $('.cost').on('keyup', function () {
         let total = $(this).parents('tr').find('input.cost').val()*parseFloat($(this).parents('tr').find('input.qty').val())
@@ -144,15 +161,20 @@
       })
 
       $('.btn-save').on('click', function() {
-        console.log($('select').val())
-        if ($('input[type="radio"]:checked').length > 0 ) {
-          // if (checkEQP() == true) {
-          //   console.log('ok')
-          // }
-          // $('.form').submit()
+        if ($('input[type="radio"]:checked').length > 0 && checkSelect() ) {
+          $('.form').submit()
         } else {
           showAlertMessage('Not checked', 'Item Entry Error...')
         }
+      })
+
+      $('.edit').on('click', function () {
+        $('.btnAddRow').prop('disabled', false)
+        $('.btnRemoveRow').prop('disabled', false)
+        $('.quantity').prop('readonly', false)
+        $('select.brand').prop('disabled', false)
+        $('.before_edt').remove()
+        $('.after_edit').css('visibility', '')
       })
 
       $('body').on('change', 'input:radio', function(event) {
@@ -174,20 +196,35 @@
       checkEQP = (self) => {
         let $value = true
         $('.table-purchases tbody tr.purchaseRow').each(function(){
-          if($(this).attr('data-id') == self.val())
+        if($(this).attr('data-id') == self.val())
+          {
+            showAlertMessage('Not checked', 'Item Entry Error...')
+            // self.parents('tr').remove()
+            self.parents('tr').find('select option[value=""]').attr("selected",false)
+            self.parents('tr').find('select option[value=""]').attr("selected",true)
+            self.parents('tr').find('td:eq(0)').attr("rowspan",'')
+            self.parents('tr').find('td:eq(3)').attr("rowspan",'')
+            $('tr[data-parent="'+ self.parents('tr').attr('data-id') +'"]').remove()
+            $value = false
+            return false
+          }   
+        });
+      
+        return $value
+      }
+  
+
+      checkSelect = () => {
+        let $value = true
+        $('.table-purchases tbody tr.purchaseRow').each(function(){
+          if($(this).find('select').val() == '')
             {
               showAlertMessage('Not checked', 'Item Entry Error...')
-              // self.parents('tr').remove()
-              self.parents('tr').find('select option[value=""]').attr("selected",false)
-              self.parents('tr').find('select option[value=""]').attr("selected",true)
-              self.parents('tr').find('td:eq(0)').attr("rowspan",'')
-              self.parents('tr').find('td:eq(3)').attr("rowspan",'')
-              $('tr[data-parent="'+ self.parents('tr').attr('data-id') +'"]').remove()
               $value = false
               return false
             }   
-          console.log($(this).find('select').val())
         });
+
         return $value
       }
 
