@@ -15,7 +15,7 @@
           <div class="panel-body">
             <div class="bs-example">
               <div class="tab-content" style="padding: 1em;">
-                @include('purchases.detailPR')
+                @include('purchases.detailVerify')
               </div>
             </div>
           </div>

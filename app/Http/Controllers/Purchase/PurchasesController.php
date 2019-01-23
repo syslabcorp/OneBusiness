@@ -62,6 +62,7 @@ class PurchasesController extends Controller
         $updatePR = $purchaseModel->update([
             'pr' => $purchaseModel->id
 				]);
+
 				if ($purchaseParams['eqp_prt'] == 'equipment') {
 					if (is_array(request()->parts)) {
 						$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
@@ -74,7 +75,7 @@ class PurchasesController extends Controller
 							
 							foreach (request()->parts as $key => $part) {
 								if ($key == $purchase['item_id']) {
-									for ($i=1; $i <= count($part['item_id']) ; $i++) { 
+									for ($i=1; $i <= count($part['item_id']) ; $i++) {
 										$purchaseDetailModel->create([
 												'purchase_request_id' => (int) $purchaseModel->id,
 												'item_id' => (int) $part['item_id'][$i],
@@ -148,6 +149,33 @@ class PurchasesController extends Controller
         
         $branches = \App\Branch::all();;
 
+        if ($purchase->flag == 1) {
+					//view For PO
+          return view('purchases.detailPO', [
+						'purchase' => $purchase, 
+						'branches' => $branches, 
+						]);
+        } else if ($purchase->flag == 2) {
+					//view edit
+					return view('purchases.edit', [
+						'purchase' => $purchase, 
+						'branches' => $branches, 
+						]);
+        } else if ($purchase->flag == 3) {
+            
+        } else if ($purchase->flag == 4) {
+            
+        } else if ($purchase->flag == 5) {
+					//view verify
+					return view('purchases.verify',[
+						'purchase' => $purchase, 
+						'branches' => $branches, 
+						]);
+        } else if ($purchase->flag == 6) {
+            
+        } else if ($purchase->flag == 7) {
+            
+        }
         // if (\Auth::user()->checkAccessById(59 , 'E')) {
         //     if ($purchase->date_approved || $purchase->date_disapproved) {
         //             return view('purchases.date-approved', [
@@ -155,11 +183,6 @@ class PurchasesController extends Controller
         //                     'branches' => $branches, 
         //                     ]);
         //     } 
-
-            // return view('purchases.detailPR-PO', [
-            //                 'purchase' => $purchase, 
-            //                 'branches' => $branches, 
-            //                 ]);
         // }
 
         // if (\Auth::user()->checkAccessById(58 , 'E')) {
@@ -167,13 +190,13 @@ class PurchasesController extends Controller
         //             'purchase' => $purchase, 
         //             'branches' => $branches, 
         //             ]);
-				// }   
-				
-				return view('purchases.edit', [
-                            'purchase' => $purchase, 
-                            'branches' => $branches, 
-                            ]);
-    }
+				// }
+				// view MarkForPO
+				return view('purchases.MarkForPO',[
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);   
+		}
 
     public function update(Request $request, $id)
     {

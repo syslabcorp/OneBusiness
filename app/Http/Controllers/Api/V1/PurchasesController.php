@@ -16,16 +16,13 @@ class PurchasesController extends Controller
         $purchaseModel->setConnection($company->database_name);
         
         $items = $purchaseModel->get();
-
-        if ($request->branch == '1') {
-            $items = $items->where('flag', 1);
-        }
+    
         if ($request->branch == '2') {
             $items = $items->where('flag', 2);
         }
-        // else if ($request->branch == '3') {
-        //     $items = $items->where('flag', 3);
-        // }
+        else if ($request->branch == '3') {
+            // get all data
+        }
         else if ($request->branch == '4') {
             $items = $items->where('flag', 4);
         }
@@ -37,6 +34,8 @@ class PurchasesController extends Controller
         }
         else if ($request->branch == '7') {
             $items = $items->where('flag', 7);
+        } else {
+            $items = $items->where('flag', 1);
         }
         
         return fractal($items, new PurchasesTransformer)->toJson();
