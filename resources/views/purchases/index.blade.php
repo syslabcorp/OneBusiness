@@ -107,7 +107,7 @@
           Filter: \
           <label>\
           <select class="form-control branch-select" style="width: 150px;"> \
-          <option value="1">For PO</option>\
+          <option value="1" selected>For PO</option>\
           <option value="2">Requests</option>\
           <option value="3">All</option>\
           <option value="4">Disapproved</option>\

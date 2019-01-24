@@ -44,6 +44,7 @@
       })
 
       $('.table-purchases').on('click', '.btnAddRow', (event) => {
+        console.log($('input[name="eqp_prt"]:checked').val() )
         if ($('input[name="eqp_prt"]:checked').val() == 'parts') {
           $.ajax({
             url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $('input[name="eqp_prt"]:checked').val() ,
@@ -109,27 +110,43 @@
         let $rows = $('.table-purchases tbody tr.purchaseRow')
         let total = 0
      
-        if($rows.find('td input').hasClass('total') != false) {
-          
-        } 
         for(let i = 0; i < $rows.length; i++) {
             let $tr = $($rows[i])
-            
             if ($.isNumeric($tr.find('td input.total').val())) {
               total += parseFloat($tr.find('td input.total').val())
             }
           }
-          
-          $('.sumtotal').val(total.toFixed(2))
+         
+        $('.sumtotal').val(total.toFixed(2))
       }
       totalCost()
+
+     
+      $('.cost-mask').mask("###,##0.00", {placeholder: "000,000.00"})
+      
+      totalCostMarkForPO = () => {
+        let $rows = $('.table-purchases tbody tr')
+        let totalCost = 0
+        
+        for(let i = 0; i < $rows.length; i++) {
+          let $tr = $($rows[i])
+          console.log($tr.find('td input.qty').val().replace(',',''))
+          if ($.isNumeric($tr.find('td input.cost').val().replace(',',''))) {
+            let total = parseFloat($tr.find('td input.qty').val()*parseFloat($tr.find('td input.cost').val().replace(',','')))
+            $tr.find('td input.total').val(total.toFixed(2))
+            totalCost += total
+          }
+        }
+
+        $('.sumtotalCost').val(totalCost.toFixed(2))
+      }
+      totalCostMarkForPO()
 
       total = () => {
         let $rows = $('.table-purchases tbody tr.purchaseRow')
       
         for(let i = 0; i < $rows.length; i++) {
           let $tr = $($rows[i])
-            
           if ($.isNumeric($tr.find('td input.cost').val())) {
             let total = parseFloat($tr.find('td input.qty').val()*parseFloat($tr.find('td input.cost').val()))
             $tr.find('td input.total').val(total.toFixed(2))
@@ -139,7 +156,7 @@
       total()
 
       totalQty = () => {
-        let $rows = $('.table-purchases tbody tr.rowTR')
+        let $rows = $('.table-purchases tbody tr')
         let total = 0
       
         for(let i = 0; i < $rows.length; i++) {
@@ -148,7 +165,7 @@
             total += parseFloat($tr.find('td input.qty').val())
           }
         }
-       
+      
         $('.sumtotal').val(total.toFixed(2))
       }
 
@@ -157,7 +174,13 @@
       $('.cost').on('keyup', function () {
         let total = $(this).parents('tr').find('input.cost').val()*parseFloat($(this).parents('tr').find('input.qty').val())
         $(this).parents('tr').find('input.total').val(total.toFixed(2))
-        totalCost()
+        totalCostMarkForPO()
+      })
+
+      $('.qty').on('keyup', function () {
+        let total = $(this).parents('tr').find('input.cost').val()*parseFloat($(this).parents('tr').find('input.qty').val())
+        $(this).parents('tr').find('input.total').val(total.toFixed(2))
+        totalCostMarkForPO()
       })
 
       $('.btn-save').on('click', function() {

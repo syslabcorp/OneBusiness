@@ -34,7 +34,7 @@
             <label class="label-table-min index">{{ $a++ }}</label>
           </td>
           <td class="text-center">
-            <select class="form-control brand" name="" id="" {{ $purchase->id ? 'disabled' : '' }} >
+            <select class="form-control brand" name="" id="" >
               <option value="">-- select --</option>
               @if ($purchase->eqp_prt == 'equipment') 
                 @foreach($hdrs as $hdr)
@@ -64,7 +64,7 @@
           <td><label for=""></label></td>
           @endif
           <td style="width: 100px;" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }}>
-            <button type="button" {{ $purchase->id ? 'disabled' : '' }} class="btn btn-danger btn-md btnRemoveRow center-block">
+            <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>

@@ -26,4 +26,14 @@ class PurchaseDetail extends Model
     {
         return \App\Models\Item\Master::find($this->item_id);
     }
+
+    public function purchaseRequest()
+    {
+        return $this->belongsTo(PurchaseRequest::class, 'purchase_request_id');
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(\App\Vendor::class, 'vendor_id');
+    }
 }

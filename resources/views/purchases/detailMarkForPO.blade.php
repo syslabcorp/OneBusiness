@@ -81,7 +81,7 @@
 																<label style="padding: 5px;"><strong>Total Cost </strong></label>
 															</div>
 															<div class="col-sm-4 form-group">
-																<input type="number" class="form-control sumtotal" name="total_qty" value="" readonly>
+																<input type="number" class="form-control sumtotalCost" name="total_qty" value="" readonly>
 															</div>
 													</div>
 												</div>
@@ -90,7 +90,7 @@
 										<h4></h4>
 										<p>
 										</p>
-										@include('purchases.purchaserPR')
+										@include('purchases.purchaserMarkForPO')
 										<div class="rown">
 											<div class="col-xs-6">
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
