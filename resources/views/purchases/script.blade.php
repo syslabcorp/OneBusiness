@@ -1,6 +1,8 @@
 @section('pageJS')
   <script type="text/javascript">
     (() => {
+      let indexLink = "{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}"
+
       openTablePurchase = (event) => {
         $(event.target).parent('p').slideUp()
         $('.table-purchases').slideDown()
@@ -202,22 +204,40 @@
           showAlertMessage('Not checked', 'Item Entry Error...')
         }
       })
-
-      $('.delete_row').on('click', function (){
-        let partID = 0;
-        
+      
+      $('.access_delete').on('click', function() {
         if ($(this).parents('tr').find('td:eq(0) input').val()) {
           partID = $(this).parents('tr').find('td:eq(0) input').val() 
         } else {
           partID = $(this).parents('tr').find('td:eq(1) input').val()
         }
-     
+        $('.index_pr').text($(this).parents('tr').find('td label.index').text())
+        $('.pr_id').val(partID)
+      })
+
+      $('.delete_row').on('click', function (){
+        let partID = $('.pr_id').val()
+        let reason = $('.reason').val()
         $.ajax({
-            url: '{{ route('purchase_request.removePart') }}?corpID={{ request()->corpID }}&partID='+  partID ,
+            url: '{{ route('purchase_request.removePart') }}?corpID={{ request()->corpID }}&partID='+  partID + '&reason=' + reason,
             type: 'GET',
             success: (res) => {
               location.reload()
               indexs()
+            }
+          });
+      })
+
+      $('.disapproved').on('click', function () {
+        $.ajax({
+            url: '{{ route('purchase_request.disapproved') }}?corpID={{ request()->corpID }}&requester_id='+ $('input[name="requester_id"]').val() + '&reasons=' + $('.reasons').val(),
+            type: 'GET',
+            success: (res) => {
+              console.log(res['success'])
+              if (res['success'] == true) {
+                window.location = indexLink 
+              }
+              // indexs()
             }
           });
       })
