@@ -274,7 +274,7 @@
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
-      table.columns( [0,1,5,9,11,14,15,16,17,18,19,20] ).visible( false );
+      table.columns( [0,1,5,9,14,15,16,17,18,19,20,21] ).visible( false );
     } 
     else if($(event.target).val() == '5') {
       var table = $('.table_purchase').DataTable();

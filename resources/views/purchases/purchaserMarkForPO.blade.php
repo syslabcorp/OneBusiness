@@ -53,7 +53,14 @@
                       <p class="item">from {{ $part->qty_old }} to {{ $part->qty_to_order }}</p>
                     </div>
                   </i>
-                @endif
+                @elseif ($part->isVerified == 1)
+                  <i class="fas fa-exclamation-triangle dropDown">
+                    <div class="menuDropDown">
+                      <strong class="title">Item Deleted</strong>
+                      <p class="item">{{ $part->reason }}</p>
+                    </div>
+                  </i>
+                @endif 
                 <label class="label-table-min index">{{ $loop->index+1 }}</label>
                 <input type="hidden" name="" value="{{ $part->id }}">
               </td>
@@ -104,6 +111,21 @@
           @endphp
           <tr class="purchaseRow">
             <td class="text-center">
+            @if ($row->isVerified == 2)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Quantity  Changed</strong>
+                  <p class="item">from {{ $row->qty_old }} to {{ $row->qty_to_order }}</p>
+                </div>
+              </i>
+            @elseif ($row->isVerified == 1)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Item Deleted</strong>
+                  <p class="item">{{ $row->reason }}</p>
+                </div>
+              </i>
+            @endif 
               <label class="label-table-min index">{{ $a++ }}</label>
               <input type="hidden" name="parts[{{ $loop->index+1 }}][part_id]" value="{{ $row->id }}">
             </td>

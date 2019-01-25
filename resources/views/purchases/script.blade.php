@@ -16,7 +16,8 @@
       // $('.editEquipment .form-control').prop('disabled', true)
       // $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       // $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
-      
+      $('.table-purchases').css('minheight', '200px')
+
       $(window).keydown((event) => {
         if (event.which === 113) {
           $('.btnAddRow').click()
@@ -233,13 +234,16 @@
             url: '{{ route('purchase_request.disapproved') }}?corpID={{ request()->corpID }}&requester_id='+ $('input[name="requester_id"]').val() + '&reasons=' + $('.reasons').val(),
             type: 'GET',
             success: (res) => {
-              console.log(res['success'])
               if (res['success'] == true) {
                 window.location = indexLink 
               }
               // indexs()
             }
           });
+      })
+
+      $('.access_mark').on('click', function () {
+        $('.approve_id').text($('input[name="requester_id"]').val())
       })
 
       $('.edit').on('click', function () {
