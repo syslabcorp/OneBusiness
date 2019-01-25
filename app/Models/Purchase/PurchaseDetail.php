@@ -9,7 +9,7 @@ class PurchaseDetail extends Model
     protected $table = 'purchase_request_details';
     
     protected $fillable = [
-        'purchase_request_id', 'item_id', 'parent_id', 'qty_to_order', 'created_at', 'updated_at'
+        'purchase_request_id', 'item_id', 'parent_id', 'isVerified', 'qty_to_order', 'remark', 'vendor_id', 'cost', 'created_at', 'updated_at'
     ];
 
     public function parts() 

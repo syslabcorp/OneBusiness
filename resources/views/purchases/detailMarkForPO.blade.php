@@ -96,8 +96,13 @@
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
 											</div>
 											<div class="col-xs-6 text-right">
+											@if ($purchase->flag != 5 )
 												<button class="btn btn-danger btn-save" name="disapproved" value="1">Disapprove Request</button>
-												<button type="button" class="btn btn-primary btn-save" name="mark" value="1">Mark for PO</button>
+												<button type="button" class="btn btn-primary btn-markforpo" name="mark" >Mark for PO</button>
+											@else
+												<button class="btn btn-danger " disabled>Disapprove Request</button>
+												<button type="button" class="btn btn-primary btn-markforpo" name="mark" >For Verification</button>
+											@endif
 											</div>
 										</div>
 										</form>

@@ -28,7 +28,7 @@
       @php 
         $a = 1;
       @endphp
-          @foreach($purchase->details as $row)
+          @foreach($purchase->details->where('isVerified', '!=', 1) as $row)
           @if ($purchase->eqp_prt == 'equipment')
             @php
               $index = count($row->parts);
@@ -38,7 +38,7 @@
               $masters = $masterModel->orderBy('item_id')->get();
             @endphp
       
-            @foreach($row->parts as $part)
+            @foreach($row->parts->where('isVerified', '!=', 1) as $part)
             <tr class="purchaseRow">
               @if($index == count($row->parts))
               <td class="text-center"  rowspan={{ count($row->parts) }} >
@@ -47,13 +47,14 @@
               @endif
               <td class="text-center">
                 <label class="label-table-min index">{{ $loop->index+1 }}</label>
+                <input type="hidden" name="" value="{{ $part->id }}">
               </td>
               <td class="text-center"><label for="">{{ $part->getItemAttribute() ? $part->getItemAttribute()->description : 'NaN'}}</label></td>
               <td>
-                <select name="" class="form-control"> 
-                <option class="" value="" selected>-- select --</option>
+                <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control vendor "> 
+                <option class="" value="">-- select --</option>
                 @foreach($masters as $master)
-                  @if ($master->supplier_id == $part->getItemAttribute()['supplier_id'])
+                  @if ($master->supplier_id == $part->vendor_id)
                   <option class="" value="{{ $master->supplier_id }}" selected>{{ $master->vendor->VendorName }}</option>
                   @else 
                   <option class="" value="{{ $master->supplier_id }}">{{ $master->vendor->VendorName }}</option>
@@ -62,16 +63,16 @@
                 </select>
               </td>
               <td>
-                <input type="text" class="form-control text-center label-table-min qty quantity" value="{{ $part->qty_to_order }}" autocomplete="off">
+                <input type="text" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][{{ $part->id }}][qty_to_order]" value="{{ $part->qty_to_order }}" autocomplete="off">
               </td>
               <td>
-                <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" value="{{ $part->getItemAttribute() ? $part->getItemAttribute()->LastCost : 'NaN'}}" autocomplete="off">
+                <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->cost }}" autocomplete="off">
               </td>
               <td>
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
               </td>
               <td style="width: 100px;">
-                <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
+                <button type="button" class="btn btn-danger btn-md btnRemoveRow delete_row center-block">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </td>
@@ -90,6 +91,7 @@
           <tr class="purchaseRow">
             <td class="text-center">
               <label class="label-table-min index">{{ $a++ }}</label>
+              <input type="hidden" name="parts[{{ $loop->index+1 }}][part_id]" value="{{ $row->id }}">
             </td>
             <td class="text-center">
               <label class="label-table-min index">{{ $row->purchaseRequest ? $row->purchaseRequest->description : '' }}</label>
@@ -97,8 +99,8 @@
             
             <td class="text-center"><label for="">{{ $row->getItemAttribute() ? $row->getItemAttribute()->description : ''}}</label></td>
             <td>
-              <select name="" class="form-control"> 
-              <option class="" value="" selected>-- select --</option>
+              <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control vendor "> 
+              <option class="" value="">-- select --</option>
               @foreach($masters as $master)
                 @if ($master->supplier_id == $row->vendor_id)
                 <option class="" value="{{ $master->supplier_id }}" selected>{{ $master->vendor->VendorName }}</option>
@@ -110,16 +112,16 @@
               </select>
             </td>
             <td>
-              <input type="text" class="form-control text-center label-table-min qty quantity" value="{{ $row->qty_to_order }}" autocomplete="off" >
+              <input type="text" class="form-control text-center label-table-min qty quantity" name="parts[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off" >
             </td>
             <td class="text-right">
-              <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" value="{{ $row->vendor ? number_format($row->vendor->LastCost,2) : ''}}" autocomplete="off">
+              <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->vendor ? number_format($row->vendor->LastCost,2) : ''}}" autocomplete="off">
             </td>
             <td class="text-right">
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
             </td>
             <td style="width: 100px;">
-              <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
+              <button type="button" class="btn btn-danger btn-md btnRemoveRow delete_row center-block">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </td>
@@ -129,5 +131,5 @@
         
       @endif
     </tbody>
-  </table>
+  </table>  
 </div>
