@@ -235,3 +235,39 @@ a:active, a:visited, a:hover {
     width: 90px;
     color:red;
 }
+
+.table-purchases tr{
+    .dropDown {
+        position: relative;
+        &:hover {
+            .menuDropDown {
+                display: block;
+            }
+        }
+        .menuDropDown {
+            margin: 0px;
+            position: absolute;
+            border: 1px solid #c4c4a8;
+            text-align: left;
+            left: 0;
+            top: 20px;
+            display: none;
+            min-width: 250px;
+            z-index: 10;
+            .title {
+                margin: 0px;
+                padding: 10px;
+                display: block;
+                background: #f7f7f7;
+                border-bottom: 1px solid #c4c4a8;
+                font-size: 16px;
+            }
+            .item {
+                margin: 0px;
+                padding: 10px;
+                background: #ffffff;
+            }
+        }
+
+    }
+}

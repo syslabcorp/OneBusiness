@@ -8,86 +8,35 @@
       <tr>
         <th style="width: 25%">Item #</th>
         <th style="width: 25%">Item Name</th>
-        <th style="width: 15%">Qty to Order</th>
-        @if($purchase->flag == 1)
-        <th style="width: 15%">Qty Delivered</th>
-        @endif
+        <th style="width: 20%">Updated Qty</th>
+        <th style="width: 20%">Remarks</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
-    @if(count($purchase->details))
-      @php
-        $a = 1;
-      @endphp
-      @foreach($purchase->details as $row)
-        @php
-          $index = count($row->parts);
-          $hdrModel = new \App\Models\Equip\Hdr;
-          $hdrs = $hdrModel->orderBy('asset_id')->get();
-          $masterModel = new \App\Models\Item\Master;
-          $masters = $masterModel->orderBy('item_id')->get();
-        @endphp
-        
-        <tr class="purchaseRow" data-id="{{ $row->item_id }}">
-          <td class="text-center" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }} >
-            <label class="label-table-min index">{{ $a++ }}</label>
+    @if(count($purchase->details->where('isVerified', '=', 1)))
+      @foreach($purchase->details->where('isVerified', '=', 1) as $item)
+        {{ $item }}
+        <tr class="purchaseRow" >
+          <td class="text-center" >
+            <label class="label-table-min index">{{ $item->id }}</label>
+            <input type="hidden" name="id" value="{{ $item->id }}">
           </td>
           <td class="text-center">
-            <select class="form-control brand" name="" id="" >
-              <option value="">-- select --</option>
-              @if ($purchase->eqp_prt == 'equipment') 
-                @foreach($hdrs as $hdr)
-                  @if ($hdr->asset_id == $row->item_id)
-                  <option value="{{ $row->item_id }}" selected>{{ $row->equipment()->description }}</option>
-                  @else
-                  <option value="{{ $hdr->asset_id }}">{{ $hdr->description }}</option>
-                  @endif
-                @endforeach
-              @else if ($purchase->eqp_prt == 'parts')
-                @foreach($masters as $master)
-                  @if ($master->item_id == $row->item_id)
-                  <option class="brands" value="{{ $master->item_id }}" selected>{{ $master->description }}</option>
-                  @else 
-                  <option class="brands" value="{{ $master->item_id }}">{{ $master->description }}</option>
-                  @endif
-                @endforeach
-              @endif
-            </select>
+            <label for="">ABCD</label>
           </td>
           <td class="text-center">
-          @if ($purchase->eqp_prt == 'parts')
-          <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $row->qty_to_order }}" autocomplete="off" readonly>
-          @endif
+            <input type="number" class="form-control text-center label-table-min qty quantity" name="" value="" autocomplete="off" readonly>
           </td>
-          @if($purchase->flag == 1)
-          <td><label for=""></label></td>
-          @endif
-          <td style="width: 100px;" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }}>
+          <td class="text-center">
+            <label for="">{{ $item->reason }}</label>
+          </td>
+          <td style="width: 100px;" >
             <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
         </tr>
-        @foreach($row->parts as $part)
-        <tr class="rowTR" data-parent="{{ $row->item_id }}">
-          <td class="text-center">
-            <label for="">{{ $part->getItemAttribute() ? $part->getItemAttribute()->description : 'NaN'}}</label>
-            <input type="hidden" name="parts[{{ $row->item_id }}][item_id][{{ $loop->index+1 }}]" value="{{ $part->item_id }}">
-          </td>
-          <td>
-            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
-          </td>
-          @if($purchase->flag == 1)
-          <td>
-            <label for=""></label>
-          </td>
-          @endif
-        </tr>
-        @php 
-          $index --;
-        @endphp
-        @endforeach
       @endforeach
     @endif
     </tbody>

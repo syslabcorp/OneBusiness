@@ -25,7 +25,18 @@ class PurchaseRequest extends Model
         return $this->hasMany(PurchaseDetail::class)->whereNull('parent_id');
     }
 
-    public function user() {
+    public function user() 
+    {
         return $this->belongsTo(\App\User::class, 'requester_id', 'UserID');
+    }
+
+    public function findUser() 
+    {
+        return \App\User::find($this->disapproved_by);
+    }
+
+    public function getBranch() 
+    {
+        return $this->belongsTo(\App\Models\Branch::class, 'branch');
     }
 }

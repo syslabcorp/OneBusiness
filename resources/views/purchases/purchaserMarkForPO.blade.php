@@ -41,11 +41,26 @@
             @foreach($row->parts->where('isVerified', '!=', 1) as $part)
             <tr class="purchaseRow">
               @if($index == count($row->parts))
-              <td class="text-center"  rowspan={{ count($row->parts) }} >
-                <label class="label-table-min index">{{ $part->equipment() ? $part->equipment()->description : 'NaN' }}</label>
+              <td class="text-center"  rowspan={{ count($row->parts->where('isVerified', '!=', 1)) }} >
+                <label class="label-table-min">{{ $part->equipment() ? $part->equipment()->description : 'NaN' }}</label>
               </td>
               @endif
               <td class="text-center">
+                @if ($part->isVerified == 2)
+                  <i class="fas fa-exclamation-triangle dropDown">
+                    <div class="menuDropDown">
+                      <strong class="title">Quantity  Changed</strong>
+                      <p class="item">from {{ $part->qty_old }} to {{ $part->qty_to_order }}</p>
+                    </div>
+                  </i>
+                @elseif ($part->isVerified == 1)
+                  <i class="fas fa-exclamation-triangle dropDown">
+                    <div class="menuDropDown">
+                      <strong class="title">Item Deleted</strong>
+                      <p class="item">{{ $part->reason }}</p>
+                    </div>
+                  </i>
+                @endif 
                 <label class="label-table-min index">{{ $loop->index+1 }}</label>
                 <input type="hidden" name="" value="{{ $part->id }}">
               </td>
@@ -72,9 +87,15 @@
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
               </td>
               <td style="width: 100px;">
-                <button type="button" class="btn btn-danger btn-md btnRemoveRow delete_row center-block">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
+                @if($part->isVerified == 2)
+                  <button type="button" class="btn btn-info btn-md center-block">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                @else 
+                  <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                @endif
               </td>
             </tr>
             @php 
@@ -90,6 +111,21 @@
           @endphp
           <tr class="purchaseRow">
             <td class="text-center">
+            @if ($row->isVerified == 2)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Quantity  Changed</strong>
+                  <p class="item">from {{ $row->qty_old }} to {{ $row->qty_to_order }}</p>
+                </div>
+              </i>
+            @elseif ($row->isVerified == 1)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Item Deleted</strong>
+                  <p class="item">{{ $row->reason }}</p>
+                </div>
+              </i>
+            @endif 
               <label class="label-table-min index">{{ $a++ }}</label>
               <input type="hidden" name="parts[{{ $loop->index+1 }}][part_id]" value="{{ $row->id }}">
             </td>
@@ -108,7 +144,6 @@
                 <option class="" value="{{ $master->supplier_id }}">{{ $master->vendor->VendorName }}</option>
                 @endif
               @endforeach      
-      
               </select>
             </td>
             <td>
@@ -121,15 +156,20 @@
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
             </td>
             <td style="width: 100px;">
-              <button type="button" class="btn btn-danger btn-md btnRemoveRow delete_row center-block">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </td>
-          </tr>
+              @if($row->isVerified == 2)
+                <button type="button" class="btn btn-info btn-md center-block">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+              @else 
+                <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              @endif
+            </td>  
         @endif
-      @endforeach
-        
+      @endforeach 
       @endif
     </tbody>
-  </table>  
+    </tr>
+  </table>
 </div>
