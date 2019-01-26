@@ -242,7 +242,21 @@
           });
       })
 
+      $('.delete_request_verify').on('click', function () {
+        let purchaseID = $('input[name="requester_id"]').val()
+        $.ajax({
+            url: '{{ route('purchase_request.destroyPurchaseRequest') }}?corpID={{ request()->corpID }}&purchaseID='+ purchaseID,
+            type: 'GET',
+            success: (res) => {
+              if (res['success'] == true) {
+                window.location = indexLink 
+              }
+            }
+          });
+      })
+
       $('.access_mark').on('click', function () {
+        $('.pr_id').text($('input[name="requester_id"]').val())
         $('.approve_id').text($('input[name="requester_id"]').val())
       })
 

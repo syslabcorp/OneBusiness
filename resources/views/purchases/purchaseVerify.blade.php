@@ -14,22 +14,21 @@
       </tr>
     </thead>
     <tbody>
-    @if(count($purchase->details->where('isVerified', '=', 1)))
-      @foreach($purchase->details->where('isVerified', '=', 1) as $item)
-        {{ $item }}
+    @if(count($purchase->request_details->where('isVerified', '=', 2)))
+      @foreach($purchase->request_details->where('isVerified', '=', 2) as $item)
         <tr class="purchaseRow" >
           <td class="text-center" >
             <label class="label-table-min index">{{ $item->id }}</label>
-            <input type="hidden" name="id" value="{{ $item->id }}">
+            <input type="hidden" name="id[{{ $loop->index }}]" value="{{ $item->id }}">
           </td>
           <td class="text-center">
-            <label for="">ABCD</label>
+            <label for="">{{ $item->getItemAttribute() ? $item->getItemAttribute()->description : ''  }}</label>
           </td>
           <td class="text-center">
-            <input type="number" class="form-control text-center label-table-min qty quantity" name="" value="" autocomplete="off" readonly>
+            <input type="number" class="form-control text-center label-table-min qty quantity" name="" value="{{ $item->qty_to_order }}" autocomplete="off" readonly>
           </td>
           <td class="text-center">
-            <label for="">{{ $item->reason }}</label>
+            <label for="">{{ $item->remark }}</label>
           </td>
           <td style="width: 100px;" >
             <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">

@@ -97,7 +97,7 @@
 											</div>
 											<div class="col-xs-6 text-right">
 											@if ($purchase->flag != 5 )
-												<button type="button"class="btn btn-danger" data-toggle="modal" data-target="#lewit">Disapprove Request</button>
+												<button type="button"class="btn btn-danger access_mark" data-toggle="modal" data-target="#lewit">Disapprove Request</button>
 												<button type="button" class="btn btn-primary access_mark" name="mark" data-toggle="modal" data-target="#lewit1">Mark for PO</button>
 											@else
 												<button class="btn btn-danger " disabled>Disapprove Request</button>
@@ -134,7 +134,7 @@
 												<div class="modal-content">
 													<div class="modal-header">
 														<button type="button" class="close" data-dismiss="modal">&times;</button>
-														<h4 class="modal-title">Delete item from PR#[<label for="" class="pr_id"></label>]</h4>
+														<h4 class="modal-title">Disapprove PR#[<label for="" class="pr_id"></label>]</h4>
 													</div>
 													<div class="modal-body">
 														<p>Reason: </p>

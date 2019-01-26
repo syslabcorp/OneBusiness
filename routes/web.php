@@ -263,6 +263,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('/purchase_request/get-part', ['uses' => 'Purchase\PurchasesController@getParts'])->name('purchase_request.getParts');
   Route::get('/purchase_request/remove-part', ['uses' => 'Purchase\PurchasesController@removePart'])->name('purchase_request.removePart');
   Route::get('/purchase_request/disapproved', ['uses' => 'Purchase\PurchasesController@disapproved'])->name('purchase_request.disapproved');
+  Route::get('/purchase_request/destroyPurchaseRequest', ['uses' => 'Purchase\PurchasesController@destroyPurchaseRequest'])->name('purchase_request.destroyPurchaseRequest');
 
   Route::resource('parts', 'PartsController');
 

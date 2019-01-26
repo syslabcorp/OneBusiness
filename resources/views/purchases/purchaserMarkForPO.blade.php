@@ -69,7 +69,7 @@
                 <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control vendor "> 
                 <option class="" value="">-- select --</option>
                 @foreach($masters as $master)
-                  @if ($master->supplier_id == $part->vendor_id)
+                  @if ($master->supplier_id == ($part->vendor_id ? $part->vendor_id : ($part->getItemAttribute() ? $part->getItemAttribute()->supplier_id : '')))
                   <option class="" value="{{ $master->supplier_id }}" selected>{{ $master->vendor->VendorName }}</option>
                   @else 
                   <option class="" value="{{ $master->supplier_id }}">{{ $master->vendor->VendorName }}</option>
@@ -138,7 +138,7 @@
               <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control vendor "> 
               <option class="" value="">-- select --</option>
               @foreach($masters as $master)
-                @if ($master->supplier_id == $row->vendor_id)
+                @if ($master->supplier_id == ( $row->vendor_id ? $row->vendor_id : ($row->getItemAttribute() ? $row->getItemAttribute()->supplier_id : '')))
                 <option class="" value="{{ $master->supplier_id }}" selected>{{ $master->vendor->VendorName }}</option>
                 @else 
                 <option class="" value="{{ $master->supplier_id }}">{{ $master->vendor->VendorName }}</option>
