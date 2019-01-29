@@ -19,19 +19,19 @@
         <tr class="purchaseRow" >
           <td class="text-center" >
             <label class="label-table-min index">{{ $item->id }}</label>
-            <input type="hidden" name="id[{{ $loop->index }}]" value="{{ $item->id }}">
+            <input type="hidden" name="parts[{{ $item->id }}][id]" value="{{ $item->id }}">
           </td>
           <td class="text-center">
             <label for="">{{ $item->getItemAttribute() ? $item->getItemAttribute()->description : ''  }}</label>
           </td>
           <td class="text-center">
-            <input type="number" class="form-control text-center label-table-min qty quantity" name="" value="{{ $item->qty_to_order }}" autocomplete="off" readonly>
+            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $item->id }}][qty]" value="{{ $item->qty_to_order }}" autocomplete="off" readonly>
           </td>
           <td class="text-center">
             <label for="">{{ $item->remark }}</label>
           </td>
           <td style="width: 100px;" >
-            <button type="button" class="btn btn-danger btn-md btnRemoveRow center-block">
+            <button type="button" class="btn btn-danger btn-md btnRemoveRow delete_part center-block">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>

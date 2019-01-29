@@ -16,7 +16,7 @@
       // $('.editEquipment .form-control').prop('disabled', true)
       // $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       // $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
-      $('.table-purchases').css('minheight', '200px')
+      $('.table-purchases').css('min-height', '200px')
 
       $(window).keydown((event) => {
         if (event.which === 113) {
@@ -101,10 +101,10 @@
           $parent.find('td:eq(1) input').val(1)
         }
 
-        if ($parent.find('td:eq(5) input').val() < 1){
-          showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
-          $parent.find('td:eq(5) input').val(1)
-        }
+        // if ($parent.find('td:eq(5) input').val() < 1){
+        //   showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+        //   $parent.find('td:eq(5) input').val(1)
+        // }
         indexs()
       })
 
@@ -251,6 +251,17 @@
               if (res['success'] == true) {
                 window.location = indexLink 
               }
+            }
+          });
+      })
+
+      $('.delete_part').on('click', function () {
+        partID = $(this).parents('tr').find('td:eq(0) input').val()
+        $.ajax({
+            url: '{{ route('purchase_request.destroyPart') }}?corpID={{ request()->corpID }}&partID='+  partID,
+            type: 'GET',
+            success: (res) => {
+              location.reload()
             }
           });
       })

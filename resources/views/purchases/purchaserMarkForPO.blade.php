@@ -51,6 +51,9 @@
                     <div class="menuDropDown">
                       <strong class="title">Quantity  Changed</strong>
                       <p class="item">from {{ $part->qty_old }} to {{ $part->qty_to_order }}</p>
+                      @if($part->date_verified)
+                        <p class="item" style="color:red">Verified  {{ $part->date_verified }}</p>
+                      @endif
                     </div>
                   </i>
                 @elseif ($part->isVerified == 1)
@@ -66,7 +69,7 @@
               </td>
               <td class="text-center"><label for="">{{ $part->getItemAttribute() ? $part->getItemAttribute()->description : 'NaN'}}</label></td>
               <td>
-                <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control vendor "> 
+                <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control "> 
                 <option class="" value="">-- select --</option>
                 @foreach($masters as $master)
                   @if ($master->supplier_id == ($part->vendor_id ? $part->vendor_id : ($part->getItemAttribute() ? $part->getItemAttribute()->supplier_id : '')))
@@ -115,7 +118,10 @@
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Quantity  Changed</strong>
-                  <p class="item">from {{ $row->qty_old }} to {{ $row->qty_to_order }}</p>
+                    <p class="item">from {{ $row->qty_old }} to {{ $row->qty_to_order }}</p>
+                  @if($row->date_verified)
+                    <p class="item" style="color:red">Verified  {{ $row->date_verified }}</p>
+                  @endif
                 </div>
               </i>
             @elseif ($row->isVerified == 1)
@@ -135,7 +141,7 @@
             
             <td class="text-center"><label for="">{{ $row->getItemAttribute() ? $row->getItemAttribute()->description : ''}}</label></td>
             <td>
-              <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control vendor "> 
+              <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control "> 
               <option class="" value="">-- select --</option>
               @foreach($masters as $master)
                 @if ($master->supplier_id == ( $row->vendor_id ? $row->vendor_id : ($row->getItemAttribute() ? $row->getItemAttribute()->supplier_id : '')))

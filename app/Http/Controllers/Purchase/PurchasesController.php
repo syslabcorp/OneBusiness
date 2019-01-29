@@ -26,17 +26,17 @@ class PurchasesController extends Controller
 
 	public function create()
 	{
-		// if(!\Auth::user()->checkAccessById(56, 'A')) {
-		//     \Session::flash('error', "You don't have permission"); 
-		//     return redirect("/home"); 
-		// }
+		if(!\Auth::user()->checkAccessById(59, 'A')) {
+		    \Session::flash('error', "You don't have permission"); 
+		    return redirect("/home"); 
+		}
 		
 		$company = Corporation::findOrFail(request()->corpID);
 		
 		$branches = \App\Branch::all();
 		$purchase = new \App\Models\Purchase\PurchaseRequest;
 		$purchase->setConnection($company->database_name);
-
+		
 		return view('purchases.create', [
 				'branches' => $branches,
 				'purchase' => $purchase
@@ -79,7 +79,7 @@ class PurchasesController extends Controller
 								$purchaseDetailModel->create([
 										'purchase_request_id' => (int) $purchaseModel->id,
 										'item_id' => (int) $part['item_id'][$i],
-										'parent_id' => (int) $detail_parents->id,
+										'equipment_id' => (int) $detail_parents->id,
 										'qty_to_order' => (int) $part['qty'][$i]
 									]);
 							}
@@ -102,7 +102,7 @@ class PurchasesController extends Controller
 		}
 		
 
-		\Session::flash('success', 'New purchase request has been created');
+		\Session::flash('success', 'New PR created');
 
 		return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 	}
@@ -179,13 +179,13 @@ class PurchasesController extends Controller
 				
 		} else if ($purchase->flag == 5) {
 			// // view MarkForPO use ACCESS_ID = 58
-			// if (\Auth::user()->checkAccessById(58 , 'E')) {
-			// 	return view('purchases.MarkForPO',[
-			// 		'purchase' => $purchase, 
-			// 		'branches' => $branches, 
-			// 		]);  
-			// }
-			// // view Verify use ACCESS_ID = 59
+			if (\Auth::user()->checkAccessById(58 , 'E')) {
+				return view('purchases.MarkForPO',[
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);  
+			}
+			// view Verify use ACCESS_ID = 59
 			if (\Auth::user()->checkAccessById(59 , 'E')) {
 				return view('purchases.verify',[
 					'purchase' => $purchase, 
@@ -209,81 +209,106 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail($id);
 		
-		// if(\Auth::user()->checkAccessById(58, 'E')) {
-		// 	$company = Corporation::findOrFail(request()->corpID);
-		// 	$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
-		// 	$purchasedetailModel->setConnection($company->database_name);
+		if(\Auth::user()->checkAccessById(58, 'E')) {
+			$company = Corporation::findOrFail(request()->corpID);
+			$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
+			$purchasedetailModel->setConnection($company->database_name);
 			
-		// 	if (request()->parts) {
-		// 		if ($purchase_item->eqp_prt == 'equipment' ) {
-		// 			foreach (request()->parts as $key => $part) {
-		// 				foreach ($part as $key => $row) {
-		// 					$purchase = $purchasedetailModel->findOrFail($key);
-		// 					if ($row['vendor_id']) {
-		// 						$purchase->update([
-		// 							'vendor_id' => $row['vendor_id']
-		// 						]);
-		// 					}
-		// 					if ($row['qty_to_order'] != $purchase->qty_to_order) {
-		// 						$purchase_item->update([
-		// 							'flag' => 5,
-		// 						]);
-		// 						$purchase->update([
-		// 							'vendor_id' => $row['vendor_id'],
-		// 							'qty_old' => $purchase->qty_to_order,
-		// 							'qty_to_order' => $row['qty_to_order'],
-		// 							'cost' => $row['cost'],
-		// 							'isVerified' => 2
-		// 						]);
-		// 					} 
-		// 				}
-		// 			}
-		// 		} else if ($purchase_item->eqp_prt == 'parts') {
-		// 			foreach (request()->parts as $part) {
-		// 				$purchase = $purchasedetailModel->findOrFail($part['part_id']);
-		// 				if ($part['vendor_id']) {
-		// 					$purchase->update([
-		// 						'vendor_id' => $part['vendor_id']
-		// 					]);
-		// 				} 
-		// 				if ($purchase->qty_to_order != $part['qty_to_order']) {
-		// 					$purchase_item->update([
-		// 						'flag' => 5
-		// 					]);
-		// 					$purchase->update([
-		// 						'vendor_id' => $part['vendor_id'],
-		// 						'qty_old' => $purchase->qty_to_order,
-		// 						'qty_to_order' => $part['qty_to_order'],
-		// 						'cost' => $part['cost'],
-		// 						'isVerified' => 2
-		// 					]);
-		// 				} 
-		// 			}
-		// 		}
-		// 	} 
-
-		// 	$purchase_item->update([
-		// 		'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : ''
-		// 	]);
-
-		// 	if ($purchase_item->flag == 2) {	
-		// 		$purchase_item->update([
-		// 			'flag' => 1,
-		// 			'date_approved' => date('Y-m-d'),
-		// 			'approved_by' => \Auth::user()->UserID,
-		// 		]);
-		// 	}
-
-		// 	\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
+			if (request()->parts) {
+				if ($purchase_item->eqp_prt == 'equipment' ) {
+					foreach (request()->parts as $key => $part) {
+						foreach ($part as $key => $row) {
+							$purchase = $purchasedetailModel->findOrFail($key);
+							$purchase->update([
+								'vendor_id' => $row['vendor_id'],
+								'cost' => $row['cost']
+							]);
+							if ($row['qty_to_order'] != $purchase->qty_to_order) {
+								$purchase_item->update([
+									'flag' => 5,
+								]);
+								$purchase->update([
+									'vendor_id' => $row['vendor_id'],
+									'qty_old' => $purchase->qty_to_order,
+									'qty_to_order' => $row['qty_to_order'],
+									'cost' => $row['cost'],
+									'isVerified' => 2
+								]);
+							} 
+						}
+					}
+					if ($purchase_item->flag == 5) {
+						\Session::flash('success', 'PR#['.$purchase_item->id.'] has been marked as “For Verification”, requires verification from requester.');
 		
-		// 	return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-		// }
+						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+					}
+				} else if ($purchase_item->eqp_prt == 'parts') 
+				{
+					foreach (request()->parts as $part) {
+						$purchase = $purchasedetailModel->findOrFail($part['part_id']);
+						$purchase->update([
+							'vendor_id' => $part['vendor_id'],
+							'cost' => $part['cost']
+						]);
+						if ($purchase->qty_to_order != $part['qty_to_order']) {
+							$purchase_item->update([
+								'flag' => 5
+							]);
+							$purchase->update([
+								'vendor_id' => $part['vendor_id'],
+								'qty_old' => $purchase->qty_to_order,
+								'qty_to_order' => $part['qty_to_order'],
+								'cost' => $part['cost'],
+								'isVerified' => 2
+							]);
+						} 
+					}
+					if ($purchase_item->flag == 5) {
+						\Session::flash('success', 'PR#['.$purchase_item->id.'] has been marked as “For Verification”, requires verification from requester.');
+		
+						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+					}
+				}
+			} 
+
+			$purchase_item->update([
+				'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : ''
+			]);
+
+			if ($purchase_item->flag == 2) {	
+				$purchase_item->update([
+					'flag' => 1,
+					'date_approved' => date('Y-m-d'),
+					'approved_by' => \Auth::user()->UserID,
+				]);
+			}
+
+			\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
+		
+			return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+		}
 
 		if(\Auth::user()->checkAccessById(59, 'E')) {
 			if ($purchase_item->flag == 5) {
-
-				dd('flag 5');
+				$company = Corporation::findOrFail(request()->corpID);
+				$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
+				$purchasedetailModel->setConnection($company->database_name);
 	
+				$sumCost = 0;
+
+				foreach (request()->parts as $key => $part) {
+					$purchase = $purchasedetailModel->findOrFail($key);
+					$sumCost += $purchase->cost*$part['qty'];
+					$purchase->update([
+						'date_verified' => date('Y-m-d')
+					]);
+				}
+
+				$purchase_item->update([
+					'flag' => 2,
+					'total_qty' => request()->total_qty,
+					'total_cost' => $sumCost
+				]);
 				
 				\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
 			
@@ -313,7 +338,7 @@ class PurchasesController extends Controller
 										$purchaseDetailModel->create([
 												'purchase_request_id' => (int) $purchase_item->id,
 												'item_id' => (int) $part['item_id'][$i],
-												'parent_id' => (int) $detail_parents->id,
+												'equipment_id' => (int) $detail_parents->id,
 												'qty_to_order' => (int) $part['qty'][$i]
 											]);
 									}
@@ -435,6 +460,17 @@ class PurchasesController extends Controller
 
 		return response()->json([
 			'success' => true
+		]);
+	}
+
+	public function destroyPart() {
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseDetail;
+		$purchaseModel->setConnection($company->database_name);
+		
+		$purchase = $purchaseModel->findOrFail(request()->partID);
+		$purchase->update([
+			'isVerified' => 1
 		]);
 	}
 }
