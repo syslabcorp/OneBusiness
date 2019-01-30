@@ -115,8 +115,8 @@
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
 											</div>
 											<div class="col-xs-6 text-right">
-												<button {{ $purchase->date_approved ? 'disabled' : '' }} class="btn btn-danger btn-save" name="disapproved" value="1">Delete Request</button>
-												<button type="button" {{ $purchase->date_approved ? 'disabled' : '' }} class="btn btn-primary btn-save" name="approved" value="1">Verify</button>
+												<button type="button" class="btn btn-danger delete_request_verify">Delete Request</button>
+												<button type="button" class="btn btn-primary btn-save" >Verify</button>
 											</div>
 										</div>
 										</form>

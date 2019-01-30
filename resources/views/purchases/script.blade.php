@@ -16,7 +16,7 @@
       // $('.editEquipment .form-control').prop('disabled', true)
       // $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       // $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
-      $('.table-purchases').css('minheight', '200px')
+      $('.table-purchases').css('min-height', '200px')
 
       $(window).keydown((event) => {
         if (event.which === 113) {
@@ -101,10 +101,10 @@
           $parent.find('td:eq(1) input').val(1)
         }
 
-        if ($parent.find('td:eq(5) input').val() < 1){
-          showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
-          $parent.find('td:eq(5) input').val(1)
-        }
+        // if ($parent.find('td:eq(5) input').val() < 1){
+        //   showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+        //   $parent.find('td:eq(5) input').val(1)
+        // }
         indexs()
       })
 
@@ -242,7 +242,32 @@
           });
       })
 
+      $('.delete_request_verify').on('click', function () {
+        let purchaseID = $('input[name="requester_id"]').val()
+        $.ajax({
+            url: '{{ route('purchase_request.destroyPurchaseRequest') }}?corpID={{ request()->corpID }}&purchaseID='+ purchaseID,
+            type: 'GET',
+            success: (res) => {
+              if (res['success'] == true) {
+                window.location = indexLink 
+              }
+            }
+          });
+      })
+
+      $('.delete_part').on('click', function () {
+        partID = $(this).parents('tr').find('td:eq(0) input').val()
+        $.ajax({
+            url: '{{ route('purchase_request.destroyPart') }}?corpID={{ request()->corpID }}&partID='+  partID,
+            type: 'GET',
+            success: (res) => {
+              location.reload()
+            }
+          });
+      })
+
       $('.access_mark').on('click', function () {
+        $('.pr_id').text($('input[name="requester_id"]').val())
         $('.approve_id').text($('input[name="requester_id"]').val())
       })
 

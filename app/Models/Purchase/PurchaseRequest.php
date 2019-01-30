@@ -22,7 +22,7 @@ class PurchaseRequest extends Model
 
     public function details()
     {
-        return $this->hasMany(PurchaseDetail::class)->whereNull('parent_id');
+        return $this->hasMany(PurchaseDetail::class)->whereNull('equipment_id');
     }
 
     public function user() 
