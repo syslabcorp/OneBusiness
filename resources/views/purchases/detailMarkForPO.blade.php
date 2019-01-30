@@ -37,7 +37,7 @@
 																<label style="padding: 5px;"><strong>Branch </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
-																<label for="" class="form-control">{{ $purchase->branch }}</label>
+																<label for="" class="form-control">{{ $purchase->getBranch->ShortName }}</label>
 															</div>
 													</div>
 													<div class="rown">

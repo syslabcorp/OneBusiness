@@ -122,9 +122,8 @@
       //   $('.sumtotal').val(total.toFixed(2))
       // }
       // totalCost()
-
-     
-      $('.cost-mask').mask("###,##0.00", {placeholder: "000,000.00"})
+      // $('.cost-mask').mask("###,##0,00", {reverse: true})
+      $('.cost-mask').mask("0,000,000.00", {placeholder: "000,000.00"})
       
       // totals = () => {
       //   console.log(1)
@@ -166,8 +165,8 @@
         for(let i = 0; i < $rows.length; i++) {
           let $tr = $($rows[i])
           if ($tr.find('td input.cost').val()) {
-            if ($.isNumeric($tr.find('td input.cost').val().replace(',',''))) {
-              let total = parseFloat($tr.find('td input.qty').val()*parseFloat($tr.find('td input.cost').val().replace(',','')))
+            if ($.isNumeric($tr.find('td input.cost').val().replace(',', '').replace(',', ''))) {
+              let total = parseFloat($tr.find('td input.qty').val())*parseFloat($tr.find('td input.cost').val().replace(',', '').replace(',', ''))
               $tr.find('td input.total').val(total.toFixed(2))
               totalCost += total
             }
@@ -179,7 +178,7 @@
       totalCostMarkForPO()
 
       $('.cost').on('keyup', function () {
-        let total = $(this).parents('tr').find('input.cost').val()*parseFloat($(this).parents('tr').find('input.qty').val())
+        let total = $(this).parents('tr').find('input.cost').val().replace(',', '').replace(',', '')*parseFloat($(this).parents('tr').find('input.qty').val())
         $(this).parents('tr').find('input.total').val(total.toFixed(2))
         totalCostMarkForPO()
       })
@@ -301,7 +300,7 @@
         $('.table-purchases tbody tr.purchaseRow').each(function(){
         if($(this).attr('data-id') == self.val())
           {
-            showAlertMessage('Not checked', 'Item Entry Error...')
+            showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')
             // self.parents('tr').remove()
             self.parents('tr').find('select option[value=""]').attr("selected",false)
             self.parents('tr').find('select option[value=""]').attr("selected",true)
