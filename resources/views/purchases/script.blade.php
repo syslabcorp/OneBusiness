@@ -123,7 +123,7 @@
       // }
       // totalCost()
       // $('.cost-mask').mask("###,##0,00", {reverse: true})
-      $('.cost-mask').mask("0,000,000.00", {placeholder: "000,000.00"})
+      $('.cost-mask').mask("0,000,000.00", {placeholder: "0,000,000.00"})
       
       // totals = () => {
       //   console.log(1)
@@ -314,6 +314,22 @@
       
         return $value
       }
+
+      checkPRT = (self) => {
+        console.log($('.table-purchases tbody tr.purchaseRow').length)
+        if ($('.table-purchases tbody tr.purchaseRow').length > 1) {
+          $('.table-purchases tbody tr.purchaseRow').each(function(){
+            if($(this).find('select').val() == self.val()) {
+              showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')
+              // self.parents('tr').find('select option[value=""]').attr("selected",false)
+              // self.parents('tr').find('select option[value=""]').attr("selected",true)
+              // self.parents('tr').find('td:eq(0)').attr("rowspan",'')
+              // self.parents('tr').find('td:eq(3)').attr("rowspan",'')
+              // $('tr[data-parent="'+ self.parents('tr').attr('data-id') +'"]').remove()
+            }   
+          });
+        }
+      }
   
 
       checkSelect = () => {
@@ -382,6 +398,11 @@
             }
           });
         } 
+      })
+
+      $('body').on('change', 'select.parts', function () {
+        let self = $(this)
+        checkPRT(self)
       })
 
       $('body').on('change', 'select.parts', function(event) {
