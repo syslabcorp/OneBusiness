@@ -35,7 +35,7 @@
               $hdrModel = new \App\Models\Equip\Hdr;
               $hdrs = $hdrModel->orderBy('asset_id')->get();
               $masterModel = new \App\Models\Item\Master;
-              $masters = $masterModel->orderBy('item_id')->get();
+              $masters = $masterModel->orderBy('item_id')->distinct()->get();
             @endphp
       
             @foreach($row->parts->where('isVerified', '!=', 1) as $part)

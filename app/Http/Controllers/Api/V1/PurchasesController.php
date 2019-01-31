@@ -16,7 +16,7 @@ class PurchasesController extends Controller
         $purchaseModel->setConnection($company->database_name);
         
         $items = $purchaseModel->get();
-    
+        
         if ($request->branch == '2') {
             $items = $items->where('flag', 2);
         }

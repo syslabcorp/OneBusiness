@@ -16,7 +16,7 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'pr' => $item->pr,
             'description' => $item->description,
             'requester_id' => $item->user ? $item->user->UserName : '',
-            'branch' => $item->getBranch ? $item->getBranch->Description : '',
+            'branch' => $item->getBranch ? $item->getBranch->ShortName : '',
             'total_qty' => $item->total_qty,
             'total_cost' => $item->total_cost,
             'status' => $item->status,

@@ -12,7 +12,7 @@ class PurchasesController extends Controller
 {
 	public function index()
 	{
-		if(!\Auth::user()->checkAccessById(56, 'V')) {
+		if(!\Auth::user()->checkAccessById(58, 'V') || !\Auth::user()->checkAccessById(59, 'V')) {
 				\Session::flash('error', "You don't have permission"); 
 				return redirect("/home"); 
 		}
@@ -26,14 +26,15 @@ class PurchasesController extends Controller
 
 	public function create()
 	{
-		if(!\Auth::user()->checkAccessById(59, 'A')) {
+		if(!\Auth::user()->checkAccessById(58, 'A')) {
 		    \Session::flash('error', "You don't have permission"); 
 		    return redirect("/home"); 
 		}
 		
 		$company = Corporation::findOrFail(request()->corpID);
 		
-		$branches = \App\Branch::all();
+		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
+
 		$purchase = new \App\Models\Purchase\PurchaseRequest;
 		$purchase->setConnection($company->database_name);
 		
@@ -45,6 +46,11 @@ class PurchasesController extends Controller
 
 	public function store(Request $request)
 	{
+		if(!\Auth::user()->checkAccessById(58, 'A')) {
+			\Session::flash('error', "You don't have permission"); 
+			return redirect("/home"); 
+		}
+		
 		$company = Corporation::findOrFail(request()->corpID);
 		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
 		$purchaseModel->setConnection($company->database_name);
@@ -147,56 +153,42 @@ class PurchasesController extends Controller
 
 		$purchase = $purchaseModel->find($id);
 		
-		$branches = \App\Branch::all();;
+		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 
-	
-		if ($purchase->flag == 1) {
-			//view For PO
-			if (\Auth::user()->checkAccessById(58 , 'E')) {
-				return view('purchases.detailPO', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			}
-		} else if ($purchase->flag == 2) {
-			// view MarkForPO use ACCESS_ID = 58
-			if (\Auth::user()->checkAccessById(58 , 'E')) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);  
-			}
-			// view edit
-			if (\Auth::user()->checkAccessById(59 , 'E')) {
+		if (\Auth::user()->checkAccessById(58 , 'E')) {
+			if ($purchase->flag == 2) {
 				return view('purchases.edit', [
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
-			}
-		} else if ($purchase->flag == 3) {
-				
-		} else if ($purchase->flag == 4) {
-				
-		} else if ($purchase->flag == 5) {
-			// // view MarkForPO use ACCESS_ID = 58
-			if (\Auth::user()->checkAccessById(58 , 'E')) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);  
-			}
-			// view Verify use ACCESS_ID = 59
-			if (\Auth::user()->checkAccessById(59 , 'E')) {
+			} else if ($purchase->flag == 5) {
 				return view('purchases.verify',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
 			}
-		} else if ($purchase->flag == 6) {
-				
-		} else if ($purchase->flag == 7) {
-				
-		}
+		} 
+		// else if (\Auth::user()->checkAccessById(59 , 'E')) {
+		// if ($purchase->flag == 1) {
+		// 	return view('purchases.detailPO', [
+		// 		'purchase' => $purchase, 
+		// 		'branches' => $branches, 
+		// 		]);
+		// } else if ($purchase->flag == 2) {
+		// 	return view('purchases.MarkForPO',[
+		// 		'purchase' => $purchase, 
+		// 		'branches' => $branches, 
+		// 		]);  
+		// } else if ($purchase->flag == 5) {
+		// 	return view('purchases.MarkForPO',[
+		// 		'purchase' => $purchase, 
+		// 		'branches' => $branches, 
+		// 		]);
+		// } 
+		// } else {
+		// 	\Session::flash('error', "You don't have permission"); 
+		// 		return redirect("/home"); 
+		// }
 	}
 
 	public function update(Request $request, $id)
@@ -408,7 +400,7 @@ class PurchasesController extends Controller
 	public function getParts() {
 		$detailModel = new \App\Models\Equip\Detail;
 
-		$items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->get();
+		$items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->distinct()->get();
 		
 		return view('purchases.showEQP', [
 				'items' => $items

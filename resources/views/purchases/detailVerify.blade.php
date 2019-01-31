@@ -62,8 +62,8 @@
 														<label><strong>Request for </strong></label>
 													</div>
 													<div class="form-group">
-														<input type="radio" class="form-check-input" name="eqp_prt" value="equipment" {{ $purchase->eqp_prt == 'equipment' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}>  Equipment
-														<input type="radio" class="form-check-input" name="eqp_prt" value="parts" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts              
+														<input type="radio" class="form-check-input " name="eqp_prt" value="equipment" {{ $purchase->eqp_prt == 'equipment' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}>  Equipment
+														<input type="radio" class="form-check-input " name="eqp_prt" value="parts" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts              
 													</div>
 												</div>
 												

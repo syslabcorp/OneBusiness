@@ -73,7 +73,7 @@
               <label style="padding: 5px;"><strong>Date Requested </strong></label>
             </div>
             <div class="col-sm-7 form-group">
-              <input type="text" class="form-control" name="date" value="{{ date('Y-m-d') }}" {{ $purchase->id ? 'disabled' : '' }}> 
+              <input type="text" class="form-control" name="date" value="{{ date('Y-m-d') }}" {{ $purchase->id ? 'disabled' : '' }} readonly> 
             </div>
           </div>
           <div class="rown">
