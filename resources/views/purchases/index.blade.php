@@ -11,7 +11,7 @@
                 <h5><strong>Purchase Request</strong></h5>
               </div>
               <div class="col-xs-3 text-right" style="margin-top: 10px;">
-                @if(\Auth::user()->checkAccessById(59, 'A'))
+                @if(\Auth::user()->checkAccessById(58, 'A'))
                   <a class="" href="{{ route('purchase_request.create', ['corpID' => $company->corp_id]) }}">New Request</a>
                 @endif              
               </div>
