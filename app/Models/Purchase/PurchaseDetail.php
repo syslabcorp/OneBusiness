@@ -22,14 +22,14 @@ class PurchaseDetail extends Model
         return \App\Models\Equip\Hdr::find($this->item_id);
     }
 
-    public function getItemAttribute()
+    public function itemMaster()
     {
         return \App\Models\Item\Master::find($this->item_id);
     }
 
     public function purchaseRequest()
     {
-        return $this->belongsTo(PurchaseRequest::class, 'purchase_request_id');
+        return $this->belongsTo(PurchaseRequest::class,'purchase_request_id');
     }
 
     public function vendor()
