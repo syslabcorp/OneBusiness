@@ -26,22 +26,23 @@ class PurchasesController extends Controller
 
 	public function create()
 	{
-		if(!\Auth::user()->checkAccessById(58, 'A')) {
-		    \Session::flash('error', "You don't have permission"); 
+		if (\Auth::user()->checkAccessById(58, 'A') || \Auth::user()->checkAccessById(59, 'A')) {
+			$company = Corporation::findOrFail(request()->corpID);
+		
+			$branches = \Auth::user()->getBranchesByArea(request()->corpID);
+
+			$purchase = new \App\Models\Purchase\PurchaseRequest;
+			$purchase->setConnection($company->database_name);
+			
+			return view('purchases.create', [
+					'branches' => $branches,
+					'purchase' => $purchase
+			]);
+		}
+		else {
+			\Session::flash('error', "You don't have permission"); 
 		    return redirect("/home"); 
 		}
-		
-		$company = Corporation::findOrFail(request()->corpID);
-		
-		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
-
-		$purchase = new \App\Models\Purchase\PurchaseRequest;
-		$purchase->setConnection($company->database_name);
-		
-		return view('purchases.create', [
-				'branches' => $branches,
-				'purchase' => $purchase
-		]);
 	}
 
 	public function store(Request $request)
@@ -155,20 +156,20 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 		
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			// if ($purchase->flag == 2) {
-			// 	return view('purchases.edit', [
-			// 		'purchase' => $purchase, 
-			// 		'branches' => $branches, 
-			// 		]);
-			// } else 
-			if ($purchase->flag == 5) {
-				return view('purchases.verify',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			}
-		} 
+		// if (\Auth::user()->checkAccessById(58 , 'E')) {
+		// 	// if ($purchase->flag == 2) {
+		// 	// 	return view('purchases.edit', [
+		// 	// 		'purchase' => $purchase, 
+		// 	// 		'branches' => $branches, 
+		// 	// 		]);
+		// 	// } else 
+		// 	if ($purchase->flag == 5) {
+		// 		return view('purchases.verify',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	}
+		// } 
 
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
 			if ($purchase->flag == 1) {
