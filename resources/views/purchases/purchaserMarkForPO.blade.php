@@ -34,15 +34,15 @@
               $index = count($row->parts);
               $hdrModel = new \App\Models\Equip\Hdr;
               $hdrs = $hdrModel->orderBy('asset_id')->get();
-              $masterModel = new \App\Models\Item\Master;
-              $masters = $masterModel->orderBy('item_id')->distinct()->get();
+              $vendorModel = new \App\Vendor;
+              $vendors = $vendorModel->orderBy('VendorName','asc')->get();
             @endphp
       
             @foreach($row->parts->where('isVerified', '!=', 1) as $part)
             <tr class="purchaseRow">
               @if($index == count($row->parts))
               <td class="text-center"  rowspan={{ count($row->parts->where('isVerified', '!=', 1)) }} >
-                <label class="label-table-min">{{ $part->equipment() ? $part->equipment()->description : 'NaN' }}</label>
+                <label class="label-table-min">{{ $row->equipment() ? $row->equipment()->description : 'NaN' }}</label>
               </td>
               @endif
               <td class="text-center">
@@ -67,15 +67,15 @@
                 <label class="label-table-min index">{{ $loop->index+1 }}</label>
                 <input type="hidden" name="" value="{{ $part->id }}">
               </td>
-              <td class="text-center"><label for="">{{ $part->getItemAttribute() ? $part->getItemAttribute()->description : 'NaN'}}</label></td>
+              <td class="text-center"><label for="">{{ $part }}</label></td>
               <td>
                 <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control "> 
                 <option class="" value="">-- select --</option>
-                @foreach($masters as $master)
-                  @if ($master->supplier_id == ($part->vendor_id ? $part->vendor_id : ($part->getItemAttribute() ? $part->getItemAttribute()->supplier_id : '')))
-                  <option class="" value="{{ $master->supplier_id }}" selected>{{ $master->vendor->VendorName }}</option>
+                @foreach($vendors as $vendor)
+                  @if ($vendor->Supp_ID == ($part->vendor_id ? $part->vendor_id : ($part->getItemAttribute() ? $part->getItemAttribute()->supplier_id : '')))
+                  <option class="" value="{{ $vendor->Supp_ID }}" selected>{{ $vendor->VendorName }}</option>
                   @else 
-                  <option class="" value="{{ $master->supplier_id }}">{{ $master->vendor->VendorName }}</option>
+                  <option class="" value="{{ $vendor->Supp_ID }}">{{ $vendor->VendorName }}</option>
                   @endif
                 @endforeach
                 </select>
@@ -109,8 +109,8 @@
           @php
             $hdrModel = new \App\Models\Equip\Hdr;
             $hdrs = $hdrModel->orderBy('asset_id')->get();
-            $masterModel = new \App\Models\Item\Master;
-            $masters = $masterModel->orderBy('item_id')->get();
+            $vendorModel = new \App\Vendor;
+            $vendors = $vendorModel->orderBy('VendorName','asc')->get();
           @endphp
           <tr class="purchaseRow">
             <td class="text-center">
@@ -139,15 +139,15 @@
               <label class="label-table-min index">{{ $row->purchaseRequest ? $row->purchaseRequest->description : '' }}</label>
             </td>
             
-            <td class="text-center"><label for="">{{ $row->getItemAttribute() ? $row->getItemAttribute()->description : ''}}</label></td>
+            <td class="text-center"><label for=""></label></td>
             <td>
               <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control "> 
               <option class="" value="">-- select --</option>
-              @foreach($masters as $master)
-                @if ($master->supplier_id == ( $row->vendor_id ? $row->vendor_id : ($row->getItemAttribute() ? $row->getItemAttribute()->supplier_id : '')))
-                <option class="" value="{{ $master->supplier_id }}" selected>{{ $master->vendor->VendorName }}</option>
+              @foreach($vendors as $vendor)
+                @if ($vendor->Supp_ID == ( $row->vendor_id ? $row->vendor_id : ($row->getItemAttribute() ? $row->getItemAttribute()->supplier_id : '')))
+                <option class="" value="{{ $vendor->Supp_ID }}" selected>{{ $vendor->VendorName }}</option>
                 @else 
-                <option class="" value="{{ $master->supplier_id }}">{{ $master->vendor->VendorName }}</option>
+                <option class="" value="{{ $vendor->Supp_ID }}">{{ $vendor->VendorName }}</option>
                 @endif
               @endforeach      
               </select>

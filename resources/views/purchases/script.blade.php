@@ -52,7 +52,7 @@
             url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $('input[name="eqp_prt"]:checked').val() ,
             type: 'GET',
             success: (res) => {
-              $('.table-purchases tbody').prepend(res)
+              $('.table-purchases tbody').append(res)
               // $('select[name="purchases['+ $indexrow +'][item_id]"] .brands').remove()
               // for(let i = 0; i < res.length; i++) {
               //   if (res[i].asset_id) {
@@ -72,7 +72,7 @@
             url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $('input[name="eqp_prt"]:checked').val() ,
             type: 'GET',
             success: (res) => {
-              $('.table-purchases tbody').prepend(res)
+              $('.table-purchases tbody').append(res)
               // $('select[name="purchases['+ $indexrow +'][item_id]"] .brands').remove()
               // for(let i = 0; i < res.length; i++) {
               //   if (res[i].asset_id) {
@@ -152,7 +152,7 @@
             total += parseFloat($tr.find('td input.qty').val())
           }
         }
-      
+        
         $('.sumtotal').val(total.toFixed(2))
       }
 
@@ -184,7 +184,7 @@
       })
 
       $('.qty').on('keyup', function () {
-        let total = $(this).parents('tr').find('input.cost').val()*parseFloat($(this).parents('tr').find('input.qty').val())
+        let total = $(this).parents('tr').find('input.cost').val().replace(',','').replace(',','')*parseFloat($(this).parents('tr').find('input.qty').val())
         $(this).parents('tr').find('input.total').val(total.toFixed(2))
         // totals()
       })
@@ -193,7 +193,7 @@
         if ($('input[type="radio"]:checked').length > 0 && checkSelect() ) {
           $('.form').submit()
         } else {
-          showAlertMessage('Not checked', 'Item Entry Error...')
+          showAlertMessage('Nothing to save...', 'Alert:')
         }
       })
 
@@ -316,19 +316,14 @@
       }
 
       checkPRT = (self) => {
-        console.log($('.table-purchases tbody tr.purchaseRow').length)
-        if ($('.table-purchases tbody tr.purchaseRow').length > 1) {
-          $('.table-purchases tbody tr.purchaseRow').each(function(){
-            if($(this).find('select').val() == self.val()) {
-              showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')
-              // self.parents('tr').find('select option[value=""]').attr("selected",false)
-              // self.parents('tr').find('select option[value=""]').attr("selected",true)
-              // self.parents('tr').find('td:eq(0)').attr("rowspan",'')
-              // self.parents('tr').find('td:eq(3)').attr("rowspan",'')
-              // $('tr[data-parent="'+ self.parents('tr').attr('data-id') +'"]').remove()
-            }   
-          });
-        }
+        // console.log($('.table-purchases tbody tr.purchaseRow').length)
+      
+        $('.table-purchases tbody tr.purchaseRow.active').each(function(){
+          if($(this).find('select').val() == self.val()) {
+            showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')
+            self.parents('tr').find('select option[value=""]').attr("selected",true)
+          }   
+        });
       }
   
 
@@ -402,6 +397,9 @@
 
       $('body').on('change', 'select.parts', function () {
         let self = $(this)
+        $('tr.purchaseRow').removeClass('active')
+        $('tr.purchaseRow').addClass('active')
+        self.parents('tr.purchaseRow').removeClass('active')
         checkPRT(self)
       })
 
