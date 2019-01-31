@@ -6,7 +6,7 @@
         <select name="" class="form-control parts">
             <option value=""> -- select -- </option>
             @foreach($itemparts as $item)
-                <option qty="{{ $item->qty }}" value="{{ $item->item_id }}">{{ $item->item ? $item->item->description  : 'NULL'}}</option>
+                <option value="{{ $item->item_id }}">{{ $item->description}}</option>
             @endforeach
         </select>
     </td>

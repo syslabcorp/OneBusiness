@@ -12,10 +12,10 @@ class PurchasesController extends Controller
 {
 	public function index()
 	{
-		if(!\Auth::user()->checkAccessById(58, 'V') || !\Auth::user()->checkAccessById(59, 'V')) {
-				\Session::flash('error', "You don't have permission"); 
-				return redirect("/home"); 
-		}
+		// if(!\Auth::user()->checkAccessById(58, 'V') || !\Auth::user()->checkAccessById(59, 'V')) {
+		// 		\Session::flash('error', "You don't have permission"); 
+		// 		return redirect("/home"); 
+		// }
 
 		$company = Corporation::findOrFail(request()->corpID);
 	
@@ -154,41 +154,43 @@ class PurchasesController extends Controller
 		$purchase = $purchaseModel->find($id);
 		
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
-
+		
 		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 2) {
-				return view('purchases.edit', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 5) {
+			// if ($purchase->flag == 2) {
+			// 	return view('purchases.edit', [
+			// 		'purchase' => $purchase, 
+			// 		'branches' => $branches, 
+			// 		]);
+			// } else 
+			if ($purchase->flag == 5) {
 				return view('purchases.verify',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
 			}
 		} 
-		// else if (\Auth::user()->checkAccessById(59 , 'E')) {
-		// if ($purchase->flag == 1) {
-		// 	return view('purchases.detailPO', [
-		// 		'purchase' => $purchase, 
-		// 		'branches' => $branches, 
-		// 		]);
-		// } else if ($purchase->flag == 2) {
-		// 	return view('purchases.MarkForPO',[
-		// 		'purchase' => $purchase, 
-		// 		'branches' => $branches, 
-		// 		]);  
-		// } else if ($purchase->flag == 5) {
-		// 	return view('purchases.MarkForPO',[
-		// 		'purchase' => $purchase, 
-		// 		'branches' => $branches, 
-		// 		]);
-		// } 
-		// } else {
-		// 	\Session::flash('error', "You don't have permission"); 
-		// 		return redirect("/home"); 
-		// }
+
+		if (\Auth::user()->checkAccessById(59 , 'E')) {
+			if ($purchase->flag == 1) {
+				return view('purchases.detailPO', [
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);
+			} else if ($purchase->flag == 2) {
+				return view('purchases.MarkForPO',[
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);  
+			} else if ($purchase->flag == 5) {
+				return view('purchases.MarkForPO',[
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);
+			} 
+		}
+
+		\Session::flash('error', "You don't have permission"); 
+		return redirect("/home"); 
 	}
 
 	public function update(Request $request, $id)
@@ -387,9 +389,9 @@ class PurchasesController extends Controller
 						'items' => $items
 						]);
 		} else if (request()->radio == 'parts') {
-				$detailModel = new \App\Models\Equip\Detail;
+				$item_masterModel = new \App\Models\Item\Master;
 				
-				$itemparts = $detailModel->orderBy('item_id')->get();
+				$itemparts = $item_masterModel->orderBy('item_id')->get();
 				
 				return view('purchases.searchPRT', [
 						'itemparts' => $itemparts
