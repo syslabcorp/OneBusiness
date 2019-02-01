@@ -12,7 +12,7 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
         return [
             'id' => (int) $item->id,
             'date' => $item->date,
-            'job_order' => $item->job_order,
+            'job_order' => $item->job_order ? $item->job_order : '',
             'pr' => $item->pr,
             'description' => $item->description,
             'requester_id' => $item->user ? $item->user->UserName : '',

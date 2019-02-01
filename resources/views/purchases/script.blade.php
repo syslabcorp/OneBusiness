@@ -16,7 +16,7 @@
       // $('.editEquipment .form-control').prop('disabled', true)
       // $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
       // $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
-      $('.table-purchases').css('min-height', '200px')
+      $('.table-purchases').css('min-height', '230px')
 
       $(window).keydown((event) => {
         if (event.which === 113) {
@@ -211,6 +211,7 @@
         } else {
           partID = $(this).parents('tr').find('td:eq(1) input').val()
         }
+      
         $('.index_pr').text($(this).parents('tr').find('td label.index').text())
         $('.pr_id').val(partID)
       })
@@ -223,7 +224,7 @@
             type: 'GET',
             success: (res) => {
               location.reload()
-              indexs()
+              // indexs()
             }
           });
       })
@@ -321,6 +322,7 @@
         $('.table-purchases tbody tr.purchaseRow.active').each(function(){
           if($(this).find('select').val() == self.val()) {
             showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')
+            self.parents('tr').find('select option[value=""]').attr("selected",false)
             self.parents('tr').find('select option[value=""]').attr("selected",true)
           }   
         });

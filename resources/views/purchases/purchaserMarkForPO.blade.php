@@ -28,7 +28,7 @@
       @php 
         $a = 1;
       @endphp
-          @foreach($purchase->details->where('isVerified', '!=', 1) as $row)
+          @foreach($purchase->details as $row)
           @if ($purchase->eqp_prt == 'equipment')
             @php
               $index = count($row->parts);
@@ -38,10 +38,10 @@
               $vendors = $vendorModel->orderBy('VendorName','asc')->get();
             @endphp
       
-            @foreach($row->parts->where('isVerified', '!=', 1) as $part)
+            @foreach($row->parts as $part)
             <tr class="purchaseRow">
               @if($index == count($row->parts))
-              <td class="text-center"  rowspan={{ count($row->parts->where('isVerified', '!=', 1)) }} >
+              <td class="text-center"  rowspan={{ count($row->parts) }} >
                 <label class="label-table-min">{{ $row->equipment() ? $row->equipment()->description : 'NaN' }}</label>
               </td>
               @endif
@@ -60,19 +60,19 @@
                   <i class="fas fa-exclamation-triangle dropDown">
                     <div class="menuDropDown">
                       <strong class="title">Item Deleted</strong>
-                      <p class="item">{{ $part->reason }}</p>
+                      <p class="item">{{ $part->remark }}</p>
                     </div>
                   </i>
                 @endif 
                 <label class="label-table-min index">{{ $loop->index+1 }}</label>
                 <input type="hidden" name="" value="{{ $part->id }}">
               </td>
-              <td class="text-center"><label for="">{{ $part }}</label></td>
+              <td class="text-center"><label for="">{{ $part->itemMaster() ? $part->itemMaster()->description : '' }}</label></td>
               <td>
                 <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control "> 
                 <option class="" value="">-- select --</option>
                 @foreach($vendors as $vendor)
-                  @if ($vendor->Supp_ID == ($part->vendor_id ? $part->vendor_id : ($part->getItemAttribute() ? $part->getItemAttribute()->supplier_id : '')))
+                  @if ($vendor->Supp_ID == ($part->vendor_id ? $part->vendor_id : ($part->itemMaster() ? $part->itemMaster()->supplier_id : '')))
                   <option class="" value="{{ $vendor->Supp_ID }}" selected>{{ $vendor->VendorName }}</option>
                   @else 
                   <option class="" value="{{ $vendor->Supp_ID }}">{{ $vendor->VendorName }}</option>
@@ -84,7 +84,7 @@
                 <input type="text" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][{{ $part->id }}][qty_to_order]" value="{{ $part->qty_to_order }}" autocomplete="off">
               </td>
               <td>
-                <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->cost }}" autocomplete="off">
+                <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->itemMaster() ? $part->itemMaster()->LastCost : '' }}" autocomplete="off">
               </td>
               <td>
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
@@ -128,7 +128,7 @@
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Item Deleted</strong>
-                  <p class="item">{{ $row->reason }}</p>
+                  <p class="item">{{ $row->remark }}</p>
                 </div>
               </i>
             @endif 
@@ -136,15 +136,17 @@
               <input type="hidden" name="parts[{{ $loop->index+1 }}][part_id]" value="{{ $row->id }}">
             </td>
             <td class="text-center">
-              <label class="label-table-min index">{{ $row->purchaseRequest ? $row->purchaseRequest->description : '' }}</label>
+              <label class="label-table-min index">{{ $row->itemMaster() ? $row->itemMaster()->description : '' }}</label>
             </td>
             
-            <td class="text-center"><label for=""></label></td>
+            <td class="text-center"><label for=""></label>
+            </td>
+            
             <td>
               <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control "> 
               <option class="" value="">-- select --</option>
               @foreach($vendors as $vendor)
-                @if ($vendor->Supp_ID == ( $row->vendor_id ? $row->vendor_id : ($row->getItemAttribute() ? $row->getItemAttribute()->supplier_id : '')))
+                @if ($vendor->Supp_ID == ( $row->vendor_id ? $row->vendor_id : ($row->itemMaster() ? $row->itemMaster()->supplier_id : '')))
                 <option class="" value="{{ $vendor->Supp_ID }}" selected>{{ $vendor->VendorName }}</option>
                 @else 
                 <option class="" value="{{ $vendor->Supp_ID }}">{{ $vendor->VendorName }}</option>
@@ -156,7 +158,7 @@
               <input type="text" class="form-control text-center label-table-min qty quantity" name="parts[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off" >
             </td>
             <td class="text-right">
-              <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->vendor ? number_format($row->vendor->LastCost,2) : ''}}" autocomplete="off">
+              <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->itemMaster() ? $row->itemMaster()->LastCost : ''}}" autocomplete="off">
             </td>
             <td class="text-right">
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>

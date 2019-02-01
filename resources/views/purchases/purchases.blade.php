@@ -72,7 +72,7 @@
         @foreach($row->parts as $part)
         <tr class="rowTR" data-parent="{{ $row->item_id }}">
           <td class="text-center">
-            <label for="">{{ $part->getItemAttribute() ? $part->getItemAttribute()->description : 'NaN'}}</label>
+            <label for="">{{ $part->itemMaster() ? $part->itemMaster()->description : 'NaN'}}</label>
             <input type="hidden" name="parts[{{ $row->item_id }}][item_id][{{ $loop->index+1 }}]" value="{{ $part->item_id }}">
           </td>
           <td>
