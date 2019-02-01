@@ -303,6 +303,8 @@ class PurchasesController extends Controller
 						'total_qty' => request()->total_qty,
 						'total_cost' => $sumCost
 					]);
+
+					$purchase_item->request_details()->where('isVerified', 1)->delete();
 					
 					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
 				

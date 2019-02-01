@@ -110,9 +110,8 @@
           <select class="form-control branch-select" style="width: 150px;"> \
           <option value="1" selected>For PO</option>\
           <option value="2">Requests</option>\
-          <option value="3">All</option>\
           <option value="4">Disapproved</option>\
-          <option value="5">Verify Requester</option> \
+          <option value="5">For Verification</option> \
           <option value="6">Approved </option>\
           <option value="7">Served </option></select> \
         </div>')
@@ -266,11 +265,6 @@
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       table.columns( [0,9,10,11,12,13,14,15,16,17,18] ).visible( false );
-    } else if($(event.target).val() == '3') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
-      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
-      table.columns( [0,8,11,12,13,14,15,16,17,18,21] ).visible( false );
     } else if($(event.target).val() == '4') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()

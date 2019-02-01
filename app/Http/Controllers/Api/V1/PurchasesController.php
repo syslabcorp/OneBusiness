@@ -20,9 +20,6 @@ class PurchasesController extends Controller
         if ($request->branch == '2') {
             $items = $items->where('flag', 2);
         }
-        else if ($request->branch == '3') {
-            // get all data
-        }
         else if ($request->branch == '4') {
             $items = $items->where('flag', 4);
         }

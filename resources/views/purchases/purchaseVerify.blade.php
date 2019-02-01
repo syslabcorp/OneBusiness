@@ -14,8 +14,8 @@
       </tr>
     </thead>
     <tbody>
-    @if(count($purchase->request_details->where('isVerified', '=', 2)))
-      @foreach($purchase->request_details->where('isVerified', '=', 2) as $item)
+    @if(count($purchase->request_details->whereIn('isVerified', [1,2])))
+      @foreach($purchase->request_details->whereIn('isVerified', [1,2]) as $item)
         <tr class="purchaseRow" >
           <td class="text-center" >
             <label class="label-table-min index">{{ $item->id }}</label>
@@ -31,9 +31,15 @@
             <label for="">{{ $item->remark }}</label>
           </td>
           <td style="width: 100px;" >
+            @if($item->isVerified == 2)
             <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
               <i class="fas fa-trash-alt"></i>
             </button>
+            @else
+            <button type="button" class="btn btn-danger btn-md center-block" disabled>
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            @endif
           </td>
         </tr>
       @endforeach
