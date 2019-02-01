@@ -162,13 +162,12 @@ class PurchasesController extends Controller
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
-			} 
-			if ($purchase->flag == 5) {
+			} else if ($purchase->flag == 5) {
 				return view('purchases.verify',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
-			}
+			} 
 		} 
 
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
@@ -284,29 +283,35 @@ class PurchasesController extends Controller
 				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 			}
 			if ( $purchase_item->flag == 5 ) {
-				$company = Corporation::findOrFail(request()->corpID);
-				$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
-				$purchasedetailModel->setConnection($company->database_name);
-	
-				$sumCost = 0;
-
-				foreach (request()->parts as $key => $part) {
-					$purchase = $purchasedetailModel->findOrFail($key);
-					$sumCost += $purchase->cost*$part['qty'];
-					$purchase->update([
-						'date_verified' => date('Y-m-d')
-					]);
-				}
-
-				$purchase_item->update([
-					'flag' => 2,
-					'total_qty' => request()->total_qty,
-					'total_cost' => $sumCost
-				]);
-				
-				\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
+				if (request()->parts) {
+					$company = Corporation::findOrFail(request()->corpID);
+					$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
+					$purchasedetailModel->setConnection($company->database_name);
+		
+					$sumCost = 0;
 			
-				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+					foreach (request()->parts as $key => $part) {
+						$purchase_part = $purchasedetailModel->findOrFail($key);
+						$sumCost += $purchase_part->cost*$part['qty'];
+						$purchase_part->update([
+							'date_verified' => date('Y-m-d')
+						]);
+					}
+
+					$purchase_item->update([
+						'flag' => 2,
+						'total_qty' => request()->total_qty,
+						'total_cost' => $sumCost
+					]);
+					
+					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
+				
+					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+				} else {
+					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
+				
+					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+				} 	
 			}		
 		}
 

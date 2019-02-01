@@ -191,7 +191,11 @@
 
       $('.btn-save').on('click', function() {
         if ($('input[type="radio"]:checked').length > 0 && checkSelect() ) {
-          $('.form').submit()
+          if ($('body tr').hasClass('purchaseRow') == false) {
+            showAlertMessage('Nothing to save...', 'Alert:')
+          } else {
+            $('.form').submit()
+          }
         } else {
           showAlertMessage('Nothing to save...', 'Alert:')
         }
