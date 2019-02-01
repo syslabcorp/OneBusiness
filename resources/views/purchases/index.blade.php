@@ -327,6 +327,17 @@
         type: 'DELETE',
         success: (res) => {
           tablePurchase.ajax.reload()
+          swal({
+            title: "<div class='delete-title'>Deleted </div>",
+            text:  "<div class='delete-text'>PR#["+ id +"] has been cancelled and deleted.</strong></div>",
+            html:  true,
+            customClass: 'swal-wide',
+            confirmButtonClass: 'btn-primary',
+            confirmButtonText: 'Delete',
+            showCancelButton: true,
+            closeOnConfirm: true,
+            allowEscapeKey: true
+          })
         }
       })
       }
