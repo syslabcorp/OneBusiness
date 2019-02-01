@@ -234,14 +234,20 @@
       })
 
       $('.disapproved').on('click', function () {
+        let id = $('input[name="requester_id"]').val()
         $.ajax({
             url: '{{ route('purchase_request.disapproved') }}?corpID={{ request()->corpID }}&requester_id='+ $('input[name="requester_id"]').val() + '&reasons=' + $('.reasons').val(),
             type: 'GET',
             success: (res) => {
               if (res['success'] == true) {
-                window.location = indexLink 
+                window.location = indexLink
+                swal({
+                  title: "<div class='delete-title'>Disapprove Request</div>",
+                  text:  "<div class='delete-text'>PR#["+ id +"] has been disapproved.</strong></div>",
+                  html:  true,
+                  customClass: 'swal-wide'
+                }) 
               }
-              // indexs()
             }
           });
       })

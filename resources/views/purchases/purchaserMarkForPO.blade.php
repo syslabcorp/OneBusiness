@@ -84,7 +84,7 @@
                 <input type="text" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][{{ $part->id }}][qty_to_order]" value="{{ $part->qty_to_order }}" autocomplete="off">
               </td>
               <td>
-                <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->itemMaster() ? $part->itemMaster()->LastCost : '' }}" autocomplete="off">
+                <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->cost ? $part->cost : $part->itemMaster() ? $part->itemMaster()->LastCost : '' }}" autocomplete="off">
               </td>
               <td>
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
@@ -93,6 +93,10 @@
                 @if($part->isVerified == 2)
                   <button type="button" class="btn btn-info btn-md center-block">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
+                  </button>
+                @elseif($part->isVerified == 1)
+                  <button type="button" class="btn btn-danger btn-md center-block" disabled>
+                    <i class="fas fa-trash-alt"></i>
                   </button>
                 @else 
                   <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
@@ -158,7 +162,7 @@
               <input type="text" class="form-control text-center label-table-min qty quantity" name="parts[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off" >
             </td>
             <td class="text-right">
-              <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->itemMaster() ? $row->itemMaster()->LastCost : ''}}" autocomplete="off">
+              <input type="text" class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->cost ? $row->cost : $row->itemMaster() ? $row->itemMaster()->LastCost : ''}}" autocomplete="off">
             </td>
             <td class="text-right">
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
@@ -167,6 +171,10 @@
               @if($row->isVerified == 2)
                 <button type="button" class="btn btn-info btn-md center-block">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+              @elseif($row->isVerified == 1)
+                <button type="button" class="btn btn-danger btn-md center-block" disabled>
+                  <i class="fas fa-trash-alt"></i>
                 </button>
               @else 
                 <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
