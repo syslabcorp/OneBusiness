@@ -265,6 +265,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('/purchase_request/disapproved', ['uses' => 'Purchase\PurchasesController@disapproved'])->name('purchase_request.disapproved');
   Route::get('/purchase_request/destroyPurchaseRequest', ['uses' => 'Purchase\PurchasesController@destroyPurchaseRequest'])->name('purchase_request.destroyPurchaseRequest');
   Route::get('/purchase_request/destroyPart', ['uses' => 'Purchase\PurchasesController@destroyPart'])->name('purchase_request.destroyPart');
+  Route::get('/purchase_request/changeQTY', ['uses' => 'Purchase\PurchasesController@changeQTY'])->name('purchase_request.changeQTY');
 
   Route::resource('parts', 'PartsController');
 

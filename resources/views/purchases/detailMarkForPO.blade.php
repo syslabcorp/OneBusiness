@@ -101,7 +101,7 @@
 												<button type="button" class="btn btn-primary access_mark" name="mark" data-toggle="modal" data-target="#lewit1">Mark for PO</button>
 											@else
 												<button class="btn btn-danger " disabled>Disapprove Request</button>
-												<button type="button" class="btn btn-primary btn-markforpo" name="mark" >For Verification</button>
+												<button type="button" class="btn btn-primary">For Verification</button>
 											@endif
 											</div>
 										</div>

@@ -156,19 +156,19 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 		
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 2) {
-				return view('purchases.edit', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 5) {
-				return view('purchases.verify',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} 
-		} 
+		// if (\Auth::user()->checkAccessById(58 , 'E')) {
+		// 	if ($purchase->flag == 2) {
+		// 		return view('purchases.edit', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 5) {
+		// 		return view('purchases.verify',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} 
+		// } 
 
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
 			if ($purchase->flag == 1) {
@@ -474,6 +474,24 @@ class PurchasesController extends Controller
 		$purchase = $purchaseModel->findOrFail(request()->partID);
 		$purchase->update([
 			'isVerified' => 1
+		]);
+	}
+
+	public function changeQTY() {
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseDetail;
+		$purchaseModel->setConnection($company->database_name);
+
+		$purchase_item = $purchaseModel->findOrFail(request()->partID);
+		
+		$purchase_item->update([
+			'isVerified' => 2,
+			'qty_old' => $purchase_item->qty_to_order,
+			'qty_to_order' => request()->qty
+		]);
+
+		$purchase_item->purchaseRequest->update([
+			'flag' => 5
 		]);
 	}
 }
