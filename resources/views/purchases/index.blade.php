@@ -41,10 +41,10 @@
                 
             </div>
           </div>
-          @if(\Auth::user()->checkAccessById(58 , 'V'))
-          <input type="hidden" name="checkAccess" value="requester">
-          @elseif(\Auth::user()->checkAccessById(59 , 'V'))
-          <input type="hidden" name="checkAccess" value="purchaser">
+          @if(\Auth::user()->checkAccessById(59 , 'V'))
+          <input type="hidden" name="checkAccess" value="2">
+          @else if(\Auth::user()->checkAccessById(58 , 'V'))
+          <input type="hidden" name="checkAccess" value="1">
           @endif
           <div class="panel-body">
             <div class="bs-example">
@@ -101,7 +101,12 @@
       $('.table_purchase').css('display','')
     })
 
-    let basePurchaseAPI = '{{ route('api.purchase_request.index') }}?corpID=' + {{ $company->corp_id }}
+    let basePurchaseAPI
+    if (localStorage.getItem('filter')) {
+      basePurchaseAPI = '{{ route('api.purchase_request.index') }}?corpID=' + {{ $company->corp_id }} + '&branch=' + localStorage.getItem('filter')
+    } else {
+      basePurchaseAPI = '{{ route('api.purchase_request.index') }}?corpID=' + {{ $company->corp_id }} + '&branch=' + $('input[name="checkAccess"]').val()
+    }
 
     let tablePurchase = $('.table-purchases').DataTable({
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
@@ -110,13 +115,14 @@
           Filter: \
           <label>\
           <select class="form-control branch-select" style="width: 150px;"> \
-          <option value="1" selected>For PO</option>\
+          <option value="1">For PO</option>\
           <option value="2">Requests</option>\
           <option value="4">Disapproved</option>\
           <option value="5">For Verification</option> \
           <option value="6">Approved </option>\
           <option value="7">Served </option></select> \
         </div>')
+        checkFilter()
       },
       ajax: basePurchaseAPI,
       columns: [
@@ -257,11 +263,19 @@
   })
 
   checkFilter = () => {
-
+    if (localStorage.getItem('filter')) {
+      $('.branch-select').val(localStorage.getItem('filter'))
+    } else {
+      if ($('input[name="checkAccess"]').val() == 1) {
+        $('.branch-select').val(1)
+      } else if ($('input[name="checkAccess"]').val() == 2) {
+        $('.branch-select').val(2)
+      }
+    }
   }
-  checkFilter()
 
   $('body').on('change', '.branch-select', (event) => {
+    localStorage.setItem('filter', $(event.target).val())
     if ($(event.target).val() == '1') {
       var table = $('.table_purchase').DataTable();
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
@@ -393,8 +407,6 @@
 
   //   tablePart.ajax.url(requestAPI).load()
   // })
-
-  
 })()
 </script>
 @endsection
