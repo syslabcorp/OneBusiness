@@ -157,7 +157,12 @@ class PurchasesController extends Controller
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 		
 		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 2) {
+			if ($purchase->flag == 1) {
+				return view('purchases.detailPO', [
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);
+			} else if ($purchase->flag == 2) {
 				return view('purchases.edit', [
 					'purchase' => $purchase, 
 					'branches' => $branches, 
@@ -171,12 +176,7 @@ class PurchasesController extends Controller
 		} 
 
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
-			if ($purchase->flag == 1) {
-				return view('purchases.detailPO', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 2) {
+			if ($purchase->flag == 2) {
 				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
