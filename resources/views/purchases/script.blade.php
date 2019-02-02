@@ -251,6 +251,22 @@
             }
           });
       })
+      
+      $('input.qty').on('keyup', function () {
+        if ($(this).parents('tr').find('td:eq(0) input').val()) {
+          partID = $(this).parents('tr').find('td:eq(0) input').val() 
+        } else {
+          partID = $(this).parents('tr').find('td:eq(1) input').val()
+        }
+        
+        $.ajax({
+            url: '{{ route('purchase_request.changeQTY') }}?corpID={{ request()->corpID }}&partID='+ partID +'&qty='+ $(this).val(),
+            type: 'GET',
+            success: (res) => {
+              location.reload()
+            }
+          });
+      })
 
       $('.delete_request_verify').on('click', function () {
         let purchaseID = $('input[name="requester_id"]').val()

@@ -476,4 +476,22 @@ class PurchasesController extends Controller
 			'isVerified' => 1
 		]);
 	}
+
+	public function changeQTY() {
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseDetail;
+		$purchaseModel->setConnection($company->database_name);
+
+		$purchase_item = $purchaseModel->findOrFail(request()->partID);
+		
+		$purchase_item->update([
+			'isVerified' => 2,
+			'qty_old' => $purchase_item->qty_to_order,
+			'qty_to_order' => request()->qty
+		]);
+
+		$purchase_item->purchaseRequest->update([
+			'flag' => 5
+		]);
+	}
 }
