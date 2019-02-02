@@ -33,8 +33,6 @@
                     </div>
                     <p class="col-md-8">Some text in the modal.</p>
                   </div>
-                  
-                  
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -43,7 +41,11 @@
                 
             </div>
           </div>
-         
+          @if(\Auth::user()->checkAccessById(58 , 'V'))
+          <input type="hidden" name="checkAccess" value="requester">
+          @elseif(\Auth::user()->checkAccessById(59 , 'V'))
+          <input type="hidden" name="checkAccess" value="purchaser">
+          @endif
           <div class="panel-body">
             <div class="bs-example">
               <div class="tablescroll">
@@ -253,6 +255,11 @@
         [0, 'desc']
       ]
   })
+
+  checkFilter = () => {
+
+  }
+  checkFilter()
 
   $('body').on('change', '.branch-select', (event) => {
     if ($(event.target).val() == '1') {
