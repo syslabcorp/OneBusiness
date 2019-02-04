@@ -138,7 +138,7 @@
 													</div>
 													<div class="modal-body">
 														<p>Reason: </p>
-														<textarea name="" id="" cols="30" rows="2" class="form-control reasons" placeholder="TEST NOT HERE"></textarea>
+														<textarea name="remarks" id="" cols="30" rows="2" class="form-control reasons" placeholder="TEST NOT HERE"></textarea>
 													</div>
 													<div class="modal-footer">
 														<div class="rown">
@@ -146,7 +146,7 @@
 																<button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
 															</div>
 															<div class="col-xs-11 text-right">
-																<button type="button" class="btn btn-danger  disapproved" data-dismiss="modal">Disapprove</button>
+																<button type="button" class="btn btn-danger  disapproved" data-dismiss="modal" name="dissaproved_PR" value="dissaproved">Disapprove</button>
 															</div>
 														</div>
 													</div>

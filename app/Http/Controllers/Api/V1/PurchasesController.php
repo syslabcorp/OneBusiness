@@ -17,7 +17,10 @@ class PurchasesController extends Controller
         
         $items = $purchaseModel->get();
         
-        if ($request->branch == '2') {
+        if ($request->branch == '1') {
+            $items = $items->where('flag', 1);
+        }
+        else if ($request->branch == '2') {
             $items = $items->where('flag', 2);
         }
         else if ($request->branch == '4') {
@@ -31,8 +34,6 @@ class PurchasesController extends Controller
         }
         else if ($request->branch == '7') {
             $items = $items->where('flag', 7);
-        } else {
-            $items = $items->where('flag', 1);
         }
         
         return fractal($items, new PurchasesTransformer)->toJson();
