@@ -156,24 +156,24 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 		
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 1) {
-				return view('purchases.detailPO', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 2) {
-				return view('purchases.edit', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 5) {
-				return view('purchases.verify',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} 
-		} 
+		// if (\Auth::user()->checkAccessById(58 , 'E')) {
+		// 	if ($purchase->flag == 1) {
+		// 		return view('purchases.detailPO', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 2) {
+		// 		return view('purchases.edit', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 5) {
+		// 		return view('purchases.verify',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} 
+		// } 
 
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
 			if ($purchase->flag == 2) {
@@ -300,6 +300,7 @@ class PurchasesController extends Controller
 
 					$purchase_item->update([
 						'flag' => 2,
+						'status' => 'verified',
 						'total_qty' => request()->total_qty,
 						'total_cost' => $sumCost
 					]);
@@ -476,15 +477,44 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail(request()->partID);
 
-		$purchase_item->update([
-			'isVerified' => 2,
-			'qty_old' => $purchase_item->qty_to_order,
-			'qty_to_order' => request()->qty,
-			'remark' => request()->reason
-		]);
+		if ($purchase_item->date_verified) {
+			$purchase_item->update([
+				'qty_old' => $purchase_item->qty_to_order,
+				'qty_to_order' => request()->qty,
+				'remark' => request()->reason
+			]);
+		} else {
+			$purchase_item->update([
+				'isVerified' => 2,
+				'qty_old' => $purchase_item->qty_to_order,
+				'qty_to_order' => request()->qty,
+				'remark' => request()->reason
+			]);
+	
+			$purchase_item->purchaseRequest->update([
+				'flag' => 5
+			]);
+		}
+	}
 
-		$purchase_item->purchaseRequest->update([
-			'flag' => 5
-		]);
+	public function undoQTY() {
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseDetail;
+		$purchaseModel->setConnection($company->database_name);
+
+		$purchase_item = $purchaseModel->findOrFail(request()->partID);
+		
+		if ($purchase_item->purchaseRequest->flag == 5) {
+			$purchase_item->update([
+				'isVerified' => '',
+				'qty_to_order' => $purchase_item->qty_old,
+				'remark' => ''
+			]);
+		} else if ($purchase_item->purchaseRequest->flag == 2) {
+			$purchase_item->update([
+				'qty_to_order' => $purchase_item->qty_old,
+				'remark' => ''
+			]);
+		}
 	}
 }

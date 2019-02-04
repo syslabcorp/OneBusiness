@@ -149,10 +149,8 @@
           data: "pr",
           class: 'text-center',
           render: (data, type, row, meta) => {
-            if (row.date_approved) {
+            if (row.status) {
               return '<a style="color:red" href="{{ route('purchase_request.index') }}/' + row.id + '/edit?corpID={{ request()->corpID }}">'+ data +'</a>'
-            } else if(row.date_disapproved) {
-              return '<a href="{{ route('purchase_request.index') }}/' + row.id + '/edit?corpID={{ request()->corpID }}">'+ data +'</a>'
             } else {
               return '<a href="{{ route('purchase_request.index') }}/' + row.id + '/edit?corpID={{ request()->corpID }}">'+ data +'</a>'
             }

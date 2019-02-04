@@ -242,6 +242,37 @@
         }
       })
 
+      $('.undoQTY').on('click', function () {
+        if ($(this).parents('tr').find('td:eq(0) input').val()) {
+          partID = $(this).parents('tr').find('td:eq(0) input').val() 
+        } else {
+          partID = $(this).parents('tr').find('td:eq(1) input').val()
+        }
+
+         swal({
+          title: "<div class='delete-title'>Undo QTY from PR#["+ $(this).parents('tr').find('td label.index').text() +"]</div>",
+          text:  "<div class='delete-text'></div>",
+          html:  true,
+          customClass: 'swal-wide',
+          confirmButtonClass: 'btn-primary',
+          cancelButtonClass: 'btn-default pull-left',
+          confirmButtonText: 'Undo QTY',
+          showCancelButton: true,
+          closeOnConfirm: true,
+          allowEscapeKey: true
+        }, (data) => {
+          if(data) {
+              $.ajax({
+              url: '{{ route('purchase_request.undoQTY') }}?corpID={{ request()->corpID }}&partID='+ partID,
+              type: 'GET',
+              success: (res) => {
+                // location.reload()
+              }
+            });
+          }
+        });
+      })
+
       $('input.qty').on('change', function (event) {
         if ($(this).parents('tr').find('td:eq(0) input').val()) {
           partID = $(this).parents('tr').find('td:eq(0) input').val() 
@@ -250,7 +281,7 @@
         }
 
         swal({
-          title: "<div class='delete-title'>Delete item from PR#["+ $(this).parents('tr').find('td label.index').text() +"]</div>",
+          title: "<div class='delete-title'>Change QTY item from PR#["+ $(this).parents('tr').find('td label.index').text() +"]</div>",
           text:  "<div class='delete-text'>Reason: </strong></div>\
           &nbsp;\
           <textarea cols='30' rows='2' class='form-control textReason' placeholder='TEST NOT HERE'></textarea>",
@@ -273,10 +304,6 @@
             });
           }
         });
-
-        // if ( event.target.classList[3] != 'qty' ) {
-        //   console.log(event.target.classList[3])
-        // }
       })
 
       $('.delete_request_verify').on('click', function () {

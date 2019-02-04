@@ -91,7 +91,7 @@
               </td>
               <td style="width: 100px;">
                 @if($part->isVerified == 2)
-                  <button type="button" class="btn btn-info btn-md center-block">
+                  <button type="button" class="btn btn-info btn-md center-block undoQTY">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
                 @elseif($part->isVerified == 1)
@@ -169,7 +169,7 @@
             </td>
             <td style="width: 100px;">
               @if($row->isVerified == 2)
-                <button type="button" class="btn btn-info btn-md center-block">
+                <button type="button" class="btn btn-info btn-md center-block undoQTY">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               @elseif($row->isVerified == 1)
