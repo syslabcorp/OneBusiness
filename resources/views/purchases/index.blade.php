@@ -43,7 +43,7 @@
           </div>
           @if(\Auth::user()->checkAccessById(59 , 'V'))
           <input type="hidden" name="checkAccess" value="2">
-          @else if(\Auth::user()->checkAccessById(58 , 'V'))
+          @elseif(\Auth::user()->checkAccessById(58 , 'V'))
           <input type="hidden" name="checkAccess" value="1">
           @endif
           <div class="panel-body">
