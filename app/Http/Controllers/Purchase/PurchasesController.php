@@ -506,7 +506,7 @@ class PurchasesController extends Controller
 		
 		if ($purchase_item->purchaseRequest->flag == 5) {
 			$purchase_item->update([
-				'isVerified' => '',
+				'isVerified' => NULL,
 				'qty_to_order' => $purchase_item->qty_old,
 				'remark' => ''
 			]);

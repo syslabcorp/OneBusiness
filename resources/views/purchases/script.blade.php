@@ -266,7 +266,7 @@
               url: '{{ route('purchase_request.undoQTY') }}?corpID={{ request()->corpID }}&partID='+ partID,
               type: 'GET',
               success: (res) => {
-                // location.reload()
+                location.reload()
               }
             });
           }
