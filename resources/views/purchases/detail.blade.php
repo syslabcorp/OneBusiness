@@ -113,7 +113,7 @@
           @endif
         </div>
         <div class="col-xs-6 text-right after_edit" style="visibility:hidden">
-          <button type="button" class="btn btn-primary btn-save update">
+          <button type="button" class="btn btn-primary btn-update" value="" name="updated">
             <i class="far fa-save"></i> Update PR
           </button>
         </div>

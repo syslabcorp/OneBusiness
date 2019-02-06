@@ -212,6 +212,63 @@ class PurchasesController extends Controller
 			$purchasedetailModel->setConnection($company->database_name);
 			
 			if ($purchase_item->flag == 2) {
+				
+				if (request()->updated) {
+					if ($purchase_item->flag == 2) {
+						$purchase_item->update([
+							'total_qty' => $request->total_qty
+						]);
+					
+						$purchase_item->request_details()->delete();
+							
+						if ($purchase_item->eqp_prt == 'equipment') {
+							if (is_array(request()->parts)) {
+								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+								$purchaseDetailModel->setConnection($company->database_name);
+								foreach (request()->purchases as $purchase) {
+									$detail_parents = $purchaseDetailModel->create([
+										'purchase_request_id' => $purchase_item->id,
+										'item_id' => $purchase['item_id']
+									]);
+									
+									foreach (request()->parts as $key => $part) {
+										if ($key == $purchase['item_id']) {
+											for ($i=1; $i <= count($part['item_id']) ; $i++) { 
+												$purchaseDetailModel->create([
+														'purchase_request_id' => (int) $purchase_item->id,
+														'item_id' => (int) $part['item_id'][$i],
+														'equipment_id' => (int) $detail_parents->id,
+														'qty_to_order' => (int) $part['qty'][$i]
+													]);
+											}
+										}
+									}
+								}
+							}	else {
+								$purchase_item->request_details->each->delete();
+							}
+						} else if ($purchase_item->eqp_prt == 'parts') {
+							if (is_array(request()->purchases)) {
+								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+								$purchaseDetailModel->setConnection($company->database_name);
+								foreach (request()->purchases as $purchase) {
+									$detail_parents = $purchaseDetailModel->create([
+										'purchase_request_id' => (int)$purchase_item->id,
+										'item_id' => $purchase['item_id'],
+										'qty_to_order' => (int) $purchase['qty']
+									]);
+								}
+							} else {
+								$purchase_item->request_details->each->delete();
+							}
+						}
+		
+						\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
+						
+						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+					}
+				}
+
 				if (request()->parts) {
 					if ($purchase_item->eqp_prt == 'equipment' ) {
 						foreach (request()->parts as $key => $part) {
@@ -342,59 +399,60 @@ class PurchasesController extends Controller
 				\Session::flash('success', 'PR#['.$purchase_item->id.'] has been disapproved');
 				
 				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-			} else if ($purchase_item->flag == 2) {
-				$purchase_item->update([
-					'total_qty' => $request->total_qty
-				]);
+			} 
+			// else if ($purchase_item->flag == 2) {
+			// 	$purchase_item->update([
+			// 		'total_qty' => $request->total_qty
+			// 	]);
 			
-				$purchase_item->request_details()->delete();
+			// 	$purchase_item->request_details()->delete();
 					
-				if ($purchase_item->eqp_prt == 'equipment') {
-					if (is_array(request()->parts)) {
-						$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
-						$purchaseDetailModel->setConnection($company->database_name);
-						foreach (request()->purchases as $purchase) {
-							$detail_parents = $purchaseDetailModel->create([
-								'purchase_request_id' => $purchase_item->id,
-								'item_id' => $purchase['item_id']
-							]);
+			// 	if ($purchase_item->eqp_prt == 'equipment') {
+			// 		if (is_array(request()->parts)) {
+			// 			$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+			// 			$purchaseDetailModel->setConnection($company->database_name);
+			// 			foreach (request()->purchases as $purchase) {
+			// 				$detail_parents = $purchaseDetailModel->create([
+			// 					'purchase_request_id' => $purchase_item->id,
+			// 					'item_id' => $purchase['item_id']
+			// 				]);
 							
-							foreach (request()->parts as $key => $part) {
-								if ($key == $purchase['item_id']) {
-									for ($i=1; $i <= count($part['item_id']) ; $i++) { 
-										$purchaseDetailModel->create([
-												'purchase_request_id' => (int) $purchase_item->id,
-												'item_id' => (int) $part['item_id'][$i],
-												'equipment_id' => (int) $detail_parents->id,
-												'qty_to_order' => (int) $part['qty'][$i]
-											]);
-									}
-								}
-							}
-						}
-					}	else {
-						$purchase_item->request_details->each->delete();
-					}
-				} else if ($purchase_item->eqp_prt == 'parts') {
-					if (is_array(request()->purchases)) {
-						$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
-						$purchaseDetailModel->setConnection($company->database_name);
-						foreach (request()->purchases as $purchase) {
-							$detail_parents = $purchaseDetailModel->create([
-								'purchase_request_id' => (int)$purchase_item->id,
-								'item_id' => $purchase['item_id'],
-								'qty_to_order' => (int) $purchase['qty']
-							]);
-						}
-					} else {
-						$purchase_item->request_details->each->delete();
-					}
-				}
+			// 				foreach (request()->parts as $key => $part) {
+			// 					if ($key == $purchase['item_id']) {
+			// 						for ($i=1; $i <= count($part['item_id']) ; $i++) { 
+			// 							$purchaseDetailModel->create([
+			// 									'purchase_request_id' => (int) $purchase_item->id,
+			// 									'item_id' => (int) $part['item_id'][$i],
+			// 									'equipment_id' => (int) $detail_parents->id,
+			// 									'qty_to_order' => (int) $part['qty'][$i]
+			// 								]);
+			// 						}
+			// 					}
+			// 				}
+			// 			}
+			// 		}	else {
+			// 			$purchase_item->request_details->each->delete();
+			// 		}
+			// 	} else if ($purchase_item->eqp_prt == 'parts') {
+			// 		if (is_array(request()->purchases)) {
+			// 			$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
+			// 			$purchaseDetailModel->setConnection($company->database_name);
+			// 			foreach (request()->purchases as $purchase) {
+			// 				$detail_parents = $purchaseDetailModel->create([
+			// 					'purchase_request_id' => (int)$purchase_item->id,
+			// 					'item_id' => $purchase['item_id'],
+			// 					'qty_to_order' => (int) $purchase['qty']
+			// 				]);
+			// 			}
+			// 		} else {
+			// 			$purchase_item->request_details->each->delete();
+			// 		}
+			// 	}
 
-				\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
+			// 	\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
 				
-				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-			}
+			// 	return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+			// }
 		}
 	}
 
