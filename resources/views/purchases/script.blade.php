@@ -262,26 +262,11 @@
           partID = $(this).parents('tr').find('td:eq(1) input').val()
         }
 
-         swal({
-          title: "<div class='delete-title'>Undo QTY from PR#["+ $(this).parents('tr').find('td label.index').text() +"]</div>",
-          text:  "<div class='delete-text'></div>",
-          html:  true,
-          customClass: 'swal-wide',
-          confirmButtonClass: 'btn-primary',
-          cancelButtonClass: 'btn-default pull-left',
-          confirmButtonText: 'Undo QTY',
-          showCancelButton: true,
-          closeOnConfirm: true,
-          allowEscapeKey: true
-        }, (data) => {
-          if(data) {
-              $.ajax({
-              url: '{{ route('purchase_request.undoQTY') }}?corpID={{ request()->corpID }}&partID='+ partID,
-              type: 'GET',
-              success: (res) => {
-                location.reload()
-              }
-            });
+        $.ajax({
+          url: '{{ route('purchase_request.undoQTY') }}?corpID={{ request()->corpID }}&partID='+ partID,
+          type: 'GET',
+          success: (res) => {
+            location.reload()
           }
         });
       })
