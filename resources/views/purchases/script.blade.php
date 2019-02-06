@@ -91,9 +91,9 @@
 
       $('body').on('change', '.quantity', (event) => {
         let $parent = $(event.target).parents('tr')
-        if ($parent.find('td:eq(2) input').val() < 0){
+        if ($parent.find('td:eq(2) input').val() < 1){
           showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
-          $parent.find('td:eq(2) input').val(0)
+          $parent.find('td:eq(2) input').val(1)
         }
         
         if ($parent.find('td:eq(1) input').val() < 0){
@@ -306,34 +306,13 @@
         });
       })
 
-      $('.delete_request_verify').on('click', function () {
-        let purchaseID = $('input[name="requester_id"]').val()
+      $('.edit_verify').on('click', function () {
+        showAlertMessage('Cannot edit this PR anymore.', 'Request Verified:')
+      })
 
-        swal({
-          title: "<div class='delete-title'>Delete request PR#["+ purchaseID +"]</div>",
-          text:  "<div class='delete-text'>Reason: </strong></div>",
-          html:  true,
-          customClass: 'swal-wide',
-          confirmButtonClass: 'btn-danger',
-          cancelButtonClass: 'btn-default pull-left',
-          confirmButtonText: 'Delete Request',
-          showCancelButton: true,
-          closeOnConfirm: true,
-          allowEscapeKey: true
-        }, (data) => {
-          if(data) {
-            $.ajax({
-              url: '{{ route('purchase_request.destroyPurchaseRequest') }}?corpID={{ request()->corpID }}&purchaseID='+ purchaseID,
-              type: 'GET',
-              success: (res) => {
-                if (res['success'] == true) {
-                  window.location = indexLink 
-                }
-              }
-            });
-          }
-        });
-        
+      $('.delete_request_verify').on('click', function () {
+        $(this).val('delete')
+        $('.form').submit()        
       })
 
       $('.delete_part').on('click', function () {

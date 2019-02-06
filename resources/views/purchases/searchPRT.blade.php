@@ -11,7 +11,7 @@
         </select>
     </td>
     <td>
-        <input type="number" name="" class="form-control text-center quantity" value="0">
+        <input type="number" name="" class="form-control text-center quantity" value="1">
     </td>
   
     <td style="width: 100px;" class="rowspan">

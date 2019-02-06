@@ -83,12 +83,15 @@ class PurchasesController extends Controller
 					foreach (request()->parts as $key => $part) {
 						if ($key == $purchase['item_id']) {
 							for ($i=1; $i <= count($part['item_id']) ; $i++) {
-								$purchaseDetailModel->create([
+								if ($part['qty'][$i] > 0) {
+									$purchaseDetailModel->create([
 										'purchase_request_id' => (int) $purchaseModel->id,
 										'item_id' => (int) $part['item_id'][$i],
 										'equipment_id' => (int) $detail_parents->id,
 										'qty_to_order' => (int) $part['qty'][$i]
 									]);
+								}
+								
 							}
 						}
 					}
@@ -283,6 +286,15 @@ class PurchasesController extends Controller
 				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 			}
 			if ( $purchase_item->flag == 5 ) {
+				if (request()->delete_request && request()->parts) {
+					$purchase_item->request_details()->delete();
+					$purchase_item->delete();
+
+					\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been deleted');
+			
+					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+				}
+				
 				if (request()->parts) {
 					$company = Corporation::findOrFail(request()->corpID);
 					$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
@@ -443,20 +455,6 @@ class PurchasesController extends Controller
 		]);
 		
 		$purchase_item->purchaseRequest->update(['flag' => 5]);
-	}
-
-	public function destroyPurchaseRequest() {
-		$company = Corporation::findOrFail(request()->corpID);
-		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
-		$purchaseModel->setConnection($company->database_name);
-		
-		$purchase_item = $purchaseModel->findOrFail(request()->purchaseID);
-		$purchase_item->request_details()->delete();
-		$purchase_item->delete();
-
-		return response()->json([
-			'success' => true
-		]);
 	}
 
 	public function destroyPart() {
