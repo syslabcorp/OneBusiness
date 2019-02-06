@@ -201,6 +201,19 @@
         }
       })
 
+      $('.btn-update').on('click', function() {
+        if ($('input[type="radio"]:checked').length > 0 && checkSelect() ) {
+          if ($('body tr').hasClass('purchaseRow') == false) {
+            showAlertMessage('Nothing to save...', 'Alert:')
+          } else {
+            $(this).val('update_pr')
+            $(this).prop("type", "submit")// submit prop
+          }
+        } else {
+          showAlertMessage('Nothing to save...', 'Alert:')
+        }
+      })
+
       $('.btn-markforpo').on('click', function() {
         if (checkSelect()) {
           $('.form').submit()
