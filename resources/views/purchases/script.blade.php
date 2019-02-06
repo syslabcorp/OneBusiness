@@ -279,31 +279,13 @@
         } else {
           partID = $(this).parents('tr').find('td:eq(1) input').val()
         }
-
-        swal({
-          title: "<div class='delete-title'>Change QTY item from PR#["+ $(this).parents('tr').find('td label.index').text() +"]</div>",
-          text:  "<div class='delete-text'>Reason: </strong></div>\
-          &nbsp;\
-          <textarea cols='30' rows='2' class='form-control textReason' placeholder='TEST NOT HERE'></textarea>",
-          html:  true,
-          customClass: 'swal-wide',
-          confirmButtonClass: 'btn-primary',
-          cancelButtonClass: 'btn-default pull-left',
-          confirmButtonText: 'Change QTY',
-          showCancelButton: true,
-          closeOnConfirm: true,
-          allowEscapeKey: true
-        }, (data) => {
-          if(data) {
-              $.ajax({
-              url: '{{ route('purchase_request.changeQTY') }}?corpID={{ request()->corpID }}&partID='+ partID +'&qty='+ $(this).val() + '&reason=' + $('.textReason').val(),
-              type: 'GET',
-              success: (res) => {
-                location.reload()
-              }
-            });
+        $.ajax({
+          url: '{{ route('purchase_request.changeQTY') }}?corpID={{ request()->corpID }}&partID='+ partID +'&qty='+ $(this).val() + '&reason=' + $('.textReason').val(),
+          type: 'GET',
+          success: (res) => {
+            location.reload()
           }
-        });
+        });    
       })
 
       $('.edit_verify').on('click', function () {

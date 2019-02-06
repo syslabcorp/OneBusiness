@@ -90,7 +90,7 @@
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
               </td>
               <td style="width: 100px;">
-                @if(($row->status == 'NULL') && ($part->isVerified == 2))
+                @if(($part->date_verified == NULL) && ($part->isVerified == 2))
                   <button type="button" class="btn btn-info btn-md center-block undoQTY">
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
@@ -168,7 +168,7 @@
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
             </td>
             <td style="width: 100px;">
-              @if(($row->purchaseRequest->status == 'NULL') && ($row->isVerified == 2))
+              @if(($row->date_verified == NULL) && ($row->isVerified == 2))
                 <button type="button" class="btn btn-info btn-md center-block undoQTY">
                   <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
