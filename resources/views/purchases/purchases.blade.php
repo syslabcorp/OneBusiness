@@ -9,10 +9,12 @@
         <th style="width: 25%">Item #</th>
         <th style="width: 25%">Item Name</th>
         <th style="width: 15%">Qty to Order</th>
-        @if($purchase->flag == 1)
+        @if(($purchase->flag == 1) || ($purchase->flag == 7))
         <th style="width: 15%">Qty Delivered</th>
         @endif
+        @if(($purchase->flag != 1) && ($purchase->flag != 7))
         <th>Action</th>
+        @endif
       </tr>
     </thead>
     <tbody>
@@ -60,14 +62,16 @@
           <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $row->qty_to_order }}" autocomplete="off" readonly>
           @endif
           </td>
-          @if($purchase->flag == 1)
+          @if(($purchase->flag == 1) || ($purchase->flag == 7))
           <td><label for=""></label></td>
           @endif
+          @if(($purchase->flag != 1) && ($purchase->flag != 7))
           <td style="width: 100px;" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }}>
             <button type="button" {{ $purchase->id ? 'disabled' : '' }} class="btn btn-danger btn-md btnRemoveRow center-block">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
+          @endif
         </tr>
         @foreach($row->parts as $part)
         <tr class="rowTR" data-parent="{{ $row->item_id }}">
@@ -78,7 +82,7 @@
           <td>
             <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
           </td>
-          @if($purchase->flag == 1)
+          @if(($purchase->flag == 1) || ($purchase->flag == 7))
           <td>
             <label for=""></label>
           </td>

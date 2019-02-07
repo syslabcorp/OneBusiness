@@ -48,6 +48,16 @@
 																<label for="" class="form-control">{{ $purchase->description }}</label>
 															</div>
 													</div>
+													@if($purchase->po)
+													<div class="rown">
+															<div class="col-sm-4 form-group">
+																<label style="padding: 5px;"><strong>PO# </strong></label>
+															</div>
+															<div class="col-sm-9 form-group">
+																<label for="" class="form-control">{{ $purchase->po }}</label>
+															</div>
+													</div>
+													@endif
 												</div>
 												<div class="col-sm-4">
 													<div class="rown">
@@ -95,6 +105,7 @@
 											<div class="col-xs-6">
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
 											</div>
+											@if(($purchase->flag != 4) && ($purchase->flag != 6)) 
 											<div class="col-xs-6 text-right">
 											@if ($purchase->flag != 5 )
 												<button type="button"class="btn btn-danger access_mark" data-toggle="modal" data-target="#lewit">Disapprove Request</button>
@@ -175,6 +186,7 @@
 													</div>
 												</div>
 											</div>
+											@endif
 										</div>   
 
 										</form>
