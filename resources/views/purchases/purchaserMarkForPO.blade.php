@@ -10,7 +10,9 @@
         <th style="width: 12%">Qty Ordered </th>
         <th style="width: 12%">Cost </th>
         <th style="width: 12%">Total Cost</th>
-        <th style="width: 12%">Action </th>
+          @if(($purchase->flag != 4) && ($purchase->flag != 6)) 
+          <th style="width: 12%">Action </th>
+          @endif
         @elseif($purchase->eqp_prt == 'parts')
         <th style="width: 12%">Item #</th>
         <th style="width: 12%">Item </th>
@@ -19,7 +21,9 @@
         <th style="width: 12%">Qty Ordered </th>
         <th style="width: 12%">Cost </th>
         <th style="width: 12%">Total Cost</th>
-        <th style="width: 12%">Action </th>
+          @if(($purchase->flag != 4) && ($purchase->flag != 6)) 
+          <th style="width: 12%">Action </th>
+          @endif
         @endif
       </tr>
     </thead>
@@ -89,6 +93,7 @@
               <td>
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
               </td>
+              @if(($purchase->flag != 4) && ($purchase->flag != 6)) 
               <td style="width: 100px;">
                 @if(($part->date_verified == NULL) && ($part->isVerified == 2))
                   <button type="button" class="btn btn-info btn-md center-block undoQTY">
@@ -104,6 +109,7 @@
                   </button>
                 @endif
               </td>
+              @endif
             </tr>
             @php 
               $index --;
@@ -167,6 +173,7 @@
             <td class="text-right">
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
             </td>
+            @if(($purchase->flag != 4) && ($purchase->flag != 6)) 
             <td style="width: 100px;">
               @if(($row->date_verified == NULL) && ($row->isVerified == 2))
                 <button type="button" class="btn btn-info btn-md center-block undoQTY">
@@ -182,6 +189,7 @@
                 </button>
               @endif
             </td>  
+            @endif
         @endif
       @endforeach 
       @endif
