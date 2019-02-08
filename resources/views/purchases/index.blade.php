@@ -43,8 +43,7 @@
           </div>
           @if(\Auth::user()->checkAccessById(59 , 'V'))
           <input type="hidden" name="checkAccess" value="2">
-          @elseif(\Auth::user()->checkAccessById(58 , 'V'))
-          <input type="hidden" name="checkAccess" value="1">
+        
           @endif
           <div class="panel-body">
             <div class="bs-example">
@@ -109,6 +108,7 @@
     }
 
     let tablePurchase = $('.table-purchases').DataTable({
+      colReorder: true,
       dom: '<"m-t-10"B><"m-t-10 pull-left"l><"m-t-10 pull-right"f><"#customFilter">rt<"pull-left m-t-10"i><"m-t-10 pull-right"p>',
       initComplete: ()  => {
         $("#customFilter").append('<div class="col-sm-9 " style="margin: 0px 0px; padding: 0px"> \
@@ -280,9 +280,10 @@
       table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,21] ).visible( false );
+        // table.columns( [0,5,8,9,10,11,12,13,14,15,16,17,18,21] ).visible( false );
+        table.colReorder.order( [1,3,1,4], true );
       } else if ($('input[name="checkAccess"]').val() == 2) {
-        table.columns( [0,8,9,10,11,12,13,14,15,16,17,18,21] ).visible( false );
+        // table.columns( [0,9,10,11,12,13,14,15,16,17,18,21] ).visible( false );
       }
     } else if ($(event.target).val() == '2') {
       var table = $('.table_purchase').DataTable();
