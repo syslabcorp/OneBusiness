@@ -51,14 +51,23 @@
 												</div>
 												<div class="rown">
 													<div class="col-sm-3 form-group text-right">
-														<label style="padding: 5px;"><strong>Description :</strong></label>
+														<label style="padding: 5px;"><strong>Description </strong></label>
 													</div>
 													<div class="col-sm-9 form-group">
 														<input type="text" class="form-control" name="description" value="{{ $purchase->description ? $purchase->description : ''}}" {{ $purchase->id ? 'disabled' : '' }}>
 													</div>
 												</div>
-												
+							
+												<div class="rown">
+														<div class="col-sm-3 form-group text-right">
+															<label style="padding: 5px;"><strong>PO# </strong></label>
+														</div>
+														<div class="col-sm-9 form-group">
+															<label for="" class="form-control">{{ $purchase->po }}</label>
+														</div>
+												</div>
 											</div>
+										
 											<div class="col-sm-6">
 												<div class="rown">
 													<div class="col-sm-5 form-group text-right">
