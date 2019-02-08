@@ -194,7 +194,12 @@ class PurchasesController extends Controller
 		} 
 	
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
-			if ($purchase->flag == 2) {
+			if ($purchase->flag == 1) {
+				return view('purchases.detailPO', [
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);
+			} else if ($purchase->flag == 2) {
 				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
@@ -211,6 +216,11 @@ class PurchasesController extends Controller
 					]);
 			} else if ($purchase->flag == 6) {
 				return view('purchases.MarkForPO',[
+					'purchase' => $purchase, 
+					'branches' => $branches, 
+					]);
+			} else if ($purchase->flag == 7) {
+				return view('purchases.detailPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
