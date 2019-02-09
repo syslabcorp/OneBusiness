@@ -57,7 +57,7 @@
 														<input type="text" class="form-control" name="description" value="{{ $purchase->description ? $purchase->description : ''}}" {{ $purchase->id ? 'disabled' : '' }}>
 													</div>
 												</div>
-							
+												@if($purchase->po)
 												<div class="rown">
 														<div class="col-sm-3 form-group text-right">
 															<label style="padding: 5px;"><strong>PO# </strong></label>
@@ -66,6 +66,7 @@
 															<label for="" class="form-control">{{ $purchase->po }}</label>
 														</div>
 												</div>
+												@endif
 											</div>
 										
 											<div class="col-sm-6">

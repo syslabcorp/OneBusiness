@@ -316,6 +316,8 @@
         $('.btnRemoveRow').prop('disabled', false)
         $('.quantity').prop('readonly', false)
         $('select.brand').prop('disabled', false)
+        $('select[name="branch"]').prop('disabled', false)
+        $('input[name="description"]').prop('disabled', false)
         $('.before_edt').remove()
         $('.after_edit').css('visibility', '')
       })

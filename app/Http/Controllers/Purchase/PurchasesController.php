@@ -71,7 +71,7 @@ class PurchasesController extends Controller
 		]);
 
 		if ($purchaseParams['eqp_prt'] == 'equipment') {
-			if (is_array(request()->parts)) {
+			if (is_array(request()->purchases)) {
 				$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 				$purchaseDetailModel->setConnection($company->database_name);
 				foreach (request()->purchases as $purchase) {
@@ -79,22 +79,22 @@ class PurchasesController extends Controller
 						'purchase_request_id' => $purchaseModel->id,
 						'item_id' => $purchase['item_id']
 					]);
-					
-					foreach (request()->parts as $key => $part) {
-						if ($key == $purchase['item_id']) {
-							for ($i=1; $i <= count($part['item_id']) ; $i++) {
-								if ($part['qty'][$i] > 0) {
-									$purchaseDetailModel->create([
-										'purchase_request_id' => (int) $purchaseModel->id,
-										'item_id' => (int) $part['item_id'][$i],
-										'equipment_id' => (int) $detail_parents->id,
-										'qty_to_order' => (int) $part['qty'][$i]
-									]);
+					if (request()->parts) {
+						foreach (request()->parts as $key => $part) {
+							if ($key == $purchase['item_id']) {
+								for ($i=1; $i <= count($part['item_id']) ; $i++) {
+									if ($part['qty'][$i] > 0) {
+										$purchaseDetailModel->create([
+											'purchase_request_id' => (int) $purchaseModel->id,
+											'item_id' => (int) $part['item_id'][$i],
+											'equipment_id' => (int) $detail_parents->id,
+											'qty_to_order' => (int) $part['qty'][$i]
+										]);
+									}
 								}
-								
 							}
 						}
-					}
+					} 
 				}
 			}
 		} else if ($purchaseParams['eqp_prt'] == 'parts') {
@@ -159,39 +159,39 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 		
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 1) {
-				return view('purchases.detailPO', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 2) {
-				return view('purchases.edit', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 4) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 5) {
-				return view('purchases.verify',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 6) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 7) {
-				return view('purchases.detailPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} 
-		} 
+		// if (\Auth::user()->checkAccessById(58 , 'E')) {
+		// 	if ($purchase->flag == 1) {
+		// 		return view('purchases.detailPO', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 2) {
+		// 		return view('purchases.edit', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 4) {
+		// 		return view('purchases.MarkForPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 5) {
+		// 		return view('purchases.verify',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 6) {
+		// 		return view('purchases.MarkForPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 7) {
+		// 		return view('purchases.detailPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} 
+		// } 
 	
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
 			if ($purchase->flag == 1) {
@@ -247,17 +247,18 @@ class PurchasesController extends Controller
 			$purchasedetailModel->setConnection($company->database_name);
 			
 			if ($purchase_item->flag == 2) {
-				
 				if (request()->updated) {
 					if ($purchase_item->flag == 2) {
 						$purchase_item->update([
+							'branch' => $request->branch,
+							'description' => $request->description,
 							'total_qty' => $request->total_qty
 						]);
 					
 						$purchase_item->request_details()->delete();
 							
 						if ($purchase_item->eqp_prt == 'equipment') {
-							if (is_array(request()->parts)) {
+							if (is_array(request()->purchases)) {
 								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 								$purchaseDetailModel->setConnection($company->database_name);
 								foreach (request()->purchases as $purchase) {
@@ -265,19 +266,35 @@ class PurchasesController extends Controller
 										'purchase_request_id' => $purchase_item->id,
 										'item_id' => $purchase['item_id']
 									]);
-									
-									foreach (request()->parts as $key => $part) {
-										if ($key == $purchase['item_id']) {
-											for ($i=1; $i <= count($part['item_id']) ; $i++) { 
-												$purchaseDetailModel->create([
-														'purchase_request_id' => (int) $purchase_item->id,
-														'item_id' => (int) $part['item_id'][$i],
-														'equipment_id' => (int) $detail_parents->id,
-														'qty_to_order' => (int) $part['qty'][$i]
-													]);
+						
+									if (request()->parts) {
+										foreach (request()->parts as $key => $part) {
+											if ($key == $purchase['item_id']) {
+												if (is_array($part['item_id'])) {
+													for ($i=1; $i <= count($part['item_id']) ; $i++) { 
+														if ($part['qty'][$i] > 0) {
+															$purchaseDetailModel->create([
+																'purchase_request_id' => (int) $purchase_item->id,
+																'item_id' => (int) $part['item_id'][$i],
+																'equipment_id' => (int) $detail_parents->id,
+																'qty_to_order' => (int) $part['qty'][$i]
+															]);
+														}
+													}
+												} else {
+													if ($part['qty'] > 0) {
+														$purchaseDetailModel->create([
+															'purchase_request_id' => (int) $purchase_item->id,
+															'item_id' => (int) $part['item_id'],
+															'equipment_id' => (int) $detail_parents->id,
+															'qty_to_order' => (int) $part['qty']
+														]);
+													}
+												}
 											}
 										}
 									}
+									
 								}
 							}	else {
 								$purchase_item->request_details->each->delete();
