@@ -1,7 +1,9 @@
 <div class="table-responsive table-purchases" style="display: ;">
   <div class="text-right" style="visibility:{{ $purchase->flag == 1 ? 'hidden' : '' }}">
-    <button type="button"  {{ $purchase->id ? 'disabled' : '' }}
+  @if($purchase->flag != 1)
+  <button type="button"  {{ $purchase->id ? 'disabled' : '' }}
       class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
+  @endif
   </div>
   <table class="table table-bordered table-striped">
     <thead>
@@ -33,6 +35,24 @@
         
         <tr class="purchaseRow" data-id="{{ $row->item_id }}">
           <td class="text-center" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }} >
+            @if ($row->isVerified == 2)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Quantity  Changed</strong>
+                    <p class="item">from {{ $row->qty_old }} to {{ $row->qty_to_order }}</p>
+                  @if($row->date_verified)
+                    <p class="item" style="color:red">Verified  {{ $row->date_verified }}</p>
+                  @endif
+                </div>
+              </i>
+            @elseif ($row->isVerified == 1)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Item Deleted</strong>
+                  <p class="item">{{ $row->remark }}</p>
+                </div>
+              </i>
+            @endif 
             <label class="label-table-min index">{{ $a++ }}</label>
           </td>
           <td class="text-center">
@@ -76,11 +96,29 @@
         @foreach($row->parts as $part)
         <tr class="rowTR" data-parent="{{ $row->item_id }}">
           <td class="text-center">
+            @if ($part->isVerified == 2)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Quantity  Changed</strong>
+                    <p class="item">from {{ $part->qty_old }} to {{ $part->qty_to_order }}</p>
+                  @if($part->date_verified)
+                    <p class="item" style="color:red">Verified  {{ $part->date_verified }}</p>
+                  @endif
+                </div>
+              </i>
+            @elseif ($part->isVerified == 1)
+              <i class="fas fa-exclamation-triangle dropDown">
+                <div class="menuDropDown">
+                  <strong class="title">Item Deleted</strong>
+                  <p class="item">{{ $part->remark }}</p>
+                </div>
+              </i>
+            @endif 
             <label for="">{{ $part->itemMaster() ? $part->itemMaster()->description : 'NaN'}}</label>
-            <input type="hidden" name="parts[{{ $row->item_id }}][item_id][{{ $loop->index+1 }}]" value="{{ $part->item_id }}">
+            <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $part->item_id }}">
           </td>
           <td>
-            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
+            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
           </td>
           @if(($purchase->flag == 1) || ($purchase->flag == 7))
           <td>

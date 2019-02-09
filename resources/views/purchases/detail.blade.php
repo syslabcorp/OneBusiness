@@ -26,8 +26,7 @@
             <div class="col-sm-9 form-group">
               <select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
               @foreach($branches as $branch)
-              {{ $branch->id }}
-              @if ($branch->id == $purchase->branch)
+              @if ($branch->Branch == $purchase->branch)
                 <option value="{{ $branch->Branch }}" selected>{{ $branch->ShortName }}</option>
               @else
                 <option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
@@ -89,7 +88,11 @@
               <label style="padding: 5px;"><strong>JO# </strong></label>
             </div>
             <div class="col-sm-7 form-group">
+            @if(!$purchase->job_order)
               <label for="" style="color:#8dd0f6;padding: 5px;">00000</label>
+            @else
+              <a href="" style="color:#8dd0f6;padding: 5px;">{{ $purchase->job_order }}</a>
+            @endif
             </div>
           </div>
         </div>

@@ -83,7 +83,11 @@
 																<label style="padding: 5px;"><strong>JO# </strong></label>
 															</div>
 															<div class="col-sm-4 form-group">
-																<label for="" class="form-control"></label>
+															@if(!$purchase->job_order)
+																<label for="" style="color:#8dd0f6;padding: 5px;">00000</label>
+															@else
+																<a href="" style="color:#8dd0f6;padding: 5px;">{{ $purchase->job_order }}</a>
+															@endif
 															</div>
 													</div>
 													<div class="rown">
