@@ -268,6 +268,7 @@
   checkFilter = () => {
     if (localStorage.getItem('filter')) {
       $('.branch-select').val(localStorage.getItem('filter'))
+      showFilter(localStorage.getItem('filter'))
     } else {
       if ($('input[name="checkAccess"]').val() == 1) {
         $('.branch-select').val(1)
@@ -277,11 +278,63 @@
     }
   }
 
+  showFilter = (filter) => {
+    var table = $('.table_purchase').DataTable();
+    table.ajax.url(basePurchaseAPI + '&branch=' + filter ).load()
+    
+    if (filter == '1') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      if ($('input[name="checkAccess"]').val() == 1) {
+        table.columns( [0,1,2,6,7,10,13,14,15,18,19,20,21] ).visible( false );
+      } else if ($('input[name="checkAccess"]').val() == 2) {
+        table.columns( [0,1,2,6,10,13,14,15,18,19,20,21] ).visible( false );
+      }
+    } else if (filter == '2') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      if ($('input[name="checkAccess"]').val() == 1) {
+        table.columns( [0,1,2,6,7,10,13,14,15,18,19,20] ).visible( false );
+      } else if ($('input[name="checkAccess"]').val() == 2) {
+        table.columns( [0,1,2,6,10,13,14,15,18,19,20] ).visible( false );
+      }
+    } else if (filter == '3') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      if ($('input[name="checkAccess"]').val() == 1) {
+        table.columns( [0,1,2,6,7,10,15,18,19,20,21] ).visible( false );
+      } else if ($('input[name="checkAccess"]').val() == 2) {
+        table.columns( [0,1,2,6,10,15,18,19,20,21] ).visible( false );
+      }
+    } else if(filter == '4') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      if ($('input[name="checkAccess"]').val() == 1) {
+        table.columns( [0,1,3,7,10,13,18,19,20,21] ).visible( false );
+      } else if ($('input[name="checkAccess"]').val() == 2) {
+        table.columns( [0,1,3,10,13,18,19,20,21] ).visible( false );
+      }
+    } 
+    else if(filter == '5') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      if ($('input[name="checkAccess"]').val() == 1) {
+        table.columns( [0,1,2,6,10,12,13,14,15,18,20] ).visible( false );
+      } else if ($('input[name="checkAccess"]').val() == 2) {
+        table.columns( [0,1,2,6,10,12,13,14,15,18,20,21] ).visible( false );
+      }
+    }
+    else if(filter == '6') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,2,3,7,13,14,15,19,20,21] ).visible( false );
+    }
+    else if(filter == '7') {
+      table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
+      table.columns( [0,1,2,7,10,13,14,15,18,19,20,21] ).visible( false );
+    }
+  }
+
   $('body').on('change', '.branch-select', (event) => {
     localStorage.setItem('filter', $(event.target).val())
+    var table = $('.table_purchase').DataTable();
+    table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
+
     if ($(event.target).val() == '1') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
         table.columns( [0,1,2,6,7,10,13,14,15,18,19,20,21] ).visible( false );
@@ -289,8 +342,6 @@
         table.columns( [0,1,2,6,10,13,14,15,18,19,20,21] ).visible( false );
       }
     } else if ($(event.target).val() == '2') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
         table.columns( [0,1,2,6,7,10,13,14,15,18,19,20] ).visible( false );
@@ -298,8 +349,6 @@
         table.columns( [0,1,2,6,10,13,14,15,18,19,20] ).visible( false );
       }
     } else if ($(event.target).val() == '3') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
         table.columns( [0,1,2,6,7,10,15,18,19,20,21] ).visible( false );
@@ -307,8 +356,6 @@
         table.columns( [0,1,2,6,10,15,18,19,20,21] ).visible( false );
       }
     } else if($(event.target).val() == '4') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
         table.columns( [0,1,3,7,10,13,18,19,20,21] ).visible( false );
@@ -317,8 +364,6 @@
       }
     } 
     else if($(event.target).val() == '5') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
         table.columns( [0,1,2,6,10,12,13,14,15,18,20] ).visible( false );
@@ -327,14 +372,10 @@
       }
     }
     else if($(event.target).val() == '6') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       table.columns( [0,2,3,7,13,14,15,19,20,21] ).visible( false );
     }
     else if($(event.target).val() == '7') {
-      var table = $('.table_purchase').DataTable();
-      table.ajax.url(basePurchaseAPI + '&branch=' + $(event.target).val() ).load()
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       table.columns( [0,1,2,7,10,13,14,15,18,19,20,21] ).visible( false );
     }
