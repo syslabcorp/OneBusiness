@@ -209,7 +209,14 @@
         {
           targets: 13,
           data: "status",
-          class: 'text-center'
+          class: 'text-center',
+          render: (data, type, row, meta) => {
+            if (row.date_approved) {
+              return 'For PO'
+            } else {
+              return ''
+            }
+          }
         },
         {
           targets: 14,
