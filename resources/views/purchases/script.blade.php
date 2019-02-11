@@ -271,6 +271,22 @@
         });
       })
 
+      $('.undoDelete').on('click', function () {
+        if ($(this).parents('tr').find('td:eq(0) input').val()) {
+          partID = $(this).parents('tr').find('td:eq(0) input').val() 
+        } else {
+          partID = $(this).parents('tr').find('td:eq(1) input').val()
+        }
+
+        $.ajax({
+          url: '{{ route('purchase_request.undoDelete') }}?corpID={{ request()->corpID }}&partID='+ partID,
+          type: 'GET',
+          success: (res) => {
+            location.reload()
+          }
+        });
+      })
+
       $('input.qty').on('change', function (event) {
         if ($(this).parents('tr').find('td:eq(0) input').val()) {
           partID = $(this).parents('tr').find('td:eq(0) input').val() 
@@ -369,7 +385,10 @@
           }   
         });
       }
-  
+      
+      $('.for-verification').on('click', function() {
+        $('.form').submit()
+      })
 
       checkSelect = () => {
         let $value = true
