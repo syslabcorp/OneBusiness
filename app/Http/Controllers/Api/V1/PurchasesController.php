@@ -15,7 +15,7 @@ class PurchasesController extends Controller
         $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
         $purchaseModel->setConnection($company->database_name);
         
-        $items = $purchaseModel->get();
+        $items = $purchaseModel->where('requester_id', \Auth::user()->UserID)->get();
         
         if ($request->branch == '1') {
             $items = $items->where('flag', 1);
