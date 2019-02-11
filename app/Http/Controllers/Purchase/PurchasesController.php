@@ -159,39 +159,39 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 		
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 1) {
-				return view('purchases.detailPO', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 2) {
-				return view('purchases.edit', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 4) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 5) {
-				return view('purchases.verify',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 6) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 7) {
-				return view('purchases.detailPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} 
-		} 
+		// if (\Auth::user()->checkAccessById(58 , 'E')) {
+		// 	if ($purchase->flag == 1) {
+		// 		return view('purchases.detailPO', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 2) {
+		// 		return view('purchases.edit', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 4) {
+		// 		return view('purchases.MarkForPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 5) {
+		// 		return view('purchases.verify',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 6) {
+		// 		return view('purchases.MarkForPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 7) {
+		// 		return view('purchases.detailPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} 
+		// } 
 	
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
 			if ($purchase->flag == 1) {
@@ -519,6 +519,8 @@ class PurchasesController extends Controller
 		$purchase->request_details()->delete();
 
 		$purchase->delete();
+		
+		\Session::flash('success', 'Purchase #'.$purchase->id.' has been cancelled and deleted');
 	}
 
 	public function getBrands()
@@ -588,15 +590,13 @@ class PurchasesController extends Controller
 		if ($purchase_item->date_verified) {
 			$purchase_item->update([
 				'qty_old' => $purchase_item->qty_to_order,
-				'qty_to_order' => request()->qty,
-				'remark' => request()->reason
+				'qty_to_order' => request()->qty
 			]);
 		} else {
 			$purchase_item->update([
 				'isVerified' => 2,
 				'qty_old' => $purchase_item->qty_to_order,
-				'qty_to_order' => request()->qty,
-				'remark' => request()->reason
+				'qty_to_order' => request()->qty
 			]);
 	
 			$purchase_item->purchaseRequest->update([

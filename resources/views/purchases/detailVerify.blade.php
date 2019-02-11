@@ -28,7 +28,7 @@
 														<label style="padding: 5px;"><strong>P.R#  </strong></label>
 													</div>
 													<div class="col-sm-9 form-group">
-														<input type="text" class="form-control" value="{{ $purchase->id ? $purchase->user->UserName : \Auth::user()->UserName }}" {{ $purchase->id ? 'readonly' : '' }}>
+														<input type="text" class="form-control" value="{{ $purchase->id ? $purchase->id : \Auth::user()->UserName }}" {{ $purchase->id ? 'readonly' : '' }}>
 														<input type="hidden" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : \Auth::user()->UserID }}" {{ $purchase->id ? 'readonly' : '' }}>
 													</div>
 												</div>
