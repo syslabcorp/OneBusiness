@@ -28,7 +28,7 @@
 																<label style="padding: 5px;"><strong>P.R # </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
-																<label for="" class="form-control">{{ $purchase->id ? $purchase->id : $user_id }}</label>
+																<input type="text" class="form-control" value="{{ $purchase->id ? $purchase->id : $user_id }}" disabled>
 																<input type="hidden" class="form-control" name="requester_id" value="{{ $purchase->id ? $purchase->id : $user_id }}">
 															</div>
 													</div>
@@ -37,7 +37,7 @@
 																<label style="padding: 5px;"><strong>Branch </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
-																<label for="" class="form-control">{{ $purchase->getBranch->ShortName }}</label>
+																<input type="text" class="form-control" value="{{ $purchase->getBranch->ShortName }}" disabled>
 															</div>
 													</div>
 													<div class="rown">
@@ -45,7 +45,7 @@
 																<label style="padding: 5px;"><strong>Description </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
-																<label for="" class="form-control">{{ $purchase->description }}</label>
+																<input type="text" class="form-control" value="{{ $purchase->description }}" disabled>
 															</div>
 													</div>
 													@if($purchase->po)
@@ -54,7 +54,7 @@
 																<label style="padding: 5px;"><strong>PO# </strong></label>
 															</div>
 															<div class="col-sm-9 form-group">
-																<label for="" class="form-control">{{ $purchase->po }}</label>
+																<input type="text" class="form-control" value="{{ $purchase->po }}" disabled>
 															</div>
 													</div>
 													@endif
@@ -65,7 +65,7 @@
 																<label style="padding: 5px;"><strong>Request Type </strong></label>
 															</div>
 															<div class="col-sm-5 form-group">
-																<label for="" class="form-control">{{ $purchase->eqp_prt }}</label>
+																<input type="text" class="form-control" value="{{ $purchase->eqp_prt }}" disabled>
 															</div>
 													</div>
 													<div class="rown">
@@ -73,7 +73,7 @@
 																<label style="padding: 5px;"><strong>Date Requested </strong></label>
 															</div>
 															<div class="col-sm-4 form-group">
-																<label for="" class="form-control">{{ date('Y-m-d') }}</label>
+																<input type="text" class="form-control" value="{{ date('Y-m-d') }}" disabled>
 															</div>
 													</div>
 												</div>
@@ -116,7 +116,7 @@
 												<button type="button" class="btn btn-primary access_mark" name="mark" data-toggle="modal" data-target="#lewit1">Mark for PO</button>
 											@else
 												<button class="btn btn-danger " disabled>Disapprove Request</button>
-												<a class="btn btn-primary" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">For Verification</a>
+												<button class="btn btn-primary for-verification" >For Verification</button>
 											@endif
 											</div>
 										</div>

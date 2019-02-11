@@ -100,8 +100,8 @@
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
                 @elseif($part->isVerified == 1)
-                  <button type="button" class="btn btn-danger btn-md center-block" disabled>
-                    <i class="fas fa-trash-alt"></i>
+                  <button type="button" class="btn btn-info btn-md center-block undoDelete">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
                 @else 
                   <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
@@ -180,8 +180,8 @@
                   <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               @elseif($row->isVerified == 1)
-                <button type="button" class="btn btn-danger btn-md center-block" disabled>
-                  <i class="fas fa-trash-alt"></i>
+                <button type="button" class="btn btn-info btn-md center-block undoDelete">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               @else 
                 <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
