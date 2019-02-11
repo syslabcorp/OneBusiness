@@ -104,6 +104,7 @@
       }
       $('.table_purchase').css('display','')
     })
+    let indexLink = "{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}"
 
     let basePurchaseAPI
     if (localStorage.getItem('filter')) {
@@ -292,7 +293,7 @@
     if (filter == '1') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,2,6,7,10,13,14,15,18,19,20,21] ).visible( false );
+        table.columns( [0,1,2,6,7,10,12,13,14,15,18,19,20,21] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,2,6,10,13,14,15,18,19,20,21] ).visible( false );
       }
@@ -306,14 +307,14 @@
     } else if (filter == '3') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,2,6,7,10,15,18,19,20,21] ).visible( false );
+        table.columns( [0,1,2,6,7,10,12,15,18,19,20,21] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,2,6,10,15,18,19,20,21] ).visible( false );
       }
     } else if(filter == '4') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,3,7,10,13,18,19,20,21] ).visible( false );
+        table.columns( [0,1,3,7,10,12,13,18,19,20,21] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,3,10,13,18,19,20,21] ).visible( false );
       }
@@ -344,7 +345,7 @@
     if ($(event.target).val() == '1') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,2,6,7,10,13,14,15,18,19,20,21] ).visible( false );
+        table.columns( [0,1,2,6,7,10,12,13,14,15,18,19,20,21] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,2,6,10,13,14,15,18,19,20,21] ).visible( false );
       }
@@ -358,14 +359,14 @@
     } else if ($(event.target).val() == '3') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,2,6,7,10,15,18,19,20,21] ).visible( false );
+        table.columns( [0,1,2,6,7,10,12,15,18,19,20,21] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,2,6,10,15,18,19,20,21] ).visible( false );
       }
     } else if($(event.target).val() == '4') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,3,7,10,13,18,19,20,21] ).visible( false );
+        table.columns( [0,1,3,7,10,12,13,18,19,20,21] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,3,10,13,18,19,20,21] ).visible( false );
       }
@@ -417,18 +418,8 @@
         url: '{{ route('purchase_request.index') }}/' + id + '/?corpID={{ request()->corpID }}',
         type: 'DELETE',
         success: (res) => {
-          tablePurchase.ajax.reload()
-          swal({
-            title: "<div class='delete-title'>Deleted </div>",
-            text:  "<div class='delete-text'>PR#["+ id +"] has been cancelled and deleted.</strong></div>",
-            html:  true,
-            customClass: 'swal-wide',
-            confirmButtonClass: 'btn-primary',
-            confirmButtonText: 'Delete',
-            showCancelButton: true,
-            closeOnConfirm: true,
-            allowEscapeKey: true
-          })
+          window.location.reload()
+
         }
       })
       }

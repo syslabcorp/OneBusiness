@@ -28,7 +28,7 @@
             <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $item->id }}][qty]" value="{{ $item->qty_to_order }}" autocomplete="off" readonly>
           </td>
           <td class="text-center">
-            <label for="">{{ $item->remark }}</label>
+            <label for="">{{ $item->remark ? $item->remark : ''}}</label>
           </td>
           <td style="width: 100px;" >
             @if($item->isVerified == 2)
