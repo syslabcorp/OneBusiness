@@ -210,7 +210,7 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 5) {
-				return view('purchases.MarkForPO',[
+				return view('purchases.ViewDetailMarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
@@ -331,9 +331,7 @@ class PurchasesController extends Controller
 									'cost' => $row['cost']
 								]);
 								if ($row['qty_to_order'] != $purchase->qty_to_order) {
-									$purchase_item->update([
-										'flag' => 5,
-									]);
+									// $purchase_item->update(['flag' => 5 ]);
 									$purchase->update([
 										'vendor_id' => $row['vendor_id'],
 										'qty_old' => $purchase->qty_to_order,
@@ -358,9 +356,7 @@ class PurchasesController extends Controller
 								'cost' => $part['cost']
 							]);
 							if ($purchase->qty_to_order != $part['qty_to_order']) {
-								$purchase_item->update([
-									'flag' => 5
-								]);
+								// $purchase_item->update(['flag' => 5]);
 								$purchase->update([
 									'vendor_id' => $part['vendor_id'],
 									'qty_old' => $purchase->qty_to_order,
@@ -570,7 +566,7 @@ class PurchasesController extends Controller
 			'remark' => request()->reason
 		]);
 		
-		$purchase_item->purchaseRequest->update(['flag' => 5]);
+		// $purchase_item->purchaseRequest->update(['flag' => 5]);
 	}
 
 	public function destroyPart() {
@@ -603,9 +599,7 @@ class PurchasesController extends Controller
 				'qty_to_order' => request()->qty
 			]);
 	
-			$purchase_item->purchaseRequest->update([
-				'flag' => 5
-			]);
+			// $purchase_item->purchaseRequest->update(['flag' => 5]);
 		}
 	}
 
@@ -616,28 +610,24 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail(request()->partID);
 		
-		if ($purchase_item->purchaseRequest->flag == 5) {
+		if (($purchase_item->purchaseRequest->flag == 2) && ($purchase_item->purchaseRequest->status != NULL)) {
+			$purchase_item->update([
+				'qty_to_order' => $purchase_item->qty_old,
+			]);
+			
+			// $count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
+		
+			// if ($count_item == 0) {
+			// 	$purchase_item->purchaseRequest->update([
+			// 		'flag' => 2
+			// 	]);
+			// }
+		} else if ($purchase_item->purchaseRequest->flag == 2) {
 			$purchase_item->update([
 				'isVerified' => NULL,
 				'qty_to_order' => $purchase_item->qty_old,
-				'remark' => ''
 			]);
-
-			$count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
-		
-			if ($count_item == 0) {
-				$purchase_item->purchaseRequest->update([
-					'flag' => 2
-				]);
-			}
-		} else if ($purchase_item->purchaseRequest->flag == 2) {
-			$purchase_item->update([
-				'qty_to_order' => $purchase_item->qty_old,
-				'remark' => ''
-			]);
-		}
-
-		
+		}	
 	}
 
 	public function undoDelete(){
@@ -649,7 +639,7 @@ class PurchasesController extends Controller
 		
 		$purchase_item->update([
 			'isVerified' => '',
-			'remark' => ''
+			'remark' => NULL
 		]);
 
 		$count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());

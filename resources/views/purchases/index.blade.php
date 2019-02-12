@@ -212,10 +212,18 @@
           data: "status",
           class: 'text-center',
           render: (data, type, row, meta) => {
-            if (row.date_approved) {
+            if (data == 1) {
               return 'For PO'
-            } else {
-              return ''
+            } else if (data == 2) {
+              return 'Requests'
+            } else if (data == 4) {
+              return 'Disapproved'
+            } else if (data== 5) {
+              return 'For Verification'
+            } else if (data == 6) {
+              return 'Approved'
+            } else if (data == 7) {
+              return 'Served'
             }
           }
         },

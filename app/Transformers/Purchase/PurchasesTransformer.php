@@ -19,7 +19,6 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'branch' => $item->getBranch ? $item->getBranch->ShortName : '',
             'total_qty' => $item->total_qty,
             'total_cost' => $item->total_cost,
-            'status' => $item->status,
             'remarks' => $item->remarks,
             'date_disapproved' => $item->date_disapproved,
             'po' => $item->po,
@@ -31,7 +30,7 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'approved_by' => $item->approved_by,
             'eqp' => ($item->eqp_prt == 'equipment') ? $item->eqp_prt : '',
             'prt' => ($item->eqp_prt == 'parts') ? $item->eqp_prt : '',
-            'status' => $item->status
+            'status' => $item->flag
         ];
     }
 }
