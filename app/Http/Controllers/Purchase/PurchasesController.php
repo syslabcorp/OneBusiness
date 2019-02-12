@@ -210,7 +210,7 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 5) {
-				return view('purchases.ViewDetailMarkForPO',[
+				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
