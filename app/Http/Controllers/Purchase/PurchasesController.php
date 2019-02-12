@@ -622,12 +622,22 @@ class PurchasesController extends Controller
 				'qty_to_order' => $purchase_item->qty_old,
 				'remark' => ''
 			]);
+
+			$count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
+		
+			if ($count_item == 0) {
+				$purchase_item->purchaseRequest->update([
+					'flag' => 2
+				]);
+			}
 		} else if ($purchase_item->purchaseRequest->flag == 2) {
 			$purchase_item->update([
 				'qty_to_order' => $purchase_item->qty_old,
 				'remark' => ''
 			]);
 		}
+
+		
 	}
 
 	public function undoDelete(){
