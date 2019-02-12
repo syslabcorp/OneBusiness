@@ -282,7 +282,7 @@
           url: '{{ route('purchase_request.undoDelete') }}?corpID={{ request()->corpID }}&partID='+ partID,
           type: 'GET',
           success: (res) => {
-            // location.reload()
+            location.reload()
           }
         });
       })
