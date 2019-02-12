@@ -104,19 +104,25 @@
 										<h4></h4>
 										<p>
 										</p>
-										@include('purchases.purchaserMarkForPO')
+										@if(\Auth::user()->checkAccessById(58 , 'V'))
+											@include('purchases.purchaserMarkForPO')
+										@elseif(\Auth::user()->checkAccessById(59 , 'V'))
+											@include('purchases.ViewMarkForPO')
+										@endif
 										<div class="rown">
 											<div class="col-xs-6">
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
 											</div>
-											@if(($purchase->flag != 4) && ($purchase->flag != 6)) 
-											<div class="col-xs-6 text-right">
-											@if ($purchase->flag != 5 )
-												<button type="button"class="btn btn-danger access_mark" data-toggle="modal" data-target="#lewit">Disapprove Request</button>
-												<button type="button" class="btn btn-primary access_mark" name="mark" data-toggle="modal" data-target="#lewit1">Mark for PO</button>
-											@else
-												<button class="btn btn-danger " disabled>Disapprove Request</button>
-												<button class="btn btn-primary for-verification" >For Verification</button>
+											@if(\Auth::user()->checkAccessById(58 , 'V'))
+												@if(($purchase->flag != 4) && ($purchase->flag != 6)) 
+												<div class="col-xs-6 text-right">
+												@if ($purchase->flag != 5 )
+													<button type="button"class="btn btn-danger access_mark" data-toggle="modal" data-target="#lewit">Disapprove Request</button>
+													<button type="button" class="btn btn-primary access_mark" name="mark" data-toggle="modal" data-target="#lewit1">Mark for PO</button>
+												@else
+													<button class="btn btn-danger " disabled>Disapprove Request</button>
+													<button class="btn btn-primary for-verification" >For Verification</button>
+												@endif
 											@endif
 											</div>
 										</div>

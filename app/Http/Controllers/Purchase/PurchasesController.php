@@ -655,7 +655,6 @@ class PurchasesController extends Controller
 		$count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
 
 		if ($count_item == 0) {
-			
 			$purchase_item->purchaseRequest->update([
 				'flag' => 2
 			]);
