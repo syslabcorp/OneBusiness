@@ -11,11 +11,14 @@ class PurchasesController extends Controller
 {
     public function index(Request $request){
         $company = Corporation::findOrFail($request->corpID);
-
         $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
         $purchaseModel->setConnection($company->database_name);
         
-        $items = $purchaseModel->where('requester_id', \Auth::user()->UserID)->get();
+        if (\Auth::user()->checkAccessById(58 , 'V')) {
+            $items = $purchaseModel->where('requester_id', \Auth::user()->UserID)->get();
+        } else if (\Auth::user()->checkAccessById(59 , 'V')) {
+            $items = $purchaseModel->get();
+        }
         
         if ($request->branch == '1') {
             $items = $items->where('flag', 1);
