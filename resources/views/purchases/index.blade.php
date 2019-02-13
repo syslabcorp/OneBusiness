@@ -421,7 +421,7 @@
     }, (data) => {
       if(data) {
         $.ajax({
-        url: '{{ route('purchase_request.index') }}/' + id + '/?corpID={{ request()->corpID }}',
+        url: '{{ route('api.purchase_request.index') }}/' + id + '/?corpID={{ request()->corpID }}',
         type: 'DELETE',
         success: (res) => {
           window.location.reload()
