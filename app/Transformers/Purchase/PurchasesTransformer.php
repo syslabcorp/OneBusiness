@@ -30,7 +30,8 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'approved_by' => $item->approved_by,
             'eqp' => ($item->eqp_prt == 'equipment') ? $item->eqp_prt : '',
             'prt' => ($item->eqp_prt == 'parts') ? $item->eqp_prt : '',
-            'status' => $item->flag
+            'status' => $item->status,
+            'flag' => $item->flag
         ];
     }
 }

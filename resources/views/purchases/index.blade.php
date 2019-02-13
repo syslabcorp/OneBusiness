@@ -38,7 +38,6 @@
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
               </div>
-                
             </div>
           </div>
           @if(\Auth::user()->checkAccessById(58 , 'V'))
@@ -209,20 +208,19 @@
         },
         {
           targets: 13,
-          data: "status",
           class: 'text-center',
           render: (data, type, row, meta) => {
-            if (data == 1) {
+            if (row.flag == 1) {
               return 'For PO'
-            } else if (data == 2) {
+            } else if (row.flag == 2) {
               return 'Requests'
-            } else if (data == 4) {
+            } else if (row.flag == 4) {
               return 'Disapproved'
-            } else if (data== 5) {
+            } else if (row.flag== 5) {
               return 'For Verification'
-            } else if (data == 6) {
+            } else if (row.flag == 6) {
               return 'Approved'
-            } else if (data == 7) {
+            } else if (row.flag == 7) {
               return 'Served'
             }
           }
@@ -308,7 +306,7 @@
     } else if (filter == '2') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,2,6,7,10,13,14,15,18,19,20] ).visible( false );
+        table.columns( [0,1,2,6,7,10,12,13,14,15,18,19,20] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,2,6,10,13,14,15,18,19,20] ).visible( false );
       }
@@ -360,7 +358,7 @@
     } else if ($(event.target).val() == '2') {
       table.columns( [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21] ).visible( true );
       if ($('input[name="checkAccess"]').val() == 1) {
-        table.columns( [0,1,2,6,7,10,13,14,15,18,19,20] ).visible( false );
+        table.columns( [0,1,2,6,7,10,12,13,14,15,18,19,20] ).visible( false );
       } else if ($('input[name="checkAccess"]').val() == 2) {
         table.columns( [0,1,2,6,10,13,14,15,18,19,20] ).visible( false );
       }
