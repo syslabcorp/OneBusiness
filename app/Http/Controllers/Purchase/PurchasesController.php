@@ -407,10 +407,22 @@ class PurchasesController extends Controller
 		
 					$sumCost = 0;
 					
-					foreach (request()->parts as $key => $part) {
-						$purchase_part = $purchasedetailModel->findOrFail($key);
-						$sumCost += $purchase_part->cost*$part['qty'];
-						$purchase_part->update([
+					$purchase_item->request_details()->where('isVerified', 1)->delete();
+					
+					if (count($purchasedetailModel->whereIn('isVerified', ['NULL',2])->get()) == 0) {
+						$purchase_item->delete();
+						
+						\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
+				
+						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+					} 
+
+					$item_part = $purchasedetailModel->where('isVerified', 2)->get();
+		
+					foreach ($item_part as $part) {
+						$sumCost += $part->cost*$part->qty;
+						$part->update([
+							'isVerified' => 3,
 							'date_verified' => date('Y-m-d')
 						]);
 					}
@@ -422,12 +434,20 @@ class PurchasesController extends Controller
 						'total_cost' => $sumCost
 					]);
 				
-					$purchase_item->request_details()->where('isVerified', 1)->delete();
-					
 					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
 				
 					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 				} else {
+					$purchase_item->request_details()->where('isVerified', 1)->delete();
+					
+					if (count($purchaseModel->whereIn('isVerified', [NULL,2])->get()) == 0) {
+						$purchase_item->delete();
+						
+						\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
+				
+						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+					} 
+
 					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
 				
 					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
@@ -586,6 +606,7 @@ class PurchasesController extends Controller
 
 		if ($purchase_item->date_verified) {
 			$purchase_item->update([
+				'isVerified' => 2,
 				'qty_old' => $purchase_item->qty_to_order,
 				'qty_to_order' => request()->qty,
 				'remark' => 'from ['.$purchase_item->qty_to_order.'] to ['.request()->qty.']'

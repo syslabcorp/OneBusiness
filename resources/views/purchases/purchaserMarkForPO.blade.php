@@ -50,7 +50,7 @@
               </td>
               @endif
               <td class="text-center">
-                @if ($part->isVerified == 2)
+                @if ($part->isVerified == 2 || $part->isVerified == 3 )
                   <i class="fas fa-exclamation-triangle dropDown">
                     <div class="menuDropDown">
                       <strong class="title">Quantity  Changed</strong>
@@ -124,7 +124,7 @@
           @endphp
           <tr class="purchaseRow">
             <td class="text-center">
-            @if ($row->isVerified == 2)
+            @if ($row->isVerified == 2 || $part->isVerified == 3 )
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Quantity  Changed</strong>
