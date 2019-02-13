@@ -409,7 +409,7 @@ class PurchasesController extends Controller
 					
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
 					
-					if (count($purchasedetailModel->whereIn('isVerified', ['NULL',2])->get()) == 0) {
+					if (count($purchasedetailModel->whereIn('isVerified', [NULL,2])->get()) == 0) {
 						$purchase_item->delete();
 						
 						\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
@@ -606,7 +606,7 @@ class PurchasesController extends Controller
 
 		if ($purchase_item->date_verified) {
 			$purchase_item->update([
-				'isVerified' => 2,
+				
 				'qty_old' => $purchase_item->qty_to_order,
 				'qty_to_order' => request()->qty,
 				'remark' => 'from ['.$purchase_item->qty_to_order.'] to ['.request()->qty.']'
