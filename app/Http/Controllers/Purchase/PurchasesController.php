@@ -401,10 +401,6 @@ class PurchasesController extends Controller
 				}
 				
 				if (request()->parts) {
-					$company = Corporation::findOrFail(request()->corpID);
-					$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
-					$purchasedetailModel->setConnection($company->database_name);
-		
 					$sumCost = 0;
 					
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
