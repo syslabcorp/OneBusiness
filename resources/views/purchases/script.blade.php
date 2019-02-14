@@ -397,6 +397,7 @@
   
         $('.sumtotal').val(sum.toFixed(2))
       }
+      indexs()
 
       $('body').on('change', 'select.brand', function(event) {
         let self = $(this)

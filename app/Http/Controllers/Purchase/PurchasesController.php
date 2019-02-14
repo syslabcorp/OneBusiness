@@ -254,7 +254,7 @@ class PurchasesController extends Controller
 							'description' => $request->description,
 							'total_qty' => $request->total_qty
 						]);
-					
+							
 						$purchase_item->request_details()->delete();
 							
 						if ($purchase_item->eqp_prt == 'Equipment') {
