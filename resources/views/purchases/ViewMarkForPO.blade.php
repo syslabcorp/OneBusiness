@@ -2,7 +2,7 @@
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        @if ($purchase->eqp_prt == 'equipment')
+        @if($purchase->eqp_prt == 'Equipment')
         <th style="width: 12%;">Equipment </th>
         <th style="width: 12%">Item #</th>
         <th style="width: 12%">Item </th>
@@ -11,7 +11,7 @@
         <th style="width: 12%">Cost </th>
         <th style="width: 12%">Total Cost</th>
      
-        @elseif($purchase->eqp_prt == 'parts')
+        @elseif($purchase->eqp_prt == 'Part')
         <th style="width: 12%">Item #</th>
         <th style="width: 12%">Item </th>
         <th style="width: 12%">For Equipment </th>
@@ -28,7 +28,7 @@
         $a = 1;
       @endphp
           @foreach($purchase->details as $row)
-          @if ($purchase->eqp_prt == 'equipment')
+          @if($purchase->eqp_prt == 'Equipment')
             @php
               $index = count($row->parts);
               $hdrModel = new \App\Models\Equip\Hdr;
@@ -45,7 +45,7 @@
               </td>
               @endif
               <td class="text-center">
-                @if ($part->isVerified == 2)
+                @if($part->isVerified == 2)
                   <i class="fas fa-exclamation-triangle dropDown">
                     <div class="menuDropDown">
                       <strong class="title">Quantity  Changed</strong>
@@ -55,7 +55,7 @@
                       @endif
                     </div>
                   </i>
-                @elseif ($part->isVerified == 1)
+                @elseif($part->isVerified == 1)
                   <i class="fas fa-exclamation-triangle dropDown">
                     <div class="menuDropDown">
                       <strong class="title">Item Deleted</strong>
@@ -71,7 +71,7 @@
                 <select disabled name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control " {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'disabled' }} > 
                 <option class="" value="">-- select --</option>
                 @foreach($vendors as $vendor)
-                  @if ($vendor->Supp_ID == ($part->vendor_id ? $part->vendor_id : ($part->itemMaster() ? $part->itemMaster()->supplier_id : '')))
+                  @if($vendor->Supp_ID == ($part->vendor_id ? $part->vendor_id : ($part->itemMaster() ? $part->itemMaster()->supplier_id : '')))
                   <option class="" value="{{ $vendor->Supp_ID }}" selected>{{ $vendor->VendorName }}</option>
                   @else 
                   <option class="" value="{{ $vendor->Supp_ID }}">{{ $vendor->VendorName }}</option>
@@ -94,7 +94,7 @@
               $index --;
             @endphp
             @endforeach
-        @elseif ($purchase->eqp_prt == 'parts')
+        @elseif($purchase->eqp_prt == 'Part')
           @php
             $hdrModel = new \App\Models\Equip\Hdr;
             $hdrs = $hdrModel->orderBy('asset_id')->get();
@@ -103,7 +103,7 @@
           @endphp
           <tr class="purchaseRow">
             <td class="text-center">
-            @if ($row->isVerified == 2)
+            @if($row->isVerified == 2)
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Quantity  Changed</strong>
@@ -113,7 +113,7 @@
                   @endif
                 </div>
               </i>
-            @elseif ($row->isVerified == 1)
+            @elseif($row->isVerified == 1)
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Item Deleted</strong>
@@ -135,7 +135,7 @@
               <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control " disabled {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} > 
               <option class="" value="">-- select --</option>
               @foreach($vendors as $vendor)
-                @if ($vendor->Supp_ID == ( $row->vendor_id ? $row->vendor_id : ($row->itemMaster() ? $row->itemMaster()->supplier_id : '')))
+                @if($vendor->Supp_ID == ( $row->vendor_id ? $row->vendor_id : ($row->itemMaster() ? $row->itemMaster()->supplier_id : '')))
                 <option class="" value="{{ $vendor->Supp_ID }}" selected>{{ $vendor->VendorName }}</option>
                 @else 
                 <option class="" value="{{ $vendor->Supp_ID }}">{{ $vendor->VendorName }}</option>

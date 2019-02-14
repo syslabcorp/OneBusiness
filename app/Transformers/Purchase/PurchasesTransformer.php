@@ -18,7 +18,7 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'requester_id' => $item->user ? $item->user->UserName : '',
             'branch' => $item->getBranch ? $item->getBranch->ShortName : '',
             'total_qty' => $item->total_qty,
-            'total_cost' => $item->total_cost,
+            'total_cost' => number_format($item->total_cost,2),
             'remarks' => $item->remarks,
             'date_disapproved' => $item->date_disapproved,
             'po' => $item->po,
@@ -27,9 +27,9 @@ class PurchasesTransformer extends Fractal\TransformerAbstract
             'items_changed' => $item->items_changed,
             'vendor' => $item->vendor,
             'date_approved' => $item->date_approved,
-            'approved_by' => $item->approved_by,
-            'eqp' => ($item->eqp_prt == 'equipment') ? $item->eqp_prt : '',
-            'prt' => ($item->eqp_prt == 'parts') ? $item->eqp_prt : '',
+            'approved_by' => $item->findUserApp() ? $item->findUserApp()->UserName : '',
+            'eqp' => ($item->eqp_prt == 'Equipment') ? $item->eqp_prt : '',
+            'prt' => ($item->eqp_prt == 'Part') ? $item->eqp_prt : '',
             'status' => $item->status,
             'flag' => $item->flag
         ];

@@ -35,6 +35,12 @@ class PurchaseRequest extends Model
         return \App\User::find($this->disapproved_by);
     }
 
+    public function findUserApp() 
+    {
+        return \App\User::find($this->approved_by);
+    }
+
+
     public function getBranch() 
     {
         return $this->belongsTo(\App\Models\Branch::class, 'branch');

@@ -6,16 +6,8 @@
       openTablePurchase = (event) => {
         $(event.target).parent('p').slideUp()
         $('.table-purchases').slideDown()
-        // $('.table-purchases .btnAddRow').click()
       }
 
-      // $('#equipDetail select[name="branch"]').change((event) => {
-      //   updateDepartmentsSelect()
-      // })
-
-      // $('.editEquipment .form-control').prop('disabled', true)
-      // $('.editEquipment .partRow input, .editEquipment .partRow select').attr('readonly', true)
-      // $('.partRow input[type="checkbox"]').attr('onclick', 'return false;')
       $('.table-purchases').css('min-height', '230px')
 
       $(window).keydown((event) => {
@@ -47,42 +39,22 @@
       })
 
       $('.table-purchases').on('click', '.btnAddRow', (event) => {
-        if ($('input[name="eqp_prt"]:checked').val() == 'parts') {
+        if ($('input[name="eqp_prt"]:checked').val() == 'Part') {
           $.ajax({
             url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $('input[name="eqp_prt"]:checked').val() ,
             type: 'GET',
             success: (res) => {
               $('.table-purchases tbody').append(res)
-              // $('select[name="purchases['+ $indexrow +'][item_id]"] .brands').remove()
-              // for(let i = 0; i < res.length; i++) {
-              //   if (res[i].asset_id) {
-              //     $('select[name="purchases['+ $indexrow +'][item_id]"]').append('<option class="brands" value="'+ res[i].asset_id +'">'+ res[i].description +'</option>')
-              //   }
-              //   if (res[i].item_id) {
-              //     $('select[name="purchases['+ $indexrow +'][item_id]"]').append('<option class="brands" value="'+ res[i].item_id +'">'+ res[i].description +'</option>')
-              //   }
-
-              // }
               indexs()
             }
           });
           
-        } else if ($('input[name="eqp_prt"]:checked').val() == 'equipment') {
+        } else if ($('input[name="eqp_prt"]:checked').val() == 'Equipment') {
           $.ajax({
             url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $('input[name="eqp_prt"]:checked').val() ,
             type: 'GET',
             success: (res) => {
               $('.table-purchases tbody').append(res)
-              // $('select[name="purchases['+ $indexrow +'][item_id]"] .brands').remove()
-              // for(let i = 0; i < res.length; i++) {
-              //   if (res[i].asset_id) {
-              //     $('select[name="purchases['+ $indexrow +'][item_id]"]').append('<option class="brands" value="'+ res[i].asset_id +'">'+ res[i].description +'</option>')
-              //   }
-              //   if (res[i].item_id) {
-              //     $('select[name="purchases['+ $indexrow +'][item_id]"]').append('<option class="brands" value="'+ res[i].item_id +'">'+ res[i].description +'</option>')
-              //   }
-
-              // }
               indexs()
             }
           }); 
@@ -96,51 +68,15 @@
           $parent.find('td:eq(2) input').val(1)
         }
         
-        if ($parent.find('td:eq(1) input').val() < 1){
+        if ($parent.find('td:eq(1) input').val() < 0){
           showAlertMessage('Nothing to save...', 'Alert:')
-          $parent.find('td:eq(1) input').val(1)
+          $parent.find('td:eq(1) input').val(0)
         }
 
-        // if ($parent.find('td:eq(5) input').val() < 1){
-        //   showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
-        //   $parent.find('td:eq(5) input').val(1)
-        // }
         indexs()
       })
 
-      // totalCost = () => {
-      //   let $rows = $('.table-purchases tbody tr.purchaseRow')
-      //   let total = 0
-     
-      //   for(let i = 0; i < $rows.length; i++) {
-      //       let $tr = $($rows[i])
-      //       if ($.isNumeric($tr.find('td input.total').val())) {
-      //         total += parseFloat($tr.find('td input.total').val())
-      //       }
-      //     }
-         
-      //   $('.sumtotal').val(total.toFixed(2))
-      // }
-      // totalCost()
-      // $('.cost-mask').mask("###,##0,00", {reverse: true})
       $('.cost-mask').mask("0000000.00", {placeholder: "0000000.00"})
-      
-      // totals = () => {
-      //   console.log(1)
-      //   let $rows = $('.table-purchases tbody tr.purchaseRow')
-      //   let sumtotal = 0
-      //   for(let i = 0; i < $rows.length; i++) {
-      //     let $tr = $($rows[i])
-      //     if ($.isNumeric($tr.find('td input.cost').val())) {
-      //       let total = parseFloat($tr.find('td input.qty').val()*parseFloat($tr.find('td input.cost').val()))
-      //       sumtotal += total
-      //       $tr.find('td input.total').val(total.toFixed(2))
-      //     }
-      //   }
-      //   $('.sumtotal').val(sumtotal.toFixed(2))
-      // }
-
-      // totals()
 
       totalQty = () => {
         let $rows = $('.table-purchases tbody tr')
@@ -194,20 +130,51 @@
           if ($('body tr').hasClass('purchaseRow') == false) {
             showAlertMessage('Nothing to save...', 'Alert:')
           } else {
-            $('.form').submit()
+            if (checkValue_0() == true) {
+              showAlertMessage('Nothing to save...', 'Alert:')
+            } else {
+              $('.form').submit()
+            }
           }
         } else {
           showAlertMessage('Nothing to save...', 'Alert:')
         }
       })
 
+      checkValue_0 = () => {
+        let $value = true
+        console.log($('input[type="radio"]:checked').val())
+        if ($('input[type="radio"]:checked').val() == 'Equipment') {
+          $('.table-purchases tbody tr.rowTR').each(function(){
+            if($(this).find('td:eq(1) input').val() > 0)
+              {
+                $value = false
+              }   
+            });
+          return $value
+        } else if ($('input[type="radio"]:checked').val() == 'Part') {
+          $('.table-purchases tbody tr.purchaseRow').each(function(){
+            if($(this).find('td:eq(2) input').val() > 0)
+              {
+                $value = false
+              }   
+            });
+          return $value
+        }
+      }
+
       $('.btn-update').on('click', function() {
         if ($('input[type="radio"]:checked').length > 0 && checkSelect() ) {
           if ($('body tr').hasClass('purchaseRow') == false) {
             showAlertMessage('Nothing to save...', 'Alert:')
           } else {
-            $(this).val('update_pr')
-            $(this).prop("type", "submit")// submit prop
+            if (checkValue_0() == true) {
+              showAlertMessage('Nothing to save...', 'Alert:')
+            } else {
+              $(this).val('update_pr')
+            
+              $(this).prop("type", "submit")// submit prop
+            }
           }
         } else {
           showAlertMessage('Nothing to save...', 'Alert:')
@@ -408,7 +375,7 @@
         let a = 1
         let sum = 0
         
-        if ($('input[type="radio"]:checked').val() == 'equipment') {
+        if ($('input[type="radio"]:checked').val() == 'Equipment') {
           $('.table-purchases tbody tr.purchaseRow').each(function(index, element){
             $(this).find('label.index').text(a)
             $(this).find('select').attr('name', 'purchases['+ a++ +'][item_id]')
@@ -419,7 +386,7 @@
           });
         }
 
-        if ($('input[type="radio"]:checked').val() == 'parts') {
+        if ($('input[type="radio"]:checked').val() == 'Part') {
           $('.table-purchases tbody tr.purchaseRow').each(function(index, element){
             $(this).find('label.index').text(a)
             $(this).find('select').attr('name', 'purchases['+ a +'][item_id]')
