@@ -341,7 +341,7 @@ class PurchasesController extends Controller
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
 					
 					if ($purchase_item->eqp_prt == 'parts') {
-						if (count($purchase_item->request_details()->where('isVerified',NULL)->get()) == 0) {
+						if (count($purchase_item->request_details()->whereIn('isVerified',[NULL,2])->get()) == 0) {
 							$purchase_item->delete();
 							
 							\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
@@ -350,6 +350,7 @@ class PurchasesController extends Controller
 						} 
 					} else if ($purchase_item->eqp_prt == 'equipment') {
 						if (count($purchase_item->request_details()->where('equipment_id','!=',NULL)->get()) == 0) {
+							$purchase_item->request_details()->delete();
 							$purchase_item->delete();
 
 							\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
@@ -357,7 +358,6 @@ class PurchasesController extends Controller
 							return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 						} else {
 							$parts = $purchase_item->request_details()->where('equipment_id',NULL)->get();
-
 							foreach ($parts as $part) {
 								if (empty($part->parts->all())) {
 									$part->delete();
@@ -568,6 +568,7 @@ class PurchasesController extends Controller
 		
 		if (($purchase_item->purchaseRequest->flag == 2) && ($purchase_item->purchaseRequest->status != NULL)) {
 			$purchase_item->update([
+				'isVerified' => NULL,
 				'qty_to_order' => $purchase_item->qty_old,
 			]);
 			
@@ -578,12 +579,13 @@ class PurchasesController extends Controller
 			// 		'flag' => 2
 			// 	]);
 			// }
-		} else if ($purchase_item->purchaseRequest->flag == 2) {
-			$purchase_item->update([
-				'isVerified' => NULL,
-				'qty_to_order' => $purchase_item->qty_old,
-			]);
-		}	
+		} 
+		// else if ($purchase_item->purchaseRequest->flag == 2) {
+		// 	$purchase_item->update([
+		// 		'isVerified' => NULL,
+		// 		'qty_to_order' => $purchase_item->qty_old,
+		// 	]);
+		// }	
 	}
 
 	public function undoDelete(){
