@@ -40,7 +40,7 @@
 														<select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
 														@foreach($branches as $branch)
 														{{ $branch->id }}
-														@if ($branch->id == $purchase->branch)
+														@if($branch->id == $purchase->branch)
 															<option value="{{ $branch->Branch }}" selected>{{ $branch->ShortName }}</option>
 														@else
 															<option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
@@ -63,7 +63,7 @@
 															<label style="padding: 5px;"><strong>PO# </strong></label>
 														</div>
 														<div class="col-sm-9 form-group">
-															<label for="" class="form-control">{{ $purchase->po }}</label>
+															<input type="text" class="form-control" value="{{ $purchase->po }}" disabled>
 														</div>
 												</div>
 												@endif

@@ -70,7 +70,7 @@ class PurchasesController extends Controller
 				'pr' => $purchaseModel->id
 		]);
 
-		if ($purchaseParams['eqp_prt'] == 'equipment') {
+		if ($purchaseParams['eqp_prt'] == 'Equipment') {
 			if (is_array(request()->purchases)) {
 				$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 				$purchaseDetailModel->setConnection($company->database_name);
@@ -97,7 +97,7 @@ class PurchasesController extends Controller
 					} 
 				}
 			}
-		} else if ($purchaseParams['eqp_prt'] == 'parts') {
+		} else if ($purchaseParams['eqp_prt'] == 'Part') {
 			if (is_array(request()->purchases)) {
 				$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 				$purchaseDetailModel->setConnection($company->database_name);
@@ -257,7 +257,7 @@ class PurchasesController extends Controller
 					
 						$purchase_item->request_details()->delete();
 							
-						if ($purchase_item->eqp_prt == 'equipment') {
+						if ($purchase_item->eqp_prt == 'Equipment') {
 							if (is_array(request()->purchases)) {
 								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 								$purchaseDetailModel->setConnection($company->database_name);
@@ -299,7 +299,7 @@ class PurchasesController extends Controller
 							}	else {
 								$purchase_item->request_details->each->delete();
 							}
-						} else if ($purchase_item->eqp_prt == 'parts') {
+						} else if ($purchase_item->eqp_prt == 'Part') {
 							if (is_array(request()->purchases)) {
 								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 								$purchaseDetailModel->setConnection($company->database_name);
@@ -340,7 +340,7 @@ class PurchasesController extends Controller
 					
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
 					
-					if ($purchase_item->eqp_prt == 'parts') {
+					if ($purchase_item->eqp_prt == 'Part') {
 						if (count($purchase_item->request_details()->whereIn('isVerified',[NULL,2])->get()) == 0) {
 							$purchase_item->delete();
 							
@@ -348,7 +348,7 @@ class PurchasesController extends Controller
 					
 							return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 						} 
-					} else if ($purchase_item->eqp_prt == 'equipment') {
+					} else if ($purchase_item->eqp_prt == 'Equipment') {
 						if (count($purchase_item->request_details()->where('equipment_id','!=',NULL)->get()) == 0) {
 							$purchase_item->request_details()->delete();
 							$purchase_item->delete();
@@ -408,7 +408,7 @@ class PurchasesController extends Controller
 				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 			} else if($purchase_item->flag == 2 && request()->verification) {
 				if (request()->parts) {
-					if ($purchase_item->eqp_prt == 'equipment' ) {
+					if ($purchase_item->eqp_prt == 'Equipment' ) {
 						foreach (request()->parts as $key => $part) {
 							foreach ($part as $key => $row) {
 								$purchase = $purchasedetailModel->findOrFail($key);
@@ -418,7 +418,7 @@ class PurchasesController extends Controller
 								]);
 							}
 						}
-					} else if ($purchase_item->eqp_prt == 'parts') 
+					} else if ($purchase_item->eqp_prt == 'Part') 
 					{
 						foreach (request()->parts as $part) {
 							$purchase = $purchasedetailModel->findOrFail($part['part_id']);
@@ -431,6 +431,7 @@ class PurchasesController extends Controller
 				} 
 
 				$purchase_item->update([
+					'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2,3])) : '',
 					'flag' => 5
 				]);
 
@@ -439,7 +440,7 @@ class PurchasesController extends Controller
 				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 			} else if ($purchase_item->flag == 2) {
 				if (request()->parts) {
-					if ($purchase_item->eqp_prt == 'equipment' ) {
+					if ($purchase_item->eqp_prt == 'Equipment' ) {
 						foreach (request()->parts as $key => $part) {
 							foreach ($part as $key => $row) {
 								$purchase = $purchasedetailModel->findOrFail($key);
@@ -449,7 +450,7 @@ class PurchasesController extends Controller
 								]);
 							}
 						}
-					} else if ($purchase_item->eqp_prt == 'parts') 
+					} else if ($purchase_item->eqp_prt == 'Part') 
 					{
 						foreach (request()->parts as $part) {
 							$purchase = $purchasedetailModel->findOrFail($part['part_id']);
@@ -462,7 +463,6 @@ class PurchasesController extends Controller
 				} 
 				
 				$purchase_item->update([
-					'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : '',
 					'total_cost' => request()->total_qty,
 					'flag' => 1,
 					'date_approved' => date('Y-m-d'),
@@ -478,7 +478,7 @@ class PurchasesController extends Controller
 
 	public function getBrands()
 	{  
-		if (request()->radio == 'equipment') {
+		if (request()->radio == 'Equipment') {
 				$hdrModel = new \App\Models\Equip\Hdr;
 
 				$items = $hdrModel->orderBy('description','asc')->get();
@@ -486,7 +486,7 @@ class PurchasesController extends Controller
 				return view('purchases.searchEQP', [
 						'items' => $items
 						]);
-		} else if (request()->radio == 'parts') {
+		} else if (request()->radio == 'Part') {
 				$item_masterModel = new \App\Models\Item\Master;
 				
 				$itemparts = $item_masterModel->orderBy('description','asc')->get();
@@ -540,23 +540,12 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail(request()->partID);
 
-		if ($purchase_item->date_verified) {
-			$purchase_item->update([
-				
-				'qty_old' => $purchase_item->qty_to_order,
-				'qty_to_order' => request()->qty,
-				'remark' => 'from ['.$purchase_item->qty_to_order.'] to ['.request()->qty.']'
-			]);
-		} else {
-			$purchase_item->update([
-				'isVerified' => 2,
-				'qty_old' => $purchase_item->qty_to_order,
-				'qty_to_order' => request()->qty,
-				'remark' => 'from ['.$purchase_item->qty_to_order.'] to ['.request()->qty.']'
-			]);
-	
-			// $purchase_item->purchaseRequest->update(['flag' => 5]);
-		}
+		$purchase_item->update([
+			'isVerified' => 2,
+			'qty_old' => $purchase_item->qty_to_order,
+			'qty_to_order' => request()->qty,
+			'remark' => 'from ['.$purchase_item->qty_to_order.'] to ['.request()->qty.']'
+		]);
 	}
 
 	public function undoQTY() {
@@ -566,21 +555,13 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail(request()->partID);
 		
-		// if (($purchase_item->purchaseRequest->flag == 2) && ($purchase_item->purchaseRequest->status != NULL)) {
-		// 	$purchase_item->update([
-		// 		'isVerified' => NULL,
-		// 		'qty_to_order' => $purchase_item->qty_old,
-		// 	]);
+		if (($purchase_item->purchaseRequest->flag == 2) && $purchase_item->date_verified ) {
+			$purchase_item->update([
+				'isVerified' => 3,
+				'qty_to_order' => $purchase_item->qty_old,
+			]);
 			
-		// 	// $count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
-		
-		// 	// if ($count_item == 0) {
-		// 	// 	$purchase_item->purchaseRequest->update([
-		// 	// 		'flag' => 2
-		// 	// 	]);
-		// 	// }
-		// } 
-		if ($purchase_item->purchaseRequest->flag == 2) {
+		}	else if ($purchase_item->purchaseRequest->flag == 2) {
 			$purchase_item->update([
 				'isVerified' => NULL,
 				'qty_to_order' => $purchase_item->qty_old,
@@ -595,10 +576,17 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail(request()->partID);
 		
-		$purchase_item->update([
-			'isVerified' => '',
-			'remark' => NULL
-		]);
+		if (($purchase_item->purchaseRequest->flag == 2) && $purchase_item->date_verified ) {
+			$purchase_item->update([
+				'isVerified' => 3,
+				'remark' => NULL
+			]);
+		} else if ($purchase_item->purchaseRequest->flag == 2) {
+			$purchase_item->update([
+				'isVerified' => NULL,
+				'remark' => NULL
+			]);
+		}
 
 		$count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
 

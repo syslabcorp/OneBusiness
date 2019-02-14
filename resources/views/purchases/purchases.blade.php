@@ -35,7 +35,7 @@
         
         <tr class="purchaseRow" data-id="{{ $row->item_id }}">
           <td class="text-center" {{ $index == count($row->parts) ? 'rowspan='.(count($row->parts)+1) : '' }} >
-            @if ($row->isVerified == 2)
+            @if($row->isVerified == 2)
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Quantity  Changed</strong>
@@ -45,7 +45,7 @@
                   @endif
                 </div>
               </i>
-            @elseif ($row->isVerified == 1)
+            @elseif($row->isVerified == 1)
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Item Deleted</strong>
@@ -58,17 +58,17 @@
           <td class="text-center">
             <select class="form-control brand" name="" id="" {{ $purchase->id ? 'disabled' : '' }} >
               <option value="">-- select --</option>
-              @if ($purchase->eqp_prt == 'equipment') 
+              @if($purchase->eqp_prt == 'Equipment') 
                 @foreach($hdrs as $hdr)
-                  @if ($hdr->asset_id == $row->item_id)
+                  @if($hdr->asset_id == $row->item_id)
                   <option value="{{ $row->item_id }}" selected>{{ $row->equipment()->description }}</option>
                   @else
                   <option value="{{ $hdr->asset_id }}">{{ $hdr->description }}</option>
                   @endif
                 @endforeach
-              @else if ($purchase->eqp_prt == 'parts')
+              @elseif($purchase->eqp_prt == 'Part')
                 @foreach($masters as $master)
-                  @if ($master->item_id == $row->item_id)
+                  @if($master->item_id == $row->item_id)
                   <option class="brands" value="{{ $master->item_id }}" selected>{{ $master->description }}</option>
                   @else 
                   <option class="brands" value="{{ $master->item_id }}">{{ $master->description }}</option>
@@ -78,7 +78,7 @@
             </select>
           </td>
           <td class="text-center">
-          @if ($purchase->eqp_prt == 'parts')
+          @if($purchase->eqp_prt == 'Part')
           <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $row->qty_to_order }}" autocomplete="off" readonly>
           @endif
           </td>
@@ -96,7 +96,7 @@
         @foreach($row->parts as $part)
         <tr class="rowTR" data-parent="{{ $row->item_id }}">
           <td class="text-center">
-            @if ($part->isVerified == 2)
+            @if($part->isVerified == 2)
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Quantity  Changed</strong>
@@ -106,7 +106,7 @@
                   @endif
                 </div>
               </i>
-            @elseif ($part->isVerified == 1)
+            @elseif($part->isVerified == 1)
               <i class="fas fa-exclamation-triangle dropDown">
                 <div class="menuDropDown">
                   <strong class="title">Item Deleted</strong>

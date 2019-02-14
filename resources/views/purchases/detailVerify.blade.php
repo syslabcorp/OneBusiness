@@ -40,7 +40,7 @@
 														<select name="branch" class="form-control" {{ $purchase->id ? 'disabled' : '' }}>
 														@foreach($branches as $branch)
 														{{ $branch->id }}
-														@if ($branch->id == $purchase->branch)
+														@if($branch->id == $purchase->branch)
 															<option value="{{ $branch->Branch }}" selected>{{ $branch->ShortName }}</option>
 														@else
 															<option value="{{ $branch->Branch }}">{{ $branch->ShortName }}</option>
@@ -62,8 +62,8 @@
 														<label><strong>Request for </strong></label>
 													</div>
 													<div class="form-group">
-														<input type="radio" class="form-check-input " name="eqp_prt" value="equipment" {{ $purchase->eqp_prt == 'equipment' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}>  Equipment
-														<input type="radio" class="form-check-input " name="eqp_prt" value="parts" {{ $purchase->eqp_prt == 'parts' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts              
+														<input type="radio" class="form-check-input " name="eqp_prt" value="Equipment" {{ $purchase->eqp_prt == 'Equipment' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}>  Equipment
+														<input type="radio" class="form-check-input " name="eqp_prt" value="Part" {{ $purchase->eqp_prt == 'Part' ? 'checked' : '' }} {{ $purchase->id ? 'disabled' : '' }}> Parts              
 													</div>
 												</div>
 												
