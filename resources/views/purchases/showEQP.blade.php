@@ -5,7 +5,7 @@
         <input type="hidden" class="form-control" name="parts[{{ $item->asset_id }}][item_id][{{ $loop->index+1 }}]" value="{{ $item->item_id }}">
     </td>
     <td class="text-center">
-        <input type="number" class="form-control text-center quantity" name="parts[{{ $item->asset_id }}][qty][{{ $loop->index+1 }}]" value="0">
+        <input type="number" class="form-control text-center quantity" name="parts[{{ $item->asset_id }}][qty][{{ $loop->index+1 }}]" value="1">
     </td>
 </tr>
 @endforeach
