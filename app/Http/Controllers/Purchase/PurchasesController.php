@@ -404,15 +404,19 @@ class PurchasesController extends Controller
 					$sumCost = 0;
 					
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
-
-					if (count($purchase_item->request_details()->whereIn('isVerified',[NULL,2])->get()) == 0) {
-						$purchase_item->delete();
+					
+					if ($purchase_item->eqp_prt == 'parts') {
+						if (count($purchase_item->request_details()->where('isVerified',NULL)->get()) == 0) {
+							$purchase_item->delete();
+							
+							\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
+					
+							return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+						} 
+					} else if ($purchase_item->eqp_prt == 'equipment') {
 						
-						\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
-				
-						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-					} 
-
+					}
+					
 					$item_part = $purchasedetailModel->where('isVerified', 2)->get();
 		
 					foreach ($item_part as $part) {
