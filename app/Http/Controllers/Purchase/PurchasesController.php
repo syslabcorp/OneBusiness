@@ -566,26 +566,26 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail(request()->partID);
 		
-		if (($purchase_item->purchaseRequest->flag == 2) && ($purchase_item->purchaseRequest->status != NULL)) {
-			$purchase_item->update([
-				'isVerified' => NULL,
-				'qty_to_order' => $purchase_item->qty_old,
-			]);
-			
-			// $count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
-		
-			// if ($count_item == 0) {
-			// 	$purchase_item->purchaseRequest->update([
-			// 		'flag' => 2
-			// 	]);
-			// }
-		} 
-		// else if ($purchase_item->purchaseRequest->flag == 2) {
+		// if (($purchase_item->purchaseRequest->flag == 2) && ($purchase_item->purchaseRequest->status != NULL)) {
 		// 	$purchase_item->update([
 		// 		'isVerified' => NULL,
 		// 		'qty_to_order' => $purchase_item->qty_old,
 		// 	]);
-		// }	
+			
+		// 	// $count_item = count($purchaseModel->whereIn('isVerified', [1,2])->get());
+		
+		// 	// if ($count_item == 0) {
+		// 	// 	$purchase_item->purchaseRequest->update([
+		// 	// 		'flag' => 2
+		// 	// 	]);
+		// 	// }
+		// } 
+		if ($purchase_item->purchaseRequest->flag == 2) {
+			$purchase_item->update([
+				'isVerified' => NULL,
+				'qty_to_order' => $purchase_item->qty_old,
+			]);
+		}	
 	}
 
 	public function undoDelete(){
