@@ -92,13 +92,13 @@
       $('body').on('change', '.quantity', (event) => {
         let $parent = $(event.target).parents('tr')
         if ($parent.find('td:eq(2) input').val() < 1){
-          showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
+          showAlertMessage('Nothing to save...', 'Alert:')
           $parent.find('td:eq(2) input').val(1)
         }
         
-        if ($parent.find('td:eq(1) input').val() < 0){
-          showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
-          $parent.find('td:eq(1) input').val(0)
+        if ($parent.find('td:eq(1) input').val() < 1){
+          showAlertMessage('Nothing to save...', 'Alert:')
+          $parent.find('td:eq(1) input').val(1)
         }
 
         // if ($parent.find('td:eq(5) input').val() < 1){
