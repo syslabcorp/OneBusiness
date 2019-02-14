@@ -374,9 +374,9 @@ class PurchasesController extends Controller
 				// 	}
 				// } 
 	
-				$purchase_item->update([
-					'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : ''
-				]);
+				// $purchase_item->update([
+				// 	'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : ''
+				// ]);
 	
 				// if ($purchase_item->flag == 2) {	
 				// 	$purchase_item->update([
@@ -404,8 +404,8 @@ class PurchasesController extends Controller
 					$sumCost = 0;
 					
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
-					
-					if (count($purchasedetailModel->whereIn('isVerified', [NULL,2])->get()) == 0) {
+
+					if (count($purchase_item->request_details()->whereIn('isVerified',[NULL,2])->get()) == 0) {
 						$purchase_item->delete();
 						
 						\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
@@ -433,21 +433,7 @@ class PurchasesController extends Controller
 					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
 				
 					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-				} else {
-					$purchase_item->request_details()->where('isVerified', 1)->delete();
-					
-					if (count($purchaseModel->whereIn('isVerified', [NULL,2])->get()) == 0) {
-						$purchase_item->delete();
-						
-						\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
-				
-						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-					} 
-
-					\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
-				
-					return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-				} 	
+				} 
 			}		
 		}
 
@@ -521,8 +507,9 @@ class PurchasesController extends Controller
 						}
 					}
 				} 
-
+				
 				$purchase_item->update([
+					'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : '',
 					'total_cost' => request()->total_qty,
 					'flag' => 1,
 					'date_approved' => date('Y-m-d'),
