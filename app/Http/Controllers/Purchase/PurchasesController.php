@@ -320,71 +320,6 @@ class PurchasesController extends Controller
 						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 					}
 				}
-
-				// if (request()->parts) {
-				// 	if ($purchase_item->eqp_prt == 'equipment' ) {
-				// 		foreach (request()->parts as $key => $part) {
-				// 			foreach ($part as $key => $row) {
-				// 				$purchase = $purchasedetailModel->findOrFail($key);
-				// 				$purchase->update([
-				// 					'vendor_id' => $row['vendor_id'],
-				// 					'cost' => $row['cost']
-				// 				]);
-				// 				if ($row['qty_to_order'] != $purchase->qty_to_order) {
-				// 					// $purchase_item->update(['flag' => 5 ]);
-				// 					$purchase->update([
-				// 						'vendor_id' => $row['vendor_id'],
-				// 						'qty_old' => $purchase->qty_to_order,
-				// 						'qty_to_order' => $row['qty_to_order'],
-				// 						'cost' => $row['cost'],
-				// 						'isVerified' => 2
-				// 					]);
-				// 				} 
-				// 			}
-				// 		}
-				// 		if ($purchase_item->flag == 5) {
-				// 			\Session::flash('success', 'PR#['.$purchase_item->id.'] has been marked as “For Verification”, requires verification from requester.');
-			
-				// 			return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-				// 		}
-				// 	} else if ($purchase_item->eqp_prt == 'parts') 
-				// 	{
-				// 		foreach (request()->parts as $part) {
-				// 			$purchase = $purchasedetailModel->findOrFail($part['part_id']);
-				// 			$purchase->update([
-				// 				'vendor_id' => $part['vendor_id'],
-				// 				'cost' => $part['cost']
-				// 			]);
-				// 			if ($purchase->qty_to_order != $part['qty_to_order']) {
-				// 				// $purchase_item->update(['flag' => 5]);
-				// 				$purchase->update([
-				// 					'vendor_id' => $part['vendor_id'],
-				// 					'qty_old' => $purchase->qty_to_order,
-				// 					'qty_to_order' => $part['qty_to_order'],
-				// 					'cost' => $part['cost'],
-				// 					'isVerified' => 2
-				// 				]);
-				// 			} 
-				// 		}
-				// 		if ($purchase_item->flag == 5) {
-				// 			\Session::flash('success', 'PR#['.$purchase_item->id.'] has been marked as “For Verification”, requires verification from requester.');
-			
-				// 			return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
-				// 		}
-				// 	}
-				// } 
-	
-				// $purchase_item->update([
-				// 	'items_changed' => $purchase_item->request_details ? count($purchase_item->request_details->whereIn('isVerified', [1,2])) : ''
-				// ]);
-	
-				// if ($purchase_item->flag == 2) {	
-				// 	$purchase_item->update([
-				// 		'flag' => 1,
-				// 		'date_approved' => date('Y-m-d'),
-				// 		'approved_by' => \Auth::user()->UserID,
-				// 	]);
-				// }
 	
 				\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
 			
@@ -406,7 +341,7 @@ class PurchasesController extends Controller
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
 					
 					if ($purchase_item->eqp_prt == 'parts') {
-						if (count($purchase_item->request_details()->where('isVerified',NULL)->get()) == 0) {
+						if (count($purchase_item->request_details()->whereIn('isVerified',[NULL,2])->get()) == 0) {
 							$purchase_item->delete();
 							
 							\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
@@ -414,9 +349,23 @@ class PurchasesController extends Controller
 							return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 						} 
 					} else if ($purchase_item->eqp_prt == 'equipment') {
-						
-					}
+						if (count($purchase_item->request_details()->where('equipment_id','!=',NULL)->get()) == 0) {
+							$purchase_item->request_details()->delete();
+							$purchase_item->delete();
+
+							\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
 					
+							return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
+						} else {
+							$parts = $purchase_item->request_details()->where('equipment_id',NULL)->get();
+							foreach ($parts as $part) {
+								if (empty($part->parts->all())) {
+									$part->delete();
+								}
+							}
+						}
+					}
+				
 					$item_part = $purchasedetailModel->where('isVerified', 2)->get();
 		
 					foreach ($item_part as $part) {
@@ -619,6 +568,7 @@ class PurchasesController extends Controller
 		
 		if (($purchase_item->purchaseRequest->flag == 2) && ($purchase_item->purchaseRequest->status != NULL)) {
 			$purchase_item->update([
+				'isVerified' => NULL,
 				'qty_to_order' => $purchase_item->qty_old,
 			]);
 			
@@ -629,12 +579,13 @@ class PurchasesController extends Controller
 			// 		'flag' => 2
 			// 	]);
 			// }
-		} else if ($purchase_item->purchaseRequest->flag == 2) {
-			$purchase_item->update([
-				'isVerified' => NULL,
-				'qty_to_order' => $purchase_item->qty_old,
-			]);
-		}	
+		} 
+		// else if ($purchase_item->purchaseRequest->flag == 2) {
+		// 	$purchase_item->update([
+		// 		'isVerified' => NULL,
+		// 		'qty_to_order' => $purchase_item->qty_old,
+		// 	]);
+		// }	
 	}
 
 	public function undoDelete(){
