@@ -421,12 +421,14 @@
     }, (data) => {
       if(data) {
         $.ajax({
-        url: '{{ route('api.purchase_request.index') }}/' + id + '/?corpID={{ request()->corpID }}',
-        type: 'DELETE',
-        success: (res) => {
-          window.location.reload()
-
-        }
+          url: '{{ route('api.purchase_request.index') }}/' + id + '?corpID={{ request()->corpID }}',
+          type: 'POST',
+          data: {
+            '_method': 'DELETE'
+          },
+          success: (res) => {
+            // window.location.reload()
+          }
       })
       }
     });
