@@ -54,6 +54,10 @@ class PurchasesController extends Controller
 
 		$purchase->delete();
 		
-		\Session::flash('success', 'Purchase #'.$purchase->id.' has been cancelled and deleted');
+        \Session::flash('success', 'Purchase #' . $purchase->id . ' has been cancelled and deleted');
+        
+        return response()->json([
+            'success' => true
+        ]);
     }
 }
