@@ -355,7 +355,7 @@ class PurchasesController extends Controller
 					$purchase_item->request_details()->where('isVerified', 1)->delete();
 					
 					if ($purchase_item->eqp_prt == 'Part') {
-						if (count($purchase_item->request_details()->whereIn('isVerified',[NULL,2])->get()) == 0) {
+						if (count($purchase_item->request_details()->whereNull('isVerified')->orWhere('isVerified', 2)->get()) == 0) {
 							$purchase_item->delete();
 							
 							\Session::flash('success', 'PR# ['.$purchase_item->id.'] has been verified and is marked as “Request');
