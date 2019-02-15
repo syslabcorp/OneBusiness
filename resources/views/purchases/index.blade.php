@@ -410,7 +410,7 @@
   removePurchase = (id) => {
     swal({
       title: "<div class='delete-title'>Delete</div>",
-      text:  "<div class='delete-text'>You are about to delete PurchaseID ["+ id +"]</strong></div>",
+      text:  "<div class='delete-text'>You are about to delete PR# ["+ id +"]. Continue?</strong></div>",
       html:  true,
       customClass: 'swal-wide',
       confirmButtonClass: 'btn-danger',
