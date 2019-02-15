@@ -71,6 +71,7 @@ class PurchasesController extends Controller
 		]);
 
 		if ($purchaseParams['eqp_prt'] == 'Equipment') {
+			$sumcost = 0;
 			if (is_array(request()->purchases)) {
 				$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 				$purchaseDetailModel->setConnection($company->database_name);
@@ -84,30 +85,44 @@ class PurchasesController extends Controller
 							if ($key == $purchase['item_id']) {
 								for ($i=1; $i <= count($part['item_id']) ; $i++) {
 									if ($part['qty'][$i] > 0) {
+										$item_master = \App\Models\Item\Master::find($part['item_id'][$i]);
 										$purchaseDetailModel->create([
 											'purchase_request_id' => (int) $purchaseModel->id,
 											'item_id' => (int) $part['item_id'][$i],
 											'equipment_id' => (int) $detail_parents->id,
-											'qty_to_order' => (int) $part['qty'][$i]
+											'qty_to_order' => (int) $part['qty'][$i],
+											'cost' => $item_master ? $item_master->LastCost : NULL
 										]);
+										$sumcost += $item_master ? $item_master->LastCost*$part['qty'][$i] : 0;
 									}
 								}
 							}
 						}
 					} 
 				}
+
+				$updatePR = $purchaseModel->update([
+					'total_cost' => $sumcost
+				]);
 			}
 		} else if ($purchaseParams['eqp_prt'] == 'Part') {
+			$sumcost = 0;
 			if (is_array(request()->purchases)) {
 				$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 				$purchaseDetailModel->setConnection($company->database_name);
 				foreach (request()->purchases as $purchase) {
+					$item_master = \App\Models\Item\Master::find($purchase['item_id']);
 					$detail_parents = $purchaseDetailModel->create([
 						'purchase_request_id' => $purchaseModel->id,
 						'item_id' => $purchase['item_id'],
-						'qty_to_order' => (int) $purchase['qty']
+						'qty_to_order' => (int) $purchase['qty'],
+						'cost' => $item_master ? $item_master->LastCost : NULL
 					]);
+					$sumcost += $item_master ? $item_master->LastCost*$purchase['qty'] : 0;
 				}
+				$updatePR = $purchaseModel->update([
+					'total_cost' => $sumcost
+				]);
 			}
 		}
 		
@@ -249,15 +264,10 @@ class PurchasesController extends Controller
 			if ($purchase_item->flag == 2) {
 				if (request()->updated) {
 					if ($purchase_item->flag == 2) {
-						$purchase_item->update([
-							'branch' => $request->branch,
-							'description' => $request->description,
-							'total_qty' => $request->total_qty
-						]);
-							
 						$purchase_item->request_details()->delete();
 							
 						if ($purchase_item->eqp_prt == 'Equipment') {
+							$sumcost = 0;
 							if (is_array(request()->purchases)) {
 								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 								$purchaseDetailModel->setConnection($company->database_name);
@@ -266,55 +276,59 @@ class PurchasesController extends Controller
 										'purchase_request_id' => $purchase_item->id,
 										'item_id' => $purchase['item_id']
 									]);
-						
+									
 									if (request()->parts) {
 										foreach (request()->parts as $key => $part) {
 											if ($key == $purchase['item_id']) {
 												if (is_array($part['item_id'])) {
 													for ($i=1; $i <= count($part['item_id']) ; $i++) { 
 														if ($part['qty'][$i] > 0) {
+															$item_master = \App\Models\Item\Master::find($part['item_id'][$i]);
 															$purchaseDetailModel->create([
 																'purchase_request_id' => (int) $purchase_item->id,
 																'item_id' => (int) $part['item_id'][$i],
 																'equipment_id' => (int) $detail_parents->id,
-																'qty_to_order' => (int) $part['qty'][$i]
+																'qty_to_order' => (int) $part['qty'][$i],
+																'cost' => $item_master ? $item_master->LastCost : NULL
 															]);
+															$sumcost += $item_master ? $item_master->LastCost*$part['qty'][$i] : 0;
 														}
 													}
-												} else {
-													if ($part['qty'] > 0) {
-														$purchaseDetailModel->create([
-															'purchase_request_id' => (int) $purchase_item->id,
-															'item_id' => (int) $part['item_id'],
-															'equipment_id' => (int) $detail_parents->id,
-															'qty_to_order' => (int) $part['qty']
-														]);
-													}
-												}
+												} 
 											}
 										}
 									}
-									
 								}
 							}	else {
 								$purchase_item->request_details->each->delete();
 							}
 						} else if ($purchase_item->eqp_prt == 'Part') {
+							$sumcost = 0;
 							if (is_array(request()->purchases)) {
 								$purchaseDetailModel = new \App\Models\Purchase\PurchaseDetail;
 								$purchaseDetailModel->setConnection($company->database_name);
 								foreach (request()->purchases as $purchase) {
+									$item_master = \App\Models\Item\Master::find($purchase['item_id']);
 									$detail_parents = $purchaseDetailModel->create([
 										'purchase_request_id' => (int)$purchase_item->id,
 										'item_id' => $purchase['item_id'],
-										'qty_to_order' => (int) $purchase['qty']
+										'qty_to_order' => (int) $purchase['qty'],
+										'cost' => $item_master ? $item_master->LastCost : NULL
 									]);
+									$sumcost += $item_master ? $item_master->LastCost*$purchase['qty'] : 0;
 								}
 							} else {
 								$purchase_item->request_details->each->delete();
 							}
 						}
-		
+
+						$purchase_item->update([
+							'branch' => $request->branch,
+							'description' => $request->description,
+							'total_qty' => $request->total_qty,
+							'total_cost' => $sumcost
+						]);
+
 						\Session::flash('success', 'Purchase #'.$purchase_item->id.' has been updated');
 						
 						return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));

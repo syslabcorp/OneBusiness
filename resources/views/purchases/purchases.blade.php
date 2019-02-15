@@ -115,10 +115,10 @@
               </i>
             @endif 
             <label for="">{{ $part->itemMaster() ? $part->itemMaster()->description : 'NaN'}}</label>
-            <input type="hidden" name="parts[{{ $row->item_id }}][item_id]" value="{{ $part->item_id }}">
+            <input type="hidden" name="parts[{{ $row->item_id }}][item_id][{{ $loop->index+1 }}]" value="{{ $part->item_id }}">
           </td>
           <td>
-            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
+            <input type="number" class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][qty][{{ $loop->index+1 }}]" value="{{ $part->qty_to_order }}" autocomplete="off" readonly>
           </td>
           @if(($purchase->flag == 1) || ($purchase->flag == 7))
           <td>
