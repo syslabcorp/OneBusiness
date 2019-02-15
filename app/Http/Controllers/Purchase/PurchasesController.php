@@ -512,13 +512,7 @@ class PurchasesController extends Controller
 	}
 
 	public function getParts() {
-		$company = Corporation::findOrFail(request()->corpID);
-		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
-		$purchaseModel->setConnection($company->database_name);
-		
-		$purchase_item = $purchaseModel->findOrFail(request()->idPR);
-		
-		if ($purchase_item->eqp_prt == 'Equipment') {
+		if (request()->EQP_PRT == 'Equipment') {
 			$detailModel = new \App\Models\Equip\Detail;
 
 			$items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->distinct()->get();
