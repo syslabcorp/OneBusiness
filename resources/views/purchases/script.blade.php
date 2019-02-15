@@ -188,6 +188,10 @@
           showAlertMessage('Not checked', 'Item Entry Error...')
         }
       })
+
+      $('.btn-verify').on('click', function() {
+        $('.form').submit()
+      })
       
       $('.access_delete').on('click', function() {
         if ($(this).parents('tr').find('td:eq(0) input').val()) {
