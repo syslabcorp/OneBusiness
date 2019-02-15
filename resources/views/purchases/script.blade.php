@@ -307,6 +307,16 @@
         $('input[name="description"]').prop('disabled', false)
         $('.before_edt').remove()
         $('.after_edit').css('visibility', '')
+        
+        setInterval(function() {
+          $.ajax({
+            url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
+            type: 'GET',
+            success: (res) => {
+            }
+          });
+        }, 10000); 
+
       })
 
       $('body').on('change', 'input:radio', function(event) {

@@ -7,6 +7,7 @@ use App\Company;
 use Illuminate\Http\Request;
 use App\Models\Corporation;
 use App\Http\Controllers\Purchase\EquipTransformer;
+use Carbon\Carbon;
 
 class PurchasesController extends Controller
 {
@@ -28,8 +29,8 @@ class PurchasesController extends Controller
 	{
 		if (\Auth::user()->checkAccessById(58, 'A') || \Auth::user()->checkAccessById(59, 'A')) {
 			$company = Corporation::findOrFail(request()->corpID);
-		
-			$branches = \Auth::user()->getBranchesByArea(request()->corpID);
+
+			$branches = \Auth::user()->getBranchesByGroup();
 
 			$purchase = new \App\Models\Purchase\PurchaseRequest;
 			$purchase->setConnection($company->database_name);
@@ -172,8 +173,8 @@ class PurchasesController extends Controller
 
 		$purchase = $purchaseModel->find($id);
 		
-		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
-		
+		$branches = \Auth::user()->getBranchesByGroup();
+
 		if (\Auth::user()->checkAccessById(58 , 'E')) {
 			if ($purchase->flag == 1) {
 				return view('purchases.detailPO', [
@@ -181,10 +182,15 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 2) {
+				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+					\Session::flash('error', "You can not edit this PurchaseRequest"); 
+					return redirect("/home"); 
+				}
+
 				return view('purchases.edit', [
 					'purchase' => $purchase, 
 					'branches' => $branches, 
-					]);
+				]);
 			} else if ($purchase->flag == 4) {
 				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
@@ -225,6 +231,10 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 5) {
+				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+					\Session::flash('error', "You can not edit this PurchaseRequest"); 
+					return redirect("/home"); 
+				}
 				return view('purchases.ViewDetailMarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
@@ -251,8 +261,6 @@ class PurchasesController extends Controller
 		$company = Corporation::findOrFail(request()->corpID);
 		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
 		$purchaseModel->setConnection($company->database_name);
-		
-		$branches = \Auth::user()->getBranchesByArea(request()->corpID);
 
 		$purchase_item = $purchaseModel->findOrFail($id);
 		
@@ -611,5 +619,18 @@ class PurchasesController extends Controller
 				'flag' => 2
 			]);
 		}
+	}
+
+	public function accessPage() {
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
+		$purchaseModel->setConnection($company->database_name);
+	
+		$purchaseItem = $purchaseModel->findOrFail(request()->id);
+
+		$purchaseItem->update([
+			'is_editing_by' => \Auth::user()->UserID,
+			'is_editing_at' => Carbon::now()
+		]);
 	}
 }
