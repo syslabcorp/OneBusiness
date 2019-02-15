@@ -427,7 +427,7 @@
             '_method': 'DELETE'
           },
           success: (res) => {
-            // window.location.reload()
+            window.location.reload()
           }
       })
       }
