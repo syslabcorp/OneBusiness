@@ -407,8 +407,9 @@
         if (value == true) {
           $('tr.purchaseRow').removeClass('active')
           self.parents('tr.purchaseRow').addClass('active')
+          console.log(1)
           $.ajax({
-            url: '{{ route('purchase_request.getParts') }}?corpID={{ request()->corpID }}&equipmentID='+ $(this).val() ,
+            url: '{{ route('purchase_request.getParts') }}?corpID={{ request()->corpID }}&idPR='+ $('input[name="requester_id"]').val() +'&equipmentID='+ $(this).val() ,
             type: 'GET',
             success: (res) => {
               $('tr[data-parent="'+ self.parents('tr').attr('data-id') +'"]').remove() 
