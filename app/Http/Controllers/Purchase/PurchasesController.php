@@ -512,16 +512,21 @@ class PurchasesController extends Controller
 	}
 
 	public function getParts() {
-		// $detailModel = new \App\Models\Equip\Detail;
-		$item_masterModel = new \App\Models\Item\Master;
-
-		$items = $item_masterModel->where('item_id', request()->equipmentID)->get();
-
-		// $items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->distinct()->get();
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
+		$purchaseModel->setConnection($company->database_name);
 		
-		return view('purchases.showEQP', [
-				'items' => $items
-		]);
+		$purchase_item = $purchaseModel->findOrFail(request()->idPR);
+		
+		if ($purchase_item->eqp_prt == 'Equipment') {
+			$detailModel = new \App\Models\Equip\Detail;
+
+			$items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->distinct()->get();
+			
+			return view('purchases.showEQP', [
+					'items' => $items
+			]);
+		}
 	}
 
 	public function removePart() {
