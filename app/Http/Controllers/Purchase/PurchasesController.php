@@ -511,15 +511,15 @@ class PurchasesController extends Controller
 		}
 	}
 
-	public function getParts() {
-		$detailModel = new \App\Models\Equip\Detail;
+	// public function getParts() {
+	// 	$detailModel = new \App\Models\Equip\Detail;
 
-		$items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->distinct()->get();
+	// 	$items = $detailModel->where('asset_id', request()->equipmentID)->orderBy('item_id')->distinct()->get();
 		
-		return view('purchases.showEQP', [
-				'items' => $items
-		]);
-	}
+	// 	return view('purchases.showEQP', [
+	// 			'items' => $items
+	// 	]);
+	// }
 
 	public function removePart() {
 		$company = Corporation::findOrFail(request()->corpID);
