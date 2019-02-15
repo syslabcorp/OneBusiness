@@ -40,9 +40,7 @@
               </div>
             </div>
           </div>
-          @if(\Auth::user()->checkAccessById(58 , 'V'))
-          <input type="hidden" name="checkAccess" value="1">
-          @elseif(\Auth::user()->checkAccessById(59 , 'V'))
+          @if(\Auth::user()->checkAccessById(59 , 'V'))
           <input type="hidden" name="checkAccess" value="2">
           @endif
           <div class="panel-body">
