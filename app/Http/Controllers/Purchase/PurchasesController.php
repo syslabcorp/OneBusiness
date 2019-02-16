@@ -221,6 +221,10 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 2) {
+				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+					\Session::flash('error', "You can not edit this PurchaseRequest"); 
+					return redirect("/home"); 
+				}
 				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
@@ -231,10 +235,6 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 5) {
-				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
-					\Session::flash('error', "You can not edit this PurchaseRequest"); 
-					return redirect("/home"); 
-				}
 				return view('purchases.ViewDetailMarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
