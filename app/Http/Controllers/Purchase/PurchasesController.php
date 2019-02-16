@@ -29,9 +29,9 @@ class PurchasesController extends Controller
 	{
 		if (\Auth::user()->checkAccessById(58, 'A') || \Auth::user()->checkAccessById(59, 'A')) {
 			$company = Corporation::findOrFail(request()->corpID);
-
+			
 			$branches = \Auth::user()->getBranchesByGroup();
-
+			dd($branches);
 			$purchase = new \App\Models\Purchase\PurchaseRequest;
 			$purchase->setConnection($company->database_name);
 			
