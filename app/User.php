@@ -245,4 +245,20 @@ class User extends Authenticatable
 
         return $docItem ? $docItem->img_file : '';
     }
+
+    public function getBranchesByGroup() {
+		$groupIds = explode(",", \Auth::user()->group_ID);
+	
+		$remitGroups = RemitGroup::where('status', '=', 1)->whereIn('group_ID', $groupIds)->get();
+		
+		$branchIds = [];
+
+		foreach ($remitGroups as $remitGroup) {
+			$branchIds = array_merge($branchIds, explode(",", $remitGroup->branch));
+		}
+
+		$branches = \App\Branch::whereIn('Branch',$branchIds)->get();
+		
+		return $branches;
+    }
 }
