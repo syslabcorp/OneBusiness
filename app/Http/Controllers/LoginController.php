@@ -73,7 +73,7 @@ class LoginController extends Controller
 			$users = DB::table('t_users')->where('email', $email)->get();
 			$id = 0;
 			foreach($users AS $user){
-				if(md5($password) == $user->passwrd){
+				if(md5($password) == $user->passwrd){//$id = $user->UserID;
 					$id = $user->UserID;
 					$phone = $user->mobile_no;
 					$username = $user->uname;
