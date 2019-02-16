@@ -274,7 +274,30 @@
       })
 
       $(document).ready(function() {
-        if ($('button[name="verification"]').val() == 'for_verify') {
+        if ($('button').hasClass('edit')) {
+          $.ajax({
+            url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
+            type: 'GET',
+            success: (res) => {
+            }
+          });
+          setInterval(function() {
+            $.ajax({
+              url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
+              type: 'GET',
+              success: (res) => {
+              }
+            });
+          }, 10000);
+        }
+
+        if ($('button[name="verification"]').val() == 'for_verify' || $('button').hasClass('access_mark')) {
+          $.ajax({
+            url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
+            type: 'GET',
+            success: (res) => {
+            }
+          });
           setInterval(function() {
             $.ajax({
               url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
@@ -320,16 +343,6 @@
         $('input[name="description"]').prop('disabled', false)
         $('.before_edt').remove()
         $('.after_edit').css('visibility', '')
-        
-        setInterval(function() {
-          $.ajax({
-            url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
-            type: 'GET',
-            success: (res) => {
-            }
-          });
-        }, 10000); 
-
       })
 
       $('body').on('change', 'input:radio', function(event) {
