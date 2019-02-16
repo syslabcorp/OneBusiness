@@ -27,6 +27,7 @@ class PurchasesController extends Controller
 
 	public function create()
 	{
+		dd('ok');
 		if (\Auth::user()->checkAccessById(58, 'A') || \Auth::user()->checkAccessById(59, 'A')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			
