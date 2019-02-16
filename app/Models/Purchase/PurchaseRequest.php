@@ -15,6 +15,10 @@ class PurchaseRequest extends Model
         'flag', 'eqp_prt', 'is_editing_by', 'is_editing_at', 'created_at', 'updated_at'
     ];
 
+    protected $dates = [
+        'created_at', 'updated_at', 'is_editing_at'
+    ];
+
     public function request_details()
     {
         return $this->hasMany(PurchaseDetail::class, 'purchase_request_id','id');
