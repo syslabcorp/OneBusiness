@@ -248,7 +248,7 @@ class User extends Authenticatable
 
     public function getBranchesByGroup() {
 		$groupIds = explode(",", \Auth::user()->group_ID);
-		dd($groupIds);
+	
 		$remitGroups = RemitGroup::where('status', '=', 1)->whereIn('group_ID', $groupIds)->get();
 		
 		$branchIds = [];
