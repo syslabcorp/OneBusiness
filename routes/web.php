@@ -269,6 +269,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('/purchase_request/undoQTY', ['uses' => 'Purchase\PurchasesController@undoQTY'])->name('purchase_request.undoQTY');
   Route::get('/purchase_request/undoDelete', ['uses' => 'Purchase\PurchasesController@undoDelete'])->name('purchase_request.undoDelete');
   Route::get('/purchase_request/accessPage', ['uses' => 'Purchase\PurchasesController@accessPage'])->name('purchase_request.accessPage');
+  Route::get('/purchase_request/checkAccessID', ['uses' => 'Purchase\PurchasesController@checkAccessID'])->name('purchase_request.checkAccessID');
 
   Route::resource('parts', 'PartsController');
 

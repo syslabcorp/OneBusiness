@@ -165,9 +165,9 @@
           class: 'text-center',
           render: (data, type, row, meta) => {
             if (row.status) {
-              return '<a style="color:red" href="{{ route('purchase_request.index') }}/' + row.id + '/edit?corpID={{ request()->corpID }}">'+ data +'</a>'
+              return '<a style="color:red" onClick="checkAccessID(event, '+ row.id +');" href="javascript:void(0)">'+ data +'</a>'
             } else {
-              return '<a href="{{ route('purchase_request.index') }}/' + row.id + '/edit?corpID={{ request()->corpID }}">'+ data +'</a>'
+              return '<a onClick="checkAccessID(event, '+ row.id +');" href="javascript:void(0)">'+ data +'</a>'
             }
           }
         },
@@ -278,6 +278,21 @@
         [0, 'desc']
       ]
   })
+
+  checkAccessID = (event, id) => {
+    $.ajax({
+      url: '{{ route('purchase_request.checkAccessID') }}?corpID={{ request()->corpID }}&id='+id,
+      type: 'GET',
+      success: (res) => {
+        if (res.success) {
+          $(event.target).attr('href','')
+          location.href = "{{ route('purchase_request.index') }}/" + id + "/edit?corpID={{ request()->corpID }}"
+        } else {
+          showAlertMessage('This request is currently being evaluated. Please try again later.', 'PR Unavainable')
+        }
+      }
+    });
+  }
 
   checkFilter = () => {
     if (localStorage.getItem('filter')) {
