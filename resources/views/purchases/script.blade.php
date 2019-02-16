@@ -143,7 +143,6 @@
 
       checkValue_0 = () => {
         let $value = true
-        console.log($('input[type="radio"]:checked').val())
         if ($('input[type="radio"]:checked').val() == 'Equipment') {
           $('.table-purchases tbody tr.rowTR').each(function(){
             if($(this).find('td:eq(1) input').val() > 0)
@@ -264,6 +263,7 @@
         } else {
           partID = $(this).parents('tr').find('td:eq(1) input').val()
         }
+    
         $.ajax({
           url: '{{ route('purchase_request.changeQTY') }}?corpID={{ request()->corpID }}&partID='+ partID +'&qty='+ $(this).val() + '&reason=' + $('.textReason').val(),
           type: 'GET',
@@ -271,6 +271,19 @@
             location.reload()
           }
         });    
+      })
+
+      $(document).ready(function() {
+        if ($('button[name="verification"]').val() == 'for_verify') {
+          setInterval(function() {
+            $.ajax({
+              url: '{{ route('purchase_request.accessPage') }}?corpID={{ request()->corpID }}&id='+ $('input[name="requester_id"]').val(),
+              type: 'GET',
+              success: (res) => {
+              }
+            });
+          }, 10000);
+        } 
       })
 
       $('.edit_verify').on('click', function () {
@@ -356,8 +369,6 @@
       }
 
       checkPRT = (self) => {
-        // console.log($('.table-purchases tbody tr.purchaseRow').length)
-      
         $('.table-purchases tbody tr.purchaseRow.active').each(function(){
           if($(this).find('select').val() == self.val()) {
             showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')

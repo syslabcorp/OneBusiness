@@ -175,44 +175,44 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByGroup();
 
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
-			if ($purchase->flag == 1) {
-				return view('purchases.detailPO', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 2) {
-				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
-					\Session::flash('error', "You can not edit this PurchaseRequest"); 
-					return redirect("/home"); 
-				}
+		// if (\Auth::user()->checkAccessById(58 , 'E')) {
+		// 	if ($purchase->flag == 1) {
+		// 		return view('purchases.detailPO', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 2) {
+		// 		if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+		// 			\Session::flash('error', "You can not edit this PurchaseRequest"); 
+		// 			return redirect("/home"); 
+		// 		}
 
-				return view('purchases.edit', [
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-				]);
-			} else if ($purchase->flag == 4) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 5) {
-				return view('purchases.verify',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 6) {
-				return view('purchases.MarkForPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} else if ($purchase->flag == 7) {
-				return view('purchases.detailPO',[
-					'purchase' => $purchase, 
-					'branches' => $branches, 
-					]);
-			} 
-		} 
+		// 		return view('purchases.edit', [
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 		]);
+		// 	} else if ($purchase->flag == 4) {
+		// 		return view('purchases.MarkForPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 5) {
+		// 		return view('purchases.verify',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 6) {
+		// 		return view('purchases.MarkForPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} else if ($purchase->flag == 7) {
+		// 		return view('purchases.detailPO',[
+		// 			'purchase' => $purchase, 
+		// 			'branches' => $branches, 
+		// 			]);
+		// 	} 
+		// } 
 	
 		if (\Auth::user()->checkAccessById(59 , 'E')) {
 			if ($purchase->flag == 1) {
@@ -627,7 +627,7 @@ class PurchasesController extends Controller
 		$purchaseModel->setConnection($company->database_name);
 	
 		$purchaseItem = $purchaseModel->findOrFail(request()->id);
-
+		
 		$purchaseItem->update([
 			'is_editing_by' => \Auth::user()->UserID,
 			'is_editing_at' => Carbon::now()
