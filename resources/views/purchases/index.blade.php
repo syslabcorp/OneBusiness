@@ -270,7 +270,7 @@
           targets: 21,
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<button onclick="removePurchase(' + row.id + ')" class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
+            return '<button {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, "D") || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, "D")) ? "onclick=removePurchase()" : "disabled" }}' + ' class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
           }
         },
       ],
