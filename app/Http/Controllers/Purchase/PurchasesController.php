@@ -176,18 +176,13 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByGroup();
 
-		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E')) {
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'V')) {
 			if ($purchase->flag == 1) {
 				return view('purchases.detailPO', [
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 2) {
-				// if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
-				// 	\Session::flash('error', "You can not edit this PurchaseRequest"); 
-				// 	return redirect("/home"); 
-				// }
-
 				return view('purchases.edit', [
 					'purchase' => $purchase, 
 					'branches' => $branches, 
@@ -215,17 +210,13 @@ class PurchasesController extends Controller
 			} 
 		} 
 	
-		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E')) {
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'V')) {
 			if ($purchase->flag == 1) {
 				return view('purchases.detailPO', [
 					'purchase' => $purchase, 
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 2) {
-				// if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
-				// 	\Session::flash('error', "You can not edit this PurchaseRequest"); 
-				// 	return redirect("/home"); 
-				// }
 				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
