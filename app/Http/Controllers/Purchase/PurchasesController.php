@@ -182,10 +182,10 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 2) {
-				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
-					\Session::flash('error', "You can not edit this PurchaseRequest"); 
-					return redirect("/home"); 
-				}
+				// if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+				// 	\Session::flash('error', "You can not edit this PurchaseRequest"); 
+				// 	return redirect("/home"); 
+				// }
 
 				return view('purchases.edit', [
 					'purchase' => $purchase, 
@@ -221,10 +221,10 @@ class PurchasesController extends Controller
 					'branches' => $branches, 
 					]);
 			} else if ($purchase->flag == 2) {
-				if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
-					\Session::flash('error', "You can not edit this PurchaseRequest"); 
-					return redirect("/home"); 
-				}
+				// if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+				// 	\Session::flash('error', "You can not edit this PurchaseRequest"); 
+				// 	return redirect("/home"); 
+				// }
 				return view('purchases.MarkForPO',[
 					'purchase' => $purchase, 
 					'branches' => $branches, 
@@ -632,5 +632,23 @@ class PurchasesController extends Controller
 			'is_editing_by' => \Auth::user()->UserID,
 			'is_editing_at' => Carbon::now()
 		]);
+	}
+
+	public function checkAccessID() {
+		$company = Corporation::findOrFail(request()->corpID);
+		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
+		$purchaseModel->setConnection($company->database_name);
+
+		$purchase = $purchaseModel->findOrFail(request()->id);
+
+		if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
+			return response([
+				'success' => false 
+			]); 
+		} else {
+			return response([
+				'success' => true 
+			]);
+		}
 	}
 }

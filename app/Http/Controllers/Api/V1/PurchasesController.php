@@ -13,11 +13,13 @@ class PurchasesController extends Controller
         $company = Corporation::findOrFail($request->corpID);
         $purchaseModel = new \App\Models\Purchase\PurchaseRequest;
         $purchaseModel->setConnection($company->database_name);
+
+        $branches = \Auth::User()->getBranchesByGroup();
         
         if (\Auth::user()->checkAccessById(58 , 'V')) {
             $items = $purchaseModel->where('requester_id', \Auth::user()->UserID)->get();
         } else if (\Auth::user()->checkAccessById(59 , 'V')) {
-            $items = $purchaseModel->get();
+            $items = $purchaseModel->whereIn('branch', $branches->pluck('Branch'))->get();
         }
         
         if ($request->branch == '1') {
