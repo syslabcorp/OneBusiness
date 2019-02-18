@@ -111,7 +111,7 @@
 											</div>
 											@if(($purchase->flag != 4) && ($purchase->flag != 6)) 
 											<div class="col-xs-6 text-right">
-											@if (count($purchase->request_details->whereIn('isVerified', [1,2])->all()) == 0)
+											@if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'V') && count($purchase->request_details->whereIn('isVerified', [1,2])->all()) == 0)
 												<button type="button"class="btn btn-danger access_mark" data-toggle="modal" data-target="#lewit">Disapprove Request</button>
 												<button type="button" class="btn btn-primary access_mark" name="mark" data-toggle="modal" data-target="#lewit1">Mark for PO</button>
 											@else
