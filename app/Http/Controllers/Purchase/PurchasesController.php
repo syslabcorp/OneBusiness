@@ -642,6 +642,10 @@ class PurchasesController extends Controller
 
 		$purchase = $purchaseModel->findOrFail(request()->id);
 
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'DAVE') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'DAVE')) {
+			dd('ok');
+		}
+
 		if ($purchase->is_editing_by && $purchase->is_editing_by != \Auth::user()->UserID && Carbon::now()->diffInSeconds($purchase->is_editing_at) < 10) {
 			return response([
 				'success' => false 
