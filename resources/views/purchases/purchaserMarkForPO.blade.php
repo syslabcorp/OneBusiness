@@ -73,7 +73,7 @@
               </td>
               <td class="text-center"><label for="">{{ $part->itemMaster() ? $part->itemMaster()->description : '' }}</label></td>
               <td>
-                <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control " {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'disabled' }} > 
+                <select name="parts[{{ $row->item_id }}][{{ $part->id }}][vendor_id]" class="form-control " {{ ( \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') && $row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'disabled' }} > 
                 <option class="" value="">-- select --</option>
                 @foreach($vendors as $vendor)
                   @if($vendor->Supp_ID == ($part->vendor_id ? $part->vendor_id : ($part->itemMaster() ? $part->itemMaster()->supplier_id : '')))
@@ -85,10 +85,10 @@
                 </select>
               </td>
               <td>
-                <input type="text" {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][{{ $part->id }}][qty_to_order]" value="{{ $part->qty_to_order }}" autocomplete="off">
+                <input type="text" {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') && $row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-center label-table-min qty quantity" name="parts[{{ $row->item_id }}][{{ $part->id }}][qty_to_order]" value="{{ $part->qty_to_order }}" autocomplete="off">
               </td>
               <td>
-                <input type="text" {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->cost ? $part->cost : $part->itemMaster() ? $part->itemMaster()->LastCost : '' }}" autocomplete="off">
+                <input type="text" {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') && $row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $row->item_id }}][{{ $part->id  }}][cost]" value="{{ $part->cost ? $part->cost : $part->itemMaster() ? $part->itemMaster()->LastCost : '' }}" autocomplete="off">
               </td>
               <td>
                 <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
@@ -153,7 +153,7 @@
             </td>
             
             <td>
-              <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control " {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} > 
+              <select name="parts[{{ $loop->index+1 }}][vendor_id]" class="form-control " {{ ( \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') && $row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'disabled' }} > 
               <option class="" value="">-- select --</option>
               @foreach($vendors as $vendor)
                 @if($vendor->Supp_ID == ( $row->vendor_id ? $row->vendor_id : ($row->itemMaster() ? $row->itemMaster()->supplier_id : '')))
@@ -165,10 +165,10 @@
               </select>
             </td>
             <td>
-              <input type="text" {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-center label-table-min qty quantity" name="parts[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off" >
+              <input type="text" {{ ( \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') && $row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-center label-table-min qty quantity" name="parts[{{ $loop->index+1 }}][qty_to_order]" value="{{ $row->qty_to_order }}" autocomplete="off" >
             </td>
             <td class="text-right">
-              <input type="text" {{ ($row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->cost ? $row->cost : $row->itemMaster() ? $row->itemMaster()->LastCost : ''}}" autocomplete="off">
+              <input type="text" {{ ( \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') && $row->purchaseRequest->flag != 1) && ($row->purchaseRequest->flag != 4) && ($row->purchaseRequest->flag != 6) ? '' : 'readonly' }} class="form-control text-right label-table-min cost quantity cost-mask" name="parts[{{ $loop->index+1 }}][cost]" value="{{ $row->cost ? $row->cost : $row->itemMaster() ? $row->itemMaster()->LastCost : ''}}" autocomplete="off">
             </td>
             <td class="text-right">
               <input type="text" class="form-control text-right total" name="" autocomplete="off" readonly>
