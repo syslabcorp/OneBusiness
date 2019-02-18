@@ -16,9 +16,9 @@ class PurchasesController extends Controller
 
         $branches = \Auth::User()->getBranchesByGroup();
         
-        if (\Auth::user()->checkAccessById(58 , 'V')) {
+        if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'V')) {
             $items = $purchaseModel->where('requester_id', \Auth::user()->UserID)->get();
-        } else if (\Auth::user()->checkAccessById(59 , 'V')) {
+        } else if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'V')) {
             $items = $purchaseModel->whereIn('branch', $branches->pluck('Branch'))->get();
         }
         
@@ -50,16 +50,18 @@ class PurchasesController extends Controller
 		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
 		$purchaseModel->setConnection($company->database_name);
 
-		$purchase = $purchaseModel->findOrFail($id);
+        if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'D') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'D')) {
+            $purchase = $purchaseModel->findOrFail($id);
 		
-		$purchase->request_details()->delete();
+            $purchase->request_details()->delete();
 
-		$purchase->delete();
-		
-        \Session::flash('success', 'Purchase #' . $purchase->id . ' has been cancelled and deleted');
-        
-        return response()->json([
-            'success' => true
-        ]);
+            $purchase->delete();
+            
+            \Session::flash('success', 'Purchase #' . $purchase->id . ' has been cancelled and deleted');
+            
+            return response()->json([
+                'success' => true
+            ]);
+        } 
     }
 }

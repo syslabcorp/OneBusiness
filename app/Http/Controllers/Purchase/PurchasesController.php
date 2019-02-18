@@ -13,11 +13,12 @@ class PurchasesController extends Controller
 {
 	public function index()
 	{
-		if (\Auth::user()->checkAccessById(58, 'V') || \Auth::user()->checkAccessById(59, 'V')) {
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'V') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'V')) {
 			$company = Corporation::findOrFail(request()->corpID);
 	
 			return view('purchases.index', [
-					'company' => $company
+					'company' => $company,
+					'corpID' => request()->corpID
 			]);
 		} else {
 			\Session::flash('error', "You don't have permission"); 
@@ -27,7 +28,7 @@ class PurchasesController extends Controller
 
 	public function create()
 	{
-		if (\Auth::user()->checkAccessById(58, 'A') || \Auth::user()->checkAccessById(59, 'A')) {
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'A') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'A')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			
 			$branches = \Auth::user()->getBranchesByGroup();
@@ -48,7 +49,7 @@ class PurchasesController extends Controller
 
 	public function store(Request $request)
 	{
-		if(!\Auth::user()->checkAccessById(58, 'A')) {
+		if(!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'A')) {
 			\Session::flash('error', "You don't have permission"); 
 			return redirect("/home"); 
 		}
@@ -175,7 +176,7 @@ class PurchasesController extends Controller
 		
 		$branches = \Auth::user()->getBranchesByGroup();
 
-		if (\Auth::user()->checkAccessById(58 , 'E')) {
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E')) {
 			if ($purchase->flag == 1) {
 				return view('purchases.detailPO', [
 					'purchase' => $purchase, 
@@ -214,7 +215,7 @@ class PurchasesController extends Controller
 			} 
 		} 
 	
-		if (\Auth::user()->checkAccessById(59 , 'E')) {
+		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E')) {
 			if ($purchase->flag == 1) {
 				return view('purchases.detailPO', [
 					'purchase' => $purchase, 
@@ -264,7 +265,7 @@ class PurchasesController extends Controller
 
 		$purchase_item = $purchaseModel->findOrFail($id);
 		
-		if(\Auth::user()->checkAccessById(58, 'E')) {
+		if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
 			$purchasedetailModel->setConnection($company->database_name);
@@ -412,7 +413,7 @@ class PurchasesController extends Controller
 			}		
 		}
 
-		if(\Auth::user()->checkAccessById(59, 'E')) {
+		if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
 			$purchasedetailModel->setConnection($company->database_name);
