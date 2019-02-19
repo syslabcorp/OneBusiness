@@ -284,23 +284,24 @@
   })
 
   checkAccessID = (event, id) => {
+    // $.ajax({
+    //   url: '{{ route('purchase_request.checkDAVE') }}?corpID={{ request()->corpID }}&id='+id,
+    //   type: 'GET',
+    //   success: (res) => {
+    //     if (!res.checkDAVE) {
+          
+    //     } else {
+    //       showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavailable')
+    //     }
+    //   }
+    // });
     $.ajax({
-      url: '{{ route('purchase_request.checkDAVE') }}?corpID={{ request()->corpID }}&id='+id,
+      url: '{{ route('purchase_request.checkAccessID') }}?corpID={{ request()->corpID }}&id='+id,
       type: 'GET',
       success: (res) => {
-        if (!res.checkDAVE) {
-          $.ajax({
-            url: '{{ route('purchase_request.checkAccessID') }}?corpID={{ request()->corpID }}&id='+id,
-            type: 'GET',
-            success: (res) => {
-              if (res.success) {
-                $(event.target).attr('href','')
-                location.href = "{{ route('purchase_request.index') }}/" + id + "/edit?corpID={{ request()->corpID }}"
-              } else {
-                showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavailable')
-              }
-            }
-          });
+        if (res.success) {
+          $(event.target).attr('href','')
+          location.href = "{{ route('purchase_request.index') }}/" + id + "/edit?corpID={{ request()->corpID }}"
         } else {
           showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavailable')
         }
