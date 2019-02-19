@@ -649,7 +649,10 @@ class PurchasesController extends Controller
 		$array_DAVE = ['D','A','V','E'];
 		
 		foreach ($array_DAVE as $DAVE) {
-			\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE) ? '' : $result = false ;
+			if (!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE)) {
+				$result = false ;
+				break;
+			}
 		}
 
 		return response()->json([
