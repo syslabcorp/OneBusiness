@@ -260,7 +260,7 @@ class PurchasesController extends Controller
 			$company = Corporation::findOrFail(request()->corpID);
 			$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
 			$purchasedetailModel->setConnection($company->database_name);
-			
+			dd('ok');
 			if ($purchase_item->flag == 2) {
 				if (request()->updated) {
 					if ($purchase_item->flag == 2) {
