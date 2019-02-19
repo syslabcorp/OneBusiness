@@ -297,12 +297,12 @@
                 $(event.target).attr('href','')
                 location.href = "{{ route('purchase_request.index') }}/" + id + "/edit?corpID={{ request()->corpID }}"
               } else {
-                showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavainable')
+                showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavailable')
               }
             }
           });
         } else {
-          showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavainable')
+          showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavailable')
         }
       }
     });
