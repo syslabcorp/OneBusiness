@@ -270,6 +270,7 @@ Route::group(['middleware' => 'auth'], function() {
   Route::get('/purchase_request/undoDelete', ['uses' => 'Purchase\PurchasesController@undoDelete'])->name('purchase_request.undoDelete');
   Route::get('/purchase_request/accessPage', ['uses' => 'Purchase\PurchasesController@accessPage'])->name('purchase_request.accessPage');
   Route::get('/purchase_request/checkAccessID', ['uses' => 'Purchase\PurchasesController@checkAccessID'])->name('purchase_request.checkAccessID');
+  Route::get('/purchase_request/checkDAVE', ['uses' => 'Purchase\PurchasesController@checkDAVE'])->name('purchase_request.checkDAVE');
 
   Route::resource('parts', 'PartsController');
 
