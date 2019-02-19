@@ -255,7 +255,7 @@ class PurchasesController extends Controller
 		$purchaseModel->setConnection($company->database_name);
 
 		$purchase_item = $purchaseModel->findOrFail($id);
-		
+		dd('ok');
 		if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
