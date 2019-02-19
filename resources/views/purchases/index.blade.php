@@ -270,7 +270,11 @@
           targets: 21,
           class: 'text-center',
           render: (data, type, row, meta) => {
-            return '<button {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, "D") || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, "D")) ? "onclick=removePurchase()" : "disabled" }}' + ' class="btn btn-md btn-danger fas fa-trash-alt"> </button>'
+            @if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, "D") || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, "D"))
+              return '<button onClick="removePurchase('+ row.id +')" class="btn btn-md btn-danger"><i class="fas fa-trash-alt"></i></button>'
+            @else
+              return '<button disabled class="btn btn-md btn-danger"><i class="fas fa-trash-alt"></i></button>'
+            @endif
           }
         },
       ],
@@ -281,14 +285,24 @@
 
   checkAccessID = (event, id) => {
     $.ajax({
-      url: '{{ route('purchase_request.checkAccessID') }}?corpID={{ request()->corpID }}&id='+id,
+      url: '{{ route('purchase_request.checkDAVE') }}?corpID={{ request()->corpID }}&id='+id,
       type: 'GET',
       success: (res) => {
-        if (res.success) {
-          $(event.target).attr('href','')
-          location.href = "{{ route('purchase_request.index') }}/" + id + "/edit?corpID={{ request()->corpID }}"
+        if (!res.checkDAVE) {
+          $.ajax({
+            url: '{{ route('purchase_request.checkAccessID') }}?corpID={{ request()->corpID }}&id='+id,
+            type: 'GET',
+            success: (res) => {
+              if (res.success) {
+                $(event.target).attr('href','')
+                location.href = "{{ route('purchase_request.index') }}/" + id + "/edit?corpID={{ request()->corpID }}"
+              } else {
+                showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavainable')
+              }
+            }
+          });
         } else {
-          showAlertMessage('This request is currently being evaluated. Please try again later.', 'PR Unavainable')
+          showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavainable')
         }
       }
     });

@@ -643,4 +643,17 @@ class PurchasesController extends Controller
 			]);
 		}
 	}
+
+	public function checkDAVE() {
+		$result = true;
+		$array_DAVE = ['D','A','V','E'];
+		
+		foreach ($array_DAVE as $DAVE) {
+			\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE) ? '' : $result = false ;
+		}
+
+		return response()->json([
+			'checkDAVE' => $result
+		]);	
+	}
 }
