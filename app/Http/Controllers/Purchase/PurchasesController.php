@@ -31,7 +31,7 @@ class PurchasesController extends Controller
 		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'A') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'A')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			
-			$branches = \Auth::user()->getBranchesByGroup();
+			$branches = \Auth::user()->getBranchesByGroup(request()->corpID);
 	
 			$purchase = new \App\Models\Purchase\PurchaseRequest;
 			$purchase->setConnection($company->database_name);
@@ -174,7 +174,7 @@ class PurchasesController extends Controller
 
 		$purchase = $purchaseModel->find($id);
 		
-		$branches = \Auth::user()->getBranchesByGroup();
+		$branches = \Auth::user()->getBranchesByGroup(request()->corpID);
 
 		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'V')) {
 			if ($purchase->flag == 1) {
