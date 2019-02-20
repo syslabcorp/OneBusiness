@@ -35,7 +35,7 @@ class PurchasesController extends Controller
 	
 			$purchase = new \App\Models\Purchase\PurchaseRequest;
 			$purchase->setConnection($company->database_name);
-			
+			dd($branches);
 			return view('purchases.create', [
 					'branches' => $branches,
 					'purchase' => $purchase
