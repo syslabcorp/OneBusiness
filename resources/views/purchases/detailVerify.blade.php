@@ -143,8 +143,8 @@
 												<a class="btn btn-default" href="{{ route('purchase_request.index', ['corpID' => request()->corpID]) }}">Back</a>
 											</div>
 											<div class="col-xs-6 text-right">
-												<button type="submit" class="btn btn-danger delete_request_verify" value="" name="delete_request">Delete Request</button>
-												<button type="button" class="btn btn-primary btn-verify" >Verify</button>
+												<button type="submit" {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E') ? '' : 'disabled' }} class="btn btn-danger delete_request_verify" value="" name="delete_request">Delete Request</button>
+												<button type="button" {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E') ? '' : 'disabled' }} class="btn btn-primary btn-verify" >Verify</button>
 											</div>
 										</div>
 										</form>
