@@ -260,6 +260,7 @@ class User extends Authenticatable
         $branches = \App\Branch::whereIn('Branch',$branchIds)
                             ->where('Active', 1)
                             ->where('corp_id', $corpID)
+                            ->orderBy('ShortName', 'ASC')
                             ->get();
 		
 		return $branches;

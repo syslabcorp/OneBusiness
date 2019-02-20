@@ -43,7 +43,8 @@ class PurchasesController extends Controller
 		}
 		else {
 			\Session::flash('error', "You don't have permission"); 
-		    return redirect("/home"); 
+		    return redirect(
+					"/home"); 
 		}
 	}
 
