@@ -647,20 +647,20 @@ class PurchasesController extends Controller
 		}
 	}
 
-	public function checkDAVE() {
-		$result = true;
-		
-		$array_DAVE = ['D','A','V','E'];
-		
-		foreach ($array_DAVE as $DAVE) {
-			if (!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE)) {
-				$result = false ;
-				break;
-			}
-		}
+	// public function checkDAVE() {
+	// 	$result = true;
 
-		return response()->json([
-			'checkDAVE' => $result
-		]);	
-	}
+	// 	$array_DAVE = ['D','A','V','E'];
+		
+	// 	foreach ($array_DAVE as $DAVE) {
+	// 		if (!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE)) {
+	// 			$result = false ;
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	return response()->json([
+	// 		'checkDAVE' => $result
+	// 	]);	
+	// }
 }

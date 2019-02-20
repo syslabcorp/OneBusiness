@@ -106,7 +106,7 @@
         </div>
         <div class="col-xs-6 text-right before_edt" >
           @if($purchase->id)
-          <button type="button" class="btn btn-info {{ $purchase->status ? 'edit_verify' : 'edit' }} " >
+          <button type="button" class="btn btn-info {{ $purchase->status ? 'edit_verify' : 'edit' }} {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E') ? '' : 'disabled' }}" >
             <i class="far fa-save"></i> Edit PR
           </button>
           @else 
