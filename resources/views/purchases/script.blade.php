@@ -211,7 +211,6 @@
             type: 'GET',
             success: (res) => {
               location.reload()
-              // indexs()
             }
           });
       })
@@ -346,8 +345,6 @@
       })
 
       $('body').on('change', 'input:radio', function(event) {
-        // let $rows = $('.table-purchases tbody tr.purchaseRow')
-        // let $indexrow = $(this).parents('tr').index() + 1
         let $trParent = $(event.target).parents('tr')
         $('tr.purchaseRow').remove()
         $('tr.rowTR').remove()
@@ -367,7 +364,6 @@
         if($(this).attr('data-id') == self.val())
           {
             showAlertMessage('There should be no duplicate items in a PR.', 'Note for create request:')
-            // self.parents('tr').remove()
             self.parents('tr').find('select option[value=""]').attr("selected",false)
             self.parents('tr').find('select option[value=""]').attr("selected",true)
             self.parents('tr').find('td:eq(0)').attr("rowspan",'')
@@ -477,188 +473,6 @@
         let tr = $('.table-purchases tbody tr.purchaseRow') 
         let value = checkEQP(self)
       })
-
-      // $('.editEquipment .btn-edit').click((event) => {
-      //   $('.editEquipment .form-control').prop('disabled', false)
-      //   $('.editEquipment .btnAddRow, .btnSaveRow, .btnRemoveRow').prop('disabled', false)
-      //   $('.editEquipment .btn-edit').css('display', 'none')
-      //   $('.editEquipment .btn-save, .editEquipment .addHere').css('display', 'inline-block')
-      //   $('.editEquipment .equipActive').removeAttr('onclick')
-
-      //   enablePart()
-      //   // $('.partRow input, .partRow select').attr('readonly', true)
-      // })
-
-      // enablePart = () => {
-      //   $('.btnRemoveRow').parents('tr').find('input[type="checkbox"]').attr('onclick', '')
-
-      //   $('.btnRemoveRow').parents('tr').find('select, input').attr('readonly', false)
-      // };
-
-      // searchPart = () => {
-      //   $('.listPart').remove();
-
-      //   let params = {};
-      //   let listFilters = $('.rowFocus input[data-column]')
-
-      //   for(let i = 0; i < listFilters.length; i++) {
-      //     params[$(listFilters[i]).attr('data-column')] =  $(listFilters[i]).val()
-      //   }
-
-
-      //   $.ajax({
-      //     url: '{{ route('parts.searchPart') }}',
-      //     type: 'GET',
-      //     data: params,
-      //     success: (res) => {
-      //       $('#equipDetail').append(res)
-      //       // $('.listPart').css('top', ($('.rowFocus').offset().top - 40) + 'px')
-      //       $('.listPart').css('width', $('.table-parts').width())
-      //       $('.listPart tbody tr:eq(0)').addClass('active')
-      //     }
-      //   });
-      // }
-
-      // $('.table-parts').on('keyup', '.showSuggest', (event) => {
-      //   $parent = $(event.target);
-        
-      //   $('.table-parts tr').removeClass('rowFocus');
-      //   $parent.parents('tr').addClass('rowFocus');
-      //   if (event.which != 38 && event.which != 40 &&  event.which != 13) searchPart();
-      // })
-
-      // $('body').on('keyup', '.quantity', (event) => {
-      //   let $parent = $(event.target).parents('tr')
-      //   let total = 0.000000000001+ $parent.find('td:eq(6) input').val()*$parent.find('td:eq(7) input').val()
-
-      //   if ($parent.find('td:eq(6) input').val()){
-      //     $parent.find('td:eq(8) input').val(total.toFixed(2))
-      //   }
-
-      //   totalCost()
-      // })
-
-      // $('body').on('keyup', '.lastcost', (event) => {
-      //   let $parent = $(event.target).parents('tr')
-  
-      //   let total = 0.000000000001+ $parent.find('td:eq(6) input').val()*$parent.find('td:eq(7) input').val()
-
-      //   if ($parent.find('td:eq(6) input').val()){
-      //     $parent.find('td:eq(8) input').val(total.toFixed(2))
-      //   }
-
-      //   totalCost()
-      // })
-      
-
-      
-      // $('body').on('click', '.listPart tbody tr', function(event)  {
-      //   $('.listPart tbody tr').removeClass('active')
-      //   $parent = $(this);
-      //   $parent.addClass('active')
-      // })
-
-      
-      // $('body').click((event) => {
-      //   if (!$(event.target).parents('.listPart').length) {
-      //     $('.listPart').remove()
-      //   }
-      // })
-
-      // $('.table-parts').on('click', '.showSuggest', function(){
-      //   $parent = $(event.target);
-     
-      //   $('.table-parts tr').removeClass('rowFocus');
-      //   $parent.parents('tr').addClass('rowFocus');
-        
-      //   searchPart();
-      // })
-
-      // $(window).on('keyup', (event) => {
-      //   if (event.which == 13) {
-      //     setPart();
-      //     return false;
-      //   }
-        
-      //   if ($('.listPart tr.active').length) {
-      //     let index = $('.listPart tbody tr.active').index();
-        
-      //     let position = $('.listPart tr.active').offset().top - $('.listPart').offset().top - 250.5 
-        
-      //     if (position > 0) {
-      //       $('.listPart').scrollTop(position)
-      //     }
-
-
-      //     if (event.which == 38) {
-      //       if ($('.listPart tbody tr.active').length) {
-      //         if (index >= 1) {
-      //           index -= 1;
-      //           $('.listPart tbody tr:eq(' + index + ')').click()
-      //         }
-      //       } else {
-      //         $('.listPart tbody tr:eq(0)').click()
-      //       }
-      //     } else if (event.which == 40) {
-      //       if (($('.listPart tbody tr.active').length - 2)) {          
-      //         if (index != $('.listPart tbody tr').length) {
-      //           index += 1;
-      //           $('.listPart tbody tr:eq(' + index + ')').click()
-      //         }  
-      //       } else {
-      //         $('.listPart tbody tr:eq(0)').click()
-      //       }
-      //     }
-      //   } else {
-      //     $('.listPart tbody tr:eq(0)').click()
-      //   }
-      // })
-
-      // // $('body').keypress(function(event) {
-      // //   if(event.which == 13) {
-      // //     event.preventDefault();
-      // //     setPart();
-      // //   }
-      // // });
-
-      // setPart = () => {
-      //   $parent = $('.listPart tr.active')
-
-      //   if ($('.table-parts .partRow').length) {
-      //     for (let i = 0; i < $('.table-parts .partRow').length; i++) {
-            
-      //       let $row = $($('.table-parts .partRow')[i]);
-        
-      //       if ( $row.find('input.item_id').val() == $parent.find('td:eq(0)').attr('data-id') ) {
-      //         showAlertMessage('Duplicate entry detected...', 'Item Entry Error...')
-      //         break;
-      //       }
-            
-      //       if ( i == $('.table-parts .partRow').length - 1 ) {
-      //         $('.table-parts .rowFocus td:eq(0) input').val($parent.find('td:eq(0)').attr('data-id'))
-      //         $('.table-parts .rowFocus td:eq(0) label').text($parent.find('td:eq(0)').text())
-      //         $('.table-parts .rowFocus td:eq(1) input').val($parent.find('td:eq(1)').text())
-      //         $('.table-parts .rowFocus td:eq(3) input').val($parent.find('td:eq(2)').attr('data-id'))
-      //         $('.table-parts .rowFocus td:eq(4) input').val($parent.find('td:eq(3)').attr('data-id'))
-      //         $('.table-parts .rowFocus td:eq(5) input').val($parent.find('td:eq(4)').attr('data-id'))
-      //         $('.table-parts .rowFocus td:eq(6) input').val($parent.find('td:eq(8)').text())
-              
-      //         if ($.isNumeric($('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val())) {
-      //           let total = 0.000000000001 + $('.table-parts .rowFocus td:eq(6) input').val()*$('.table-parts .rowFocus td:eq(7) input').val()
-      //           $('.table-parts .rowFocus td:eq(8) input').val(total.toFixed(2))
-      //         } else {
-      //           $('.table-parts .rowFocus td:eq(8) input').val(0)
-      //         }
-              
-      //         totalCost()
-              
-      //         $('.listPart').css('display','none')
-      //       } 
-
-      //     }  
-      //   }
-
-      // }
     })()
   </script>
 @endsection

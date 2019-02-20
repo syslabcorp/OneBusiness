@@ -13,8 +13,8 @@ class PurchasesController extends Controller
 		$company = Corporation::findOrFail($request->corpID);
 		$purchaseModel = new \App\Models\Purchase\PurchaseRequest;
 		$purchaseModel->setConnection($company->database_name);
-
-		$branches = \Auth::User()->getBranchesByGroup();
+		
+		$branches = \Auth::User()->getBranchesByGroup(request()->corpID);
 		
 		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'V')) {
 				$items = $purchaseModel->where('requester_id', \Auth::user()->UserID)->get();

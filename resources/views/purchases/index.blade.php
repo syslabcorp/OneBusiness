@@ -284,17 +284,6 @@
   })
 
   checkAccessID = (event, id) => {
-    // $.ajax({
-    //   url: '{{ route('purchase_request.checkDAVE') }}?corpID={{ request()->corpID }}&id='+id,
-    //   type: 'GET',
-    //   success: (res) => {
-    //     if (!res.checkDAVE) {
-          
-    //     } else {
-    //       showAlertMessage('This request is currently being evaluated. Please refresh and try again later.', 'PR Unavailable')
-    //     }
-    //   }
-    // });
     $.ajax({
       url: '{{ route('purchase_request.checkAccessID') }}?corpID={{ request()->corpID }}&id='+id,
       type: 'GET',
@@ -425,18 +414,6 @@
     }
   })
 
-  // editPart = (itemId) => {
-  //   $('.edit-part-modal').remove();
-  //   $.ajax({
-  //     url: '{{ route('parts.index') }}/' + itemId + '/edit',
-  //     type: 'GET',
-  //     success: (res) => {
-  //       $('body').append(res);
-  //       $('.edit-part-modal').modal('show');
-  //     }
-  //   })
-  // }
-
   removePurchase = (id) => {
     swal({
       title: "<div class='delete-title'>Delete</div>",
@@ -463,55 +440,6 @@
       }
     });
   }
-
-  // $('body').on('change', 'input[name="document-filter"]', (event) => {
-  //   if (event.target.value == 'all') {
-  //     $('.branch-select').prop('disabled', true);
-  //     $('.filter-select').prop('disabled', true);
-  //   } else {
-  //     $('.branch-select').prop('disabled', false);
-  //     $('.filter-select').prop('disabled', false);
-  //   }
-  //   localStorage.setItem('partsFilter', event.target.value)
-    
-  //   $('.branch-select').change()
-  // })
-
-  // $('body').on('change', '.branch-select', (event) => {
- 
-  //   if (event.target.value != localStorage.getItem('partsType')) {
-  //     localStorage.removeItem('partsTypeId')
-  //   }
-
-  //   $.ajax({
-  //     url:'{{ route('parts.getFilters') }}?type=' +  event.target.value,
-  //     type: 'GET',
-  //     success: (res) => {
-  //       $('.filter-select option').remove()
-
-  //       for (i = 0; i < res.items.length; i++) {
-  //         let item = res.items[i]
-
-  //         $('.filter-select').append('<option value="' + item.id + '">' + item.label + '</option>')
-  //       }
-  //       if (localStorage.getItem('partsTypeId')) {
-  //         $('.filter-select').val(localStorage.getItem('partsTypeId'))
-  //       }
-
-  //       $('.filter-select').change();
-  //     }
-  //   });
-  // })
-
-  // $('body').on('change', '.filter-select', (event) => {
-  //   let requestAPI = basePartAPI + '?type=' +  $('.branch-select').val() + '&id=' + $('.filter-select').val()
-    
-  //   localStorage.setItem('partsType', $('.branch-select').val())
-      
-  //   localStorage.setItem('partsTypeId', $('.filter-select').val())
-
-  //   tablePart.ajax.url(requestAPI).load()
-  // })
 })()
 </script>
 @endsection

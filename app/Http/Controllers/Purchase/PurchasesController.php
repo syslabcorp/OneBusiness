@@ -31,7 +31,7 @@ class PurchasesController extends Controller
 		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'A') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'A')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			
-			$branches = \Auth::user()->getBranchesByGroup();
+			$branches = \Auth::user()->getBranchesByGroup(request()->corpID);
 	
 			$purchase = new \App\Models\Purchase\PurchaseRequest;
 			$purchase->setConnection($company->database_name);
@@ -174,7 +174,7 @@ class PurchasesController extends Controller
 
 		$purchase = $purchaseModel->find($id);
 		
-		$branches = \Auth::user()->getBranchesByGroup();
+		$branches = \Auth::user()->getBranchesByGroup(request()->corpID);
 
 		if (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'V')) {
 			if ($purchase->flag == 1) {
@@ -647,19 +647,20 @@ class PurchasesController extends Controller
 		}
 	}
 
-	public function checkDAVE() {
-		$result = true;
-		$array_DAVE = ['D','A','V','E'];
-		
-		foreach ($array_DAVE as $DAVE) {
-			if (!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE)) {
-				$result = false ;
-				break;
-			}
-		}
+	// public function checkDAVE() {
+	// 	$result = true;
 
-		return response()->json([
-			'checkDAVE' => $result
-		]);	
-	}
+	// 	$array_DAVE = ['D','A','V','E'];
+		
+	// 	foreach ($array_DAVE as $DAVE) {
+	// 		if (!\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, $DAVE)) {
+	// 			$result = false ;
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	return response()->json([
+	// 		'checkDAVE' => $result
+	// 	]);	
+	// }
 }
