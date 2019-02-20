@@ -255,12 +255,12 @@ class PurchasesController extends Controller
 		$purchaseModel->setConnection($company->database_name);
 
 		$purchase_item = $purchaseModel->findOrFail($id);
-		dd(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E'));
+
 		if(\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E')) {
 			$company = Corporation::findOrFail(request()->corpID);
 			$purchasedetailModel = new \App\Models\Purchase\PurchaseDetail;
 			$purchasedetailModel->setConnection($company->database_name);
-			dd('ok');
+	
 			if ($purchase_item->flag == 2) {
 				if (request()->updated) {
 					if ($purchase_item->flag == 2) {
@@ -488,6 +488,9 @@ class PurchasesController extends Controller
 				return redirect(route('purchase_request.index', ['corpID' => request()->corpID]));
 			}
 		}
+
+		\Session::flash('error', "You don't have permission"); 
+		return redirect("/home");
 	}
 
 	public function getBrands()
