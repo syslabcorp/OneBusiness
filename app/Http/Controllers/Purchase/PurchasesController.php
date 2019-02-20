@@ -649,6 +649,7 @@ class PurchasesController extends Controller
 
 	public function checkDAVE() {
 		$result = true;
+		
 		$array_DAVE = ['D','A','V','E'];
 		
 		foreach ($array_DAVE as $DAVE) {
