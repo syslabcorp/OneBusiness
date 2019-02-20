@@ -1,8 +1,10 @@
 <div class="table-responsive table-purchases" style="display: ;">
   <div class="text-right" style="visibility:{{ $purchase->flag == 1 ? 'hidden' : '' }}">
-  @if($purchase->flag != 1)
-  <button type="button"  {{ $purchase->id ? 'disabled' : '' }}
-      class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
+  @if ($purchase->flag != 7)
+    @if($purchase->flag != 1)
+    <button type="button"  {{ $purchase->id ? 'disabled' : '' }}
+        class="btn btn-success btn-sm btnAddRow" style="margin-bottom: 10px;">Add Row (F2)</button>
+    @endif
   @endif
   </div>
   <table class="table table-bordered table-striped">
