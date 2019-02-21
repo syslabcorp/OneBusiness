@@ -104,7 +104,7 @@
                     <i class="fa fa-refresh" aria-hidden="true"></i>
                   </button>
                 @else 
-                  <button type="button" {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') ? '' : 'disabled' }}class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
+                  <button type="button" {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'D')) ? '' : 'disabled' }}class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 @endif
@@ -184,7 +184,7 @@
                 <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               @else 
-                <button type="button" {{ \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') ? '' : 'disabled' }} class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
+                <button type="button" {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'E') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 59, 'D')) ? '' : 'disabled' }} class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               @endif
