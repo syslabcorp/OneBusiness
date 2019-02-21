@@ -32,7 +32,7 @@
           </td>
           <td style="width: 100px;" >
             @if($item->isVerified == 2)
-            <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal">
+            <button type="button" class="btn btn-danger btn-md center-block access_delete" data-toggle="modal" data-target="#myModal" {{ (\Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'E') || \Auth::user()->checkAccessByIdForCorp(request()->corpID, 58, 'D')) ? '' : 'disabled' }}>
               <i class="fas fa-trash-alt"></i>
             </button>
             @else
