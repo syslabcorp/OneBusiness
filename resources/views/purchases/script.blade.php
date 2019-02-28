@@ -364,11 +364,11 @@
         if ($('input[type="radio"]:checked').val() == 'Part') {
           swal({
             title: "<div class='delete-title'>Warning</div>",
-            text:  "<div class='delete-text'>Changing request type will not save your progress.</strong></div>",
+            text:  "<div class='delete-text'>Changing request type will not save your progress.Continue?</strong></div>",
             html:  true,
             customClass: 'swal-wide',
-            confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Continue?',
+            confirmButtonClass: 'btn-primary',
+            confirmButtonText: 'Yes',
             showCancelButton: true,
             closeOnConfirm: true,
             allowEscapeKey: true,
@@ -392,11 +392,11 @@
         } else if ($('input[type="radio"]:checked').val() == 'Equipment') {
           swal({
             title: "<div class='delete-title'>Warning</div>",
-            text:  "<div class='delete-text'>Changing request type will not save your progress.</strong></div>",
+            text:  "<div class='delete-text'>Changing request type will not save your progress.Continue?</strong></div>",
             html:  true,
             customClass: 'swal-wide',
-            confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Continue?',
+            confirmButtonClass: 'btn-primary',
+            confirmButtonText: 'Yes',
             showCancelButton: true,
             closeOnConfirm: true,
             allowEscapeKey: true,
