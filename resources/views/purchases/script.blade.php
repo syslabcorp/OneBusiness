@@ -308,19 +308,21 @@
         } 
       })
 
-      setDEfaultRadiobutton = (event) => {
-        $('input[value="Equipment"]').prop('checked', true)
-        $.ajax({
-          url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio=Equipment' ,
-          type: 'GET',
-          success: (res) => {
-            $('.table-purchases tbody').prepend(res)
-            indexs()
-          }
-        });
+      setDefaultRadiobutton = () => {
+        if(!$('tr').hasClass('purchaseRow')) {
+          $('input[value="Equipment"]').prop('checked', true)
+          $.ajax({
+            url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio=Equipment' ,
+            type: 'GET',
+            success: (res) => {
+              $('.table-purchases tbody').prepend(res)
+              indexs()
+            }
+          });
+        }
       }
 
-      setDEfaultRadiobutton()
+      setDefaultRadiobutton()
 
       // $('.edit_verify').on('click', function () {
       //   showAlertMessage('Cannot edit this PR anymore.', 'Request Verified:')
