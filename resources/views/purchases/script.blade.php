@@ -308,9 +308,23 @@
         } 
       })
 
-      $('.edit_verify').on('click', function () {
-        showAlertMessage('Cannot edit this PR anymore.', 'Request Verified:')
-      })
+      setDEfaultRadiobutton = (event) => {
+        $('input[value="Equipment"]').prop('checked', true)
+        $.ajax({
+          url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio=Equipment' ,
+          type: 'GET',
+          success: (res) => {
+            $('.table-purchases tbody').prepend(res)
+            indexs()
+          }
+        });
+      }
+
+      setDEfaultRadiobutton()
+
+      // $('.edit_verify').on('click', function () {
+      //   showAlertMessage('Cannot edit this PR anymore.', 'Request Verified:')
+      // })
 
       $('.delete_request_verify').on('click', function () {
         $(this).val('delete')
@@ -345,17 +359,63 @@
       })
 
       $('body').on('change', 'input:radio', function(event) {
-        let $trParent = $(event.target).parents('tr')
-        $('tr.purchaseRow').remove()
-        $('tr.rowTR').remove()
-        $.ajax({
-          url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $(this).val() ,
-          type: 'GET',
-          success: (res) => {
-            $('.table-purchases tbody').prepend(res)
-            indexs()
-          }
-        });
+        if ($('input[type="radio"]:checked').val() == 'Part') {
+          swal({
+            title: "<div class='delete-title'>Warning</div>",
+            text:  "<div class='delete-text'>Changing request type will not save your progress.</strong></div>",
+            html:  true,
+            customClass: 'swal-wide',
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Continue?',
+            showCancelButton: true,
+            closeOnConfirm: true,
+            allowEscapeKey: true,
+          }, (data) => {
+            if(data) {
+              $('input[value="Part"]').prop('checked', true)
+              let $trParent = $(event.target).parents('tr')
+              $('tr.purchaseRow').remove()
+              $('tr.rowTR').remove()
+              $.ajax({
+                url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $(this).val() ,
+                type: 'GET',
+                success: (res) => {
+                  $('.table-purchases tbody').prepend(res)
+                  indexs()
+                }
+              });
+            } 
+          });
+          $('input[value="Equipment"]').prop('checked', true)
+        } else if ($('input[type="radio"]:checked').val() == 'Equipment') {
+          swal({
+            title: "<div class='delete-title'>Warning</div>",
+            text:  "<div class='delete-text'>Changing request type will not save your progress.</strong></div>",
+            html:  true,
+            customClass: 'swal-wide',
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Continue?',
+            showCancelButton: true,
+            closeOnConfirm: true,
+            allowEscapeKey: true,
+          }, (data) => {
+            if(data) {
+              $('input[value="Equipment"]').prop('checked', true)
+              let $trParent = $(event.target).parents('tr')
+              $('tr.purchaseRow').remove()
+              $('tr.rowTR').remove()
+              $.ajax({
+                url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio='+ $(this).val() ,
+                type: 'GET',
+                success: (res) => {
+                  $('.table-purchases tbody').prepend(res)
+                  indexs()
+                }
+              });
+            } 
+          });
+          $('input[value="Part"]').prop('checked', true)
+        }
       })
 
       checkEQP = (self) => {

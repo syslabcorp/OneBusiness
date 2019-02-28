@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5><strong>Purchase Request</strong></h5>
+                <h5><strong>Purchase Request {{ $purchase->flag == 2 ? '( Requests )': $purchase->flag == 4 ? '( Disapproved )' : $purchase->flag == 6 ? '( Approved )' : '' }}</strong></h5>
               </div>
             </div>
           </div>
