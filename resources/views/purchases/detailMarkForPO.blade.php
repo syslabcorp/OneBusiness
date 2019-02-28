@@ -8,7 +8,15 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5><strong>Purchase Request</strong></h5>
+                <h5><strong>Purchase Request 
+				@if ($purchase->flag == 2)
+				( Requests ) 
+				@elseif ($purchase->flag == 4)
+				( Disapproved ) 
+				@elseif ($purchase->flag == 6)
+				( Approved )
+				@endif
+				</strong></h5>
               </div>
             </div>
           </div>

@@ -109,7 +109,7 @@
             <i class="far fa-save"></i> Edit PR
           </button>
           @else 
-          <button type="button" class="btn btn-primary btn-save" >
+          <button type="button" class="btn btn-primary btn-save create" >
             <i class="far fa-save"></i> Create P.R.
           </button>
           @endif

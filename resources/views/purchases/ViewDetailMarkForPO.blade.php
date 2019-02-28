@@ -8,7 +8,7 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5><strong>Purchase Request</strong></h5>
+                <h5><strong>Purchase Request ( For Verification )</strong></h5>
               </div>
             </div>
           </div>
