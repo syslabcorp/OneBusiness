@@ -135,7 +135,7 @@
 										<h4></h4>
 
 										<p>
-									
+
 										</p>
 										@include('purchases.purchaseVerify')
 										<div class="rown">
