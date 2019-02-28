@@ -8,7 +8,13 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-9">
-                <h5><strong>Purchase Request {{ $purchase->flag == 1 ? '( For PO )' : $purchase->flag == 7 ? '( Served )' : '' }} </strong></h5>
+                <h5><strong>Purchase Request 
+								@if ($purchase->flag == 1)
+								( For PO )
+								@elseif ($purchase->flag == 7)
+								( Served )
+								@endif
+								</strong></h5>
               </div>
             </div>
           </div>

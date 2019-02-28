@@ -309,7 +309,7 @@
       })
 
       setDefaultRadiobutton = () => {
-        if(!$('tr').hasClass('purchaseRow')) {
+        if($('button').hasClass('create')) {
           $('input[value="Equipment"]').prop('checked', true)
           $.ajax({
             url: '{{ route('purchase_request.getBrands') }}?corpID={{ request()->corpID }}&radio=Equipment' ,
